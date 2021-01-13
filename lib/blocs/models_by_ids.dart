@@ -37,7 +37,6 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
   void _setIds(List<I> ids) {
     _currentIds = ids;
     _modelCacheBloc.inLoadList.add(ids);
-    //_state = ModelListByIdsState<O>(objects: <O>[], requestStatus: RequestStatus.loading);
     _updateState();
     _pushOutput();
   }
@@ -71,21 +70,6 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
     _allObjectsByIds = objectsByIds;
     _updateState();
     _pushOutput();
-    // final currentObjects = <O>[];
-    //
-    // for (final id in _currentIds) {
-    //   if (!objectsByIds.containsKey(id)) continue;
-    //   currentObjects.add(objectsByIds[id]);
-    // }
-    //
-    // // TODO: Handle partial loads. Check if objects changed and do not push if not.
-    // if (currentObjects.isEmpty) {
-    //   _state = ModelListByIdsState(objects: currentObjects, requestStatus: RequestStatus.loading);
-    // } else {
-    //   _state = ModelListByIdsState(objects: currentObjects, requestStatus: RequestStatus.ok);
-    // }
-    //
-    // _pushOutput();
   }
 
   void _pushOutput() {
@@ -100,12 +84,10 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
 }
 
 class ModelListByIdsState<O extends WithId> {
-  //final List<I> ids; // Nullable.
   final List<O> objects;
   final RequestStatus requestStatus;
 
   ModelListByIdsState({
-    //@required this.ids,
     @required this.objects,
     @required this.requestStatus,
   });

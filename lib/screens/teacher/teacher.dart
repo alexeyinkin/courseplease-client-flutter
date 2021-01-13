@@ -37,12 +37,9 @@ class _TeacherScreenState extends State<TeacherScreen> {
   );
   final _productSubjectsByIdsBloc = ModelListByIdsBloc<int, ProductSubject>(
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
-    // modelCacheBloc: GetIt.instance.get<ModelCacheFactory>()
-    //     .getOrCreateWithChildren<int, ProductSubject, ProductSubjectRepository>(),
   );
 
   int _teacherId;
-  //Teacher _teacher;
   int _subjectId;
 
   @override
@@ -277,19 +274,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
 
   void _loadTeacher() async {
     _teacherByIdBloc.inSetId.add(_teacherId);
-    // CoursePleaseAppState.networkObjectCache.teacherCache
-    //     .getFutureById(_teacherId)
-    //     .then((Teacher teacher) => _handleLoaded(teacher));
   }
-
-  // void _handleLoaded(Teacher teacher) {
-  //   setState(() {
-  //     _teacher = teacher;
-  //     if (_getSelectedTeacherSubject() == null && _teacher.categories.isNotEmpty) {
-  //       _subjectId = _teacher.categories[0].subjectId;
-  //     }
-  //   });
-  // }
 
   @override
   void dispose() {

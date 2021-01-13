@@ -1,5 +1,4 @@
 import 'package:courseplease/blocs/model_by_id.dart';
-import 'package:courseplease/main.dart';
 import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/screens/photo/photo.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get_it/get_it.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-
 import '../../models/lesson.dart';
 
 class LessonScreen extends StatefulWidget {
@@ -28,7 +26,6 @@ class _LessonScreenState extends State<LessonScreen> {
   );
 
   int _lessonId;
-  //Lesson _lesson;
   bool _autoplay;
   YoutubePlayerController _youtubePlayerController;
 
@@ -77,10 +74,6 @@ class _LessonScreenState extends State<LessonScreen> {
                 aspectRatio: 16 / 9,
               ),
             ),
-            // YoutubePlayer(
-            //   controller: _youtubePlayerController,
-            //   showVideoProgressIndicator: true,
-            // ),
             Container(
               padding: EdgeInsets.only(bottom: 20),
               child: Text(
@@ -115,9 +108,6 @@ class _LessonScreenState extends State<LessonScreen> {
 
   void _loadLesson() async {
     _lessonByIdBloc.inSetId.add(_lessonId);
-    // CoursePleaseAppState.networkObjectCache.lessonCache
-    //     .getFutureById(_lessonId)
-    //     .then((Lesson lesson) => _handleLoaded(lesson));
   }
 
   void _createYoutubePlayerControllerIfNot(Lesson lesson) {
@@ -132,24 +122,6 @@ class _LessonScreenState extends State<LessonScreen> {
       ),
     );
   }
-
-  // void _handleLoaded(Lesson lesson) {
-  //   setState(() {
-  //     _lesson = lesson;
-  //     _youtubePlayerController = YoutubePlayerController(
-  //       initialVideoId: lesson.externalId,
-  //       params: YoutubePlayerParams(
-  //         autoPlay: _autoplay,
-  //         showControls: true,
-  //         showFullscreenButton: true,
-  //       ),
-  //       // flags: YoutubePlayerFlags(
-  //       //   mute: false,
-  //       //   autoPlay: _autoplay,
-  //       // ),
-  //     );
-  //   });
-  // }
 
   @override
   void dispose() {

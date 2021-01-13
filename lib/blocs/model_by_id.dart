@@ -11,9 +11,9 @@ class ModelByIdBloc<I, O extends WithId<I>> extends Bloc {
   final ModelCacheBloc<I, O> _modelCacheBloc;
   final initialState = ModelByIdState<I, O>(id: null, object: null, requestStatus: RequestStatus.notTried);
 
+  var _allObjectsByIds = Map<I, O>();
   I _currentId; // Nullable
   ModelByIdState<I, O> _state = ModelByIdState<I, O>(id: null, object: null, requestStatus: RequestStatus.notTried);
-  //O _currentObject; // Nullable
 
   final _inSetIdController = StreamController<I>();
   Sink<I> get inSetId => _inSetIdController.sink;
@@ -36,25 +36,36 @@ class ModelByIdBloc<I, O extends WithId<I>> extends Bloc {
   void _setId(I id) {
     _currentId = id;
     _modelCacheBloc.inLoad.add(id);
-    _state = ModelByIdState<I, O>(id: id, object: null, requestStatus: RequestStatus.loading);
+    _updateState();
     _pushOutput();
   }
 
+  void _updateState() {
+    _state = _createState();
+  }
+
+  ModelByIdState<I, O> _createState() {
+    if (_currentId == null) {
+      return ModelByIdState<I, O>(id: null, object: null, requestStatus: RequestStatus.notTried);
+    }
+
+    if (!_allObjectsByIds.containsKey(_currentId)) {
+      return ModelByIdState(id: _currentId, object: null, requestStatus: RequestStatus.loading);
+    }
+
+    final object = _allObjectsByIds[_currentId];
+
+    if (object == null) {
+      return ModelByIdState(id: _currentId, object: null, requestStatus: RequestStatus.error);
+    }
+
+    return ModelByIdState(id: _currentId, object: object, requestStatus: RequestStatus.ok);
+  }
+
   void _handleLoadedAnythingNew(Map<I, O> objectsByIds) {
-    if (!objectsByIds.containsKey(_currentId)) {
-      return; // Something else loaded, still waiting for our object.
-    }
-
-    final currentObject = objectsByIds[_currentId];
-
-    if (_state.requestStatus == RequestStatus.loading || currentObject != _state.object) {
-      // TODO: Change from instance comparison to properties comparison?
-      _state = (currentObject == null)
-          ? ModelByIdState<I, O>(id: _currentId, object: null, requestStatus: RequestStatus.error)
-          : ModelByIdState<I, O>(id: _currentId, object: currentObject, requestStatus: RequestStatus.ok);
-
-      _pushOutput();
-    }
+    _allObjectsByIds = objectsByIds;
+    _updateState();
+    _pushOutput();
   }
 
   void _pushOutput() {
