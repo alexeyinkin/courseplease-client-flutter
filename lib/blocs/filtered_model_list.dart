@@ -94,7 +94,7 @@ class FilteredModelListBloc<I, O extends WithId<I>, F extends AbstractFilter> ex
   //   return loadMore().then((result) => getAt(index));
   // }
 
-  void _handleLoaded(LoadResult<O> loadResult) {
+  void _handleLoaded(ListLoadResult<O> loadResult) {
     _objects.addAll(loadResult.objects);
     print('Added to list, now got ' + _objects.length.toString() + ' objects.');
 

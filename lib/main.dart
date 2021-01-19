@@ -8,16 +8,24 @@ import 'package:courseplease/screens/home/home.dart';
 import 'package:courseplease/screens/teacher/teacher.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
+import 'package:courseplease/services/net/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'screens/lesson/lesson.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final apiClient = ApiClient();
+  apiClient.setLang('en');
+  GetIt.instance
+      ..registerSingleton<ApiClient>(apiClient);
+
   // TODO: Move GetIt initialization to a separate file.
   final productSubjectRepository = ProductSubjectRepository();
 
   GetIt.instance
-      ..registerSingleton<ProductSubjectRepository>(ProductSubjectRepository())
+      ..registerSingleton<ProductSubjectRepository>(productSubjectRepository)
       ..registerSingleton<PhotoRepository>(PhotoRepository())
       ..registerSingleton<TeacherRepository>(TeacherRepository())
       ..registerSingleton<LessonRepository>(LessonRepository())

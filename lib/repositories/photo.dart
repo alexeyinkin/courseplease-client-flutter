@@ -1,30 +1,29 @@
 import 'package:courseplease/models/filters/photo.dart';
 import 'package:courseplease/models/photo.dart';
+import 'package:courseplease/services/net/api_client.dart';
+import 'package:get_it/get_it.dart';
 
 import 'abstract.dart';
 
 class PhotoRepository extends AbstractFilteredRepository<int, Photo, PhotoFilter> {
-  final _provider = NetworkMapDataProvider();
+  static const _entitiesName = 'photos';
+  final _client = GetIt.instance.get<ApiClient>();
 
   @override
-  Future<LoadResult<Photo>> loadWithFilter(PhotoFilter filter, String pageToken) {
-    var uri = Uri.https(
-      'courseplease.com',
-      '/api1/en/gallery/photos',
-      filter.toQueryParams(),
-    );
-
-    return _provider.loadList(uri, pageToken).then(_denormalize);
+  Future<ListLoadResult<Photo>> loadWithFilter(PhotoFilter filter, String pageToken) {
+    return _client
+        .getEntities(_entitiesName, filter.toQueryParams(), pageToken)
+        .then((response) => _denormalizeList(response.data));
   }
 
-  LoadResult<Photo> _denormalize(LoadResult<Map<String, dynamic>> mapResult) {
+  ListLoadResult<Photo> _denormalizeList(ListLoadResult<Map<String, dynamic>> mapResult) {
     var objects = <Photo>[];
 
     for (var obj in mapResult.objects) {
       objects.add(Photo.fromMap(obj));
     }
 
-    return LoadResult<Photo>(objects, mapResult.nextPageToken);
+    return ListLoadResult<Photo>(objects, mapResult.nextPageToken);
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:courseplease/models/interfaces.dart';
 
 enum RequestStatus {
@@ -36,6 +38,35 @@ List<O> whereIds<I, O extends WithId<I>>(List<O> objects, List<I> ids) {
     if (idsMap.containsKey(object.id)) {
       result.add(object);
     }
+  }
+
+  return result;
+}
+
+Map<K, V> whereKeys<K, V>(Map<K, V> map, List<K> keys) {
+  final result = Map<K, V>();
+
+  for (final key in keys) {
+    result[key] = map[key];
+  }
+
+  return result;
+}
+
+Map<K, V> mapWithEntry<K, V>(Map<K, V> map, K key, V value) {
+  final mapClone = Map<K, V>.from(map);
+  mapClone[key] = value;
+  return mapClone;
+}
+
+String generatePassword(int length) {
+  final generator = Random.secure();
+  final chars = '23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ~!@#\$%^&*()-_=+';
+  final charCount = chars.length;
+  String result = '';
+
+  while (--length >= 0) {
+    result += chars[generator.nextInt(charCount)];
   }
 
   return result;

@@ -1,39 +1,36 @@
 import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/teacher.dart';
+import 'package:courseplease/services/net/api_client.dart';
+import 'package:get_it/get_it.dart';
 
 import 'abstract.dart';
 
 class TeacherRepository extends AbstractFilteredRepository<int, Teacher, TeacherFilter> {
-  final _provider = NetworkMapDataProvider();
+  static const _entitiesName = 'teachers';
+  final _client = GetIt.instance.get<ApiClient>();
 
   @override
-  Future<LoadResult<Teacher>> loadWithFilter(TeacherFilter filter, String pageToken) {
-    var uri = Uri.https(
-      'courseplease.com',
-      '/api1/en/gallery/teachers',
-      filter.toQueryParams(),
-    );
-
-    return _provider.loadList(uri, pageToken).then(_denormalize);
+  Future<ListLoadResult<Teacher>> loadWithFilter(TeacherFilter filter, String pageToken) {
+    return _client
+        .getEntities(_entitiesName, filter.toQueryParams(), pageToken)
+        .then((response) => _denormalizeList(response.data));
   }
 
-  LoadResult<Teacher> _denormalize(LoadResult<Map<String, dynamic>> mapResult) {
+  ListLoadResult<Teacher> _denormalizeList(ListLoadResult<Map<String, dynamic>> mapResult) {
     var objects = <Teacher>[];
 
     for (var obj in mapResult.objects) {
       objects.add(Teacher.fromMap(obj));
     }
 
-    return LoadResult<Teacher>(objects, mapResult.nextPageToken);
+    return ListLoadResult<Teacher>(objects, mapResult.nextPageToken);
   }
 
   @override
   Future<Teacher> loadById(int id) {
-    var uri = Uri.https(
-      'courseplease.com',
-      '/api1/en/gallery/teachers/' + id.toString(),
-    );
-    return _provider.loadSingle(uri.toString()).then(_denormalizeOne);
+    return _client
+        .getEntity(_entitiesName, id)
+        .then((response) => _denormalizeOne(response.data));
   }
 
   @override

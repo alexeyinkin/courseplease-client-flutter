@@ -1,14 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:http/http.dart' as http;
 
-class LoadResult<T> {
+class ListLoadResult<T> {
   final List<T> objects;
   final String nextPageToken; // Nullable
 
-  LoadResult(this.objects, this.nextPageToken);
+  ListLoadResult(this.objects, this.nextPageToken);
 
   bool hasMore() {
     return nextPageToken != null;
@@ -26,12 +27,12 @@ abstract class AbstractFilteredRepository<
   O extends WithId<I>,
   F extends AbstractFilter
 > extends AbstractRepository<I, O> {
-  Future<LoadResult<O>> loadWithFilter(F filter, String pageToken);
+  Future<ListLoadResult<O>> loadWithFilter(F filter, String pageToken);
 }
 
-// TODO: Move to a separate data provider layer. Learn where it fits.
+@Deprecated('Use ApiClient for network operations.')
 class NetworkMapDataProvider {
-  Future<LoadResult<Map<String, dynamic>>> loadList(Uri uri, String pageToken) {
+  Future<ListLoadResult<Map<String, dynamic>>> loadList(Uri uri, String pageToken) {
     if (pageToken != null) {
       final paramsClone = Map<String, String>.from(uri.queryParameters);
       paramsClone['pageToken'] = pageToken;
@@ -43,10 +44,12 @@ class NetworkMapDataProvider {
       );
     }
 
-    return http.get(uri.toString()).then(_parseListResponse);
+    return http
+        .get(uri.toString(), headers: _getHeaders())
+        .then(_parseListResponse);
   }
 
-  LoadResult<Map<String, dynamic>> _parseListResponse(http.Response response) {
+  ListLoadResult<Map<String, dynamic>> _parseListResponse(http.Response response) {
     if (response.statusCode != 200) {
       throw Exception('Failed to fetch.');
     }
@@ -54,16 +57,31 @@ class NetworkMapDataProvider {
     return _parseListString(response.body);
   }
 
-  LoadResult<Map<String, dynamic>> _parseListString(String str) {
+  ListLoadResult<Map<String, dynamic>> _parseListString(String str) {
     final map = jsonDecode(str);
     final items = map['data']['items'].cast<Map<String, dynamic>>();
     final nextPageToken = map['data']['nextPageToken'];
 
-    return LoadResult(items, nextPageToken);
+    return ListLoadResult(items, nextPageToken);
   }
 
-  Future<Map<String, dynamic>> loadSingle(String url) {
-    return http.get(url).then(_parseSingleResponse);
+  Future<Map<String, dynamic>> getSingle(String url) {
+    return http
+        .get(url, headers: _getHeaders())
+        .then(_parseSingleResponse);
+  }
+
+  Future<Map<String, dynamic>> postSingle(String url, Map<String, dynamic> body) {
+    final headers = _getHeaders();
+    headers['Content-Type'] = ContentType.json.toString();
+
+    return http
+        .post(url, headers: headers, body: jsonEncode(body))
+        .then(_parseSingleResponse);
+  }
+
+  Map<String, String> _getHeaders() {
+    return {};
   }
 
   Map<String, dynamic> _parseSingleResponse(http.Response response) {
