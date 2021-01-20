@@ -107,7 +107,7 @@ class _LessonScreenState extends State<LessonScreen> {
   }
 
   void _loadLesson() async {
-    _lessonByIdBloc.inSetId.add(_lessonId);
+    _lessonByIdBloc.setCurrentId(_lessonId);
   }
 
   void _createYoutubePlayerControllerIfNot(Lesson lesson) {

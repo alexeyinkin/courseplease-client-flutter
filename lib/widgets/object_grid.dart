@@ -14,7 +14,6 @@ class ObjectGrid<
   R extends AbstractFilteredRepository<I, O, F>,
   T extends AbstractObjectTile<I, O, F>
 > extends StatefulWidget {
-  //final DownloadedObjectList<I, O, F> downloadedObjectList;
   final TileFactory<I, O, F, T> tileFactory;
   final TileCallback<I, O> onTap; // Nullable
   final Axis scrollDirection;
@@ -24,7 +23,6 @@ class ObjectGrid<
 
   ObjectGrid({
     @required this.filter,
-    //@required this.downloadedObjectList,
     @required this.tileFactory,
     this.onTap,
     @required this.scrollDirection,
@@ -35,7 +33,6 @@ class ObjectGrid<
   @override
   State<ObjectGrid> createState() {
     return ObjectGridState<I, O, F, R, T>(
-      //this.downloadedObjectList,
       this.tileFactory,
     );
   }
@@ -49,12 +46,10 @@ class ObjectGridState<
   T extends AbstractObjectTile<I, O, F>
 > extends State<ObjectGrid<I, O, F, R, T>> with AutomaticKeepAliveClientMixin<ObjectGrid<I, O, F, R, T>> {
   final _factory = GetIt.instance.get<FilteredModelListFactory>();
-  //DownloadedObjectList<I, O, F> _downloadedObjectList;
   final _scrollController = ScrollController(keepScrollOffset: false);
   final TileFactory<I, O, F, T> _tileFactory;
 
   ObjectGridState(
-    //this._downloadedObjectList,
     this._tileFactory,
   );
 
@@ -63,24 +58,15 @@ class ObjectGridState<
 
   @override
   void initState() {
-    super.initState();
-    //_loadMoreIfCan();
+    super.initState(); // For AutomaticKeepAliveClientMixin.
   }
-
-  // void _loadMoreIfCan() {
-  //   if (_downloadedObjectList.more) {
-  //     _downloadedObjectList
-  //         .loadMore()
-  //         .then((loadResult) => setState(() {}));
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     final listBloc = _factory.getOrCreate<I, O, F, R>(widget.filter);
-    listBloc.inEvents.add(LoadInitialIfNotEvent());
+    listBloc.loadInitialIfNot();
 
     return StreamBuilder(
       stream: listBloc.outState,
@@ -90,7 +76,6 @@ class ObjectGridState<
   }
 
   Widget _buildWithListState(BuildContext context, ModelListState listState, FilteredModelListBloc bloc) {
-    //final length = _downloadedObjectList.objects.length;
     final length = listState.objects.length;
     final children = <Widget>[];
 
@@ -108,21 +93,18 @@ class ObjectGridState<
                 widget.filter.toString()),
             scrollDirection: widget.scrollDirection,
             gridDelegate: widget.gridDelegate,
-            //itemCount: _downloadedObjectList.more ? null : length,
             itemCount: listState.hasMore ? null : length,
             itemBuilder: (context, index) {
               print(length.toString() + ' in _objects.');
               if (index < length) {
                 return _tileFactory(
-                  //object: _downloadedObjectList.objects[index],
                   object: listState.objects[index],
                   index: index,
                   onTap: widget.onTap,
                 );
               }
 
-              //_loadMoreIfCan();
-              bloc.inEvents.add(LoadMoreEvent());
+              bloc.loadMoreIfCan();
               return Text(index.toString());
             },
           ),

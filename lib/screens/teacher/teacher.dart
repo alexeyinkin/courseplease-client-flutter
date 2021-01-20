@@ -140,11 +140,11 @@ class _TeacherScreenState extends State<TeacherScreen> {
   }
 
   Widget _getSubjectsLine(Teacher teacher) {
-    _productSubjectsByIdsBloc.inSetIds.add(teacher.subjectIds);
+    _productSubjectsByIdsBloc.setCurrentIds(teacher.subjectIds);
     return StreamBuilder(
-        stream: _productSubjectsByIdsBloc.outState,
-        initialData: _productSubjectsByIdsBloc.initialState,
-        builder: (context, snapshot) => _buildSubjectLineWithState(snapshot.data),
+      stream: _productSubjectsByIdsBloc.outState,
+      initialData: _productSubjectsByIdsBloc.initialState,
+      builder: (context, snapshot) => _buildSubjectLineWithState(snapshot.data),
     );
   }
 
@@ -218,7 +218,6 @@ class _TeacherScreenState extends State<TeacherScreen> {
 
   Widget _getLessonsBlock() {
     return Container(
-      //height: 300,
       constraints: BoxConstraints(
         maxHeight: 300,
       ),
@@ -273,7 +272,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
   }
 
   void _loadTeacher() async {
-    _teacherByIdBloc.inSetId.add(_teacherId);
+    _teacherByIdBloc.setCurrentId(_teacherId);
   }
 
   @override

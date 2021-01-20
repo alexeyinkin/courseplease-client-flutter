@@ -11,12 +11,6 @@ class CurrentProductSubjectBloc implements Bloc {
   int _lastId = 16;
   var _subjectsByIds = Map<int, ProductSubject>();
 
-  final _inSubjectsByIds = StreamController<Map<int, ProductSubject>>();
-  Sink<Map<int, ProductSubject>> get inSubjectsByIds => _inSubjectsByIds.sink;
-
-  final _inCurrentId = StreamController<int>();
-  Sink<int> get inCurrentId => _inCurrentId.sink;
-
   final _outCurrentIdController = BehaviorSubject<int>();
   Stream<int> get outCurrentId => _outCurrentIdController.stream;
 
@@ -26,17 +20,13 @@ class CurrentProductSubjectBloc implements Bloc {
   final _outChildrenController = BehaviorSubject<List<ProductSubject>>();
   Stream<List<ProductSubject>> get outChildren => _outChildrenController.stream;
 
-  CurrentProductSubjectBloc() {
-    _inSubjectsByIds.stream.listen(_setSubjectsByIds);
-    _inCurrentId.stream.listen(_setCurrentId);
-  }
-
-  void _setSubjectsByIds(Map<int, ProductSubject> map) {
+  void setSubjectsByIds(Map<int, ProductSubject> map) {
     _subjectsByIds = map;
     _pushOutput();
   }
 
-  void _setCurrentId(int id) {
+  void setCurrentId(int id) {
+    if (_currentId == id) return;
     _currentId = id;
     _pushOutput();
   }
@@ -91,8 +81,6 @@ class CurrentProductSubjectBloc implements Bloc {
 
   @override
   void dispose() {
-    _inSubjectsByIds.close();
-    _inCurrentId.close();
     _outBreadcrumbsController.close();
     _outChildrenController.close();
   }

@@ -8,6 +8,6 @@ class ProductSubjectCacheBloc extends ModelWithChildrenCacheBloc<int, ProductSub
     @required ProductSubjectRepository repository,
   }) : super(repository: repository) {
     print("Creating ProductSubjectCacheBloc");
-    inLoadAll.add(null);
+    loadAll();
   }
 }

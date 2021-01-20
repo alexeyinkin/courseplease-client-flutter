@@ -34,9 +34,7 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
 
   PageController _pageController;
   PhotoFilter _filter;
-  //DownloadedObjectList<int, Photo, PhotoFilter> _downloadedObjectList;
   int _index;
-  //final _teacherCache = CoursePleaseAppState.networkObjectCache.teacherCache;
   bool _controlsVisible = true;
 
   static const _controlsAnimationDuration = Duration(milliseconds: 250);
@@ -45,8 +43,6 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
   Widget build(BuildContext context) {
     _parseArgumentsIfNot(context);
     final listBloc = _filteredModelListFactory.getOrCreate<int, Photo, PhotoFilter, PhotoRepository>(_filter);
-    //var ni = NetworkImage('https://courseplease.com/u/i/36/0/1000/1498_o.jpg?rand=1473083943');
-    //return Text(_index.toString());
 
     return StreamBuilder(
       stream: listBloc.outState,
@@ -79,19 +75,8 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
               if (index < length) {
                 return _buildPage(context, listState, index);
               }
-              bloc.inEvents.add(LoadMoreEvent());
+              bloc.loadMoreIfCan();
               return SmallCircularProgressIndicator();
-              // return FutureBuilder(
-              //   future: _downloadedObjectList.getAt(index),
-              //   builder: (context, snap) {
-              //     switch (snap.connectionState) {
-              //       case ConnectionState.done:
-              //         return _buildPage(context, index);
-              //     }
-              //
-              //     return SmallCircularProgressIndicator();
-              //   }
-              // );
             }
           ),
         ),
@@ -100,7 +85,6 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
   }
 
   Widget _buildPage(BuildContext context, ModelListState<Photo> listState, int index) {
-    //final photo = _downloadedObjectList.objects[index];
     final photo = listState.objects[index];
     final url = 'https://courseplease.com' + photo.getLightboxUrl();
 
@@ -151,9 +135,8 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
     );
   }
 
-  Widget _buildTeacherOverlay(BuildContext context, int id) {
-    // TODO: Change to cubit to avoid events with the same ID on each rebuild.
-    _teacherByIdBloc.inSetId.add(id);
+  Widget _buildTeacherOverlay(BuildContext context, int teacherId) {
+    _teacherByIdBloc.setCurrentId(teacherId);
     return StreamBuilder(
       stream: _teacherByIdBloc.outState,
       initialData: _teacherByIdBloc.initialState,
@@ -179,24 +162,6 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
     }
   }
 
-  // Widget _buildTeacherOverlayWithTeacher(Teacher teacher) {
-  //
-  //   return FutureBuilder(
-  //     future: _teacherCache.getFutureById(id),
-  //     builder: (BuildContext context, snap) {
-  //       if (!_teacherCache.containsId(id)) {
-  //         return Text('Loading teacher info...');
-  //       }
-  //
-  //       final teacher = _teacherCache.getById(id);
-  //       if (teacher == null) {
-  //         return Text('Teacher is null. ID = ' + id.toString());
-  //       }
-  //       return _buildTeacherPanelNow(context, teacher);
-  //     }
-  //   );
-  // }
-
   Widget _buildTeacherOverlayWithTeacher(Teacher teacher) {
     return Positioned(
       child: AnimatedOpacity(
@@ -210,10 +175,8 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
   }
 
   void _parseArgumentsIfNot(BuildContext context) {
-    //if (_downloadedObjectList == null) {
     if (_filter == null) {
       final arguments = ModalRoute.of(context).settings.arguments as PhotoLightboxArguments;
-      //_downloadedObjectList = arguments.downloadedObjectList;
       _filter = arguments.filter;
       _index = arguments.index;
       _pageController = PageController(
@@ -230,13 +193,10 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
 }
 
 class PhotoLightboxArguments {
-  //final DownloadedObjectList<int, Photo, PhotoFilter> downloadedObjectList;
   final PhotoFilter filter;
   final int index;
 
-  //PhotoLightboxArguments({this.downloadedObjectList, this.index});
   PhotoLightboxArguments({
-    //this.downloadedObjectList,
     this.filter,
     this.index,
   });
@@ -244,7 +204,6 @@ class PhotoLightboxArguments {
 
 class PhotoTeacherTile extends StatelessWidget {
   final Teacher teacher;
-  //TeacherTile(Teacher object, int index, onTap) : super(object, index, onTap);
   PhotoTeacherTile({@required this.teacher});
 
   @override
@@ -270,12 +229,9 @@ class PhotoTeacherTile extends StatelessWidget {
                   ),
                 ),
                 RatingAndVoteCountWidget(rating: teacher.rating, hideIfEmpty: true),
-                // RatingWidget(object.rating),
-                // UserCountWidget(object.rating.voteCount),
               ],
             ),
           ),
-          //Spacer()
           Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,7 +244,6 @@ class PhotoTeacherTile extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 5),
                 child: LocationLineWidget(location: teacher.location, textOpacity: .5),
               ),
-              //LessonFormatsWidget(lessonFormats: teacher.lessonFormats),
             ],
           ),
         ],
@@ -312,8 +267,6 @@ class PhotoLightboxOverlay extends StatelessWidget {
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          //color: Color.lerp(null, Theme.of(context).canvasColor, .6),
-          //color: Color.lerp(null, Theme.of(context).backgroundColor, .8),
           color: Color.fromARGB(96, 0, 0, 0),
         ),
         child: child,

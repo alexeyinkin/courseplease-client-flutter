@@ -7,20 +7,8 @@ import 'package:provider/provider.dart';
 import '../../../theme/theme.dart';
 
 class ProductSubjectsBreadcrumbs extends StatelessWidget {
-  // final List<ProductSubject> topLevelSubjects;
-  // final ProductSubject selectedSubject;
-  // final ValueChanged<int> onTap;
-  //
-  // ProductSubjectsBreadcrumbs({
-  //   Key key,
-  //   @required this.topLevelSubjects,
-  //   @required this.selectedSubject,
-  //   @required this.onTap,
-  // }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    //final bloc = BlocProvider.of<CurrentProductSubjectBloc>(context);
     final bloc = context.watch<CurrentProductSubjectBloc>();
 
     return StreamBuilder<List<ProductSubjectWithStatus>>(
@@ -36,27 +24,7 @@ class ProductSubjectsBreadcrumbs extends StatelessWidget {
         );
       }
     );
-    // if (widget.topLevelSubjects.isEmpty) {
-    //   return Text('Loading...');
-    // }
-    //
-    // if (widget.selectedSubject != null) {
-    //   return Align(
-    //     child: BreadCrumb(
-    //       items: _getBreadcrumbArray(),
-    //       divider: Icon(Icons.chevron_right, size: 36),
-    //     ),
-    //     alignment: Alignment.topLeft,
-    //   );
-    // }
-    //
-    // return Text('Loaded.');
   }
-
-  // List<BreadCrumbItem> _getBreadcrumbArray() {
-  //   final result = <BreadCrumbItem>[];
-  //   var subject = widget.selectedSubject;
-
 
   List<BreadCrumbItem> _getBreadcrumbArray(List<ProductSubjectWithStatus> items, CurrentProductSubjectBloc bloc) {
     final result = <BreadCrumbItem>[];
@@ -66,7 +34,7 @@ class ProductSubjectsBreadcrumbs extends StatelessWidget {
         BreadCrumbItem(
           content: GestureDetector(
             child: _getBreadcrumbItemContent(item.subject, item.status),
-            onTap: () => bloc.inCurrentId.add(item.subject.id),
+            onTap: () => bloc.setCurrentId(item.subject.id),
           ),
         ),
       );
@@ -99,5 +67,7 @@ class ProductSubjectsBreadcrumbs extends StatelessWidget {
           ),
         );
     }
+
+    throw Exception('Unknown ProductSubjectStatus: ' + status.toString());
   }
 }

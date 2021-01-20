@@ -15,27 +15,20 @@ class ModelByIdBloc<I, O extends WithId<I>> extends Bloc {
   I _currentId; // Nullable
   ModelByIdState<I, O> _state = ModelByIdState<I, O>(id: null, object: null, requestStatus: RequestStatus.notTried);
 
-  final _inSetIdController = StreamController<I>();
-  Sink<I> get inSetId => _inSetIdController.sink;
-
   final _outStateController = BehaviorSubject<ModelByIdState<I, O>>();
   Stream<ModelByIdState<I, O>> get outState => _outStateController.stream;
 
   ModelByIdBloc({
     @required ModelCacheBloc<I, O> modelCacheBloc,
   }) : _modelCacheBloc = modelCacheBloc {
-    _inSetIdController.stream.listen(_handleSetId);
     _modelCacheBloc.outObjectsByIds.listen(_handleLoadedAnythingNew);
   }
 
-  void _handleSetId(I id) {
+  void setCurrentId(I id) {
     if (id == _currentId) return;
-    _setId(id);
-  }
 
-  void _setId(I id) {
     _currentId = id;
-    _modelCacheBloc.inLoad.add(id);
+    _modelCacheBloc.loadByIdIfNot(id);
     _updateState();
     _pushOutput();
   }
@@ -74,7 +67,6 @@ class ModelByIdBloc<I, O extends WithId<I>> extends Bloc {
 
   @override
   void dispose() {
-    _inSetIdController.close();
     _outStateController.close();
   }
 }

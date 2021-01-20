@@ -16,15 +16,6 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
   Future<List<O>> _allObjectsFuture; // Nullable.
   final _futuresByIds = Map<I, Future>(); // Future of object or list.
 
-  final _inLoadAllController = StreamController<Null>();
-  Sink<I> get inLoadAll => _inLoadAllController.sink;
-
-  final _inLoadController = StreamController<I>();
-  Sink<I> get inLoad => _inLoadController.sink;
-
-  final _inLoadListController = StreamController<List<I>>();
-  Sink<List<I>> get inLoadList => _inLoadListController.sink;
-
   final _outObjectsByIdsController = BehaviorSubject<Map<I, O>>();
   Stream<Map<I, O>> get outObjectsByIds => _outObjectsByIdsController.stream;
 
@@ -32,17 +23,14 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     @required AbstractRepository<I, O> repository,
   }) : _repository = repository {
     print("Creating ModelCacheBloc for " + _typeOf<O>().toString());
-    _inLoadAllController.stream.listen((_) => _handleLoadAll());
-    _inLoadController.stream.listen(_handleLoadIfNot);
-    _inLoadListController.stream.listen(_handleLoadListIfNot);
   }
 
-  void _handleLoadAll() {
+  void loadAllIfNot() {
     if (_allObjectsInOrder != null || _allObjectsFuture != null) return;
-    _loadAll();
+    loadAll();
   }
 
-  void _loadAll() {
+  void loadAll() {
     this._allObjectsFuture = _repository.loadAll();
     this._allObjectsFuture.then(_handleLoadedAll);
   }
@@ -54,12 +42,12 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     _pushOutput();
   }
 
-  void _handleLoadIfNot(I id) {
+  void loadByIdIfNot(I id) {
     if (_objectsByIds.containsKey(id) || _futuresByIds.containsKey(id)) return;
-    _load(id);
+    _loadByd(id);
   }
 
-  void _load(I id) {
+  void _loadByd(I id) {
     final future = _repository.loadById(id);
     _futuresByIds[id] = future;
 
@@ -94,7 +82,7 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     }
   }
 
-  void _handleLoadListIfNot(List<I> ids) {
+  void loadListIfNot(List<I> ids) {
     final idsToLoad = _getMissingIds(ids);
     if (idsToLoad.isEmpty) return;
     _loadList(idsToLoad);
@@ -135,7 +123,6 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
 
   @override
   void dispose() {
-    _inLoadController.close();
     _outObjectsByIdsController.close();
   }
 

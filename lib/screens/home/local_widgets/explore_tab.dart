@@ -16,8 +16,6 @@ class ExploreTab extends StatefulWidget {
 }
 
 class ExploreTabState extends State<ExploreTab> {
-  // int _subjectId = 7;
-  // int _tabIndex = 0;
   CurrentProductSubjectBloc _bloc;
 
   @override
@@ -28,20 +26,13 @@ class ExploreTabState extends State<ExploreTab> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      //key: PageStorageKey('h'),
       child: Provider.value(
         value: _bloc,
         child: DefaultTabController(
-          //key: PageStorageKey('c'),
           length: 3,
           child: Column(
-            //key: PageStorageKey('d'),
             children: [
-              ProductSubjectsBreadcrumbs(
-                // topLevelSubjects: widget.topLevelSubjects,
-                // selectedSubject: widget.categoryProvider.getById(_subjectId),
-                // onTap: _setSelectedSubjectId,
-              ),
+              ProductSubjectsBreadcrumbs(),
               _getChildrenSubjectsLine(context),
               TabBar(
                 tabs: [
@@ -51,9 +42,7 @@ class ExploreTabState extends State<ExploreTab> {
                 ],
               ),
               Expanded(
-                //key: PageStorageKey('a'),
                 child: TabBarView(
-                  //key: PageStorageKey('b'),
                   children: [
                     PhotosTab(),
                     TeachersTab(),
@@ -72,26 +61,19 @@ class ExploreTabState extends State<ExploreTab> {
     final bloc = CurrentProductSubjectBloc();
 
     final productSubjectCacheBloc = GetIt.instance.get<ProductSubjectCacheBloc>();
-    productSubjectCacheBloc.outObjectsByIds.listen(bloc.inSubjectsByIds.add);
-    //GetIt.instance.get<ProductSubjectsBloc>().outSubjectsByIds.listen(bloc.inSubjectsByIds.add);
+    productSubjectCacheBloc.outObjectsByIds.listen(bloc.setSubjectsByIds);
 
-    // GetIt.instance.get<ProductSubjectsBloc>().outSubjectsByIds.listen((map) {
-    //   bloc.inSubjectsByIds.add(map);
-    //   print(map);
-    // });
     return bloc;
   }
 
   Widget _getChildrenSubjectsLine(BuildContext context) {
-    //final bloc = BlocProvider.of<CurrentProductSubjectBloc>(context);
-
     return StreamBuilder<List<ProductSubject>>(
       stream: _bloc.outChildren,
       initialData: <ProductSubject>[],
       builder: (context, snapshot) {
         return CapsulesWidget<int, ProductSubject>(
           objects: snapshot.data,
-          onTap: (subject) => _bloc.inCurrentId.add(subject.id),
+          onTap: (subject) => _bloc.setCurrentId(subject.id),
         );
       },
     );
