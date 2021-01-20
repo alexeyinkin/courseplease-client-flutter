@@ -27,27 +27,27 @@ class TeacherGrid extends StatefulWidget {
 }
 
 class TeacherGridState extends State<TeacherGrid> {
-  //DownloadedObjectList<int, Teacher, TeacherFilter> _downloadedObjectList;
   final padding = 5.0;
 
   @override
-  void initState() {
-    // _downloadedObjectList = DownloadedObjectList<int, Teacher, TeacherFilter>(
-    //   repository: GetIt.instance.get<TeacherRepository>(),
-    //   filter: widget.filter,
-    // );
+  Widget build(BuildContext context) {
+    return _isFilterValid(widget.filter)
+        ? _buildWithFilter()
+        : Container();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  static bool _isFilterValid(TeacherFilter filter) {
+    return filter.subjectId != null;
+  }
+
+  Widget _buildWithFilter() {
     return Container(
       padding: EdgeInsets.all(padding),
       child: ObjectGrid<int, Teacher, TeacherFilter, TeacherRepository, TeacherTile>(
         filter: widget.filter,
-        //downloadedObjectList: _downloadedObjectList,
         tileFactory: ({Teacher object, int index, TileCallback<int, Teacher>onTap}) => TeacherTile(object: object, filter: widget.filter, index: index, onTap: onTap),
 
-        // When using Photo as argument type, for some reason an exception is thrown
+        // When using Teacher as argument type, for some reason an exception is thrown
         // at tile construction in ObjectGird in GridView.builder:
         //
         // type '(Teacher, int) => Null' is not a subtype of type '(WithId<dynamic>, int) => void'
@@ -112,8 +112,6 @@ class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
                     ),
                   ),
                   RatingAndVoteCountWidget(rating: object.rating, hideIfEmpty: true),
-                  // RatingWidget(object.rating),
-                  // UserCountWidget(object.rating.voteCount),
                 ],
               ),
             ),

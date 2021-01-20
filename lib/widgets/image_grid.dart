@@ -28,22 +28,20 @@ class PhotoGrid extends StatefulWidget {
 }
 
 class PhotoGridState extends State<PhotoGrid> {
-  //final _loader = PhotoNetworkLoader();
-  //DownloadedObjectList<int, Photo, PhotoFilter> _downloadedObjectList;
-
-  @override
-  void initState() {
-    // _downloadedObjectList = new DownloadedObjectList<int, Photo, PhotoFilter>(
-    //   repository: GetIt.instance.get<PhotoRepository>(),
-    //   filter: widget.filter,
-    // );
-  }
-
   @override
   Widget build(BuildContext context) {
+    return _isFilterValid(widget.filter)
+        ? _buildWithFilter()
+        : Container();
+  }
+
+  static bool _isFilterValid(PhotoFilter filter) {
+    return filter.subjectId != null;
+  }
+
+  Widget _buildWithFilter() {
     return ObjectGrid<int, Photo, PhotoFilter, PhotoRepository, PhotoTile>(
       filter: widget.filter,
-      //downloadedObjectList: _downloadedObjectList,
       tileFactory: ({Photo object, int index, TileCallback<int, Photo> onTap}) => PhotoTile(object: object, filter: widget.filter, index: index, onTap: onTap),
       titleIfNotEmpty: widget.titleIfNotEmpty,
 
@@ -68,7 +66,6 @@ class PhotoGridState extends State<PhotoGrid> {
     Navigator.of(context).pushNamed(
       PhotoLightboxScreen.routeName,
       arguments: PhotoLightboxArguments(
-        //downloadedObjectList: _downloadedObjectList,
         filter: widget.filter,
         index: index,
       ),

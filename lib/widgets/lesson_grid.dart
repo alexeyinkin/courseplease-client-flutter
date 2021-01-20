@@ -32,29 +32,28 @@ class LessonGrid extends StatefulWidget {
 }
 
 class LessonGridState extends State<LessonGrid> {
-  // DownloadedObjectList<int, Lesson, LessonFilter> _downloadedObjectList;
-  //final _loader = TeacherNetworkLoader();
   final padding = 10.0;
 
   @override
-  void initState() {
-    // _downloadedObjectList = DownloadedObjectList<int, Lesson, LessonFilter>(
-    //   repository: GetIt.instance.get<LessonRepository>(),
-    //   filter: widget.filter,
-    // );
+  Widget build(BuildContext context) {
+    return _isFilterValid(widget.filter)
+        ? _buildWithFilter()
+        : Container();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  static bool _isFilterValid(LessonFilter filter) {
+    return filter.subjectId != null;
+  }
+
+  Widget _buildWithFilter() {
     return Container(
       padding: EdgeInsets.all(padding),
       child: ObjectGrid<int, Lesson, LessonFilter, LessonRepository, LessonTile>(
         filter: widget.filter,
-        //downloadedObjectList: _downloadedObjectList,
         tileFactory: ({Lesson object, int index, TileCallback<int, Lesson> onTap}) => LessonTile(object: object, filter: widget.filter, index: index, onTap: onTap),
         titleIfNotEmpty: widget.titleIfNotEmpty,
 
-        // When using Photo as argument type, for some reason an exception is thrown
+        // When using Lesson as argument type, for some reason an exception is thrown
         // at tile construction in ObjectGird in GridView.builder:
         //
         // type '(Lesson, int) => Null' is not a subtype of type '(WithId<dynamic>, int) => void'
@@ -134,7 +133,7 @@ class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
             ],
           ),
         ],
-      )
+      ),
     );
   }
 
