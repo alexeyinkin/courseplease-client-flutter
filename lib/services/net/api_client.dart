@@ -22,13 +22,16 @@ class ApiClient {
   }
 
   Future<RegisterDeviceResponseData> registerDevice(RegisterDeviceRequest request) async {
-    final mapResponse = await postRequest(path: '/api1/auth/registerDevice', body: request);
+    final mapResponse = await sendRequest(method: HttpMethod.post, path: '/api1/auth/registerDevice', body: request);
     return RegisterDeviceResponseData.fromMap(mapResponse.data);
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
-      await getRequest(path: '/api1/{@lang}/gallery/' + name),
+      await sendRequest(
+        method: HttpMethod.get,
+        path: '/api1/{@lang}/gallery/' + name,
+      ),
     );
   }
 
@@ -38,7 +41,8 @@ class ApiClient {
     String pageToken,
   ) async {
     return _createListLoadResultResponse(
-      await getRequest(
+      await sendRequest(
+        method: HttpMethod.get,
         path: '/api1/{@lang}/gallery/' + name,
         queryParameters: _paramsWithPageToken(filter, pageToken),
       ),
@@ -49,7 +53,8 @@ class ApiClient {
     String name,
     I id,
   ) async {
-    return await getRequest(
+    return await sendRequest(
+      method: HttpMethod.get,
       path: '/api1/{@lang}/gallery/' + name + '/' + id.toString(),
     );
   }
@@ -67,17 +72,21 @@ class ApiClient {
     return ListLoadResult(items, nextPageToken);
   }
 
-  Future<SuccessfulApiResponse<Map<String, dynamic>>> postRequest({
-    String path,
+  Future<SuccessfulApiResponse<Map<String, dynamic>>> sendRequest({
+    @required HttpMethod method,
+    @required String path,
+    Map<String, String> queryParameters,
     Map<String, String> headers, // Nullable.
     RequestBody body,
   }) async {
     if (headers == null) headers = Map<String, String>();
 
-    final responseMap = await postMap(
+    final responseMap = await sendMap(
+      method: method,
       path: path,
+      queryParameters: queryParameters,
       headers: headers,
-      body: body.toJson(),
+      body: body?.toJson(),
     );
 
     final int status = responseMap['status'];
@@ -89,8 +98,10 @@ class ApiClient {
     return SuccessfulApiResponse(data: responseMap['data']);
   }
 
-  Future<Map<String, dynamic>> postMap({
-    String path,
+  Future<Map<String, dynamic>> sendMap({
+    @required HttpMethod method,
+    @required String path,
+    Map<String, String> queryParameters,
     Map<String, String> headers,
     Map<String, dynamic> body,
   }) async {
@@ -98,8 +109,10 @@ class ApiClient {
     headersWithContentType.addAll(headers);
     headersWithContentType['Content-Type'] = ContentType.json.toString();
     
-    final responseString = await postString(
+    final responseString = await sendString(
+      method: method,
       path: path,
+      queryParameters: queryParameters,
       headers: headersWithContentType,
       body: jsonEncode(body),
     );
@@ -108,70 +121,28 @@ class ApiClient {
     return map;
   }
 
-  Future<String> postString({
-    @required String path,
-    Map<String, String> headers,
-    String body,
-  }) async {
-    final uri = _createUri(path: path);
-    final response = await http.post(uri, headers: headers, body: body);
-
-    if (response.statusCode != 200) {
-      throw HttpException(response.body, uri: uri);
-    }
-
-    return response.body;
-  }
-
-  Future<SuccessfulApiResponse<Map<String, dynamic>>> getRequest({
-    String path,
-    Map<String, String> queryParameters,
-    Map<String, String> headers, // Nullable
-  }) async {
-    if (headers == null) headers = Map<String, String>();
-
-    final responseMap = await getMap(
-      path: path,
-      queryParameters: queryParameters,
-      headers: headers,
-    );
-
-    final int status = responseMap['status'];
-
-    if (status != 1) {
-      throw ErrorApiResponse(status: status, message: responseMap['message']);
-    }
-
-    return SuccessfulApiResponse(data: responseMap['data']);
-  }
-
-  Future<Map<String, dynamic>> getMap({
-    String path,
-    Map<String, String> queryParameters,
-    Map<String, String> headers,
-  }) async {
-    final headersWithContentType = Map<String, String>();
-    headersWithContentType.addAll(headers);
-    headersWithContentType['Content-Type'] = ContentType.json.toString();
-
-    final responseString = await getString(
-      path: path,
-      queryParameters: queryParameters,
-      headers: headersWithContentType,
-    );
-
-    final map = jsonDecode(responseString);
-    return map;
-  }
-
-  Future<String> getString({
+  Future<String> sendString({
+    @required HttpMethod method,
     @required String path,
     Map<String, String> queryParameters,
     Map<String, String> headers,
     String body,
   }) async {
     final uri = _createUri(path: path, queryParameters: queryParameters);
-    final response = await http.get(uri, headers: headers);
+    http.Response response;
+
+    if (_deviceKey != null) {
+      headers = mapWithEntry(headers, 'Authorization', 'Bearer ' + _deviceKey);
+    }
+
+    switch (method) {
+      case HttpMethod.get:
+        response = await http.get(uri, headers: headers);
+        break;
+      case HttpMethod.post:
+        response = await http.post(uri, headers: headers, body: body);
+        break;
+    }
 
     if (response.statusCode != 200) {
       throw HttpException(response.body, uri: uri);
@@ -193,6 +164,11 @@ class ApiClient {
         ? queryParams
         : mapWithEntry(queryParams, 'pageToken', pageToken);
   }
+}
+
+enum HttpMethod {
+  get,
+  post,
 }
 
 abstract class RequestBody {
