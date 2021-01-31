@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/utils/auth/app_info.dart';
 import 'package:courseplease/utils/auth/device_info_for_server.dart';
@@ -10,6 +11,8 @@ import 'package:meta/meta.dart';
 
 class ApiClient {
   final String host = 'courseplease.com';
+  static const _authorizationHeader = 'Authorization';
+
   String _deviceKey;
   String _lang;
 
@@ -22,8 +25,30 @@ class ApiClient {
   }
 
   Future<RegisterDeviceResponseData> registerDevice(RegisterDeviceRequest request) async {
-    final mapResponse = await sendRequest(method: HttpMethod.post, path: '/api1/auth/registerDevice', body: request);
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/auth/registerDevice',
+      body: request,
+    );
     return RegisterDeviceResponseData.fromMap(mapResponse.data);
+  }
+
+  Future<MeResponseData> getMe(String overrideDeviceKey) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.get,
+      path: '/api1/me',
+      headers: {_authorizationHeader: _getBearerAuthorizationHeaderValue(overrideDeviceKey)},
+    );
+    return MeResponseData.fromMap(mapResponse.data);
+  }
+
+  Future<CreateOAuthTempTokenResponseData> createOAuthTempToken(CreateOAuthTempTokenRequest request) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/auth/createOAuthTempToken',
+      body: request,
+    );
+    return CreateOAuthTempTokenResponseData.fromMap(mapResponse.data);
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
@@ -131,8 +156,8 @@ class ApiClient {
     final uri = _createUri(path: path, queryParameters: queryParameters);
     http.Response response;
 
-    if (_deviceKey != null) {
-      headers = mapWithEntry(headers, 'Authorization', 'Bearer ' + _deviceKey);
+    if (_deviceKey != null && !headers.containsKey(_authorizationHeader)) {
+      headers = mapWithEntry(headers, _authorizationHeader, _getBearerAuthorizationHeaderValue(_deviceKey));
     }
 
     switch (method) {
@@ -157,6 +182,10 @@ class ApiClient {
   }) {
     path = path.replaceFirst('{@lang}', _lang);
     return Uri.https(host, path, queryParameters);
+  }
+
+  String _getBearerAuthorizationHeaderValue(String token) {
+    return 'Bearer ' + token;
   }
 
   Map<String, String> _paramsWithPageToken(Map<String, String> queryParams, String pageToken) { // Nullable
@@ -226,5 +255,48 @@ class RegisterDeviceResponseData {
 
   factory RegisterDeviceResponseData.fromMap(Map<String, dynamic> map) {
     return RegisterDeviceResponseData._(key: map['key']);
+  }
+}
+
+class MeResponseData {
+  final String deviceStatus; // Nullable.
+  final User user; // Nullable.
+
+  MeResponseData._({
+    @required this.deviceStatus,
+    @required this.user,
+  });
+
+  factory MeResponseData.fromMap(Map<String, dynamic> map) {
+    return MeResponseData._(
+      deviceStatus: map['deviceStatus'],
+      user: User.fromMap(map['user']),
+    );
+  }
+}
+
+class CreateOAuthTempTokenRequest extends RequestBody {
+  final String provider;
+
+  CreateOAuthTempTokenRequest({
+    @required this.provider,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'provider': provider,
+    };
+  }
+}
+
+class CreateOAuthTempTokenResponseData {
+  final String key;
+
+  CreateOAuthTempTokenResponseData._({
+    @required this.key,
+  });
+
+  factory CreateOAuthTempTokenResponseData.fromMap(Map<String, dynamic> map) {
+    return CreateOAuthTempTokenResponseData._(key: map['key']);
   }
 }

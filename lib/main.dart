@@ -5,12 +5,14 @@ import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/screens/photo/photo.dart';
 import 'package:courseplease/screens/home/home.dart';
+import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
 import 'package:courseplease/screens/teacher/teacher.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'blocs/authentication.dart';
 import 'screens/lesson/lesson.dart';
 
 void main() {
@@ -34,6 +36,8 @@ void main() {
       ..registerSingleton<FilteredModelListFactory>(FilteredModelListFactory())
 
       ..registerSingleton<ProductSubjectCacheBloc>(ProductSubjectCacheBloc(repository: productSubjectRepository))
+
+      ..registerSingleton<AuthenticationBloc>(AuthenticationBloc())
   ;
   runApp(CoursePleaseApp());
 }
@@ -55,6 +59,7 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
         PhotoLightboxScreen.routeName:  (context) => PhotoLightboxScreen(),
         LessonScreen.routeName:         (context) => LessonScreen(),
         TeacherScreen.routeName:        (context) => TeacherScreen(),
+        SignInWebviewScreen.routeName:  (context) => SignInWebviewScreen(),
       },
       theme: _getDarkTheme(),
     );

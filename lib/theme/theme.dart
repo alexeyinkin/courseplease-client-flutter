@@ -11,6 +11,10 @@ class AppStyle {
     fontWeight: FontWeight.bold,
   );
 
+  static const h3 = TextStyle(
+    fontSize: 24,
+  );
+
   static const breadcrumbItem = TextStyle(
     fontSize: 36,
   );

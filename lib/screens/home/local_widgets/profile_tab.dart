@@ -1,22 +1,34 @@
+import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/widgets/auth/sign_in.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class ProfileTab extends StatefulWidget {
   @override
   State<ProfileTab> createState() => ProfileTabState();
-
-  // @override
-  // Widget? getTitleWidget() {
-  //   return null;
-  // }
 }
 
 class ProfileTabState extends State<ProfileTab> {
+  final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+
   @override
   Widget build(BuildContext context) {
+    return SafeArea(
+      child: StreamBuilder(
+        stream: _authenticationCubit.outState,
+        initialData: _authenticationCubit.initialState,
+        builder: (context, snapshot) => buildWithState(snapshot.data),
+      );
+    );
+  }
+
+  Widget buildWithState(AuthenticationState state) {
+
+  }
+
+  Widget buildSignIn() {
     return Center(
-      child: Text(
-        'This is the Profile tab.',
-        style: TextStyle(fontSize: 36),
+      child: SignInWidget(
       ),
     );
   }

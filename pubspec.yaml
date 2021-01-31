@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 0.0.1+1
 
 environment:
   #sdk: ">=2.12.0-133.2.beta <3.0.0"
@@ -31,13 +31,18 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.1
+  device_info: ^1.0.0
   flag: ^3.1.0
   flutter_breadcrumb: ^0.1.2
   flutter_markdown: ^0.5.2
+  flutter_secure_storage: ^3.3.5
+  flutter_svg: ^0.19.2+1
+  flutter_webview_plugin: ^0.3.11
   #flutter_tags: ^0.4.9+1
   get_it: ^5.0.4
   http: ^0.12.2
   meta: ^1.2.4
+  package_info: ^0.4.3+2
   provider: ^4.3.2+3
   rxdart: ^0.25.0
   #youtube_player_flutter: ^7.0.0+7
@@ -54,6 +59,12 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+
+  assets:
+    - assets/auth_providers/facebook.svg
+    - assets/auth_providers/google.svg
+    - assets/auth_providers/instagram.svg
+    - assets/auth_providers/vk.svg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
