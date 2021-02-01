@@ -278,15 +278,15 @@ class MeResponseData {
 }
 
 class CreateOAuthTempTokenRequest extends RequestBody {
-  final String provider;
+  final int providerId;
 
   CreateOAuthTempTokenRequest({
-    @required this.provider,
+    @required this.providerId,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'provider': provider,
+      'providerId': providerId,
     };
   }
 }

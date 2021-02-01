@@ -70,14 +70,14 @@ class AuthenticationBloc extends Bloc{
       ),
     );
 
-    final request = CreateOAuthTempTokenRequest(provider: provider.intName);
+    final request = CreateOAuthTempTokenRequest(providerId: provider.id);
     final tempToken = await _apiClient.createOAuthTempToken(request);
     _oauthTempTokens[provider.intName] = tempToken.key;
 
-    _requestAuthentication(provider, tempToken.key, context);
+    _requestAuthorization(provider, tempToken.key, context);
   }
 
-  void _requestAuthentication(AuthProvider provider, String oauthTempToken, BuildContext context) async {
+  void _requestAuthorization(AuthProvider provider, String oauthTempToken, BuildContext context) async {
     final stateAssoc = {
       'key': oauthTempToken,
       'host': AuthProvider.defaultProductionHostAndPort,
@@ -85,10 +85,12 @@ class AuthenticationBloc extends Bloc{
     final state = jsonEncode(stateAssoc);
     final uri = provider.getOauthUrl(state);
 
-    final routeFuture = Navigator.of(context).pushNamed(
+    final signInResult = await Navigator.of(context).pushNamed(
       SignInWebviewScreen.routeName,
       arguments: SignInWebviewArguments(uri: uri),
     );
+
+    _testDeviceKey(_authenticationState.deviceKey);
   }
 
   void _registerOauthTempKey(String key) {
@@ -152,6 +154,8 @@ class AuthenticationBloc extends Bloc{
   }
 
   void _testDeviceKey(String deviceKey) async {
+    // TODO: Add a state when this check is in progress.
+
     final me = await _apiClient.getMe(deviceKey);
 
     if (me.deviceStatus == null) {
@@ -181,6 +185,7 @@ class AuthenticationBloc extends Bloc{
   @override
   void dispose() {
     _outProvidersController.close();
+    _outStateController.close();
   }
 }
 

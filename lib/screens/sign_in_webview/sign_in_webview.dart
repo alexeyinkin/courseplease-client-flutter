@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -18,6 +20,12 @@ class _SignInWebviewScreenState extends State<SignInWebviewScreen> {
 
     return WebviewScaffold(
       url: _uri,
+      javascriptChannels: <JavascriptChannel>[
+        JavascriptChannel(
+          name: 'appWebview',
+          onMessageReceived: _onMessageReceived,
+        ),
+      ].toSet(),
       appBar: AppBar(
         title: Text('Sign In :)'),
       ),
@@ -30,6 +38,16 @@ class _SignInWebviewScreenState extends State<SignInWebviewScreen> {
     final arguments = ModalRoute.of(context).settings.arguments as SignInWebviewArguments;
     _uri = arguments.uri;
   }
+
+  void _onMessageReceived(JavascriptMessage message) {
+    final map = jsonDecode(message.message);
+
+    Navigator.of(context).pop(
+      SignInWebviewResult(
+        status: map['return'] == 'ok' ? SignInWebviewStatus.ok : SignInWebviewStatus.error,
+      ),
+    );
+  }
 }
 
 class SignInWebviewArguments {
@@ -37,4 +55,17 @@ class SignInWebviewArguments {
   SignInWebviewArguments({
     @required this.uri,
   });
+}
+
+class SignInWebviewResult {
+  final SignInWebviewStatus status;
+
+  SignInWebviewResult({
+    @required this.status,
+  });
+}
+
+enum SignInWebviewStatus {
+  ok,
+  error,
 }

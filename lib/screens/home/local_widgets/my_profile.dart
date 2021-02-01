@@ -18,6 +18,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: _authenticationCubit.outState,
+      initialData: _authenticationCubit.initialState,
       builder: (context, snapshot) => _buildWithState(snapshot.data),
     );
   }
