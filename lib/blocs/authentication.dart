@@ -7,6 +7,7 @@ import 'package:courseplease/models/auth/auth_provider.dart';
 import 'package:courseplease/models/auth/facebook_auth_provider.dart';
 import 'package:courseplease/models/auth/instagram_auth_provider.dart';
 import 'package:courseplease/models/auth/vk_auth_provider.dart';
+import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
 import 'package:courseplease/services/net/api_client.dart';
@@ -73,13 +74,16 @@ class AuthenticationBloc extends Bloc{
   }
 
   void _handleRequestAuthorizationEvent(RequestAuthorizationEvent event) async {
+    _setState(
+      AuthenticationState(
+        status: AuthenticationStatus.requested,
+        deviceKey: _authenticationState.deviceKey,
+      ),
+    );
+
     final request = CreateOAuthTempTokenRequest(provider: event.provider.intName);
     final tempToken = await _apiClient.createOAuthTempToken(request);
     _oauthTempTokens[event.provider.intName] = tempToken.key;
-
-    // if (_authenticationState.status != AuthenticationStatus.notAuthenticated) {
-    //   throw Exception('Should not happen');
-    // }
 
     _requestAuthentication(event.provider, tempToken.key, event.context);
   }
@@ -160,7 +164,23 @@ class AuthenticationBloc extends Bloc{
       _setState(AuthenticationState(status: AuthenticationStatus.deviceKeyFailed));
     } else {
       _apiClient.setDeviceKey(deviceKey);
-      _setState(AuthenticationState(status: AuthenticationStatus.deviceKey));
+
+      if (me.user == null) {
+        _setState(
+          AuthenticationState(
+            status: AuthenticationStatus.deviceKey,
+            deviceKey: deviceKey,
+          ),
+        );
+      } else {
+        _setState(
+          AuthenticationState(
+            status: AuthenticationStatus.authenticated,
+            deviceKey: deviceKey,
+            user: me.user,
+          ),
+        );
+      }
     }
   }
 
@@ -174,10 +194,12 @@ class AuthenticationBloc extends Bloc{
 class AuthenticationState {
   final AuthenticationStatus status;
   final String deviceKey; // Nullable
+  final User user; // Nullable
 
   AuthenticationState({
     @required this.status,
     this.deviceKey,
+    this.user,
   });
 }
 

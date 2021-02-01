@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/screens/home/local_widgets/my_profile.dart';
 import 'package:courseplease/widgets/auth/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -18,15 +19,20 @@ class ProfileTabState extends State<ProfileTab> {
         stream: _authenticationCubit.outState,
         initialData: _authenticationCubit.initialState,
         builder: (context, snapshot) => buildWithState(snapshot.data),
-      );
+      ),
     );
   }
 
   Widget buildWithState(AuthenticationState state) {
-
+    switch (state.status) {
+      case AuthenticationStatus.authenticated:
+        return MyProfileWidget();
+      default:
+        return _buildSignIn();
+    }
   }
 
-  Widget buildSignIn() {
+  Widget _buildSignIn() {
     return Center(
       child: SignInWidget(
       ),

@@ -8,6 +8,7 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/capsules.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/price_button.dart';
+import 'package:courseplease/widgets/profile.dart';
 import 'package:courseplease/widgets/rating_and_vote_count.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
@@ -81,30 +82,16 @@ class _TeacherScreenState extends State<TeacherScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(right: 20),
-                    child: Column(
-                      children: [
-                        _getUserpic(teacher),
-                        RatingAndVoteCountWidget(rating: teacher.rating, hideIfEmpty: true),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _getNameStripe(teacher),
-                        _getSubjectsLine(teacher),
-                        _getLocationLine(teacher),
-                        _getBio(teacher),
-                        _getFormatList(teacher),
-                      ],
-                    ),
-                  ),
+              ProfileWidget(
+                user: teacher,
+                childrenUnderUserpic: [
+                  RatingAndVoteCountWidget(rating: teacher.rating, hideIfEmpty: true),
+                ],
+                childrenUnderName: [
+                  _getSubjectsLine(teacher),
+                  _getLocationLine(teacher),
+                  _getBio(teacher),
+                  _getFormatList(teacher),
                 ],
               ),
               _getLessonsBlock(),
@@ -112,29 +99,6 @@ class _TeacherScreenState extends State<TeacherScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _getUserpic(Teacher teacher) {
-    final userpicUrlTail = teacher.userpicUrls['300x300'] ?? null;
-    final userpicUrl = userpicUrlTail == null ? null : 'https://courseplease.com' + userpicUrlTail;
-
-    return Container(
-      padding: EdgeInsets.only(bottom: 20),
-      child: CircleAvatar(
-        radius: 100,
-        backgroundImage: userpicUrl == null ? null : NetworkImage(userpicUrl),
-      ),
-    );
-  }
-
-  Widget _getNameStripe(Teacher teacher) {
-    return Container(
-      padding: EdgeInsets.only(bottom: 20),
-      child: Text(
-        teacher.firstName + ' ' + teacher.lastName,
-        style: AppStyle.pageTitle,
       ),
     );
   }
