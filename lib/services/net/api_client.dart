@@ -13,10 +13,10 @@ class ApiClient {
   final String host = 'courseplease.com';
   static const _authorizationHeader = 'Authorization';
 
-  String _deviceKey;
+  String _deviceKey; // Nullable.
   String _lang;
 
-  void setDeviceKey(String deviceKey) {
+  void setDeviceKey(String deviceKey) { // Nullable.
     _deviceKey = deviceKey;
   }
 
@@ -268,9 +268,11 @@ class MeResponseData {
   });
 
   factory MeResponseData.fromMap(Map<String, dynamic> map) {
+    final userMap = map['user'];
+
     return MeResponseData._(
       deviceStatus: map['deviceStatus'],
-      user: User.fromMap(map['user']),
+      user: userMap == null ? null : User.fromMap(userMap),
     );
   }
 }

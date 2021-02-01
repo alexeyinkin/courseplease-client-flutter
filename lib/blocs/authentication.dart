@@ -40,9 +40,6 @@ class AuthenticationBloc extends Bloc{
 
   var _authenticationState = AuthenticationState(status: AuthenticationStatus.notLoadedFromStorage);
 
-  final _inEventController = StreamController<AuthenticationEvent>();
-  Sink<AuthenticationEvent> get inEvent => _inEventController.sink;
-
   final _outProvidersController = BehaviorSubject<List<AuthProvider>>();
   Stream<List<AuthProvider>> get outProviders => _outProvidersController.stream;
 
@@ -63,17 +60,9 @@ class AuthenticationBloc extends Bloc{
     } else {
       _testDeviceKey(key);
     }
-
-    _inEventController.stream.listen(_handleEvent);
   }
 
-  void _handleEvent(AuthenticationEvent event) {
-    if (event is RequestAuthorizationEvent) {
-      _handleRequestAuthorizationEvent(event as RequestAuthorizationEvent);
-    }
-  }
-
-  void _handleRequestAuthorizationEvent(RequestAuthorizationEvent event) async {
+  void requestAuthorization(AuthProvider provider, BuildContext context) async {
     _setState(
       AuthenticationState(
         status: AuthenticationStatus.requested,
@@ -81,16 +70,16 @@ class AuthenticationBloc extends Bloc{
       ),
     );
 
-    final request = CreateOAuthTempTokenRequest(provider: event.provider.intName);
+    final request = CreateOAuthTempTokenRequest(provider: provider.intName);
     final tempToken = await _apiClient.createOAuthTempToken(request);
-    _oauthTempTokens[event.provider.intName] = tempToken.key;
+    _oauthTempTokens[provider.intName] = tempToken.key;
 
-    _requestAuthentication(event.provider, tempToken.key, event.context);
+    _requestAuthentication(provider, tempToken.key, context);
   }
 
   void _requestAuthentication(AuthProvider provider, String oauthTempToken, BuildContext context) async {
     final stateAssoc = {
-      'key': 'oauthTempToken',
+      'key': oauthTempToken,
       'host': AuthProvider.defaultProductionHostAndPort,
     };
     final state = jsonEncode(stateAssoc);
@@ -106,11 +95,16 @@ class AuthenticationBloc extends Bloc{
     // TODO: Register at courseplease.com server.
   }
 
+  void signOut() async {
+    _setFreshState();
+  }
+
   Future<String> _loadDeviceKey() async { // Nullable.
     return _secureStorage.read(key: _deviceKeyKey);
   }
 
   void _setFreshState() {
+    _apiClient.setDeviceKey(null);
     _setState(
       AuthenticationState(status: AuthenticationStatus.fresh),
     );
@@ -186,7 +180,6 @@ class AuthenticationBloc extends Bloc{
 
   @override
   void dispose() {
-    _inEventController.close();
     _outProvidersController.close();
   }
 }

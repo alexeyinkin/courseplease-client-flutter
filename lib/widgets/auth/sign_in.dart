@@ -59,9 +59,7 @@ class _SignInWidgetState extends State<SignInWidget> {
   }
 
   void _signInWith(AuthProvider provider) async {
-    _authenticationCubit.inEvent.add(
-      RequestAuthorizationEvent(provider: provider, context: context),
-    );
+    _authenticationCubit.requestAuthorization(provider, context);
     return;
     //final server = await OAuthCodeHttpServer.setUp(port: AuthProvider.defaultLocalPort);
     //final codeFuture = server.getCodeFuture();

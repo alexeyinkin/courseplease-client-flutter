@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/user.dart';
+import 'package:courseplease/widgets/auth/sign_out_button.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/profile.dart';
 import 'package:flutter/widgets.dart';
@@ -32,6 +33,9 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   Widget _buildWithUser(User user) {
     return ProfileWidget(
       user: user,
+      childrenUnderUserpic: [
+        SignOutButton(),
+      ],
       childrenUnderName: [
         _getLocationLine(user),
       ],
