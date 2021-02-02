@@ -25,6 +25,6 @@ abstract class AuthProvider {
   String getOauthUrl(String state);
 
   String getRedirectUri() {
-    return 'https://' + redirectHostAndPort + '/api/integration/' + id.toString();
+    return 'https://' + redirectHostAndPort + '/api/auth/' + id.toString();
   }
 }

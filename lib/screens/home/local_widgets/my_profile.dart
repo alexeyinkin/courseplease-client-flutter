@@ -26,7 +26,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   Widget _buildWithState(AuthenticationState state) {
     final user = state.user;
 
-    if (user == null) throw Exception('Should not happen.');
+    if (user == null) return Container();
 
     return _buildWithUser(user);
   }
