@@ -157,6 +157,10 @@ class AuthenticationBloc extends Bloc{
     // TODO: Add a state when this check is in progress.
 
     final me = await _apiClient.getMe(deviceKey);
+    _setMe(me, deviceKey);
+  }
+
+  void _setMe(MeResponseData me, String deviceKey) {
 
     if (me.deviceStatus == null) {
       _setState(AuthenticationState(status: AuthenticationStatus.deviceKeyFailed));
@@ -180,6 +184,11 @@ class AuthenticationBloc extends Bloc{
         );
       }
     }
+  }
+
+  void saveProfile(SaveProfileRequest request) async {
+    final me = await _apiClient.saveProfile(request);
+    _setMe(me, _authenticationState.deviceKey);
   }
 
   @override

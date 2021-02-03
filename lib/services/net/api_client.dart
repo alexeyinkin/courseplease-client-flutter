@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/utils/auth/app_info.dart';
@@ -49,6 +50,15 @@ class ApiClient {
       body: request,
     );
     return CreateOAuthTempTokenResponseData.fromMap(mapResponse.data);
+  }
+
+  Future<MeResponseData> saveProfile(SaveProfileRequest request) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/me/saveProfile',
+      body: request,
+    );
+    return MeResponseData.fromMap(mapResponse.data);
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
@@ -300,5 +310,32 @@ class CreateOAuthTempTokenResponseData {
 
   factory CreateOAuthTempTokenResponseData.fromMap(Map<String, dynamic> map) {
     return CreateOAuthTempTokenResponseData._(key: map['key']);
+  }
+}
+
+class SaveProfileRequest extends RequestBody {
+  final String firstName;
+  final String middleName;
+  final String lastName;
+  final String sex;
+  final List<String> langs;
+
+  SaveProfileRequest({
+    @required this.firstName,
+    @required this.middleName,
+    @required this.lastName,
+    @required this.sex,
+    @required this.langs,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'firstName':    firstName,
+      'middleName':   middleName,
+      'lastName':     lastName,
+      'sex':          sex,
+      'langs':        langs,
+    };
   }
 }

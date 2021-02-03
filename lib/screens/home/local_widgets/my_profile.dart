@@ -1,8 +1,11 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/user.dart';
+import 'package:courseplease/screens/edit_profile/edit_profile.dart';
+import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/auth/sign_out_button.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/profile.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
@@ -32,6 +35,17 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   }
 
   Widget _buildWithUser(User user) {
+    return Column(
+      children: [
+        _getProfileWidget(user),
+        _getEditMenu(user),
+        _getExistingIntegrationsMenu(user),
+        _getAddIntegrationsMenu(user),
+      ],
+    );
+  }
+
+  Widget _getProfileWidget(User user) {
     return ProfileWidget(
       user: user,
       childrenUnderUserpic: [
@@ -48,5 +62,43 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
       padding: EdgeInsets.only(bottom: 20),
       child: LocationLineWidget(location: user.location),
     );
+  }
+
+  Widget _getEditMenu(User user) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Edit',
+          style: AppStyle.h2,
+        ),
+        ListTile(
+          title: Text('Edit Profile'),
+          trailing: Icon(Icons.chevron_right),
+          onTap: () => _editProfile(user),
+        ),
+        ListTile(
+          title: Text('Teaching'),
+          trailing: Icon(Icons.chevron_right),
+        ),
+      ],
+    );
+  }
+
+  void _editProfile(User user) {
+    Navigator.of(context).pushNamed(
+      EditProfileScreen.routeName,
+      arguments: EditProfileScreenArguments(
+        user: user,
+      ),
+    );
+  }
+
+  Widget _getExistingIntegrationsMenu(User user) {
+    return Container();
+  }
+
+  Widget _getAddIntegrationsMenu(User user) {
+    return Container();
   }
 }

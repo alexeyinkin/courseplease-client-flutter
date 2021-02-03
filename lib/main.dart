@@ -3,6 +3,7 @@ import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/photo.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
+import 'package:courseplease/screens/edit_profile/edit_profile.dart';
 import 'package:courseplease/screens/photo/photo.dart';
 import 'package:courseplease/screens/home/home.dart';
 import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
@@ -56,10 +57,11 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
     return MaterialApp(
       home: Home(),
       routes: {
-        PhotoLightboxScreen.routeName:  (context) => PhotoLightboxScreen(),
+        EditProfileScreen.routeName:    (context) => EditProfileScreen(),
         LessonScreen.routeName:         (context) => LessonScreen(),
-        TeacherScreen.routeName:        (context) => TeacherScreen(),
+        PhotoLightboxScreen.routeName:  (context) => PhotoLightboxScreen(),
         SignInWebviewScreen.routeName:  (context) => SignInWebviewScreen(),
+        TeacherScreen.routeName:        (context) => TeacherScreen(),
       },
       theme: _getDarkTheme(),
     );

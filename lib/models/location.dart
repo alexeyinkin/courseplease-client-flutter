@@ -18,6 +18,17 @@ class Location {
     @required this.subwayStations,
   });
 
+  factory Location.from(Location location) {
+    return Location(
+      latitude:       location.latitude,
+      longitude:      location.longitude,
+      countryCode:    location.countryCode,
+      city:           location.city,
+      publicLine:     location.publicLine,
+      subwayStations: List<SubwayStation>.from(location.subwayStations),
+    );
+  }
+
   factory Location.fromMap(Map<String, dynamic> map) {
     List<SubwayStation> subwayStations = map['subwayStations']
         .map((map) => SubwayStation.fromMap(map))

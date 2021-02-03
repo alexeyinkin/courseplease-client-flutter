@@ -9,6 +9,8 @@ class User implements WithId<int> {
   final String firstName;
   final String middleName;
   final String lastName;
+  final String sex;
+  final List<String> langs;
   final Map<String, String> userpicUrls;
   final Location location;
   final String bio;
@@ -18,10 +20,25 @@ class User implements WithId<int> {
     @required this.firstName,
     @required this.middleName,
     @required this.lastName,
+    @required this.sex,
+    @required this.langs,
     @required this.userpicUrls,
     @required this.location,
     @required this.bio,
   });
+
+  factory User.from(User user) {
+    return User(
+      id:           user.id,
+      firstName:    user.firstName,
+      middleName:   user.middleName,
+      lastName:     user.lastName,
+      sex:          user.sex,
+      langs:        List<String>.from(user.langs),
+      userpicUrls:  Map<String, String>.from(user.userpicUrls),
+      location:     Location.from(user.location),
+    );
+  }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
@@ -29,6 +46,8 @@ class User implements WithId<int> {
       firstName:    map['firstName'],
       middleName:   map['middleName'],
       lastName:     map['lastName'],
+      sex:          map['sex'],
+      langs:        map['langs'].cast<String>(),
       userpicUrls:  toStringStringMap(map['userpicUrls']),
       location:     Location.fromMap(map['location']),
       bio:          map['bio'] ?? '',
