@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/models/contact/editable_contact.dart';
+import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/utils/auth/app_info.dart';
@@ -56,6 +57,15 @@ class ApiClient {
     final mapResponse = await sendRequest(
       method: HttpMethod.post,
       path: '/api1/me/saveProfile',
+      body: request,
+    );
+    return MeResponseData.fromMap(mapResponse.data);
+  }
+
+  Future<MeResponseData> saveContactParams(SaveContactParamsRequest request) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/me/saveContactParams',
       body: request,
     );
     return MeResponseData.fromMap(mapResponse.data);
@@ -271,10 +281,14 @@ class RegisterDeviceResponseData {
 class MeResponseData {
   final String deviceStatus; // Nullable.
   final User user; // Nullable.
+  final List<TeacherSubject> teacherSubjects;
+  final List<EditableContact> contacts;
 
   MeResponseData._({
     @required this.deviceStatus,
     @required this.user,
+    @required this.teacherSubjects,
+    @required this.contacts,
   });
 
   factory MeResponseData.fromMap(Map<String, dynamic> map) {
@@ -283,6 +297,8 @@ class MeResponseData {
     return MeResponseData._(
       deviceStatus: map['deviceStatus'],
       user: userMap == null ? null : User.fromMap(userMap),
+      teacherSubjects: TeacherSubject.fromMaps(map['teacherSubjects']),
+      contacts: EditableContact.fromMaps(map['contacts']),
     );
   }
 }
@@ -336,6 +352,27 @@ class SaveProfileRequest extends RequestBody {
       'lastName':     lastName,
       'sex':          sex,
       'langs':        langs,
+    };
+  }
+}
+
+class SaveContactParamsRequest extends RequestBody {
+  final int contactId;
+  final bool downloadEnabled;
+  final ContactParams params;
+
+  SaveContactParamsRequest({
+    @required this.contactId,
+    @required this.downloadEnabled,
+    @required this.params,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'contactId':        contactId,
+      'downloadEnabled':  downloadEnabled,
+      'params':           params.toJson(),
     };
   }
 }

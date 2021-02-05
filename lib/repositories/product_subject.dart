@@ -32,6 +32,6 @@ class ProductSubjectRepository extends AbstractRepository<int, ProductSubject> {
   @override
   Future<List<ProductSubject>> loadByIds(List<int> ids) {
     // TODO: Do we need a specific IDs loader?
-    loadAll().then((objects) => whereIds(objects, ids));
+    return loadAll().then((objects) => whereIds(objects, ids));
   }
 }

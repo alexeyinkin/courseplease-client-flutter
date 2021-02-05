@@ -59,6 +59,21 @@ Map<K, V> mapWithEntry<K, V>(Map<K, V> map, K key, V value) {
   return mapClone;
 }
 
+List<T> fromMaps<T>(List list, T Function(Map<String, dynamic>) factory) {
+  final castList = list.cast<Map<String, dynamic>>();
+  final result = <T>[];
+
+  for (final map in castList) {
+    result.add(factory(map));
+  }
+
+  return result;
+}
+
+String enumValueAfterDot(value) {
+  return value.toString().split('.').last;
+}
+
 String generatePassword(int length) {
   final generator = Random.secure();
   final chars = '23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ~!@#\$%^&*()-_=+';

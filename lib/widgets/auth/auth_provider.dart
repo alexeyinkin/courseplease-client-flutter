@@ -2,7 +2,7 @@ import 'package:courseplease/models/auth/auth_provider.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'auth_provider_icon.dart';
 
 class AuthProviderWidget extends StatelessWidget {
   final AuthProvider provider;
@@ -30,13 +30,9 @@ class AuthProviderWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            //Image(image: AssetImage('assets/auth_providers/' + provider.intName + '.svg')),
             Container(
               padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 25),
-              child: SvgPicture.asset(
-                'assets/auth_providers/' + provider.intName + '.svg',
-                width: 36,
-              ),
+              child: AuthProviderIcon(name: provider.intName),
             ),
             Text(
               _getButtonTitle(),

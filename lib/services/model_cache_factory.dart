@@ -26,7 +26,7 @@ class ModelCacheFactory {
 
   ModelWithChildrenCacheBloc<I, O> getOrCreateWithChildren<
     I,
-    O extends WithIdChildren<I, O>,
+    O extends WithIdChildrenParent<I, O, O>,
     R extends AbstractRepository<I, O>
   >() {
     final type = _typeOf<O>();

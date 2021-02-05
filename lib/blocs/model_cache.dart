@@ -10,7 +10,7 @@ import 'bloc.dart';
 class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
   final AbstractRepository<I, O> _repository;
 
-  List<O> _allObjectsInOrder;
+  List<O> _allObjectsInOrder; // Unused?
   final _objectsByIds = Map<I, O>(); // O or Null.
 
   Future<List<O>> _allObjectsFuture; // Nullable.
@@ -39,7 +39,7 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     _allObjectsInOrder = objects;
     _allObjectsFuture = null;
     _addSuccessfulObjects(objects);
-    _pushOutput();
+    pushOutput();
   }
 
   void loadByIdIfNot(I id) {
@@ -60,7 +60,7 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
   void _handleLoaded(List<I> ids, List<O> objects) {
     _addSuccessfulObjects(objects);
     _addFailedObjects(_getMissingIds(ids));
-    _pushOutput();
+    pushOutput();
   }
 
   void _addSuccessfulObjects(List<O> objects) {
@@ -112,13 +112,14 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     return result;
   }
 
-  void _pushOutput() {
+  @protected
+  void pushOutput() {
     _outObjectsByIdsController.sink.add(UnmodifiableMapView<I, O>(_objectsByIds));
   }
 
   void _handleError(List<I> ids) {
     _addFailedObjects(ids);
-    _pushOutput();
+    pushOutput();
   }
 
   @override

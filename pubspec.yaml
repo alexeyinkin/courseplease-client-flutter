@@ -39,6 +39,7 @@ dependencies:
   flutter_svg: ^0.19.2+1
   flutter_webview_plugin: ^0.3.11
   flutter_tags: ^0.4.9+1
+  flutter_treeview: ^0.6.0+1
   get_it: ^5.0.4
   http: ^0.12.2
   meta: ^1.2.4

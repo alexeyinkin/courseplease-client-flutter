@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'interfaces.dart';
 
-class ProductSubject implements WithIdTitle<int>, WithIdChildren<int, ProductSubject> {
+class ProductSubject implements WithIdTitle<int>, WithIdChildrenParent<int, ProductSubject, ProductSubject> {
   final int id;
   final String title;
   final List<ProductSubject> children;

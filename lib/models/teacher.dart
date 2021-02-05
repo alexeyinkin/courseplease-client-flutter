@@ -50,10 +50,7 @@ class Teacher extends User {
         .toList()
         .cast<ProductVariantFormat>();
 
-    var categories = (map['categories'] ?? [])
-        .map((map) => TeacherSubject.fromMap(map))
-        .toList()
-        .cast<TeacherSubject>();
+    var subjects = TeacherSubject.fromMaps(map['categories'] ?? []);
 
     return Teacher(
       id:                     map['id'],
@@ -67,7 +64,7 @@ class Teacher extends User {
       minPrice:               Money.fromMapOrList(map['minPrice']),
       maxPrice:               Money.fromMapOrList(map['maxPrice']),
       rating:                 Rating.fromMap(map['rating']),
-      categories:             categories,
+      categories:             subjects,
     );
   }
 }

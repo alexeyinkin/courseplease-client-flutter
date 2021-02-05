@@ -2,9 +2,7 @@ import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/language.dart';
-import 'package:courseplease/widgets/flag_icon.dart';
 import 'package:courseplease/widgets/language.dart';
-import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
@@ -56,7 +54,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _loadIfNot() {
     if (_user == null) {
       final arguments = ModalRoute.of(context).settings.arguments as EditProfileScreenArguments;
-      _user = User.from(arguments.user);
+      _user = arguments.user;
       _firstNameController.text = _user.firstName;
       _middleNameController.text = _user.middleName;
       _lastNameController.text = _user.lastName;
@@ -156,7 +154,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
 
       _authenticationCubit.saveProfile(request);
-
       Navigator.of(context).pop();
     }
   }

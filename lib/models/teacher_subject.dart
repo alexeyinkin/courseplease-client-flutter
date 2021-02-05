@@ -24,4 +24,12 @@ class TeacherSubject {
       productVariantFormats:  productVariantFormats,
     );
   }
+
+  static List<TeacherSubject> fromMaps(List maps) {
+    return maps
+        .cast<Map<String, dynamic>>()
+        .map((map) => TeacherSubject.fromMap(map))
+        .toList()
+        .cast<TeacherSubject>();
+  }
 }

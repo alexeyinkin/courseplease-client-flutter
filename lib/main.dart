@@ -3,6 +3,8 @@ import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/photo.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
+import 'package:courseplease/screens/choose_product_subject/choose_product_subject.dart';
+import 'package:courseplease/screens/edit_integration/edit_integration.dart';
 import 'package:courseplease/screens/edit_profile/edit_profile.dart';
 import 'package:courseplease/screens/photo/photo.dart';
 import 'package:courseplease/screens/home/home.dart';
@@ -57,11 +59,13 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
     return MaterialApp(
       home: Home(),
       routes: {
-        EditProfileScreen.routeName:    (context) => EditProfileScreen(),
-        LessonScreen.routeName:         (context) => LessonScreen(),
-        PhotoLightboxScreen.routeName:  (context) => PhotoLightboxScreen(),
-        SignInWebviewScreen.routeName:  (context) => SignInWebviewScreen(),
-        TeacherScreen.routeName:        (context) => TeacherScreen(),
+        ChooseProductSubjectScreen.routeName: (context) => ChooseProductSubjectScreen(),
+        EditIntegrationScreen.routeName:      (context) => EditIntegrationScreen(),
+        EditProfileScreen.routeName:          (context) => EditProfileScreen(),
+        LessonScreen.routeName:               (context) => LessonScreen(),
+        PhotoLightboxScreen.routeName:        (context) => PhotoLightboxScreen(),
+        SignInWebviewScreen.routeName:        (context) => SignInWebviewScreen(),
+        TeacherScreen.routeName:              (context) => TeacherScreen(),
       },
       theme: _getDarkTheme(),
     );

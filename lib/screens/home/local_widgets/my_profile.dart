@@ -1,8 +1,10 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/screens/edit_profile/edit_profile.dart';
+import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/auth/sign_out_button.dart';
+import 'package:courseplease/widgets/linked_profiles.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/profile.dart';
 import 'package:flutter/material.dart';
@@ -27,20 +29,17 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   }
 
   Widget _buildWithState(AuthenticationState state) {
-    final user = state.user;
-
-    if (user == null) return Container();
-
-    return _buildWithUser(user);
+    if (state.data?.user == null) return Container();
+    return _buildWithAuthenticatedState(state);
   }
 
-  Widget _buildWithUser(User user) {
+  Widget _buildWithAuthenticatedState(AuthenticationState state) {
     return Column(
       children: [
-        _getProfileWidget(user),
-        _getEditMenu(user),
-        _getExistingIntegrationsMenu(user),
-        _getAddIntegrationsMenu(user),
+        _getProfileWidget(state.data.user),
+        _getEditMenu(state.data.user),
+        _getExistingIntegrationsMenu(state.data),
+        _getAddIntegrationsMenu(state.data.user),
       ],
     );
   }
@@ -89,13 +88,24 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     Navigator.of(context).pushNamed(
       EditProfileScreen.routeName,
       arguments: EditProfileScreenArguments(
-        user: user,
+        user: User.from(user),
       ),
     );
   }
 
-  Widget _getExistingIntegrationsMenu(User user) {
-    return Container();
+  Widget _getExistingIntegrationsMenu(MeResponseData data) {
+    if (data.contacts.length == 0) return Container();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Linked Profiles',
+          style: AppStyle.h2,
+        ),
+        LinkedProfilesWidget(meResponseData: data),
+      ]
+    );
   }
 
   Widget _getAddIntegrationsMenu(User user) {

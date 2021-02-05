@@ -1,20 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui';
-
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/models/auth/auth_provider.dart';
 import 'package:courseplease/models/auth/facebook_auth_provider.dart';
 import 'package:courseplease/models/auth/instagram_auth_provider.dart';
 import 'package:courseplease/models/auth/vk_auth_provider.dart';
-import 'package:courseplease/models/user.dart';
-import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/auth/app_info.dart';
 import 'package:courseplease/utils/auth/device_info.dart';
 import 'package:courseplease/utils/auth/device_info_for_server.dart';
-import 'package:courseplease/utils/utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -36,9 +31,9 @@ class AuthenticationBloc extends Bloc{
     // AuthProvider(color: Color(0xFFEA4335), intName: 'google', title: 'Google'),
   ];
 
-  final initialState = AuthenticationState(status: AuthenticationStatus.notLoadedFromStorage);
+  final initialState = AuthenticationState.notLoadedFromStorage();
 
-  var _authenticationState = AuthenticationState(status: AuthenticationStatus.notLoadedFromStorage);
+  var _authenticationState = AuthenticationState.notLoadedFromStorage();
 
   final _outProvidersController = BehaviorSubject<List<AuthProvider>>();
   Stream<List<AuthProvider>> get outProviders => _outProvidersController.stream;
@@ -63,12 +58,7 @@ class AuthenticationBloc extends Bloc{
   }
 
   void requestAuthorization(AuthProvider provider, BuildContext context) async {
-    _setState(
-      AuthenticationState(
-        status: AuthenticationStatus.requested,
-        deviceKey: _authenticationState.deviceKey,
-      ),
-    );
+    _setState(AuthenticationState.requested(_authenticationState));
 
     final request = CreateOAuthTempTokenRequest(providerId: provider.id);
     final tempToken = await _apiClient.createOAuthTempToken(request);
@@ -107,9 +97,7 @@ class AuthenticationBloc extends Bloc{
 
   void _setFreshState() {
     _apiClient.setDeviceKey(null);
-    _setState(
-      AuthenticationState(status: AuthenticationStatus.fresh),
-    );
+    _setState(AuthenticationState.fresh());
     _registerDevice()
         .catchError((_) => _setDeviceKeyFailedState());
   }
@@ -119,9 +107,9 @@ class AuthenticationBloc extends Bloc{
   }
 
   void _setDeviceKeyFailedState() {
-    print('Failed to get device key!');
+    print('Failed to get or validate device key!');
     _setState(
-      AuthenticationState(status: AuthenticationStatus.deviceKeyFailed),
+      AuthenticationState.deviceKeyFailed(),
     );
   }
 
@@ -136,7 +124,7 @@ class AuthenticationBloc extends Bloc{
     _apiClient.setDeviceKey(response.key);
 
     _setState(
-      AuthenticationState(status: AuthenticationStatus.deviceKey, deviceKey: response.key),
+      AuthenticationState.deviceKey(response.key),
     );
 
     return response;
@@ -163,23 +151,17 @@ class AuthenticationBloc extends Bloc{
   void _setMe(MeResponseData me, String deviceKey) {
 
     if (me.deviceStatus == null) {
-      _setState(AuthenticationState(status: AuthenticationStatus.deviceKeyFailed));
+      _setDeviceKeyFailedState();
     } else {
       _apiClient.setDeviceKey(deviceKey);
 
       if (me.user == null) {
-        _setState(
-          AuthenticationState(
-            status: AuthenticationStatus.deviceKey,
-            deviceKey: deviceKey,
-          ),
-        );
+        _setState(AuthenticationState.deviceKey(deviceKey));
       } else {
         _setState(
-          AuthenticationState(
-            status: AuthenticationStatus.authenticated,
-            deviceKey: deviceKey,
-            user: me.user,
+          AuthenticationState.authenticatedFromResponse(
+            _authenticationState,
+            me,
           ),
         );
       }
@@ -188,6 +170,11 @@ class AuthenticationBloc extends Bloc{
 
   void saveProfile(SaveProfileRequest request) async {
     final me = await _apiClient.saveProfile(request);
+    _setMe(me, _authenticationState.deviceKey);
+  }
+
+  void saveContactParams(SaveContactParamsRequest request) async {
+    final me = await _apiClient.saveContactParams(request);
     _setMe(me, _authenticationState.deviceKey);
   }
 
@@ -201,13 +188,56 @@ class AuthenticationBloc extends Bloc{
 class AuthenticationState {
   final AuthenticationStatus status;
   final String deviceKey; // Nullable
-  final User user; // Nullable
+  final MeResponseData data; // Nullable
 
   AuthenticationState({
     @required this.status,
     this.deviceKey,
-    this.user,
+    this.data,
   });
+
+  factory AuthenticationState.notLoadedFromStorage() {
+    return AuthenticationState(
+      status: AuthenticationStatus.notLoadedFromStorage,
+    );
+  }
+
+  factory AuthenticationState.fresh() {
+    return AuthenticationState(
+      status: AuthenticationStatus.fresh,
+    );
+  }
+
+  factory AuthenticationState.deviceKey(String deviceKey) {
+    return AuthenticationState(
+      status: AuthenticationStatus.deviceKey,
+      deviceKey: deviceKey,
+    );
+  }
+
+  factory AuthenticationState.requested(AuthenticationState previous) {
+    return AuthenticationState(
+      status: AuthenticationStatus.requested,
+      deviceKey: previous.deviceKey,
+    );
+  }
+
+  factory AuthenticationState.authenticatedFromResponse(
+    AuthenticationState previous,
+    MeResponseData response,
+  ) {
+    return AuthenticationState(
+      status: AuthenticationStatus.authenticated,
+      deviceKey: previous.deviceKey,
+      data: response,
+    );
+  }
+
+  factory AuthenticationState.deviceKeyFailed() {
+    return AuthenticationState(
+      status: AuthenticationStatus.deviceKeyFailed,
+    );
+  }
 }
 
 enum AuthenticationStatus {
