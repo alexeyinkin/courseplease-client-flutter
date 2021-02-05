@@ -1,3 +1,4 @@
+import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/photo.dart';
@@ -41,6 +42,7 @@ void main() {
       ..registerSingleton<ProductSubjectCacheBloc>(ProductSubjectCacheBloc(repository: productSubjectRepository))
 
       ..registerSingleton<AuthenticationBloc>(AuthenticationBloc())
+      ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
   ;
   runApp(CoursePleaseApp());
 }
