@@ -10,6 +10,7 @@ import 'package:courseplease/screens/edit_profile/edit_profile.dart';
 import 'package:courseplease/screens/photo/photo.dart';
 import 'package:courseplease/screens/home/home.dart';
 import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
+import 'package:courseplease/screens/sort_unsorted_media/sort_unsorted_media.dart';
 import 'package:courseplease/screens/teacher/teacher.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
@@ -32,7 +33,8 @@ void main() {
 
   GetIt.instance
       ..registerSingleton<ProductSubjectRepository>(productSubjectRepository)
-      ..registerSingleton<PhotoRepository>(PhotoRepository())
+      ..registerSingleton<GalleryPhotoRepository>(GalleryPhotoRepository())
+      ..registerSingleton<UnsortedPhotoRepository>(UnsortedPhotoRepository())
       ..registerSingleton<TeacherRepository>(TeacherRepository())
       ..registerSingleton<LessonRepository>(LessonRepository())
 
@@ -64,10 +66,12 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
         ChooseProductSubjectScreen.routeName: (context) => ChooseProductSubjectScreen(),
         EditIntegrationScreen.routeName:      (context) => EditIntegrationScreen(),
         EditProfileScreen.routeName:          (context) => EditProfileScreen(),
+        GalleryPhotoLightboxScreen.routeName: (context) => GalleryPhotoLightboxScreen(),
         LessonScreen.routeName:               (context) => LessonScreen(),
-        PhotoLightboxScreen.routeName:        (context) => PhotoLightboxScreen(),
         SignInWebviewScreen.routeName:        (context) => SignInWebviewScreen(),
+        SortUnsortedMediaScreen.routeName:    (context) => SortUnsortedMediaScreen(),
         TeacherScreen.routeName:              (context) => TeacherScreen(),
+        UnsortedPhotoLightboxScreen.routeName:(context) => UnsortedPhotoLightboxScreen(),
       },
       theme: _getDarkTheme(),
     );

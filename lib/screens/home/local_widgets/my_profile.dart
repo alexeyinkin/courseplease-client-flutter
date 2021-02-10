@@ -1,6 +1,7 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/screens/edit_profile/edit_profile.dart';
+import 'package:courseplease/screens/sort_unsorted_media/sort_unsorted_media.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/auth/sign_out_button.dart';
@@ -37,7 +38,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     return Column(
       children: [
         _getProfileWidget(state.data.user),
-        _getEditMenu(state.data.user),
+        _getEditMenu(state.data),
         _getExistingIntegrationsMenu(state.data),
         _getAddIntegrationsMenu(state.data.user),
       ],
@@ -63,24 +64,41 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     );
   }
 
-  Widget _getEditMenu(User user) {
+  Widget _getEditMenu(MeResponseData meResponseData) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Edit',
+          "Edit",
           style: AppStyle.h2,
         ),
+        _getSortUnsortedMenuItemIfShould(meResponseData),
         ListTile(
-          title: Text('Edit Profile'),
+          title: Text("Edit Profile"),
           trailing: Icon(Icons.chevron_right),
-          onTap: () => _editProfile(user),
+          onTap: () => _editProfile(meResponseData.user),
         ),
         ListTile(
-          title: Text('Teaching'),
+          title: Text("Teaching"),
           trailing: Icon(Icons.chevron_right),
         ),
       ],
+    );
+  }
+
+  Widget _getSortUnsortedMenuItemIfShould(MeResponseData meResponseData) {
+    if (!meResponseData.hasUnsortedMedia) return Container();
+
+    return ListTile(
+      title: Text("Sort Imported Media"),
+      trailing: Icon(Icons.chevron_right),
+      onTap: () => _sortUnsortedMedia(),
+    );
+  }
+
+  void _sortUnsortedMedia() {
+    Navigator.of(context).pushNamed(
+      SortUnsortedMediaScreen.routeName,
     );
   }
 
@@ -100,7 +118,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Linked Profiles',
+          "Linked Profiles",
           style: AppStyle.h2,
         ),
         LinkedProfilesWidget(meResponseData: data),

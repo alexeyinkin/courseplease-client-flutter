@@ -5,7 +5,9 @@ import 'package:courseplease/repositories/abstract.dart';
 import 'package:get_it/get_it.dart';
 
 class FilteredModelListFactory {
-  final _map = Map<Type, Map<AbstractFilter, FilteredModelListBloc>>();
+  final _map = Map<Type, Map<Type, Map<String, FilteredModelListBloc>>>();
+  //               ^Object   ^Filter   ^Filter
+  //                type      type      toString
 
   FilteredModelListBloc<I, O, F> getOrCreate<
     I,
@@ -13,21 +15,27 @@ class FilteredModelListFactory {
     F extends AbstractFilter,
     R extends AbstractFilteredRepository<I, O, F>
   >(F filter) {
-    final type = _typeOf<O>();
+    final objectType = _typeOf<O>();
+    final filterType = _typeOf<F>();
+    final filterString = filter.toString();
 
-    if (!_map.containsKey(type)) {
-      _map[type] = Map<AbstractFilter, FilteredModelListBloc<I, O, F>>();
+    if (!_map.containsKey(objectType)) {
+      _map[objectType] = Map<Type, Map<String, FilteredModelListBloc>>();
     }
 
-    if (!_map[type].containsKey(filter)) {
+    if (!_map[objectType].containsKey(filterType)) {
+      _map[objectType][filterType] = Map<String, FilteredModelListBloc<I, O, F>>();
+    }
+
+    if (!_map[objectType][filterType].containsKey(filterString)) {
       final repository = GetIt.instance.get<R>();
-      _map[type][filter] = FilteredModelListBloc<I, O, F>(
+      _map[objectType][filterType][filterString] = FilteredModelListBloc<I, O, F>(
         repository: repository,
         filter: filter,
       );
     }
 
-    return _map[type][filter];
+    return _map[objectType][filterType][filterString];
   }
 
   Type _typeOf<T>() => T;

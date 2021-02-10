@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'abstract.dart';
 
-class PhotoFilter extends AbstractFilter {
+class GalleryPhotoFilter extends AbstractFilter {
   final int subjectId;
   final int teacherId; // Nullable
 
-  PhotoFilter({
+  GalleryPhotoFilter({
     @required this.subjectId,
     this.teacherId,
   });
@@ -26,6 +26,19 @@ class PhotoFilter extends AbstractFilter {
       result['teacherId'] = teacherId.toString();
     }
 
+    return result;
+  }
+}
+
+class UnsortedPhotoFilter extends AbstractFilter {
+  @override
+  String toString() {
+    return '';
+  }
+
+  @override
+  Map<String, String> toQueryParams() {
+    var result = Map<String, String>();
     return result;
   }
 }

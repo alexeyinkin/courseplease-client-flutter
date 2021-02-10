@@ -13,15 +13,15 @@ class PhotosTab extends StatelessWidget {
       child: StreamBuilder<int>(
         stream: bloc.outCurrentId,
         builder: (context, snapshot) {
-          final filter = PhotoFilter(subjectId: snapshot.data);
+          final filter = GalleryPhotoFilter(subjectId: snapshot.data);
           return _buildWithFilter(filter);
         }
       ),
     );
   }
 
-  Widget _buildWithFilter(PhotoFilter filter) {
-    return PhotoGrid(
+  Widget _buildWithFilter(GalleryPhotoFilter filter) {
+    return GalleryPhotoGrid(
       filter: filter,
       scrollDirection: Axis.vertical,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

@@ -5,7 +5,7 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
 
 class ProductSubjectRepository extends AbstractRepository<int, ProductSubject> {
-  static const _entitiesName = 'subjects';
+  static const _entitiesName = 'gallery/subjects';
   final _client = GetIt.instance.get<ApiClient>();
 
   Future<List<ProductSubject>> loadAll() {

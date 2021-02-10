@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/blocs/model_by_id.dart';
+import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/repositories/photo.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
@@ -16,33 +17,30 @@ import '../../models/filters/photo.dart';
 import '../../models/photo.dart';
 import '../../models/teacher.dart';
 
-class PhotoLightboxScreen extends StatefulWidget {
-  static const routeName = '/photoLightbox';
-
-  @override
-  State<PhotoLightboxScreen> createState() {
-    return PhotoLightboxScreenState();
-  }
+abstract class AbstractPhotoLightboxScreen<
+  F extends AbstractFilter,
+  R extends AbstractPhotoRepository<F>
+> extends StatefulWidget {
 }
 
-class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
+abstract class AbstractPhotoLightboxScreenState<
+  F extends AbstractFilter,
+  R extends AbstractPhotoRepository<F>
+> extends State<AbstractPhotoLightboxScreen<F, R>> {
   final _filteredModelListFactory = GetIt.instance.get<FilteredModelListFactory>();
 
-  final _teacherByIdBloc = ModelByIdBloc<int, Teacher>(
-    modelCacheBloc: GetIt.instance.get<ModelCacheFactory>().getOrCreate<int, Teacher, TeacherRepository>(),
-  );
-
   PageController _pageController;
-  PhotoFilter _filter;
+  F _filter;
   int _index;
   bool _controlsVisible = true;
 
-  static const _controlsAnimationDuration = Duration(milliseconds: 250);
+  @protected
+  static const controlsAnimationDuration = Duration(milliseconds: 250);
 
   @override
   Widget build(BuildContext context) {
     _parseArgumentsIfNot(context);
-    final listBloc = _filteredModelListFactory.getOrCreate<int, Photo, PhotoFilter, PhotoRepository>(_filter);
+    final listBloc = _filteredModelListFactory.getOrCreate<int, Photo, F, R>(_filter);
 
     return StreamBuilder(
       stream: listBloc.outState,
@@ -57,7 +55,11 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
     );
   }
 
-  Widget _buildWithListState(BuildContext context, ModelListState<Photo> listState, FilteredModelListBloc bloc) {
+  Widget _buildWithListState(
+    BuildContext context,
+    ModelListState<Photo> listState,
+    FilteredModelListBloc bloc,
+  ) {
     final length = listState.objects.length;
 
     // TODO: Handle error.
@@ -108,14 +110,19 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
               ),
             ),
           ),
-          _buildTitleOverlay(context, photo),
-          _buildTeacherOverlay(context, photo.authorId),
+          ...buildOverlays(context, photo),
         ],
       ),
     );
   }
 
-  Widget _buildTitleOverlay(BuildContext context, Photo photo) {
+  @protected
+  List<Widget> buildOverlays(BuildContext context, Photo photo) {
+    return <Widget>[];
+  }
+
+  @protected
+  Widget buildTitleOverlay(BuildContext context, Photo photo) {
     if (photo.title == '') return Container();
 
     return Positioned(
@@ -123,7 +130,7 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
       left: 10,
       child: AnimatedOpacity(
         opacity: _controlsVisible ? 1.0 : 0.0,
-        duration: _controlsAnimationDuration,
+        duration: controlsAnimationDuration,
         child: PhotoLightboxOverlay(
           child: Text(
             //'Title: ' + photo.title,
@@ -133,6 +140,44 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
         ),
       ),
     );
+  }
+
+  void _parseArgumentsIfNot(BuildContext context) {
+    if (_filter == null) {
+      final arguments = ModalRoute.of(context).settings.arguments as PhotoLightboxArguments<F>;
+      _filter = arguments.filter;
+      _index = arguments.index;
+      _pageController = PageController(
+        initialPage: _index,
+      );
+    }
+  }
+
+  void _toggleControls() {
+    setState(() {
+      _controlsVisible = !_controlsVisible;
+    });
+  }
+}
+
+class GalleryPhotoLightboxScreen extends AbstractPhotoLightboxScreen<GalleryPhotoFilter, GalleryPhotoRepository> {
+  static const routeName = '/photoLightbox';
+
+  @override
+  State<AbstractPhotoLightboxScreen> createState() => GalleryPhotoLightboxScreenState();
+}
+
+class GalleryPhotoLightboxScreenState extends AbstractPhotoLightboxScreenState<GalleryPhotoFilter, GalleryPhotoRepository> {
+  final _teacherByIdBloc = ModelByIdBloc<int, Teacher>(
+    modelCacheBloc: GetIt.instance.get<ModelCacheFactory>().getOrCreate<int, Teacher, TeacherRepository>(),
+  );
+
+  @override
+  List<Widget> buildOverlays(BuildContext context, Photo photo) {
+    return [
+      buildTitleOverlay(context, photo),
+      _buildTeacherOverlay(context, photo.authorId),
+    ];
   }
 
   Widget _buildTeacherOverlay(BuildContext context, int teacherId) {
@@ -166,34 +211,33 @@ class PhotoLightboxScreenState extends State<PhotoLightboxScreen> {
     return Positioned(
       child: AnimatedOpacity(
         opacity: _controlsVisible ? 1.0 : 0.0,
-        duration: _controlsAnimationDuration,
+        duration: AbstractPhotoLightboxScreenState.controlsAnimationDuration,
         child: PhotoTeacherTile(teacher: teacher),
       ),
       left: 10,
       bottom: 10,
     );
   }
+}
 
-  void _parseArgumentsIfNot(BuildContext context) {
-    if (_filter == null) {
-      final arguments = ModalRoute.of(context).settings.arguments as PhotoLightboxArguments;
-      _filter = arguments.filter;
-      _index = arguments.index;
-      _pageController = PageController(
-        initialPage: _index,
-      );
-    }
-  }
+class UnsortedPhotoLightboxScreen extends AbstractPhotoLightboxScreen<UnsortedPhotoFilter, UnsortedPhotoRepository> {
+  static const routeName = '/unsortedPhotoLightbox';
 
-  void _toggleControls() {
-    setState(() {
-      _controlsVisible = !_controlsVisible;
-    });
+  @override
+  State<AbstractPhotoLightboxScreen> createState() => UnsortedPhotoLightboxScreenState();
+}
+
+class UnsortedPhotoLightboxScreenState extends AbstractPhotoLightboxScreenState<UnsortedPhotoFilter, UnsortedPhotoRepository> {
+  @override
+  List<Widget> buildOverlays(BuildContext context, Photo photo) {
+    return [
+      buildTitleOverlay(context, photo),
+    ];
   }
 }
 
-class PhotoLightboxArguments {
-  final PhotoFilter filter;
+class PhotoLightboxArguments<F extends AbstractFilter> {
+  final F filter;
   final int index;
 
   PhotoLightboxArguments({

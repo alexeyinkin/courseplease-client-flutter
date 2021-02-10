@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'abstract.dart';
 
 class LessonRepository extends AbstractFilteredRepository<int, Lesson, LessonFilter> {
-  static const _entitiesName = 'lessons';
+  static const _entitiesName = 'gallery/lessons';
   final _client = GetIt.instance.get<ApiClient>();
 
   @override

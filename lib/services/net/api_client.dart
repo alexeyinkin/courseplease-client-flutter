@@ -75,7 +75,7 @@ class ApiClient {
     return _createListLoadResultResponse(
       await sendRequest(
         method: HttpMethod.get,
-        path: '/api1/{@lang}/gallery/' + name,
+        path: '/api1/{@lang}/' + name,
       ),
     );
   }
@@ -88,7 +88,7 @@ class ApiClient {
     return _createListLoadResultResponse(
       await sendRequest(
         method: HttpMethod.get,
-        path: '/api1/{@lang}/gallery/' + name,
+        path: '/api1/{@lang}/' + name,
         queryParameters: _paramsWithPageToken(filter, pageToken),
       ),
     );
@@ -100,7 +100,7 @@ class ApiClient {
   ) async {
     return await sendRequest(
       method: HttpMethod.get,
-      path: '/api1/{@lang}/gallery/' + name + '/' + id.toString(),
+      path: '/api1/{@lang}/' + name + '/' + id.toString(),
     );
   }
 
@@ -283,22 +283,25 @@ class MeResponseData {
   final User user; // Nullable.
   final List<TeacherSubject> teacherSubjects;
   final List<EditableContact> contacts;
+  final bool hasUnsortedMedia;
 
   MeResponseData._({
     @required this.deviceStatus,
     @required this.user,
     @required this.teacherSubjects,
     @required this.contacts,
+    @required this.hasUnsortedMedia,
   });
 
   factory MeResponseData.fromMap(Map<String, dynamic> map) {
     final userMap = map['user'];
 
     return MeResponseData._(
-      deviceStatus: map['deviceStatus'],
-      user: userMap == null ? null : User.fromMap(userMap),
-      teacherSubjects: TeacherSubject.fromMaps(map['teacherSubjects']),
-      contacts: EditableContact.fromMaps(map['contacts']),
+      deviceStatus:     map['deviceStatus'],
+      user:             userMap == null ? null : User.fromMap(userMap),
+      teacherSubjects:  TeacherSubject.fromMaps(map['teacherSubjects']),
+      contacts:         EditableContact.fromMaps(map['contacts']),
+      hasUnsortedMedia: map['hasUnsortedMedia'],
     );
   }
 }

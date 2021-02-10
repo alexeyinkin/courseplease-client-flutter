@@ -200,8 +200,8 @@ class _TeacherScreenState extends State<TeacherScreen> {
   Widget _getWorksBlock() {
     return Container(
       height: 200,
-      child: PhotoGrid(
-        filter: PhotoFilter(subjectId: _subjectId, teacherId: _teacherId),
+      child: GalleryPhotoGrid(
+        filter: GalleryPhotoFilter(subjectId: _subjectId, teacherId: _teacherId),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
           child: Text('My Works', style: AppStyle.h2),

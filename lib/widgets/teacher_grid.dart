@@ -173,8 +173,8 @@ class TeacherPhotoStripeWidget extends StatelessWidget {
     var i = 0;
     return Container(
       height: this.height,
-      child: PhotoGrid(
-        filter: PhotoFilter(subjectId: teacherFilter.subjectId, teacherId: teacherId),
+      child: GalleryPhotoGrid(
+        filter: GalleryPhotoFilter(subjectId: teacherFilter.subjectId, teacherId: teacherId),
         scrollDirection: Axis.horizontal,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
