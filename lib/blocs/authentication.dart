@@ -160,7 +160,7 @@ class AuthenticationBloc extends Bloc{
       } else {
         _setState(
           AuthenticationState.authenticatedFromResponse(
-            _authenticationState,
+            deviceKey,
             me,
           ),
         );
@@ -223,12 +223,12 @@ class AuthenticationState {
   }
 
   factory AuthenticationState.authenticatedFromResponse(
-    AuthenticationState previous,
+    String deviceKey,
     MeResponseData response,
   ) {
     return AuthenticationState(
       status: AuthenticationStatus.authenticated,
-      deviceKey: previous.deviceKey,
+      deviceKey: deviceKey,
       data: response,
     );
   }
