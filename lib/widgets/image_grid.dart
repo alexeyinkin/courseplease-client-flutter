@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:courseplease/blocs/selection.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/repositories/photo.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,12 +21,14 @@ abstract class AbstractPhotoGrid<F extends AbstractFilter, R extends AbstractPho
   final Axis scrollDirection;
   final SliverGridDelegate gridDelegate;
   final Widget titleIfNotEmpty; // Nullable.
+  final SelectionCubit selectionCubit; // Nullable.
 
   AbstractPhotoGrid({
     @required this.filter,
     @required this.scrollDirection,
     @required this.gridDelegate,
     this.titleIfNotEmpty,
+    this.selectionCubit,
   }) : super(key: ValueKey(filter.toString()));
 
   bool isFilterValid(F filter) {
@@ -60,6 +64,7 @@ class AbstractPhotoGridState<F extends AbstractFilter, R extends AbstractPhotoRe
       },
       scrollDirection: widget.scrollDirection,
       gridDelegate: widget.gridDelegate,
+      selectionCubit: widget.selectionCubit,
     );
   }
 
@@ -70,13 +75,17 @@ class AbstractPhotoGridState<F extends AbstractFilter, R extends AbstractPhotoRe
   PhotoTile<F> createTile({
     @required Photo object,
     @required int index,
-    @required TileCallback<int, Photo> onTap
+    @required VoidCallback onTap,
+    bool selected,
+    ValueChanged<bool> onSelected,
   }) {
     return PhotoTile(
       object: object,
       filter: widget.filter,
       index: index,
       onTap: onTap,
+      selected: selected,
+      onSelected: onSelected,
     );
   }
 }
@@ -86,12 +95,18 @@ class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo,
     @required object,
     @required filter,
     @required index,
-    TileCallback<int, Photo> onTap,
+    VoidCallback onTap, // Nullable
+    bool selectable = false,
+    bool selected = false,
+    ValueChanged<bool> onSelected, // Nullable
   }) : super(
     object: object,
     filter: filter,
     index: index,
     onTap: onTap,
+    selectable: selectable,
+    selected: selected,
+    onSelected: onSelected,
   );
 
   @override
@@ -102,7 +117,7 @@ class PhotoTileState<F extends AbstractFilter> extends AbstractObjectTileState<i
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => widget.onTap(widget.object, widget.index),
+      onTap: widget.onTap,
       child: Hero(
         tag: 'photo_' + widget.filter.toString() + '_' + widget.object.id.toString(),
         child: Stack(
@@ -115,6 +130,7 @@ class PhotoTileState<F extends AbstractFilter> extends AbstractObjectTileState<i
                 fit: BoxFit.cover,
               ),
             ),
+            getCheckboxOverlay(),
             ...buildOverlays(context),
           ],
         ),
@@ -137,7 +153,7 @@ class GalleryPhotoGrid extends AbstractPhotoGrid<GalleryPhotoFilter, GalleryPhot
     @required GalleryPhotoFilter filter,
     @required Axis scrollDirection,
     @required SliverGridDelegate gridDelegate,
-    Widget titleIfNotEmpty,
+    Widget titleIfNotEmpty, // Nullable
   }) : super(
     filter: filter,
     scrollDirection: scrollDirection,
@@ -171,10 +187,12 @@ class UnsortedPhotoGrid extends AbstractPhotoGrid<UnsortedPhotoFilter, UnsortedP
   UnsortedPhotoGrid({
     @required Axis scrollDirection,
     @required SliverGridDelegate gridDelegate,
+    @required SelectionCubit selectionCubit,
   }) : super(
     filter: UnsortedPhotoFilter(),
     scrollDirection: scrollDirection,
     gridDelegate: gridDelegate,
+    selectionCubit: selectionCubit,
   );
 
   @override
@@ -197,28 +215,37 @@ class UnsortedPhotoGridState extends AbstractPhotoGridState<UnsortedPhotoFilter,
   UnsortedPhotoTile createTile({
     @required Photo object,
     @required int index,
-    @required TileCallback<int, Photo> onTap
+    @required VoidCallback onTap,
+    @required bool selected,
+    @required ValueChanged<bool> onSelected,
   }) {
     return UnsortedPhotoTile(
       object: object,
       filter: widget.filter,
       index: index,
       onTap: onTap,
+      selected: selected,
+      onSelected: onSelected,
     );
   }
 }
 
 class UnsortedPhotoTile extends PhotoTile<UnsortedPhotoFilter> {
   UnsortedPhotoTile({
-    @required object,
-    @required filter,
-    @required index,
-    TileCallback<int, Photo> onTap,
+    @required Photo object,
+    @required UnsortedPhotoFilter filter,
+    @required int index,
+    VoidCallback onTap, // Nullable
+    @required bool selected,
+    @required ValueChanged<bool> onSelected,
   }) : super(
     object: object,
     filter: filter,
     index: index,
     onTap: onTap,
+    selectable: true,
+    selected: selected,
+    onSelected: onSelected,
   );
 
   @override
@@ -239,7 +266,7 @@ class UnsortedPhotoTileState extends PhotoTileState<UnsortedPhotoFilter> {
 
     final icon = mapping.classShortIntName == null
         ? Container()
-        : _padRight(AuthProviderIcon(name: mapping.classShortIntName, scale: .5));
+        : padRight(AuthProviderIcon(name: mapping.classShortIntName, scale: .5));
 
     final timeAgo = mapping.dateTimeSyncFromRemote == null
         ? ''
@@ -257,13 +284,6 @@ class UnsortedPhotoTileState extends PhotoTileState<UnsortedPhotoFilter> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _padRight(Widget child) {
-    return Container(
-      padding: EdgeInsets.only(right: 10),
-      child: child,
     );
   }
 }

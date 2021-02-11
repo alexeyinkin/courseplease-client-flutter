@@ -12,19 +12,21 @@ class FilteredModelListBloc<I, O extends WithId<I>, F extends AbstractFilter> ex
   final F filter;
 
   final _objects = <O>[];
+  final _objectIds = <I>[];
   RequestStatus _status = RequestStatus.ok;
   bool _hasMore = true;
 
   Future<void> _currentLoadingFuture; // Nullable.
   String _nextPageToken = null;
 
-  final _outStateController = BehaviorSubject<ModelListState>();
-  Stream<ModelListState> get outState => _outStateController.stream;
+  final _outStateController = BehaviorSubject<ModelListState<I, O>>();
+  Stream<ModelListState<I, O>> get outState => _outStateController.stream;
 
-  final initialState = ModelListState<O>(
-    objects:  <O>[],
-    status:   RequestStatus.ok,
-    hasMore:  true,
+  final initialState = ModelListState<I, O>(
+    objects:    <O>[],
+    objectIds:  <I>[],
+    status:     RequestStatus.ok,
+    hasMore:    true,
   );
 
   FilteredModelListBloc({
@@ -57,6 +59,10 @@ class FilteredModelListBloc<I, O extends WithId<I>, F extends AbstractFilter> ex
 
   void _handleLoaded(ListLoadResult<O> loadResult) {
     _objects.addAll(loadResult.objects);
+
+    for (final object in loadResult.objects) {
+      _objectIds.add(object.id);
+    }
     print('Added to list, now got ' + _objects.length.toString() + ' objects.');
 
     _status               = RequestStatus.ok;
@@ -69,10 +75,11 @@ class FilteredModelListBloc<I, O extends WithId<I>, F extends AbstractFilter> ex
 
   void _pushOutput() {
     _outStateController.sink.add(
-      ModelListState<O>(
-        objects:  _objects,
-        status:   RequestStatus.ok,
-        hasMore:  _hasMore,
+      ModelListState<I, O>(
+        objects:    _objects,
+        objectIds:  _objectIds,
+        status:     RequestStatus.ok,
+        hasMore:    _hasMore,
       ),
     );
   }
@@ -88,13 +95,15 @@ class FilteredModelListBloc<I, O extends WithId<I>, F extends AbstractFilter> ex
   }
 }
 
-class ModelListState<O extends WithId> {
+class ModelListState<I, O extends WithId<I>> {
   final List<O> objects;
+  final List<I> objectIds;
   final RequestStatus status;
   final bool hasMore;
 
   ModelListState({
     @required this.objects,
+    @required this.objectIds,
     @required this.status,
     @required this.hasMore,
   });

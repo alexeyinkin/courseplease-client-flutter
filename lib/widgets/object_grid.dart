@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/filtered_model_list.dart';
+import 'package:courseplease/blocs/selection.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
@@ -19,15 +20,17 @@ class ObjectGrid<
   final Axis scrollDirection;
   final SliverGridDelegate gridDelegate;
   final Widget titleIfNotEmpty; // Nullable
+  final SelectionCubit selectionCubit; // Nullable
   F filter = null;
 
   ObjectGrid({
     @required this.filter,
     @required this.tileFactory,
-    this.onTap,
+    this.onTap, // Nullable
     @required this.scrollDirection,
     @required this.gridDelegate,
-    this.titleIfNotEmpty,
+    this.titleIfNotEmpty, // Nullable
+    this.selectionCubit, // Nullable
   });
 
   @override
@@ -75,7 +78,30 @@ class ObjectGridState<
     );
   }
 
-  Widget _buildWithListState(BuildContext context, ModelListState listState, FilteredModelListBloc bloc) {
+  Widget _buildWithListState(
+    BuildContext context,
+    ModelListState<I, O> listState,
+    FilteredModelListBloc listBloc,
+  ) {
+    if (widget.selectionCubit == null) {
+      return _buildWithListAndSelectionStates(context, listState, listBloc, null);
+    }
+
+    widget.selectionCubit.setAll(listState.objectIds);
+
+    return StreamBuilder(
+      stream: widget.selectionCubit.outState,
+      initialData: widget.selectionCubit.initialState,
+      builder: (context, snapshot) => _buildWithListAndSelectionStates(context, listState, listBloc, snapshot.data),
+    );
+  }
+
+  Widget _buildWithListAndSelectionStates(
+    BuildContext context,
+    ModelListState<I, O> listState,
+    FilteredModelListBloc listBloc,
+    SelectionState<I> selectionState, // Nullable
+  ) {
     final length = listState.objects.length;
     final children = <Widget>[];
 
@@ -95,16 +121,18 @@ class ObjectGridState<
             gridDelegate: widget.gridDelegate,
             itemCount: listState.hasMore ? null : length,
             itemBuilder: (context, index) {
-              print(length.toString() + ' in _objects.');
               if (index < length) {
+                final object = listState.objects[index];
                 return _tileFactory(
-                  object: listState.objects[index],
+                  object: object,
                   index: index,
-                  onTap: widget.onTap,
+                  onTap: () => widget.onTap(object, index),
+                  selected: selectionState == null ? false : selectionState.selectedIds.containsKey(object.id),
+                  onSelected: (selected) => _onSelected(object, selected),
                 );
               }
 
-              bloc.loadMoreIfCan();
+              listBloc.loadMoreIfCan();
               return Text(index.toString());
             },
           ),
@@ -122,5 +150,11 @@ class ObjectGridState<
         children: children,
       ),
     );
+  }
+
+  void _onSelected(O object, bool selected) {
+    if (widget.selectionCubit != null) {
+      widget.selectionCubit.setSelected(object.id, selected);
+    }
   }
 }

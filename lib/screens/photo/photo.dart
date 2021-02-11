@@ -58,7 +58,7 @@ abstract class AbstractPhotoLightboxScreenState<
 
   Widget _buildWithListState(
     BuildContext context,
-    ModelListState<Photo> listState,
+    ModelListState<int, Photo> listState,
     FilteredModelListBloc bloc,
   ) {
     final length = listState.objects.length;
@@ -87,7 +87,7 @@ abstract class AbstractPhotoLightboxScreenState<
     );
   }
 
-  Widget _buildPage(BuildContext context, ModelListState<Photo> listState, int index) {
+  Widget _buildPage(BuildContext context, ModelListState<int, Photo> listState, int index) {
     final photo = listState.objects[index];
     final url = 'https://courseplease.com' + photo.getLightboxUrl();
 

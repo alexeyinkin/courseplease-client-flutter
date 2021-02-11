@@ -45,7 +45,7 @@ class TeacherGridState extends State<TeacherGrid> {
       padding: EdgeInsets.all(padding),
       child: ObjectGrid<int, Teacher, TeacherFilter, TeacherRepository, TeacherTile>(
         filter: widget.filter,
-        tileFactory: ({Teacher object, int index, TileCallback<int, Teacher>onTap}) => TeacherTile(object: object, filter: widget.filter, index: index, onTap: onTap),
+        tileFactory: _createTile,
 
         // When using Teacher as argument type, for some reason an exception is thrown
         // at tile construction in ObjectGird in GridView.builder:
@@ -71,6 +71,25 @@ class TeacherGridState extends State<TeacherGrid> {
     );
   }
 
+  TeacherTile _createTile({
+    @required Teacher object,
+    @required int index,
+    @required VoidCallback onTap,
+    bool selectable = false,
+    bool selected = false,
+    ValueChanged<bool> onSelected, // Nullable
+  }) {
+    return TeacherTile(
+      object: object,
+      filter: widget.filter,
+      index: index,
+      onTap: onTap,
+      selectable: false,
+      selected: selected,
+      onSelected: onSelected,
+    );
+  }
+
   void _handleTap(Teacher teacher, int index) {
     Navigator.of(context).pushNamed(
       TeacherScreen.routeName,
@@ -84,15 +103,21 @@ class TeacherGridState extends State<TeacherGrid> {
 
 class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
   TeacherTile({
-    @required object,
-    @required filter,
-    @required index,
-    onTap,
+    @required Teacher object,
+    @required TeacherFilter filter,
+    @required int index,
+    VoidCallback onTap, // Nullable
+    bool selectable = false,
+    bool selected = false,
+    ValueChanged<bool> onSelected, // Nullable
   }) : super(
     object: object,
     filter: filter,
     index: index,
     onTap: onTap,
+    selectable: selectable,
+    selected: selected,
+    onSelected: onSelected,
   );
 
   @override
@@ -106,7 +131,7 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
     final url = relativeUrl == null ? null : 'https://courseplease.com' + relativeUrl;
 
     return GestureDetector(
-      onTap: () => widget.onTap(widget.object, widget.index),
+      onTap: widget.onTap,
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -181,7 +206,11 @@ class TeacherPhotoStripeWidget extends StatelessWidget {
   final int teacherId;
   final double height;
 
-  TeacherPhotoStripeWidget({@required this.teacherFilter, @required this.teacherId, @required this.height});
+  TeacherPhotoStripeWidget({
+    @required this.teacherFilter,
+    @required this.teacherId,
+    @required this.height,
+  });
 
   @override
   Widget build(BuildContext context) {

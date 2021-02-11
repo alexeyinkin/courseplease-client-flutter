@@ -22,7 +22,7 @@ class LessonGrid extends StatefulWidget {
     @required this.filter,
     @required this.scrollDirection,
     @required this.crossAxisCount,
-    this.titleIfNotEmpty,
+    this.titleIfNotEmpty, // Nullable
   }) : super(key: ValueKey(filter.subjectId));
 
   @override
@@ -50,7 +50,7 @@ class LessonGridState extends State<LessonGrid> {
       padding: EdgeInsets.all(padding),
       child: ObjectGrid<int, Lesson, LessonFilter, LessonRepository, LessonTile>(
         filter: widget.filter,
-        tileFactory: ({Lesson object, int index, TileCallback<int, Lesson> onTap}) => LessonTile(object: object, filter: widget.filter, index: index, onTap: onTap),
+        tileFactory: _createTile,
         titleIfNotEmpty: widget.titleIfNotEmpty,
 
         // When using Lesson as argument type, for some reason an exception is thrown
@@ -77,6 +77,23 @@ class LessonGridState extends State<LessonGrid> {
     );
   }
 
+  LessonTile _createTile({
+    @required Lesson object,
+    @required int index,
+    @required VoidCallback onTap,
+    bool selected = false,
+    ValueChanged<bool> onSelected, // Nullable
+  }) {
+    return LessonTile(
+      object: object,
+      filter: widget.filter,
+      index: index,
+      onTap: onTap,
+      selected: selected,
+      onSelected: onSelected,
+    );
+  }
+
   void _handleTap(Lesson lesson, int index) {
     Navigator.of(context).pushNamed(
       LessonScreen.routeName,
@@ -90,15 +107,21 @@ class LessonGridState extends State<LessonGrid> {
 
 class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
   LessonTile({
-    @required object,
-    @required filter,
-    @required index,
-    onTap,
+    @required Lesson object,
+    @required LessonFilter filter,
+    @required int index,
+    VoidCallback onTap, // Nullable
+    bool selectable = false,
+    bool selected = false,
+    ValueChanged<bool> onSelected, // Nullable
   }) : super(
     object: object,
     filter: filter,
     index: index,
     onTap: onTap,
+    selectable: selectable,
+    selected: selected,
+    onSelected: onSelected,
   );
 
   @override
@@ -194,7 +217,7 @@ class LessonTileState extends AbstractObjectTileState<int, Lesson, LessonFilter>
   }
 
   void _handleTap() {
-    widget.onTap(widget.object, widget.index);
+    widget.onTap();
   }
 
   String _getUrl() {
