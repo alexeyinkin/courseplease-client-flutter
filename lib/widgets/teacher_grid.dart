@@ -83,15 +83,30 @@ class TeacherGridState extends State<TeacherGrid> {
 }
 
 class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
-  TeacherTile({@required object, @required filter, @required index, onTap}) : super(object: object, filter: filter, index: index, onTap: onTap);
+  TeacherTile({
+    @required object,
+    @required filter,
+    @required index,
+    onTap,
+  }) : super(
+    object: object,
+    filter: filter,
+    index: index,
+    onTap: onTap,
+  );
 
   @override
+  State<AbstractObjectTile> createState() => TeacherTileState();
+}
+
+class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilter> {
+  @override
   Widget build(BuildContext context) {
-    final relativeUrl = object.userpicUrls['300x300'] ?? null;
+    final relativeUrl = widget.object.userpicUrls['300x300'] ?? null;
     final url = relativeUrl == null ? null : 'https://courseplease.com' + relativeUrl;
 
     return GestureDetector(
-      onTap: () => onTap(object, index),
+      onTap: () => widget.onTap(widget.object, widget.index),
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -111,7 +126,7 @@ class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
                       backgroundImage: url == null ? null : NetworkImage(url),
                     ),
                   ),
-                  RatingAndVoteCountWidget(rating: object.rating, hideIfEmpty: true),
+                  RatingAndVoteCountWidget(rating: widget.object.rating, hideIfEmpty: true),
                 ],
               ),
             ),
@@ -121,23 +136,23 @@ class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
                 children: [
                   Container(
                     padding: EdgeInsets.only(bottom: 5),
-                    child: Text(object.firstName + ' ' + object.lastName + ' ' + object.id.toString(), style: TextStyle(fontWeight: FontWeight.bold))
+                    child: Text(widget.object.firstName + ' ' + widget.object.lastName + ' ' + widget.object.id.toString(), style: TextStyle(fontWeight: FontWeight.bold))
                   ),
                   Container(
                     padding: EdgeInsets.only(bottom: 5),
-                    child: LocationLineWidget(location: object.location, textOpacity: .5),
+                    child: LocationLineWidget(location: widget.object.location, textOpacity: .5),
                   ),
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
                     child: TeacherPhotoStripeWidget(
-                      teacherFilter: filter,
-                      teacherId: object.id,
+                      teacherFilter: widget.filter,
+                      teacherId: widget.object.id,
                       height: 50,
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
-                    child: ProductVariantsLineWidget(formats: object.productVariantFormats),
+                    child: ProductVariantsLineWidget(formats: widget.object.productVariantFormats),
                   ),
                   _getPriceButton(),
                 ],
@@ -150,12 +165,12 @@ class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
   }
 
   Widget _getPriceButton() {
-    if (object.maxPrice.isZero()) return Container();
+    if (widget.object.maxPrice.isZero()) return Container();
 
     return Container(
       alignment: Alignment.topRight,
       padding: EdgeInsets.only(bottom: 10),
-      child: PriceButton(money: object.maxPrice),
+      child: PriceButton(money: widget.object.maxPrice),
     );
   }
 }

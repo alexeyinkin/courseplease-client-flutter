@@ -50,5 +50,7 @@
         <key>NSAllowsArbitraryLoadsInWebContent</key>
         <true/>
     </dict>
+
+    <!-- TODO: Localization as in https://flutter.dev/docs/development/accessibility-and-localization/internationalization#localizing-for-ios-updating-the-ios-app-bundle -->
 </dict>
 </plist>

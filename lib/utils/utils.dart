@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:courseplease/models/interfaces.dart';
 
@@ -85,4 +86,20 @@ String generatePassword(int length) {
   }
 
   return result;
+}
+
+String formatTimeAgo(Duration duration, AppLocalizations appLocalizations) {
+  if (duration.inSeconds < 60) {
+    return appLocalizations.justNow;
+  }
+
+  if (duration.inMinutes < 60) {
+    return appLocalizations.minutesAgo(duration.inMinutes);
+  }
+
+  if (duration.inHours < 24) {
+    return appLocalizations.hoursAgo(duration.inHours);
+  }
+
+  return appLocalizations.daysAgo(duration.inDays);
 }

@@ -102,6 +102,11 @@ class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
   );
 
   @override
+  State<AbstractObjectTile> createState() => LessonTileState();
+}
+
+class LessonTileState extends AbstractObjectTileState<int, Lesson, LessonFilter> {
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.purple,
@@ -123,7 +128,7 @@ class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
                 child: GestureDetector(
                   onTap: _handleTitleTap,
                   child: Text(
-                    object.title,
+                    widget.object.title,
                     style: AppStyle.lessonTitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -138,14 +143,14 @@ class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
   }
 
   Widget _getCoverContent() {
-    switch (object.type) {
+    switch (widget.object.type) {
       case 'text':
         return _getTextCoverContent();
       case 'video':
         return _getVideoCoverContent();
     }
 
-    return Text('Unknown lesson type: ' + object.type);
+    return Text("Unknown lesson type: " + widget.object.type);
   }
 
   Widget _getVideoCoverContent() {
@@ -166,7 +171,7 @@ class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
           Positioned(
             right: 3,
             bottom: 3,
-            child: DurationWidget(duration: Duration(seconds: object.durationSeconds)),
+            child: DurationWidget(duration: Duration(seconds: widget.object.durationSeconds)),
           ),
         ],
       ),
@@ -189,10 +194,10 @@ class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
   }
 
   void _handleTap() {
-    onTap(object, index);
+    widget.onTap(widget.object, widget.index);
   }
 
   String _getUrl() {
-    return 'https://courseplease.com' + object.coverUrls['1920x1080'];
+    return 'https://courseplease.com' + widget.object.coverUrls['1920x1080'];
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 typedef void TileCallback<I, O extends WithId<I>>(O object, int index);
 typedef T TileFactory<I, O extends WithId<I>, F extends AbstractFilter, T extends AbstractObjectTile<I, O, F>>({@required O object, @required int index, TileCallback<I, O> onTap});
 
-class AbstractObjectTile<I, O extends WithId<I>, F extends AbstractFilter> extends StatelessWidget {
+class AbstractObjectTile<I, O extends WithId<I>, F extends AbstractFilter> extends StatefulWidget {
   final O object;
   final F filter;
   final int index;
@@ -19,10 +19,15 @@ class AbstractObjectTile<I, O extends WithId<I>, F extends AbstractFilter> exten
   });
 
   @override
+  State<AbstractObjectTile> createState() => AbstractObjectTileState<I, O, F>();
+}
+
+class AbstractObjectTileState<I, O extends WithId<I>, F extends AbstractFilter> extends State<AbstractObjectTile<I, O, F>> {
+  @override
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: Text(index.toString()),
+        child: Text(widget.index.toString()),
       ),
     );
   }

@@ -1,0 +1,30 @@
+{
+  "@@locale": "ru",
+
+  "appTitle": "CoursePlease.com Лучшие учителя",
+
+  "justNow": "Только что",
+
+  "minutesAgo": "{count, plural, =1{{count}м}, =2{{count}м}, other{{count}м}",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "hoursAgo": "{count, plural, =1{{count}ч}, =2{{count}ч}, =3{{count}ч}, other{{count}ч}",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "daysAgo": "{count,plural, =1{{count}д}, =2{{count}д}, other{{count}д}",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "sortImportedMedia": "Разобрать импортированное"
+}

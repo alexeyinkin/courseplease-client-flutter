@@ -16,6 +16,8 @@ import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'blocs/authentication.dart';
 import 'screens/lesson/lesson.dart';
@@ -73,6 +75,9 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
         TeacherScreen.routeName:              (context) => TeacherScreen(),
         UnsortedPhotoLightboxScreen.routeName:(context) => UnsortedPhotoLightboxScreen(),
       },
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).appTitle,
       theme: _getDarkTheme(),
     );
   }

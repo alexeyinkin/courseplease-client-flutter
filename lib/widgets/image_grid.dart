@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/repositories/photo.dart';
+import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/filters/photo.dart';
 import '../models/interfaces.dart';
 import '../models/photo.dart';
@@ -85,7 +87,7 @@ class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo,
     @required filter,
     @required index,
     TileCallback<int, Photo> onTap,
-  }): super(
+  }) : super(
     object: object,
     filter: filter,
     index: index,
@@ -93,17 +95,22 @@ class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo,
   );
 
   @override
+  State<AbstractObjectTile> createState() => PhotoTileState<F>();
+}
+
+class PhotoTileState<F extends AbstractFilter> extends AbstractObjectTileState<int, Photo, F> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(object, index),
+      onTap: () => widget.onTap(widget.object, widget.index),
       child: Hero(
-        tag: 'photo_' + filter.toString() + '_' + object.id.toString(),
+        tag: 'photo_' + widget.filter.toString() + '_' + widget.object.id.toString(),
         child: Stack(
           children: [
             Positioned.fill(
               child: CachedNetworkImage(
                 imageUrl: _getUrl(),
-                errorWidget: (context, url, error) => Row(children:[Icon(Icons.error), Text(object.id.toString())]),
+                errorWidget: (context, url, error) => Row(children:[Icon(Icons.error), Text(widget.object.id.toString())]),
                 fadeInDuration: Duration(),
                 fit: BoxFit.cover,
               ),
@@ -116,7 +123,7 @@ class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo,
   }
 
   String _getUrl() {
-    return 'https://courseplease.com' + object.urls['300x300'];
+    return 'https://courseplease.com' + widget.object.urls['300x300'];
   }
 
   @protected
@@ -207,13 +214,18 @@ class UnsortedPhotoTile extends PhotoTile<UnsortedPhotoFilter> {
     @required filter,
     @required index,
     TileCallback<int, Photo> onTap,
-  }): super(
+  }) : super(
     object: object,
     filter: filter,
     index: index,
     onTap: onTap,
   );
 
+  @override
+  State<AbstractObjectTile> createState() => UnsortedPhotoTileState();
+}
+
+class UnsortedPhotoTileState extends PhotoTileState<UnsortedPhotoFilter> {
   @override
   List<Widget> buildOverlays(BuildContext context) {
     return [
@@ -222,12 +234,16 @@ class UnsortedPhotoTile extends PhotoTile<UnsortedPhotoFilter> {
   }
 
   Widget _getOriginOverlay() {
-    if (object.mappings.isEmpty) return Container();
-    final mapping = object.mappings[0];
+    if (widget.object.mappings.isEmpty) return Container();
+    final mapping = widget.object.mappings[0];
 
     final icon = mapping.classShortIntName == null
         ? Container()
         : _padRight(AuthProviderIcon(name: mapping.classShortIntName, scale: .5));
+
+    final timeAgo = mapping.dateTimeSyncFromRemote == null
+        ? ''
+        : formatTimeAgo(DateTime.now().difference(mapping.dateTimeSyncFromRemote), AppLocalizations.of(context));
 
     return Positioned(
       left: 0,
@@ -237,7 +253,7 @@ class UnsortedPhotoTile extends PhotoTile<UnsortedPhotoFilter> {
         child: Row(
           children: [
             icon,
-            // TODO: Format dateTimeSyncFromRemote.
+            Text(timeAgo),
           ],
         ),
       ),

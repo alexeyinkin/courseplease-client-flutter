@@ -1,5 +1,6 @@
 import 'package:courseplease/widgets/image_grid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SortUnsortedMediaScreen extends StatefulWidget {
   static const routeName = '/sortUnsortedMedia';
@@ -13,7 +14,7 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sort Imported Media"),
+        title: Text(AppLocalizations.of(context).sortImportedMedia),
       ),
       body: UnsortedPhotoGrid(
         scrollDirection: Axis.vertical,

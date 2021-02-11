@@ -10,6 +10,7 @@ import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 
 class MyProfileWidget extends StatefulWidget {
@@ -90,7 +91,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     if (!meResponseData.hasUnsortedMedia) return Container();
 
     return ListTile(
-      title: Text("Sort Imported Media"),
+      title: Text(AppLocalizations.of(context).sortImportedMedia),
       trailing: Icon(Icons.chevron_right),
       onTap: () => _sortUnsortedMedia(),
     );
