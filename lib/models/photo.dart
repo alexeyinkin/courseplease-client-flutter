@@ -1,12 +1,14 @@
 import 'package:meta/meta.dart';
 
 import 'interfaces.dart';
+import 'mapping.dart';
 
 class Photo implements WithId<int> {
   final int id;
   final String title;
   final Map<String, String> urls;
   final int authorId;
+  final List<Mapping> mappings;
 
   static const lightboxFormat = '2000x2000';
 
@@ -15,6 +17,7 @@ class Photo implements WithId<int> {
     @required this.title,
     @required this.urls,
     @required this.authorId,
+    @required this.mappings,
   });
 
   factory Photo.fromMap(Map<String, dynamic> map) {
@@ -28,6 +31,7 @@ class Photo implements WithId<int> {
       title: map['title'],
       urls: urls,
       authorId: map['authorId'],
+      mappings: Mapping.fromMaps(map['mappings'] ?? []),
     );
   }
 

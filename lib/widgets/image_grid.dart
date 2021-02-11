@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/repositories/photo.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
+import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../models/filters/photo.dart';
@@ -9,6 +10,7 @@ import '../models/interfaces.dart';
 import '../models/photo.dart';
 import 'object_grid.dart';
 import '../screens/photo/photo.dart';
+import 'overlay.dart';
 
 abstract class AbstractPhotoGrid<F extends AbstractFilter, R extends AbstractPhotoRepository<F>> extends StatefulWidget {
   final F filter;
@@ -39,7 +41,7 @@ class AbstractPhotoGridState<F extends AbstractFilter, R extends AbstractPhotoRe
   Widget _buildWithFilter() {
     return ObjectGrid<int, Photo, F, R, PhotoTile<F>>(
       filter: widget.filter,
-      tileFactory: ({Photo object, int index, TileCallback<int, Photo> onTap}) => PhotoTile(object: object, filter: widget.filter, index: index, onTap: onTap),
+      tileFactory: createTile,
       titleIfNotEmpty: widget.titleIfNotEmpty,
 
       // When using Photo as argument type, for some reason an exception is thrown
@@ -61,10 +63,34 @@ class AbstractPhotoGridState<F extends AbstractFilter, R extends AbstractPhotoRe
 
   @protected
   void handleTap(Photo photo, int index) {}
+
+  @protected
+  PhotoTile<F> createTile({
+    @required Photo object,
+    @required int index,
+    @required TileCallback<int, Photo> onTap
+  }) {
+    return PhotoTile(
+      object: object,
+      filter: widget.filter,
+      index: index,
+      onTap: onTap,
+    );
+  }
 }
 
 class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo, F> {
-  PhotoTile({@required object, @required filter, @required index, TileCallback<int, Photo> onTap}): super(object: object, filter: filter, index: index, onTap: onTap);
+  PhotoTile({
+    @required object,
+    @required filter,
+    @required index,
+    TileCallback<int, Photo> onTap,
+  }): super(
+    object: object,
+    filter: filter,
+    index: index,
+    onTap: onTap,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +98,18 @@ class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo,
       onTap: () => onTap(object, index),
       child: Hero(
         tag: 'photo_' + filter.toString() + '_' + object.id.toString(),
-        child: Container(
-          child: CachedNetworkImage(
-            imageUrl: _getUrl(),
-            errorWidget: (context, url, error) => Row(children:[Icon(Icons.error), Text(object.id.toString())]),
-            fadeInDuration: Duration(),
-            fit: BoxFit.cover,
-          ),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: CachedNetworkImage(
+                imageUrl: _getUrl(),
+                errorWidget: (context, url, error) => Row(children:[Icon(Icons.error), Text(object.id.toString())]),
+                fadeInDuration: Duration(),
+                fit: BoxFit.cover,
+              ),
+            ),
+            ...buildOverlays(context),
+          ],
         ),
       ),
     );
@@ -86,6 +117,11 @@ class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo,
 
   String _getUrl() {
     return 'https://courseplease.com' + object.urls['300x300'];
+  }
+
+  @protected
+  List<Widget> buildOverlays(BuildContext context) {
+    return <Widget>[];
   }
 }
 
@@ -147,6 +183,71 @@ class UnsortedPhotoGridState extends AbstractPhotoGridState<UnsortedPhotoFilter,
         filter: widget.filter,
         index: index,
       ),
+    );
+  }
+
+  @protected
+  UnsortedPhotoTile createTile({
+    @required Photo object,
+    @required int index,
+    @required TileCallback<int, Photo> onTap
+  }) {
+    return UnsortedPhotoTile(
+      object: object,
+      filter: widget.filter,
+      index: index,
+      onTap: onTap,
+    );
+  }
+}
+
+class UnsortedPhotoTile extends PhotoTile<UnsortedPhotoFilter> {
+  UnsortedPhotoTile({
+    @required object,
+    @required filter,
+    @required index,
+    TileCallback<int, Photo> onTap,
+  }): super(
+    object: object,
+    filter: filter,
+    index: index,
+    onTap: onTap,
+  );
+
+  @override
+  List<Widget> buildOverlays(BuildContext context) {
+    return [
+      _getOriginOverlay(),
+    ];
+  }
+
+  Widget _getOriginOverlay() {
+    if (object.mappings.isEmpty) return Container();
+    final mapping = object.mappings[0];
+
+    final icon = mapping.classShortIntName == null
+        ? Container()
+        : _padRight(AuthProviderIcon(name: mapping.classShortIntName, scale: .5));
+
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: ImageOverlay(
+        child: Row(
+          children: [
+            icon,
+            // TODO: Format dateTimeSyncFromRemote.
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _padRight(Widget child) {
+    return Container(
+      padding: EdgeInsets.only(right: 10),
+      child: child,
     );
   }
 }

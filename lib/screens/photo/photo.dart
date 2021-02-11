@@ -9,6 +9,7 @@ import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/location_line.dart';
+import 'package:courseplease/widgets/overlay.dart';
 import 'package:courseplease/widgets/rating_and_vote_count.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +132,7 @@ abstract class AbstractPhotoLightboxScreenState<
       child: AnimatedOpacity(
         opacity: _controlsVisible ? 1.0 : 0.0,
         duration: controlsAnimationDuration,
-        child: PhotoLightboxOverlay(
+        child: RoundedOverlay(
           child: Text(
             //'Title: ' + photo.title,
             photo.title,
@@ -255,7 +256,7 @@ class PhotoTeacherTile extends StatelessWidget {
     final relativeUrl = teacher.userpicUrls['300x300'] ?? null;
     final url = relativeUrl == null ? null : 'https://courseplease.com' + relativeUrl;
 
-    return PhotoLightboxOverlay(
+    return RoundedOverlay(
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,29 +292,6 @@ class PhotoTeacherTile extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class PhotoLightboxOverlay extends StatelessWidget {
-  final Widget child;
-
-  PhotoLightboxOverlay({this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTextStyle(
-      style: TextStyle(
-        color: Color.fromARGB(255, 255, 255, 255),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Color.fromARGB(96, 0, 0, 0),
-        ),
-        child: child,
       ),
     );
   }
