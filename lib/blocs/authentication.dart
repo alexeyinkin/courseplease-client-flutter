@@ -5,6 +5,7 @@ import 'package:courseplease/models/auth/auth_provider.dart';
 import 'package:courseplease/models/auth/facebook_auth_provider.dart';
 import 'package:courseplease/models/auth/instagram_auth_provider.dart';
 import 'package:courseplease/models/auth/vk_auth_provider.dart';
+import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/auth/app_info.dart';
@@ -189,11 +190,13 @@ class AuthenticationState {
   final AuthenticationStatus status;
   final String deviceKey; // Nullable
   final MeResponseData data; // Nullable
+  final List<int> teacherSubjectIds;
 
   AuthenticationState({
     @required this.status,
     this.deviceKey,
     this.data,
+    this.teacherSubjectIds = const <int>[],
   });
 
   factory AuthenticationState.notLoadedFromStorage() {
@@ -230,6 +233,7 @@ class AuthenticationState {
       status: AuthenticationStatus.authenticated,
       deviceKey: deviceKey,
       data: response,
+      teacherSubjectIds: TeacherSubject.getSubjectIds(response.teacherSubjects),
     );
   }
 

@@ -10,6 +10,7 @@ class SelectionCubit<T> extends Bloc {
   bool _canSelectMore = false;
 
   final initialState = SelectionState<T>(
+    selected: false,
     selectedIds: Map<T, T>(),
     canSelectMore: false,
   );
@@ -39,7 +40,7 @@ class SelectionCubit<T> extends Bloc {
     }
   }
 
-  void clear() {
+  void selectNone() {
     if (_selected.isNotEmpty) {
       _selected.clear();
       _onChanged();
@@ -78,6 +79,7 @@ class SelectionCubit<T> extends Bloc {
   void _pushOutput() {
     _outStateController.sink.add(
       SelectionState(
+        selected: _selected.isNotEmpty,
         selectedIds: UnmodifiableMapView<T, T>(_selected),
         canSelectMore: _canSelectMore,
       ),
@@ -91,10 +93,12 @@ class SelectionCubit<T> extends Bloc {
 }
 
 class SelectionState<T> {
+  final bool selected;
   final Map<T, T> selectedIds;
   final bool canSelectMore;
 
   SelectionState({
+    @required this.selected,
     @required this.selectedIds,
     @required this.canSelectMore,
   });

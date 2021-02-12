@@ -39,5 +39,34 @@
   "sortImportedMedia": "Sort Imported Media",
   "@sortImportedMedia": {
     "description": "A profile tab menu item and a screen title"
-  }
+  },
+
+  "sortImportedPublishButton": "Publish",
+  "@sortImportedPublishButton": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "sortImportedPublishAs": "as",
+  "@sortImportedPublishAs": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "sortImportedSelectAlbum": "(Select Album)",
+  "@sortImportedSelectAlbum": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "sortImportedPublishInSubject": "in",
+  "@sortImportedPublishInSubject": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "sortImportedSelectSubject": "(Select Subject)",
+  "@sortImportedSelectSubject": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "albumMyPortfolio": "My Portfolio",
+  "albumMyStudentsPortfolio": "My Students' Works",
+  "albumBackstage": "Backstage"
 }

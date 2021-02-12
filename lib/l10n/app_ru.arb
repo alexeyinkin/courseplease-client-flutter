@@ -36,5 +36,34 @@
     }
   },
 
-  "sortImportedMedia": "Разобрать импортированное"
+  "sortImportedMedia": "Разобрать импортированное",
+
+  "sortImportedPublishButton": "Опубликовать",
+  "@sortImportedPublishButton": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "sortImportedPublishAs": "в альбоме",
+  "@sortImportedPublishAs": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "sortImportedSelectAlbum": "(Выберите альбом)",
+  "@sortImportedSelectAlbum": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "sortImportedPublishInSubject": "по предмету",
+  "@sortImportedPublishInSubject": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "sortImportedSelectSubject": "(Выберите предмет)",
+  "@sortImportedSelectSubject": {
+    "description": "Sort Imported Media screen, 'Publish as _album_ in _subject_'"
+  },
+
+  "albumMyPortfolio": "Мои готовые работы",
+  "albumMyStudentsPortfolio": "Работы моих учеников",
+  "albumBackstage": "Рабочий процесс"
 }

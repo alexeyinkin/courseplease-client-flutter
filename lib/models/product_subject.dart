@@ -4,12 +4,14 @@ import 'interfaces.dart';
 class ProductSubject implements WithIdTitle<int>, WithIdChildrenParent<int, ProductSubject, ProductSubject> {
   final int id;
   final String title;
+  final bool allowsImagePortfolio;
   final List<ProductSubject> children;
   ProductSubject parent; // Nullable
 
   ProductSubject({
     @required this.id,
     @required this.title,
+    @required this.allowsImagePortfolio,
     @required this.children,
   });
 
@@ -21,9 +23,10 @@ class ProductSubject implements WithIdTitle<int>, WithIdChildrenParent<int, Prod
     }
 
     final result = ProductSubject(
-      id: map['id'],
-      title: map['title'],
-      children: children,
+      id:                   map['id'],
+      title:                map['title'],
+      allowsImagePortfolio: map['allowsImagePortfolio'],
+      children:             children,
     );
 
     for (final child in children) {

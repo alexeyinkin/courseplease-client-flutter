@@ -6,3 +6,10 @@ Widget padRight(Widget child) {
     child: child,
   );
 }
+
+Widget padLeft(Widget child) {
+  return Container(
+    padding: EdgeInsets.only(left: 10),
+    child: child,
+  );
+}

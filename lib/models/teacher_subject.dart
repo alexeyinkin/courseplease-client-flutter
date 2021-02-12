@@ -32,4 +32,12 @@ class TeacherSubject {
         .toList()
         .cast<TeacherSubject>();
   }
+
+  static List<int> getSubjectIds(List<TeacherSubject> subjects) {
+    final ids = <int>[];
+    for (final subject in subjects) {
+      ids.add(subject.subjectId);
+    }
+    return ids;
+  }
 }

@@ -8,7 +8,6 @@ import 'package:courseplease/utils/auth/app_info.dart';
 import 'package:courseplease/utils/auth/device_info_for_server.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:meta/meta.dart';
 
 class ApiClient {
@@ -69,6 +68,14 @@ class ApiClient {
       body: request,
     );
     return MeResponseData.fromMap(mapResponse.data);
+  }
+
+  Future sortUnsortedMedia(MediaSortRequest request) {
+    return sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/sort/sortUnsortedMedia',
+      body: request,
+    );
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
@@ -220,8 +227,11 @@ enum HttpMethod {
   post,
 }
 
-abstract class RequestBody {
+abstract class JsonSerializable {
   Map<String, dynamic> toJson();
+}
+
+abstract class RequestBody extends JsonSerializable {
 }
 
 abstract class ApiResponse {
@@ -249,6 +259,7 @@ class ErrorApiResponse extends ApiResponse {
   }) : super(status: status);
 }
 
+// TODO: Extract classes below to separate files.
 class RegisterDeviceRequest extends RequestBody {
   final AppInfo appInfo;
   final DeviceInfoForServer deviceInfo;
@@ -376,6 +387,45 @@ class SaveContactParamsRequest extends RequestBody {
       'contactId':        contactId,
       'downloadEnabled':  downloadEnabled,
       'params':           params.toJson(),
+    };
+  }
+}
+
+class MediaSortRequest extends RequestBody {
+  final List<MediaSortCommand> commands;
+
+  MediaSortRequest({
+    @required this.commands,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'commands': commands,
+    };
+  }
+}
+
+class MediaSortCommand extends JsonSerializable {
+  final String type;
+  final int id;
+  final String action;
+  final int subjectId; // Nullable
+
+  MediaSortCommand({
+    @required this.type,
+    @required this.id,
+    @required this.action,
+    this.subjectId,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type':       type,
+      'id':         id,
+      'action':     action,
+      'subjectId':  subjectId,
     };
   }
 }

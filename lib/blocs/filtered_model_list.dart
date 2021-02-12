@@ -89,6 +89,24 @@ class FilteredModelListBloc<I, O extends WithId<I>, F extends AbstractFilter> ex
     _pushOutput();
   }
 
+  void removeObjectIds(List<I> ids) {
+    final idsMap = Map<I, I>.fromIterable(ids, key: (id) => id, value: (id) => id);
+    var changed = false;
+
+    for (var i = _objectIds.length; --i >= 0; ) {
+      final id = _objectIds[i];
+      if (idsMap.containsKey(id)) {
+        _objects.removeAt(i);
+        _objectIds.removeAt(i);
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      _pushOutput();
+    }
+  }
+
   @override
   void dispose() {
     _outStateController.close();

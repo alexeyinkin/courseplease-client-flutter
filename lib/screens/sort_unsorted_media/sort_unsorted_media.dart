@@ -1,8 +1,11 @@
 import 'package:courseplease/blocs/selection.dart';
+import 'package:courseplease/blocs/sort_unsorted.dart';
 import 'package:courseplease/widgets/image_grid.dart';
 import 'package:courseplease/widgets/pad.dart';
+import 'package:courseplease/widgets/product_subject_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class SortUnsortedMediaScreen extends StatefulWidget {
   static const routeName = '/sortUnsortedMedia';
@@ -13,6 +16,11 @@ class SortUnsortedMediaScreen extends StatefulWidget {
 
 class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
   final _photoSelection = SelectionCubit<int>();
+  SortUnsortedImagesCubit _sortUnsortedImagesCubit;
+
+  _SortUnsortedMediaScreenState() {
+    _sortUnsortedImagesCubit = SortUnsortedImagesCubit(selectionCubit: _photoSelection);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +30,7 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
       ),
       body: Column(
         children: [
-          _getToolbar(),
+          _buildActionToolbar(),
           Expanded(
             child: UnsortedPhotoGrid(
               scrollDirection: Axis.vertical,
@@ -34,37 +42,112 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
               selectionCubit: _photoSelection,
             ),
           ),
+          _buildSelectionToolbar(),
         ],
       ),
     );
   }
 
-  Widget _getToolbar() {
+  Widget _buildActionToolbar() {
     return StreamBuilder(
-      stream: _photoSelection.outState,
-      initialData: _photoSelection.initialState,
-      builder: (context, snapshot) => _buildToolbarWithState(snapshot.data),
+      stream: _sortUnsortedImagesCubit.outState,
+      initialData: _sortUnsortedImagesCubit.initialState,
+      builder: (context, snapshot) => _buildActionToolbarWithState(snapshot.data),
     );
   }
 
-  Widget _buildToolbarWithState(SelectionState selectionState) {
+  Widget _buildActionToolbarWithState(SortUnsortedState actionState) {
+    // TODO: Use flex? Test on small screens.
+    return Row(
+      children: [
+        padRight(
+          ElevatedButton(
+            onPressed: actionState.canPublish ? _onPublishPressed : null,
+            child: Text(AppLocalizations.of(context).sortImportedPublishButton),
+          ),
+        ),
+        padRight(Text(AppLocalizations.of(context).sortImportedPublishAs)),
+        padRight(_buildAlbumDropdownButton(actionState)),
+        padRight(Text(AppLocalizations.of(context).sortImportedPublishInSubject)),
+        padRight(
+          ProductSubjectDropdown(
+            selectedId: actionState.subjectId,
+            showIds: actionState.showSubjectIds,
+            onChanged: _sortUnsortedImagesCubit.setSubjectId,
+            hint: Text(AppLocalizations.of(context).sortImportedSelectSubject),
+          ),
+        ),
+        Spacer(),
+        ElevatedButton(
+          onPressed: actionState.canDelete ? _onDeletePressed : null,
+          child: Icon(Icons.delete_forever),
+        )
+      ],
+    );
+  }
+
+  Widget _buildAlbumDropdownButton(SortUnsortedState actionState) {
+    final items = <DropdownMenuItem<PublishAction>>[];
+
+    for (final action in actionState.showActions) {
+      items.add(_buildActionDropdownMenuItem(action));
+    }
+
+    return DropdownButton<PublishAction>(
+      value: actionState.action,
+      onChanged: _sortUnsortedImagesCubit.setAction,
+      hint: Text(AppLocalizations.of(context).sortImportedSelectAlbum),
+      items: items,
+    );
+  }
+
+  Widget _buildActionDropdownMenuItem(PublishAction action) {
+    String text;
+
+    switch (action) {
+      case PublishAction.portfolio:
+        text = AppLocalizations.of(context).albumMyPortfolio;
+        break;
+      case PublishAction.customersPortfolio:
+        text = AppLocalizations.of(context).albumMyStudentsPortfolio;
+        break;
+      case PublishAction.backstage:
+        text = AppLocalizations.of(context).albumBackstage;
+        break;
+    }
+
+    return DropdownMenuItem<PublishAction>(
+      value: action,
+      child: Text(text),
+    );
+  }
+
+  Widget _buildSelectionToolbar() {
+    return StreamBuilder(
+      stream: _photoSelection.outState,
+      initialData: _photoSelection.initialState,
+      builder: (context, snapshot) => _buildSelectionToolbarWithState(snapshot.data),
+    );
+  }
+
+  Widget _buildSelectionToolbarWithState(SelectionState selectionState) {
     return Row(
       children: [
         padRight(
           ElevatedButton(
             onPressed: selectionState.canSelectMore ? _selectAll : null,
-            child: Text(AppLocalizations.of(context).selectAll),
+            // TODO: Use better icons, awaiting them here: https://github.com/Templarian/MaterialDesign/issues/5853
+            child: Icon(FlutterIcons.checkbox_multiple_marked_mco),
           ),
         ),
         padRight(
           ElevatedButton(
-            onPressed: selectionState.selectedIds.isEmpty ? null : _selectNone,
-            child: Text(AppLocalizations.of(context).selectNone),
+            onPressed: selectionState.selected ? _selectNone : null,
+            child: Icon(FlutterIcons.checkbox_multiple_blank_mco),
           ),
         ),
-        padRight(
-          Text(AppLocalizations.of(context).selectedCount(selectionState.selectedIds.length)),
-        ),
+        Text(AppLocalizations.of(context).selectedCount(
+            selectionState.selectedIds.length)),
       ],
     );
   }
@@ -74,6 +157,14 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
   }
 
   void _selectNone() {
-    _photoSelection.clear();
+    _photoSelection.selectNone();
+  }
+
+  void _onPublishPressed() {
+    _sortUnsortedImagesCubit.publishSelected();
+  }
+
+  void _onDeletePressed() {
+    _sortUnsortedImagesCubit.deleteSelected();
   }
 }

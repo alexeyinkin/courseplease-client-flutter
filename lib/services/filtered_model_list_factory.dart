@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/interfaces.dart';
@@ -36,6 +37,15 @@ class FilteredModelListFactory {
     }
 
     return _map[objectType][filterType][filterString];
+  }
+
+  // TODO: Decompose this class to the Factory and the Cache.
+  //       Otherwise this method's name makes no sense of Factory.
+  Map<String, FilteredModelListBloc> getModelListsByObjectAndFilterTypes<O, F>() {
+    final objectType = _typeOf<O>();
+    final filterType = _typeOf<F>();
+
+    return UnmodifiableMapView<String, FilteredModelListBloc>(_map[objectType][filterType]);
   }
 
   Type _typeOf<T>() => T;
