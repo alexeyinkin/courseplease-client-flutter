@@ -4,15 +4,19 @@ import 'package:courseplease/blocs/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
+// TODO: Rename to something like 'ListStateCubit'.
 class SelectionCubit<T> extends Bloc {
   final Map<T, T> _all = Map<T, T>();
   final Map<T, T> _selected = Map<T, T>();
   bool _canSelectMore = false;
+  bool _wasSourceListEverNotEmpty = false;
 
   final initialState = SelectionState<T>(
     selected: false,
     selectedIds: Map<T, T>(),
     canSelectMore: false,
+    isSourceListEmpty: true,
+    wasSourceListEmptied: false,
   );
 
   final _outStateController = BehaviorSubject<SelectionState<T>>();
@@ -68,6 +72,10 @@ class SelectionCubit<T> extends Bloc {
       }
     }
 
+    if (all.isNotEmpty) {
+      _wasSourceListEverNotEmpty = true;
+    }
+
     _onChanged();
   }
 
@@ -82,6 +90,8 @@ class SelectionCubit<T> extends Bloc {
         selected: _selected.isNotEmpty,
         selectedIds: UnmodifiableMapView<T, T>(_selected),
         canSelectMore: _canSelectMore,
+        isSourceListEmpty: _all.isEmpty,
+        wasSourceListEmptied: _all.isEmpty && _wasSourceListEverNotEmpty,
       ),
     );
   }
@@ -96,10 +106,14 @@ class SelectionState<T> {
   final bool selected;
   final Map<T, T> selectedIds;
   final bool canSelectMore;
+  final bool isSourceListEmpty;
+  final bool wasSourceListEmptied;
 
   SelectionState({
     @required this.selected,
     @required this.selectedIds,
     @required this.canSelectMore,
+    @required this.isSourceListEmpty,
+    @required this.wasSourceListEmptied,
   });
 }

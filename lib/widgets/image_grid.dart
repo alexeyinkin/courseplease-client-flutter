@@ -187,7 +187,7 @@ class UnsortedPhotoGrid extends AbstractPhotoGrid<UnsortedPhotoFilter, UnsortedP
   UnsortedPhotoGrid({
     @required Axis scrollDirection,
     @required SliverGridDelegate gridDelegate,
-    @required SelectionCubit selectionCubit,
+    SelectionCubit selectionCubit,
   }) : super(
     filter: UnsortedPhotoFilter(),
     scrollDirection: scrollDirection,
@@ -224,6 +224,7 @@ class UnsortedPhotoGridState extends AbstractPhotoGridState<UnsortedPhotoFilter,
       filter: widget.filter,
       index: index,
       onTap: onTap,
+      selectable: widget.selectionCubit != null,
       selected: selected,
       onSelected: onSelected,
     );
@@ -236,6 +237,7 @@ class UnsortedPhotoTile extends PhotoTile<UnsortedPhotoFilter> {
     @required UnsortedPhotoFilter filter,
     @required int index,
     VoidCallback onTap, // Nullable
+    @required bool selectable,
     @required bool selected,
     @required ValueChanged<bool> onSelected,
   }) : super(
@@ -243,7 +245,7 @@ class UnsortedPhotoTile extends PhotoTile<UnsortedPhotoFilter> {
     filter: filter,
     index: index,
     onTap: onTap,
-    selectable: true,
+    selectable: selectable,
     selected: selected,
     onSelected: onSelected,
   );

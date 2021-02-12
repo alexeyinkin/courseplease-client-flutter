@@ -8,6 +8,7 @@ import 'package:courseplease/widgets/auth/sign_out_button.dart';
 import 'package:courseplease/widgets/linked_profiles.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/profile.dart';
+import 'package:courseplease/widgets/unsorted_media_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -92,7 +93,17 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
 
     return ListTile(
       title: Text(AppLocalizations.of(context).sortImportedMedia),
-      trailing: Icon(Icons.chevron_right),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            child: UnsortedMediaPreviewWidget(),
+            width: 150,
+            height: 40,
+          ),
+          Icon(Icons.chevron_right),
+        ],
+      ),
       onTap: () => _sortUnsortedMedia(),
     );
   }

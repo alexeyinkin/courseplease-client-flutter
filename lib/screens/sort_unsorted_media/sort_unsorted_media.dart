@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:courseplease/blocs/selection.dart';
 import 'package:courseplease/blocs/sort_unsorted.dart';
 import 'package:courseplease/widgets/image_grid.dart';
@@ -16,10 +17,12 @@ class SortUnsortedMediaScreen extends StatefulWidget {
 
 class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
   final _photoSelection = SelectionCubit<int>();
+  StreamSubscription _photoSelectionSubscription;
   SortUnsortedImagesCubit _sortUnsortedImagesCubit;
 
   _SortUnsortedMediaScreenState() {
     _sortUnsortedImagesCubit = SortUnsortedImagesCubit(selectionCubit: _photoSelection);
+    _photoSelectionSubscription = _photoSelection.outState.listen(_onSelectionChange);
   }
 
   @override
@@ -166,5 +169,18 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
 
   void _onDeletePressed() {
     _sortUnsortedImagesCubit.deleteSelected();
+  }
+
+  void _onSelectionChange(SelectionState selectionState) {
+    if (selectionState.wasSourceListEmptied) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _photoSelectionSubscription.cancel();
+    // TODO: implement dispose
+    super.dispose();
   }
 }
