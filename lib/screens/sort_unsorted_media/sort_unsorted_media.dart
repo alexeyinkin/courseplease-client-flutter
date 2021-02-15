@@ -43,6 +43,7 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
                 crossAxisSpacing: 1,
               ),
               listStateCubit: _photoListCubit,
+              showMappingsOverlay: true,
             ),
           ),
           _buildSelectionToolbar(),

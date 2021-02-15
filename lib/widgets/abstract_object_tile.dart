@@ -26,6 +26,7 @@ class AbstractObjectTile<I, O extends WithId<I>, F extends AbstractFilter> exten
   final bool selectable;
   final bool selected;
   final ValueChanged<bool> onSelected;
+  final List<Widget> overlays;
 
   AbstractObjectTile({
     @required this.object,
@@ -35,6 +36,7 @@ class AbstractObjectTile<I, O extends WithId<I>, F extends AbstractFilter> exten
     this.selectable = false,
     this.selected = true,
     this.onSelected,
+    this.overlays = const <Widget>[],
   });
 
   @override

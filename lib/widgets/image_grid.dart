@@ -22,6 +22,7 @@ abstract class AbstractPhotoGrid<F extends AbstractFilter, R extends AbstractPho
   final SliverGridDelegate gridDelegate;
   final Widget titleIfNotEmpty; // Nullable.
   final SelectableListCubit listStateCubit; // Nullable.
+  final bool showMappingsOverlay;
 
   AbstractPhotoGrid({
     @required this.filter,
@@ -29,6 +30,7 @@ abstract class AbstractPhotoGrid<F extends AbstractFilter, R extends AbstractPho
     @required this.gridDelegate,
     this.titleIfNotEmpty,
     this.listStateCubit,
+    this.showMappingsOverlay = false,
   }) : super(key: ValueKey(filter.toString()));
 
   bool isFilterValid(F filter) {
@@ -79,13 +81,21 @@ class AbstractPhotoGridState<F extends AbstractFilter, R extends AbstractPhotoRe
     bool selected,
     ValueChanged<bool> onSelected,
   }) {
+    final overlays = <Widget>[];
+
+    if (widget.showMappingsOverlay) {
+      overlays.add(ImageMappingsOverlay(object: object));
+    }
+
     return PhotoTile(
       object: object,
       filter: widget.filter,
       index: index,
       onTap: onTap,
+      selectable: widget.listStateCubit != null,
       selected: selected,
       onSelected: onSelected,
+      overlays: overlays,
     );
   }
 }
@@ -99,6 +109,7 @@ class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo,
     bool selectable = false,
     bool selected = false,
     ValueChanged<bool> onSelected, // Nullable
+    List<Widget> overlays = const <Widget>[],
   }) : super(
     object: object,
     filter: filter,
@@ -107,6 +118,7 @@ class PhotoTile<F extends AbstractFilter> extends AbstractObjectTile<int, Photo,
     selectable: selectable,
     selected: selected,
     onSelected: onSelected,
+    overlays: overlays,
   );
 
   @override
@@ -131,7 +143,7 @@ class PhotoTileState<F extends AbstractFilter> extends AbstractObjectTileState<i
               ),
             ),
             getCheckboxOverlay(),
-            ...buildOverlays(context),
+            ...widget.overlays,
           ],
         ),
       ),
@@ -141,11 +153,6 @@ class PhotoTileState<F extends AbstractFilter> extends AbstractObjectTileState<i
   String _getUrl() {
     return 'https://courseplease.com' + widget.object.urls['300x300'];
   }
-
-  @protected
-  List<Widget> buildOverlays(BuildContext context) {
-    return <Widget>[];
-  }
 }
 
 class GalleryPhotoGrid extends AbstractPhotoGrid<GalleryPhotoFilter, GalleryPhotoRepository> {
@@ -154,11 +161,13 @@ class GalleryPhotoGrid extends AbstractPhotoGrid<GalleryPhotoFilter, GalleryPhot
     @required Axis scrollDirection,
     @required SliverGridDelegate gridDelegate,
     Widget titleIfNotEmpty, // Nullable
+    bool showMappingsOverlay = false,
   }) : super(
     filter: filter,
     scrollDirection: scrollDirection,
     gridDelegate: gridDelegate,
     titleIfNotEmpty: titleIfNotEmpty,
+    showMappingsOverlay: showMappingsOverlay,
   );
 
   @override
@@ -188,11 +197,13 @@ class UnsortedPhotoGrid extends AbstractPhotoGrid<UnsortedPhotoFilter, UnsortedP
     @required Axis scrollDirection,
     @required SliverGridDelegate gridDelegate,
     SelectableListCubit listStateCubit,
+    bool showMappingsOverlay = false,
   }) : super(
     filter: UnsortedPhotoFilter(),
     scrollDirection: scrollDirection,
     gridDelegate: gridDelegate,
     listStateCubit: listStateCubit,
+    showMappingsOverlay: showMappingsOverlay,
   );
 
   @override
@@ -210,61 +221,19 @@ class UnsortedPhotoGridState extends AbstractPhotoGridState<UnsortedPhotoFilter,
       ),
     );
   }
-
-  @protected
-  UnsortedPhotoTile createTile({
-    @required Photo object,
-    @required int index,
-    @required VoidCallback onTap,
-    @required bool selected,
-    @required ValueChanged<bool> onSelected,
-  }) {
-    return UnsortedPhotoTile(
-      object: object,
-      filter: widget.filter,
-      index: index,
-      onTap: onTap,
-      selectable: widget.listStateCubit != null,
-      selected: selected,
-      onSelected: onSelected,
-    );
-  }
 }
 
-class UnsortedPhotoTile extends PhotoTile<UnsortedPhotoFilter> {
-  UnsortedPhotoTile({
-    @required Photo object,
-    @required UnsortedPhotoFilter filter,
-    @required int index,
-    VoidCallback onTap, // Nullable
-    @required bool selectable,
-    @required bool selected,
-    @required ValueChanged<bool> onSelected,
-  }) : super(
-    object: object,
-    filter: filter,
-    index: index,
-    onTap: onTap,
-    selectable: selectable,
-    selected: selected,
-    onSelected: onSelected,
-  );
+class ImageMappingsOverlay extends StatelessWidget {
+  final Photo object;
+
+  ImageMappingsOverlay({
+    @required this.object,
+  });
 
   @override
-  State<AbstractObjectTile> createState() => UnsortedPhotoTileState();
-}
-
-class UnsortedPhotoTileState extends PhotoTileState<UnsortedPhotoFilter> {
-  @override
-  List<Widget> buildOverlays(BuildContext context) {
-    return [
-      _getOriginOverlay(),
-    ];
-  }
-
-  Widget _getOriginOverlay() {
-    if (widget.object.mappings.isEmpty) return Container();
-    final mapping = widget.object.mappings[0];
+  Widget build(BuildContext context) {
+    if (object.mappings.isEmpty) return Container();
+    final mapping = object.mappings[0];
 
     final icon = mapping.classShortIntName == null
         ? Container()
