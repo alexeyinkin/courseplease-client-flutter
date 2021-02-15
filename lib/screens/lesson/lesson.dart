@@ -22,7 +22,7 @@ class LessonScreen extends StatefulWidget {
 
 class _LessonScreenState extends State<LessonScreen> {
   final _lessonByIdBloc = ModelByIdBloc<int, Lesson>(
-      modelCacheBloc: GetIt.instance.get<ModelCacheFactory>().getOrCreate<int, Lesson, LessonRepository>(),
+      modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Lesson, LessonRepository>(),
   );
 
   int _lessonId;

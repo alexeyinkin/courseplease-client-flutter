@@ -28,7 +28,7 @@ abstract class AbstractPhotoLightboxScreenState<
   F extends AbstractFilter,
   R extends AbstractPhotoRepository<F>
 > extends State<AbstractPhotoLightboxScreen<F, R>> {
-  final _filteredModelListFactory = GetIt.instance.get<FilteredModelListFactory>();
+  final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
 
   PageController _pageController;
   F _filter;
@@ -41,7 +41,7 @@ abstract class AbstractPhotoLightboxScreenState<
   @override
   Widget build(BuildContext context) {
     _parseArgumentsIfNot(context);
-    final listBloc = _filteredModelListFactory.getOrCreate<int, Photo, F, R>(_filter);
+    final listBloc = _filteredModelListCache.getOrCreate<int, Photo, F, R>(_filter);
 
     return StreamBuilder(
       stream: listBloc.outState,
@@ -170,7 +170,7 @@ class GalleryPhotoLightboxScreen extends AbstractPhotoLightboxScreen<GalleryPhot
 
 class GalleryPhotoLightboxScreenState extends AbstractPhotoLightboxScreenState<GalleryPhotoFilter, GalleryPhotoRepository> {
   final _teacherByIdBloc = ModelByIdBloc<int, Teacher>(
-    modelCacheBloc: GetIt.instance.get<ModelCacheFactory>().getOrCreate<int, Teacher, TeacherRepository>(),
+    modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Teacher, TeacherRepository>(),
   );
 
   @override

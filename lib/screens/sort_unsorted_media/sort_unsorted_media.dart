@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:courseplease/blocs/selection.dart';
+import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/blocs/sort_unsorted.dart';
 import 'package:courseplease/widgets/image_grid.dart';
 import 'package:courseplease/widgets/pad.dart';
@@ -16,13 +16,13 @@ class SortUnsortedMediaScreen extends StatefulWidget {
 }
 
 class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
-  final _photoSelection = SelectionCubit<int>();
+  final _photoListCubit = SelectableListCubit<int>();
   StreamSubscription _photoSelectionSubscription;
   SortUnsortedImagesCubit _sortUnsortedImagesCubit;
 
   _SortUnsortedMediaScreenState() {
-    _sortUnsortedImagesCubit = SortUnsortedImagesCubit(selectionCubit: _photoSelection);
-    _photoSelectionSubscription = _photoSelection.outState.listen(_onSelectionChange);
+    _sortUnsortedImagesCubit = SortUnsortedImagesCubit(listStateCubit: _photoListCubit);
+    _photoSelectionSubscription = _photoListCubit.outState.listen(_onSelectionChange);
   }
 
   @override
@@ -42,7 +42,7 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
                 mainAxisSpacing: 1,
                 crossAxisSpacing: 1,
               ),
-              selectionCubit: _photoSelection,
+              listStateCubit: _photoListCubit,
             ),
           ),
           _buildSelectionToolbar(),
@@ -127,13 +127,13 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
 
   Widget _buildSelectionToolbar() {
     return StreamBuilder(
-      stream: _photoSelection.outState,
-      initialData: _photoSelection.initialState,
+      stream: _photoListCubit.outState,
+      initialData: _photoListCubit.initialState,
       builder: (context, snapshot) => _buildSelectionToolbarWithState(snapshot.data),
     );
   }
 
-  Widget _buildSelectionToolbarWithState(SelectionState selectionState) {
+  Widget _buildSelectionToolbarWithState(SelectableListState selectionState) {
     return Row(
       children: [
         padRight(
@@ -156,11 +156,11 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
   }
 
   void _selectAll() {
-    _photoSelection.selectAll();
+    _photoListCubit.selectAll();
   }
 
   void _selectNone() {
-    _photoSelection.selectNone();
+    _photoListCubit.selectNone();
   }
 
   void _onPublishPressed() {
@@ -171,8 +171,8 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
     _sortUnsortedImagesCubit.deleteSelected();
   }
 
-  void _onSelectionChange(SelectionState selectionState) {
-    if (selectionState.wasSourceListEmptied) {
+  void _onSelectionChange(SelectableListState selectionState) {
+    if (selectionState.wasEmptied) {
       Navigator.of(context).pop();
     }
   }

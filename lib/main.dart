@@ -40,8 +40,8 @@ void main() {
       ..registerSingleton<TeacherRepository>(TeacherRepository())
       ..registerSingleton<LessonRepository>(LessonRepository())
 
-      ..registerSingleton<ModelCacheFactory>(ModelCacheFactory())
-      ..registerSingleton<FilteredModelListFactory>(FilteredModelListFactory())
+      ..registerSingleton<ModelCacheCache>(ModelCacheCache())
+      ..registerSingleton<FilteredModelListCache>(FilteredModelListCache())
 
       ..registerSingleton<ProductSubjectCacheBloc>(ProductSubjectCacheBloc(repository: productSubjectRepository))
 

@@ -108,10 +108,12 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     );
   }
 
-  void _sortUnsortedMedia() {
-    Navigator.of(context).pushNamed(
+  void _sortUnsortedMedia() async {
+    await Navigator.of(context).pushNamed(
       SortUnsortedMediaScreen.routeName,
     );
+
+    _authenticationCubit.reloadCurrentActor();
   }
 
   void _editProfile(User user) {

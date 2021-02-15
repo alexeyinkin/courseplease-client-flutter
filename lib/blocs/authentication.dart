@@ -169,6 +169,10 @@ class AuthenticationBloc extends Bloc{
     }
   }
 
+  void reloadCurrentActor() {
+    _testDeviceKey(_authenticationState.deviceKey);
+  }
+
   void saveProfile(SaveProfileRequest request) async {
     final me = await _apiClient.saveProfile(request);
     _setMe(me, _authenticationState.deviceKey);

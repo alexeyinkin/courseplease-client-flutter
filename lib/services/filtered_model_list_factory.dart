@@ -5,7 +5,8 @@ import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:get_it/get_it.dart';
 
-class FilteredModelListFactory {
+class FilteredModelListCache {
+  final _factory = FilteredModelListFactory();
   final _map = Map<Type, Map<Type, Map<String, FilteredModelListBloc>>>();
   //               ^Object   ^Filter   ^Filter
   //                type      type      toString
@@ -29,18 +30,12 @@ class FilteredModelListFactory {
     }
 
     if (!_map[objectType][filterType].containsKey(filterString)) {
-      final repository = GetIt.instance.get<R>();
-      _map[objectType][filterType][filterString] = FilteredModelListBloc<I, O, F>(
-        repository: repository,
-        filter: filter,
-      );
+      _map[objectType][filterType][filterString] = _factory.create<I, O, F, R>(filter);
     }
 
     return _map[objectType][filterType][filterString];
   }
 
-  // TODO: Decompose this class to the Factory and the Cache.
-  //       Otherwise this method's name makes no sense of Factory.
   Map<String, FilteredModelListBloc> getModelListsByObjectAndFilterTypes<O, F>() {
     final objectType = _typeOf<O>();
     final filterType = _typeOf<F>();
@@ -49,4 +44,19 @@ class FilteredModelListFactory {
   }
 
   Type _typeOf<T>() => T;
+}
+
+class FilteredModelListFactory {
+  FilteredModelListBloc<I, O, F> create<
+    I,
+    O extends WithId<I>,
+    F extends AbstractFilter,
+    R extends AbstractFilteredRepository<I, O, F>
+  >(F filter) {
+    final repository = GetIt.instance.get<R>();
+    return FilteredModelListBloc<I, O, F>(
+      repository: repository,
+      filter: filter,
+    );
+  }
 }

@@ -34,7 +34,7 @@ class TeacherScreen extends StatefulWidget {
 
 class _TeacherScreenState extends State<TeacherScreen> {
   final _teacherByIdBloc = ModelByIdBloc<int, Teacher>(
-    modelCacheBloc: GetIt.instance.get<ModelCacheFactory>().getOrCreate<int, Teacher, TeacherRepository>(),
+    modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Teacher, TeacherRepository>(),
   );
   final _productSubjectsByIdsBloc = ModelListByIdsBloc<int, ProductSubject>(
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),

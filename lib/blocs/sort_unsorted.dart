@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/product_subject_cache.dart';
-import 'package:courseplease/blocs/selection.dart';
+import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/photo.dart';
 import 'package:courseplease/models/photo.dart';
 import 'package:courseplease/models/product_subject.dart';
@@ -16,7 +16,7 @@ import 'authentication.dart';
 import 'bloc.dart';
 
 class SortUnsortedImagesCubit extends Bloc {
-  final SelectionCubit _selectionCubit;
+  final SelectableListCubit _listStateCubit;
   StreamSubscription _selectionCubitSubscription;
 
   final _authenticationBloc = GetIt.instance.get<AuthenticationBloc>();
@@ -29,9 +29,9 @@ class SortUnsortedImagesCubit extends Bloc {
   Stream<SortUnsortedState> get outState => _outStateController.stream;
 
   final _apiClient = GetIt.instance.get<ApiClient>();
-  final _filteredModelListFactory = GetIt.instance.get<FilteredModelListFactory>();
+  final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
 
-  SelectionState _selectionState;
+  SelectableListState _selectionState;
   AuthenticationState _authenticationState;
   Map<int, ProductSubject> _productSubjects;
   PublishAction _action; // Nullable
@@ -61,16 +61,16 @@ class SortUnsortedImagesCubit extends Bloc {
   ];
 
   SortUnsortedImagesCubit({
-    @required SelectionCubit selectionCubit,
+    @required SelectableListCubit listStateCubit,
   }) :
-      _selectionCubit = selectionCubit
+      _listStateCubit = listStateCubit
   {
-    _selectionCubitSubscription = _selectionCubit.outState.listen(_onSelectionChange);
+    _selectionCubitSubscription = _listStateCubit.outState.listen(_onSelectionChange);
     _authenticationBlocSubscription = _authenticationBloc.outState.listen(_onAuthenticationChange);
     _productSubjectCacheSubscription = _productSubjectCacheBloc.outObjectsByIds.listen(_onProductSubjectsChange);
   }
 
-  void _onSelectionChange(SelectionState selectionState) {
+  void _onSelectionChange(SelectableListState selectionState) {
     _selectionState = selectionState;
     _pushOutput();
   }
@@ -222,11 +222,11 @@ class SortUnsortedImagesCubit extends Bloc {
   void _onRequestSuccess(_) {
     _requestFuture = null;
     _removeSortedFromModelLists();
-    _selectionCubit.selectNone(); // This will push output.
+    _listStateCubit.selectNone(); // This will push output.
   }
 
   void _removeSortedFromModelLists() {
-    final lists = _filteredModelListFactory.getModelListsByObjectAndFilterTypes<Photo, UnsortedPhotoFilter>();
+    final lists = _filteredModelListCache.getModelListsByObjectAndFilterTypes<Photo, UnsortedPhotoFilter>();
 
     for (final list in lists.values) {
       list.removeObjectIds(_selectionState.selectedIds.keys.toList());

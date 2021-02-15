@@ -1,5 +1,5 @@
 import 'package:courseplease/blocs/filtered_model_list.dart';
-import 'package:courseplease/blocs/selection.dart';
+import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
@@ -20,7 +20,7 @@ class ObjectGrid<
   final Axis scrollDirection;
   final SliverGridDelegate gridDelegate;
   final Widget titleIfNotEmpty; // Nullable
-  final SelectionCubit selectionCubit; // Nullable
+  final SelectableListCubit listStateCubit; // Nullable
   F filter = null;
 
   ObjectGrid({
@@ -30,7 +30,7 @@ class ObjectGrid<
     @required this.scrollDirection,
     @required this.gridDelegate,
     this.titleIfNotEmpty, // Nullable
-    this.selectionCubit, // Nullable
+    this.listStateCubit, // Nullable
   });
 
   @override
@@ -48,7 +48,7 @@ class ObjectGridState<
   R extends AbstractFilteredRepository<I, O, F>,
   T extends AbstractObjectTile<I, O, F>
 > extends State<ObjectGrid<I, O, F, R, T>> with AutomaticKeepAliveClientMixin<ObjectGrid<I, O, F, R, T>> {
-  final _factory = GetIt.instance.get<FilteredModelListFactory>();
+  final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
   final _scrollController = ScrollController(keepScrollOffset: false);
   final TileFactory<I, O, F, T> _tileFactory;
 
@@ -68,7 +68,7 @@ class ObjectGridState<
   Widget build(BuildContext context) {
     super.build(context);
 
-    final listBloc = _factory.getOrCreate<I, O, F, R>(widget.filter);
+    final listBloc = _filteredModelListCache.getOrCreate<I, O, F, R>(widget.filter);
     listBloc.loadInitialIfNot();
 
     return StreamBuilder(
@@ -83,26 +83,26 @@ class ObjectGridState<
     ModelListState<I, O> listState,
     FilteredModelListBloc listBloc,
   ) {
-    if (widget.selectionCubit == null) {
+    if (widget.listStateCubit == null) {
       return _buildWithListAndSelectionStates(context, listState, listBloc, null);
     }
 
-    widget.selectionCubit.setAll(listState.objectIds);
+    widget.listStateCubit.setAll(listState.objectIds);
 
     return StreamBuilder(
-      stream: widget.selectionCubit.outState,
-      initialData: widget.selectionCubit.initialState,
+      stream: widget.listStateCubit.outState,
+      initialData: widget.listStateCubit.initialState,
       builder: (context, snapshot) => _buildWithListAndSelectionStates(context, listState, listBloc, snapshot.data),
     );
   }
 
   Widget _buildWithListAndSelectionStates(
     BuildContext context,
-    ModelListState<I, O> listState,
+    ModelListState<I, O> modelListState,
     FilteredModelListBloc listBloc,
-    SelectionState<I> selectionState, // Nullable
+    SelectableListState<I> selectionState, // Nullable
   ) {
-    final length = listState.objects.length;
+    final length = modelListState.objects.length;
     final children = <Widget>[];
 
     if (length > 0 && widget.titleIfNotEmpty != null) {
@@ -119,10 +119,10 @@ class ObjectGridState<
                 widget.filter.toString()),
             scrollDirection: widget.scrollDirection,
             gridDelegate: widget.gridDelegate,
-            itemCount: listState.hasMore ? null : length,
+            itemCount: modelListState.hasMore ? null : length,
             itemBuilder: (context, index) {
               if (index < length) {
-                final object = listState.objects[index];
+                final object = modelListState.objects[index];
                 return _tileFactory(
                   object: object,
                   index: index,
@@ -153,8 +153,8 @@ class ObjectGridState<
   }
 
   void _onSelected(O object, bool selected) {
-    if (widget.selectionCubit != null) {
-      widget.selectionCubit.setSelected(object.id, selected);
+    if (widget.listStateCubit != null) {
+      widget.listStateCubit.setSelected(object.id, selected);
     }
   }
 }

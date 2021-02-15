@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:courseplease/blocs/selection.dart';
+import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/repositories/photo.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -21,14 +21,14 @@ abstract class AbstractPhotoGrid<F extends AbstractFilter, R extends AbstractPho
   final Axis scrollDirection;
   final SliverGridDelegate gridDelegate;
   final Widget titleIfNotEmpty; // Nullable.
-  final SelectionCubit selectionCubit; // Nullable.
+  final SelectableListCubit listStateCubit; // Nullable.
 
   AbstractPhotoGrid({
     @required this.filter,
     @required this.scrollDirection,
     @required this.gridDelegate,
     this.titleIfNotEmpty,
-    this.selectionCubit,
+    this.listStateCubit,
   }) : super(key: ValueKey(filter.toString()));
 
   bool isFilterValid(F filter) {
@@ -64,7 +64,7 @@ class AbstractPhotoGridState<F extends AbstractFilter, R extends AbstractPhotoRe
       },
       scrollDirection: widget.scrollDirection,
       gridDelegate: widget.gridDelegate,
-      selectionCubit: widget.selectionCubit,
+      listStateCubit: widget.listStateCubit,
     );
   }
 
@@ -187,12 +187,12 @@ class UnsortedPhotoGrid extends AbstractPhotoGrid<UnsortedPhotoFilter, UnsortedP
   UnsortedPhotoGrid({
     @required Axis scrollDirection,
     @required SliverGridDelegate gridDelegate,
-    SelectionCubit selectionCubit,
+    SelectableListCubit listStateCubit,
   }) : super(
     filter: UnsortedPhotoFilter(),
     scrollDirection: scrollDirection,
     gridDelegate: gridDelegate,
-    selectionCubit: selectionCubit,
+    listStateCubit: listStateCubit,
   );
 
   @override
@@ -224,7 +224,7 @@ class UnsortedPhotoGridState extends AbstractPhotoGridState<UnsortedPhotoFilter,
       filter: widget.filter,
       index: index,
       onTap: onTap,
-      selectable: widget.selectionCubit != null,
+      selectable: widget.listStateCubit != null,
       selected: selected,
       onSelected: onSelected,
     );
