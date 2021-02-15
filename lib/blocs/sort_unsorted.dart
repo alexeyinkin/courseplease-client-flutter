@@ -209,7 +209,7 @@ class SortUnsortedImagesCubit extends Bloc {
     return MediaSortCommand(
       type: _mediaType,
       id: id,
-      action: enumValueAfterDot(_action),
+      action: enumValueAfterDot(PublishAction.delete),
     );
   }
 
@@ -272,4 +272,5 @@ enum PublishAction {
   portfolio,
   customersPortfolio,
   backstage,
+  delete,
 }

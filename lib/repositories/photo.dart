@@ -55,7 +55,7 @@ class GalleryPhotoRepository extends AbstractPhotoRepository<GalleryPhotoFilter>
 }
 
 class UnsortedPhotoRepository extends AbstractPhotoRepository<UnsortedPhotoFilter> {
-  static const _entitiesName = 'sort/unsorted/photos';
+  static const _entitiesName = 'sort/unsorted/images';
 
   @override
   String getEntitiesName() {
