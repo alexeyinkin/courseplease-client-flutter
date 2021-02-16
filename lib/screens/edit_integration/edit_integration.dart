@@ -1,4 +1,4 @@
-import 'package:courseplease/blocs/edit_integration.dart';
+import 'package:courseplease/screens/edit_integration/local_blocs/edit_integration.dart';
 import 'package:courseplease/models/common.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/contact/instagram.dart';

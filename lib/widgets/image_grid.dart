@@ -239,9 +239,20 @@ class ImageMappingsOverlay extends StatelessWidget {
         ? Container()
         : padRight(AuthProviderIcon(name: mapping.classShortIntName, scale: .5));
 
-    final timeAgo = mapping.dateTimeSyncFromRemote == null
-        ? ''
-        : formatRoughDuration(DateTime.now().difference(mapping.dateTimeSyncFromRemote), AppLocalizations.of(context));
+    final textParts = <String>[];
+
+    if (mapping.contactUsername != null) {
+      textParts.add(mapping.contactUsername);
+    }
+
+    if (mapping.dateTimeSyncFromRemote != null) {
+      textParts.add(
+        formatRoughDuration(
+          DateTime.now().difference(mapping.dateTimeSyncFromRemote),
+          AppLocalizations.of(context),
+        ),
+      );
+    }
 
     return Positioned(
       left: 0,
@@ -251,7 +262,7 @@ class ImageMappingsOverlay extends StatelessWidget {
         child: Row(
           children: [
             icon,
-            Text(timeAgo),
+            Text(textParts.join(' · ')),
           ],
         ),
       ),
