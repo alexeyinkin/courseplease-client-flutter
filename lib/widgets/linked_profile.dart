@@ -88,8 +88,7 @@ class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
     Navigator.of(context).pushNamed(
       EditIntegrationScreen.routeName,
       arguments: EditIntegrationScreenArguments(
-        meResponseData: widget.meResponseData,
-        contact:        EditableContact.from(widget.contact),
+        contactClone: EditableContact.from(widget.contact),
       ),
     );
   }

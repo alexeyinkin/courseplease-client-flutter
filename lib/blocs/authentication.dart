@@ -178,8 +178,18 @@ class AuthenticationBloc extends Bloc{
     _setMe(me, _authenticationState.deviceKey);
   }
 
-  void saveContactParams(SaveContactParamsRequest request) async {
+  Future saveContactParams(SaveContactParamsRequest request) async {
     final me = await _apiClient.saveContactParams(request);
+    _setMe(me, _authenticationState.deviceKey);
+  }
+
+  Future syncProfileSync(int contactId) async {
+    final me = await _apiClient.syncProfileSync(contactId);
+    _setMe(me, _authenticationState.deviceKey);
+  }
+
+  void syncProfilesSync() async {
+    final me = await _apiClient.syncProfilesSync();
     _setMe(me, _authenticationState.deviceKey);
   }
 

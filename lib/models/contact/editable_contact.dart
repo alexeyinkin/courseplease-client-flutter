@@ -6,7 +6,7 @@ import 'profile_sync_status.dart';
 class EditableContact extends Contact {
   bool downloadEnabled;
   final DateTime tokenExpire; // Nullable.
-  final ProfileSyncStatus profileSyncStatus; // Nullable.
+  final ProfileSyncStatus profileSyncStatus;
   final ContactParams params;
 
   EditableContact({
@@ -28,7 +28,6 @@ class EditableContact extends Contact {
   factory EditableContact.fromMap(Map<String, dynamic> map) {
     final className = map['class'];
     final tokenExpireString = map['tokenExpire'];
-    final profileSyncStatusMap = map['profileSyncStatus'];
 
     return EditableContact(
       id:                 map['id'],
@@ -37,7 +36,7 @@ class EditableContact extends Contact {
       username:           map['username'],
       downloadEnabled:    map['downloadEnabled'],
       tokenExpire:        tokenExpireString == null ? null : DateTime.parse(tokenExpireString),
-      profileSyncStatus:  profileSyncStatusMap == null ? null : ProfileSyncStatus.fromMap(profileSyncStatusMap),
+      profileSyncStatus:  ProfileSyncStatus.fromMap(map['profileSyncStatus']),
       params:             ContactParamsFactory.create(className, map['params']),
     );
   }
@@ -61,7 +60,7 @@ class EditableContact extends Contact {
       username:           contact.username,
       downloadEnabled:    contact.downloadEnabled,
       tokenExpire:        contact.tokenExpire,
-      profileSyncStatus:  contact.profileSyncStatus == null ? null : ProfileSyncStatus.from(contact.profileSyncStatus),
+      profileSyncStatus:  ProfileSyncStatus.from(contact.profileSyncStatus),
       params:             contact.params.clone(),
     );
   }

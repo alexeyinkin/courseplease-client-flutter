@@ -70,6 +70,22 @@ class ApiClient {
     return MeResponseData.fromMap(mapResponse.data);
   }
 
+  Future<MeResponseData> syncProfileSync(int contactId) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/me/syncProfileSync/' + contactId.toString(),
+    );
+    return MeResponseData.fromMap(mapResponse.data);
+  }
+
+  Future<MeResponseData> syncProfilesSync() async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/me/syncProfilesSync',
+    );
+    return MeResponseData.fromMap(mapResponse.data);
+  }
+
   Future sortUnsortedMedia(MediaSortRequest request) {
     return sendRequest(
       method: HttpMethod.post,
