@@ -37,11 +37,9 @@ class InstagramStatusCubit extends ContactStatusCubit {
   }
 
   @override
-  ContactStatus getContactStatus(EditableContact contact) {
+  String getProfileSyncOkDescription(EditableContact contact) {
     final descriptionParts = <String>[];
     final params = contact.params as InstagramContactParams;
-
-    descriptionParts.add(getOnOffDescription(contact));
 
     if (contact.downloadEnabled) {
       switch (params.newPhotoAction) {
@@ -57,10 +55,7 @@ class InstagramStatusCubit extends ContactStatusCubit {
       }
     }
 
-    return ContactStatus(
-      description: descriptionParts.join(' '),
-      problems: null,
-    );
+    return descriptionParts.join(' ');
   }
 
   @override

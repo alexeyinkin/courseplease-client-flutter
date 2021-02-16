@@ -68,5 +68,32 @@
 
   "albumMyPortfolio": "My Portfolio",
   "albumMyStudentsPortfolio": "My Students' Works",
-  "albumBackstage": "Backstage"
+  "albumBackstage": "Backstage",
+
+  "editIntegrationUpdateNow": "Update Now",
+  "@editIntegrationUpdateNow": {
+    "description": "Edit Integration screen, update now button"
+  },
+
+  "editIntegrationNeverUpdated": "Never tried to update",
+  "@editIntegrationNeverUpdated": {
+    "description": "Edit Integration screen"
+  },
+
+  "editIntegrationLastUpdated": "Last updated {duration} ago",
+  "@editIntegrationLastUpdated": {
+    "description": "Edit Integration screen",
+    "placeholders": {"duration": {}}
+  },
+
+  "editIntegrationErrorLastTried": "Error, last tried {duration} ago",
+  "@editIntegrationErrorLastTried": {
+    "description": "Edit Integration screen",
+    "placeholders": {"duration": {}}
+  },
+
+  "editIntegrationSynchronizingNow": "Synchronizing now",
+  "@editIntegrationSynchronizingNow": {
+    "description": "Edit Integration screen"
+  }
 }

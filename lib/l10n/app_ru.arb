@@ -65,5 +65,32 @@
 
   "albumMyPortfolio": "Мои готовые работы",
   "albumMyStudentsPortfolio": "Работы моих учеников",
-  "albumBackstage": "Рабочий процесс"
+  "albumBackstage": "Рабочий процесс",
+
+  "editIntegrationUpdateNow": "Выгрузить фотографии",
+  "@editIntegrationUpdateNow": {
+    "description": "Edit Integration screen, update now button"
+  },
+
+  "editIntegrationNeverUpdated": "Фотографии никогда не выгружались",
+  "@editIntegrationNeverUpdated": {
+    "description": "Edit Integration screen"
+  },
+
+  "editIntegrationLastUpdated": "Последняя выгрузка {duration} назад",
+  "@editIntegrationLastUpdated": {
+    "description": "Edit Integration screen",
+    "placeholders": {"duration": {}}
+  },
+
+  "editIntegrationErrorLastTried": "Ошибка, последняя попытка {duration} назад",
+  "@editIntegrationErrorLastTried": {
+    "description": "Edit Integration screen",
+    "placeholders": {"duration": {}}
+  },
+
+  "editIntegrationSynchronizingNow": "Идёт выгрузка",
+  "@editIntegrationSynchronizingNow": {
+    "description": "Edit Integration screen"
+  }
 }

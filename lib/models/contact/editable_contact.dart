@@ -1,10 +1,12 @@
 import 'package:courseplease/models/contact/contact.dart';
 import 'package:courseplease/models/contact/instagram.dart';
 import 'package:meta/meta.dart';
+import 'profile_sync_status.dart';
 
 class EditableContact extends Contact {
   bool downloadEnabled;
   final DateTime tokenExpire; // Nullable.
+  final ProfileSyncStatus profileSyncStatus; // Nullable.
   final ContactParams params;
 
   EditableContact({
@@ -14,6 +16,7 @@ class EditableContact extends Contact {
     @required String username,
     @required this.downloadEnabled,
     @required this.tokenExpire,
+    @required this.profileSyncStatus,
     @required this.params,
   }) : super(
     id:         id,
@@ -25,15 +28,17 @@ class EditableContact extends Contact {
   factory EditableContact.fromMap(Map<String, dynamic> map) {
     final className = map['class'];
     final tokenExpireString = map['tokenExpire'];
+    final profileSyncStatusMap = map['profileSyncStatus'];
 
     return EditableContact(
-      id:               map['id'],
-      className:        className,
-      value:            map['value'],
-      username:         map['username'],
-      downloadEnabled:  map['downloadEnabled'],
-      tokenExpire:      tokenExpireString == null ? null : DateTime.parse(tokenExpireString),
-      params:           ContactParamsFactory.create(className, map['params']),
+      id:                 map['id'],
+      className:          className,
+      value:              map['value'],
+      username:           map['username'],
+      downloadEnabled:    map['downloadEnabled'],
+      tokenExpire:        tokenExpireString == null ? null : DateTime.parse(tokenExpireString),
+      profileSyncStatus:  profileSyncStatusMap == null ? null : ProfileSyncStatus.fromMap(profileSyncStatusMap),
+      params:             ContactParamsFactory.create(className, map['params']),
     );
   }
 
@@ -50,13 +55,14 @@ class EditableContact extends Contact {
 
   factory EditableContact.from(EditableContact contact) {
     return EditableContact(
-      id:               contact.id,
-      className:        contact.className,
-      value:            contact.value,
-      username:         contact.username,
-      downloadEnabled:  contact.downloadEnabled,
-      tokenExpire:      contact.tokenExpire,
-      params:           contact.params.clone(),
+      id:                 contact.id,
+      className:          contact.className,
+      value:              contact.value,
+      username:           contact.username,
+      downloadEnabled:    contact.downloadEnabled,
+      tokenExpire:        contact.tokenExpire,
+      profileSyncStatus:  contact.profileSyncStatus == null ? null : ProfileSyncStatus.from(contact.profileSyncStatus),
+      params:             contact.params.clone(),
     );
   }
 }

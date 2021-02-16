@@ -88,7 +88,7 @@ String generatePassword(int length) {
   return result;
 }
 
-String formatTimeAgo(Duration duration, AppLocalizations appLocalizations) {
+String formatRoughDuration(Duration duration, AppLocalizations appLocalizations) {
   if (duration.inSeconds < 60) {
     return appLocalizations.justNow;
   }

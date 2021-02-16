@@ -241,7 +241,7 @@ class ImageMappingsOverlay extends StatelessWidget {
 
     final timeAgo = mapping.dateTimeSyncFromRemote == null
         ? ''
-        : formatTimeAgo(DateTime.now().difference(mapping.dateTimeSyncFromRemote), AppLocalizations.of(context));
+        : formatRoughDuration(DateTime.now().difference(mapping.dateTimeSyncFromRemote), AppLocalizations.of(context));
 
     return Positioned(
       left: 0,

@@ -1,11 +1,15 @@
 import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/models/common.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/contact/instagram.dart';
 import 'package:courseplease/screens/edit_integration/local_widgets/instagram.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/theme/theme.dart';
+import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
+import 'package:courseplease/widgets/icon_text_status.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 
 class EditIntegrationScreen extends StatefulWidget {
@@ -44,6 +48,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
         child: Column(
           children: [
             _getTokenStatusWidget(),
+            _buildUpdateStatusWidget(),
             _getDownloadNewContentsToggle(),
             _getProviderSettingWidget(),
             _getSaveButton(),
@@ -68,39 +73,90 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   }
 
   Widget _getTokenStatusDaysLeftWidget(int daysLeft) {
-    return Row(
-      children: [
-        Container(
-          padding: EdgeInsets.only(right: 10),
-          child: Icon(Icons.check_circle, color: Color(0xFF00A000), size: 24),
-        ),
-        Text("Token is valid for $daysLeft more days."),
-      ],
+    return IconTextWidget(
+      iconName: StatusIconEnum.ok,
+      text: "Token is valid for $daysLeft more days.",
     );
   }
 
   Widget _getTokenStatusExpiresSoon() {
-    return Row(
-      children: [
-        Container(
-          padding: EdgeInsets.only(right: 10),
-          child: Icon(Icons.check_circle, color: Color(0xFF00A000), size: 24),
-        ),
-        Text("Token is valid and will expire in less than a day."),
-      ],
+    return IconTextWidget(
+      iconName: StatusIconEnum.ok,
+      text: "Token is valid and will expire in less than a day.",
     );
   }
 
   Widget _getTokenStatusInvalid() {
-    return Row(
-      children: [
-        Container(
-          padding: EdgeInsets.only(right: 10),
-          child: Icon(Icons.cancel, color: Color(0xFFA00000), size: 24),
-        ),
-        Text("No token. Authorize the app to download contents."),
-      ],
+    return IconTextWidget(
+      iconName: StatusIconEnum.error,
+      text: "No token. Authorize the app to download contents.",
+      // TODO: Add a button to re-authorize.
     );
+  }
+
+  Widget _buildUpdateStatusWidget() {
+    if (_contact.profileSyncStatus == null || _contact.profileSyncStatus.dateTimeUpdate == null) {
+      return _buildUpdateStatusNeverUpdated();
+    }
+
+    switch (_contact.profileSyncStatus.runStatus) {
+      case RunStatus.running:
+        return _buildUpdateStatusRunning();
+      case RunStatus.complete:
+        return _buildUpdateStatusComplete();
+      case RunStatus.error:
+        return _buildUpdateStatusError();
+    }
+    return Container();
+  }
+
+  Widget _buildUpdateStatusNeverUpdated() {
+    return IconTextWidget(
+      iconName: StatusIconEnum.error,
+      text: AppLocalizations.of(context).editIntegrationNeverUpdated,
+      trailing: _buildUpdateNowButton(),
+    );
+  }
+
+  Widget _buildUpdateStatusRunning() {
+    return IconTextWidget(
+      iconName: StatusIconEnum.sync,
+      text: AppLocalizations.of(context).editIntegrationSynchronizingNow,
+    );
+  }
+
+  Widget _buildUpdateStatusComplete() {
+    return IconTextWidget(
+      iconName: StatusIconEnum.ok,
+      text: AppLocalizations.of(context).editIntegrationLastUpdated(_getUpdatedTimeAgo()),
+      trailing: _buildUpdateNowButton(),
+    );
+  }
+
+  Widget _buildUpdateStatusError() {
+    return IconTextWidget(
+      iconName: StatusIconEnum.error,
+      text: AppLocalizations.of(context).editIntegrationErrorLastTried(_getUpdatedTimeAgo()),
+      trailing: _buildUpdateNowButton(),
+    );
+  }
+
+  String _getUpdatedTimeAgo() {
+    return formatRoughDuration(
+        DateTime.now().difference(_contact.profileSyncStatus.dateTimeUpdate),
+        AppLocalizations.of(context),
+    );
+  }
+
+  Widget _buildUpdateNowButton() {
+    return ElevatedButton(
+      onPressed: _updateNow,
+      child: Text(AppLocalizations.of(context).editIntegrationUpdateNow),
+    );
+  }
+
+  void _updateNow() {
+
   }
 
   Widget _getDownloadNewContentsToggle() {
