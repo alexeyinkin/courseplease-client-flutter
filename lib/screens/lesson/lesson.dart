@@ -1,6 +1,6 @@
 import 'package:courseplease/blocs/model_by_id.dart';
 import 'package:courseplease/repositories/lesson.dart';
-import 'package:courseplease/screens/photo/photo.dart';
+import 'package:courseplease/screens/image/image.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -83,7 +83,7 @@ class _LessonScreenState extends State<LessonScreen> {
             ),
             Container(
               padding: EdgeInsets.only(bottom: 20),
-              child: PhotoTeacherTile(teacher: lesson.author),
+              child: ImageTeacherTile(teacher: lesson.author),
             ),
             Container(
               child: Markdown(

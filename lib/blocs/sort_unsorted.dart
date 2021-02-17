@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
-import 'package:courseplease/models/filters/photo.dart';
-import 'package:courseplease/models/photo.dart';
+import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
@@ -226,7 +226,7 @@ class SortUnsortedImagesCubit extends Bloc {
   }
 
   void _removeSortedFromModelLists() {
-    final lists = _filteredModelListCache.getModelListsByObjectAndFilterTypes<Photo, UnsortedPhotoFilter>();
+    final lists = _filteredModelListCache.getModelListsByObjectAndFilterTypes<ImageEntity, EditImageFilter>();
 
     for (final list in lists.values) {
       list.removeObjectIds(_selectionState.selectedIds.keys.toList());

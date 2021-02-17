@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/blocs/model_by_id.dart';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/repositories/photo.dart';
+import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
@@ -14,20 +14,20 @@ import 'package:courseplease/widgets/rating_and_vote_count.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import '../../models/filters/photo.dart';
-import '../../models/photo.dart';
+import '../../models/filters/image.dart';
+import '../../models/image.dart';
 import '../../models/teacher.dart';
 
-abstract class AbstractPhotoLightboxScreen<
+abstract class AbstractImageLightboxScreen<
   F extends AbstractFilter,
-  R extends AbstractPhotoRepository<F>
+  R extends AbstractImageRepository<F>
 > extends StatefulWidget {
 }
 
-abstract class AbstractPhotoLightboxScreenState<
+abstract class AbstractImageLightboxScreenState<
   F extends AbstractFilter,
-  R extends AbstractPhotoRepository<F>
-> extends State<AbstractPhotoLightboxScreen<F, R>> {
+  R extends AbstractImageRepository<F>
+> extends State<AbstractImageLightboxScreen<F, R>> {
   final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
 
   PageController _pageController;
@@ -41,7 +41,7 @@ abstract class AbstractPhotoLightboxScreenState<
   @override
   Widget build(BuildContext context) {
     _parseArgumentsIfNot(context);
-    final listBloc = _filteredModelListCache.getOrCreate<int, Photo, F, R>(_filter);
+    final listBloc = _filteredModelListCache.getOrCreate<int, ImageEntity, F, R>(_filter);
 
     return StreamBuilder(
       stream: listBloc.outState,
@@ -58,7 +58,7 @@ abstract class AbstractPhotoLightboxScreenState<
 
   Widget _buildWithListState(
     BuildContext context,
-    ModelListState<int, Photo> listState,
+    ModelListState<int, ImageEntity> listState,
     FilteredModelListBloc bloc,
   ) {
     final length = listState.objects.length;
@@ -87,9 +87,9 @@ abstract class AbstractPhotoLightboxScreenState<
     );
   }
 
-  Widget _buildPage(BuildContext context, ModelListState<int, Photo> listState, int index) {
-    final photo = listState.objects[index];
-    final url = 'https://courseplease.com' + photo.getLightboxUrl();
+  Widget _buildPage(BuildContext context, ModelListState<int, ImageEntity> listState, int index) {
+    final image = listState.objects[index];
+    final url = 'https://courseplease.com' + image.getLightboxUrl();
 
     return Dismissible(
       key: ValueKey('page-' + index.toString()),
@@ -101,30 +101,30 @@ abstract class AbstractPhotoLightboxScreenState<
         children: [
           Center(
             child: Hero(
-              tag: 'DISABLE-photo-' + photo.id.toString(),
+              tag: 'DISABLE-image_' + image.id.toString(),
               child: CachedNetworkImage(
                 imageUrl: url,
                 placeholder: (context, url) => SmallCircularProgressIndicator(),
-                errorWidget: (context, url, error) => Row(children:[Icon(Icons.error), Text(photo.id.toString())]),
+                errorWidget: (context, url, error) => Row(children:[Icon(Icons.error), Text(image.id.toString())]),
                 fadeInDuration: Duration(),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          ...buildOverlays(context, photo),
+          ...buildOverlays(context, image),
         ],
       ),
     );
   }
 
   @protected
-  List<Widget> buildOverlays(BuildContext context, Photo photo) {
+  List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
     return <Widget>[];
   }
 
   @protected
-  Widget buildTitleOverlay(BuildContext context, Photo photo) {
-    if (photo.title == '') return Container();
+  Widget buildTitleOverlay(BuildContext context, ImageEntity image) {
+    if (image.title == '') return Container();
 
     return Positioned(
       top: 10,
@@ -134,9 +134,8 @@ abstract class AbstractPhotoLightboxScreenState<
         duration: controlsAnimationDuration,
         child: RoundedOverlay(
           child: Text(
-            //'Title: ' + photo.title,
-            photo.title,
-            style: AppStyle.photoTitle,
+            image.title,
+            style: AppStyle.imageTitle,
           ),
         ),
       ),
@@ -145,7 +144,7 @@ abstract class AbstractPhotoLightboxScreenState<
 
   void _parseArgumentsIfNot(BuildContext context) {
     if (_filter == null) {
-      final arguments = ModalRoute.of(context).settings.arguments as PhotoLightboxArguments<F>;
+      final arguments = ModalRoute.of(context).settings.arguments as ImageLightboxArguments<F>;
       _filter = arguments.filter;
       _index = arguments.index;
       _pageController = PageController(
@@ -161,23 +160,23 @@ abstract class AbstractPhotoLightboxScreenState<
   }
 }
 
-class GalleryPhotoLightboxScreen extends AbstractPhotoLightboxScreen<GalleryPhotoFilter, GalleryPhotoRepository> {
+class ViewImageLightboxScreen extends AbstractImageLightboxScreen<ViewImageFilter, GalleryImageRepository> {
   static const routeName = '/photoLightbox';
 
   @override
-  State<AbstractPhotoLightboxScreen> createState() => GalleryPhotoLightboxScreenState();
+  State<AbstractImageLightboxScreen> createState() => ViewImageLightboxScreenState();
 }
 
-class GalleryPhotoLightboxScreenState extends AbstractPhotoLightboxScreenState<GalleryPhotoFilter, GalleryPhotoRepository> {
+class ViewImageLightboxScreenState extends AbstractImageLightboxScreenState<ViewImageFilter, GalleryImageRepository> {
   final _teacherByIdBloc = ModelByIdBloc<int, Teacher>(
     modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Teacher, TeacherRepository>(),
   );
 
   @override
-  List<Widget> buildOverlays(BuildContext context, Photo photo) {
+  List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
     return [
-      buildTitleOverlay(context, photo),
-      _buildTeacherOverlay(context, photo.authorId),
+      buildTitleOverlay(context, image),
+      _buildTeacherOverlay(context, image.authorId),
     ];
   }
 
@@ -212,8 +211,8 @@ class GalleryPhotoLightboxScreenState extends AbstractPhotoLightboxScreenState<G
     return Positioned(
       child: AnimatedOpacity(
         opacity: _controlsVisible ? 1.0 : 0.0,
-        duration: AbstractPhotoLightboxScreenState.controlsAnimationDuration,
-        child: PhotoTeacherTile(teacher: teacher),
+        duration: AbstractImageLightboxScreenState.controlsAnimationDuration,
+        child: ImageTeacherTile(teacher: teacher),
       ),
       left: 10,
       bottom: 10,
@@ -221,35 +220,37 @@ class GalleryPhotoLightboxScreenState extends AbstractPhotoLightboxScreenState<G
   }
 }
 
-class UnsortedPhotoLightboxScreen extends AbstractPhotoLightboxScreen<UnsortedPhotoFilter, UnsortedPhotoRepository> {
+class EditImageLightboxScreen extends AbstractImageLightboxScreen<EditImageFilter, EditorImageRepository> {
   static const routeName = '/unsortedPhotoLightbox';
 
   @override
-  State<AbstractPhotoLightboxScreen> createState() => UnsortedPhotoLightboxScreenState();
+  State<AbstractImageLightboxScreen> createState() => EditImageLightboxScreenState();
 }
 
-class UnsortedPhotoLightboxScreenState extends AbstractPhotoLightboxScreenState<UnsortedPhotoFilter, UnsortedPhotoRepository> {
+class EditImageLightboxScreenState extends AbstractImageLightboxScreenState<EditImageFilter, EditorImageRepository> {
   @override
-  List<Widget> buildOverlays(BuildContext context, Photo photo) {
+  List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
     return [
-      buildTitleOverlay(context, photo),
+      buildTitleOverlay(context, image),
     ];
   }
 }
 
-class PhotoLightboxArguments<F extends AbstractFilter> {
+class ImageLightboxArguments<F extends AbstractFilter> {
   final F filter;
   final int index;
 
-  PhotoLightboxArguments({
+  ImageLightboxArguments({
     this.filter,
     this.index,
   });
 }
 
-class PhotoTeacherTile extends StatelessWidget {
+class ImageTeacherTile extends StatelessWidget {
   final Teacher teacher;
-  PhotoTeacherTile({@required this.teacher});
+  ImageTeacherTile({
+    @required this.teacher,
+  });
 
   @override
   Widget build(BuildContext context) {

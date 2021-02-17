@@ -4,35 +4,35 @@ import 'package:meta/meta.dart';
 import 'editable_contact.dart';
 
 class InstagramContactParams extends ContactParams {
-  InstagramNewPhotoAction newPhotoAction;
-  int newPhotoSubjectId; // Nullable
+  InstagramNewImageAction newImageAction;
+  int newImageSubjectId; // Nullable
 
   InstagramContactParams({
-    @required this.newPhotoAction,
-    @required this.newPhotoSubjectId,
+    @required this.newImageAction,
+    @required this.newImageSubjectId,
   });
 
   factory InstagramContactParams.fromMap(Map<String, dynamic> map) {
-    InstagramNewPhotoAction action;
+    InstagramNewImageAction action;
 
-    switch (map['newPhotoAction']) {
+    switch (map['newImageAction']) {
       case 'portfolio':
-        action = InstagramNewPhotoAction.portfolio;
+        action = InstagramNewImageAction.portfolio;
         break;
       default:
-        action = InstagramNewPhotoAction.unsorted;
+        action = InstagramNewImageAction.unsorted;
     }
 
     return InstagramContactParams(
-      newPhotoAction: action,
-      newPhotoSubjectId: map['newPhotoSubjectId'],
+      newImageAction: action,
+      newImageSubjectId: map['newImageSubjectId'],
     );
   }
 
   factory InstagramContactParams.from(InstagramContactParams params) {
     return InstagramContactParams(
-      newPhotoAction:     params.newPhotoAction,
-      newPhotoSubjectId:  params.newPhotoSubjectId,
+      newImageAction:     params.newImageAction,
+      newImageSubjectId:  params.newImageSubjectId,
     );
   }
 
@@ -44,13 +44,13 @@ class InstagramContactParams extends ContactParams {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'newPhotoAction':     enumValueAfterDot(newPhotoAction),
-      'newPhotoSubjectId':  newPhotoSubjectId,
+      'newImageAction':     enumValueAfterDot(newImageAction),
+      'newImageSubjectId':  newImageSubjectId,
     };
   }
 }
 
-enum InstagramNewPhotoAction {
+enum InstagramNewImageAction {
   unsorted,
   portfolio,
 }

@@ -4,6 +4,7 @@ import 'abstract.dart';
 
 class TeacherFilter extends AbstractFilter {
   final int subjectId;
+
   TeacherFilter({
     @required this.subjectId,
   });
@@ -13,7 +14,9 @@ class TeacherFilter extends AbstractFilter {
   }
 
   @override
-  Map<String, String> toQueryParams() {
-    return {'subjectId': subjectId.toString()};
+  Map<String, dynamic> toJson() {
+    return {
+      'subjectId': subjectId,
+    };
   }
 }

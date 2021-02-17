@@ -18,7 +18,7 @@ import 'package:get_it/get_it.dart';
 import '../../widgets/image_grid.dart';
 import '../../widgets/lesson_grid.dart';
 import '../../models/filters/lesson.dart';
-import '../../models/filters/photo.dart';
+import '../../models/filters/image.dart';
 import '../../models/product_subject.dart';
 import '../../models/teacher.dart';
 import '../../models/teacher_subject.dart';
@@ -200,8 +200,8 @@ class _TeacherScreenState extends State<TeacherScreen> {
   Widget _getWorksBlock() {
     return Container(
       height: 200,
-      child: GalleryPhotoGrid(
-        filter: GalleryPhotoFilter(subjectId: _subjectId, teacherId: _teacherId),
+      child: ViewImageGrid(
+        filter: ViewImageFilter(subjectId: _subjectId, teacherId: _teacherId),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
           child: Text('My Works', style: AppStyle.h2),

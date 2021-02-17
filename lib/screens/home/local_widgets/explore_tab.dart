@@ -1,5 +1,5 @@
 import 'package:courseplease/blocs/product_subject_cache.dart';
-import 'package:courseplease/screens/home/local_widgets/photos_tab.dart';
+import 'package:courseplease/screens/home/local_widgets/images_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/product_subjects_breadcrumbs.dart';
 import 'package:courseplease/screens/home/local_widgets/teachers_tab.dart';
 import 'package:courseplease/widgets/capsules.dart';
@@ -44,7 +44,7 @@ class ExploreTabState extends State<ExploreTab> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    PhotosTab(),
+                    ImagesTab(),
                     TeachersTab(),
                     LessonsTab(),
                   ],

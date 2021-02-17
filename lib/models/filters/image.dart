@@ -1,0 +1,47 @@
+import 'dart:convert';
+import 'package:meta/meta.dart';
+import 'abstract.dart';
+
+class ViewImageFilter extends AbstractFilter {
+  final int subjectId;
+  final int teacherId; // Nullable
+
+  ViewImageFilter({
+    @required this.subjectId,
+    this.teacherId,
+  });
+
+  @override
+  String toString() {
+    return jsonEncode({'subjectId': subjectId, 'teacherId': teacherId});
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'subjectId': subjectId,
+      'teacherId': teacherId,
+    };
+  }
+}
+
+class EditImageFilter extends AbstractFilter {
+  final List<int> albumIds;
+  final List<int> contactIds;
+  final bool unsorted;
+
+  EditImageFilter({
+    this.albumIds = const <int>[],
+    this.contactIds = const <int>[],
+    this.unsorted = false,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'albumIds': albumIds,
+      'contactIds': contactIds,
+      'unsorted': unsorted,
+    };
+  }
+}

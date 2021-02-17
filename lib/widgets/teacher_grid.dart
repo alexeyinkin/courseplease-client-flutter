@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/widgets/object_grid.dart';
 import 'package:courseplease/screens/teacher/teacher.dart';
@@ -10,7 +9,7 @@ import 'package:courseplease/widgets/rating_and_vote_count.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'image_grid.dart';
-import '../models/filters/photo.dart';
+import '../models/filters/image.dart';
 import '../models/filters/teacher.dart';
 import '../models/interfaces.dart';
 import '../models/teacher.dart';
@@ -169,7 +168,7 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
                   ),
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
-                    child: TeacherPhotoStripeWidget(
+                    child: TeacherImageLineWidget(
                       teacherFilter: widget.filter,
                       teacherId: widget.object.id,
                       height: 50,
@@ -201,12 +200,12 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
 }
 
 
-class TeacherPhotoStripeWidget extends StatelessWidget {
+class TeacherImageLineWidget extends StatelessWidget {
   final TeacherFilter teacherFilter;
   final int teacherId;
   final double height;
 
-  TeacherPhotoStripeWidget({
+  TeacherImageLineWidget({
     @required this.teacherFilter,
     @required this.teacherId,
     @required this.height,
@@ -217,8 +216,8 @@ class TeacherPhotoStripeWidget extends StatelessWidget {
     var i = 0;
     return Container(
       height: this.height,
-      child: GalleryPhotoGrid(
-        filter: GalleryPhotoFilter(subjectId: teacherFilter.subjectId, teacherId: teacherId),
+      child: ViewImageGrid(
+        filter: ViewImageFilter(subjectId: teacherFilter.subjectId, teacherId: teacherId),
         scrollDirection: Axis.horizontal,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,

@@ -23,11 +23,11 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Place new photos to:"),
+        Text("Place new images to:"),
         RadioListTile(
           title: Text("Unsorted, so I can set category for each work or delete it"),
-          value: InstagramNewPhotoAction.unsorted,
-          groupValue: widget.params.newPhotoAction,
+          value: InstagramNewImageAction.unsorted,
+          groupValue: widget.params.newImageAction,
           onChanged: _handleNewPhotoActionChange,
         ),
         RadioListTile(
@@ -37,8 +37,8 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
               _getPortfolioProductSubjectSelect(),
             ],
           ),
-          value: InstagramNewPhotoAction.portfolio,
-          groupValue: widget.params.newPhotoAction,
+          value: InstagramNewImageAction.portfolio,
+          groupValue: widget.params.newImageAction,
           onChanged: _handleNewPhotoActionChange,
         ),
       ],
@@ -48,7 +48,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
   Widget _getPortfolioProductSubjectSelect() {
     final teacherSubjectIds = _getTeacherSubjectIds();
 
-    return teacherSubjectIds.isEmpty && widget.params.newPhotoSubjectId == null
+    return teacherSubjectIds.isEmpty && widget.params.newImageSubjectId == null
         ? _getChoosePortfolioProductSubjectButton()
         : _getPortfolioProductSubjectDropdown(teacherSubjectIds);
   }
@@ -72,7 +72,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
 
   Widget _getPortfolioProductSubjectDropdown(List<int> showIds) {
     return ProductSubjectDropdown(
-      selectedId: widget.params.newPhotoSubjectId,
+      selectedId: widget.params.newImageSubjectId,
       showIds: showIds,
       onChanged: _handleNewPhotoPortfolioSubjectIdChange,
       hint: Opacity(
@@ -92,16 +92,16 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
     return result;
   }
 
-  void _handleNewPhotoActionChange(InstagramNewPhotoAction value) {
+  void _handleNewPhotoActionChange(InstagramNewImageAction value) {
     setState(() {
-      widget.params.newPhotoAction = value;
+      widget.params.newImageAction = value;
     });
   }
 
   void _handleNewPhotoPortfolioSubjectIdChange(int id) {
     setState(() {
-      widget.params.newPhotoAction = InstagramNewPhotoAction.portfolio;
-      widget.params.newPhotoSubjectId = id;
+      widget.params.newImageAction = InstagramNewImageAction.portfolio;
+      widget.params.newImageSubjectId = id;
     });
   }
 }

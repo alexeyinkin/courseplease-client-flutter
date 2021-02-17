@@ -29,8 +29,8 @@ class InstagramStatusCubit extends ContactStatusCubit {
   void setContact(EditableContact contact) {
     final params = contact.params as InstagramContactParams;
 
-    if (params.newPhotoSubjectId != null) {
-      _newPhotoSubjectBloc.setCurrentId(params.newPhotoSubjectId);
+    if (params.newImageSubjectId != null) {
+      _newPhotoSubjectBloc.setCurrentId(params.newImageSubjectId);
     }
 
     super.setContact(contact);
@@ -42,11 +42,11 @@ class InstagramStatusCubit extends ContactStatusCubit {
     final params = contact.params as InstagramContactParams;
 
     if (contact.downloadEnabled) {
-      switch (params.newPhotoAction) {
-        case InstagramNewPhotoAction.unsorted:
+      switch (params.newImageAction) {
+        case InstagramNewImageAction.unsorted:
           descriptionParts.add("Add new photos to Unsorted.");
           break;
-        case InstagramNewPhotoAction.portfolio:
+        case InstagramNewImageAction.portfolio:
           final subjectTitle = _newPhotoSubject == null
               ? '...'
               : _newPhotoSubject.title;

@@ -28,7 +28,7 @@ class AppStyle {
     fontSize: 24,
   );
 
-  static const photoTitle = TextStyle(
+  static const imageTitle = TextStyle(
     fontSize: 24,
   );
 

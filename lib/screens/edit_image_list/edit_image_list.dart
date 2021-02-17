@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/blocs/sort_unsorted.dart';
+import 'package:courseplease/models/filters/image.dart';
 import 'package:courseplease/widgets/image_grid.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/product_subject_dropdown.dart';
@@ -8,25 +9,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
-class SortUnsortedMediaScreen extends StatefulWidget {
-  static const routeName = '/sortUnsortedMedia';
+class EditImageListScreen extends StatefulWidget {
+  static const routeName = '/editImageList';
 
   @override
-  State<SortUnsortedMediaScreen> createState() => _SortUnsortedMediaScreenState();
+  State<EditImageListScreen> createState() => _EditImageListScreenState();
 }
 
-class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
-  final _photoListCubit = SelectableListCubit<int>();
-  StreamSubscription _photoSelectionSubscription;
+class _EditImageListScreenState extends State<EditImageListScreen> {
+  final _imageSelectionCubit = SelectableListCubit<int>();
+  StreamSubscription _imageSelectionSubscription;
   SortUnsortedImagesCubit _sortUnsortedImagesCubit;
 
-  _SortUnsortedMediaScreenState() {
-    _sortUnsortedImagesCubit = SortUnsortedImagesCubit(listStateCubit: _photoListCubit);
-    _photoSelectionSubscription = _photoListCubit.outState.listen(_onSelectionChange);
+  EditImageFilter _filter;
+
+  _EditImageListScreenState() {
+    _sortUnsortedImagesCubit = SortUnsortedImagesCubit(listStateCubit: _imageSelectionCubit);
+    _imageSelectionSubscription = _imageSelectionCubit.outState.listen(_onSelectionChange);
   }
 
   @override
   Widget build(BuildContext context) {
+    _loadIfNot();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).sortImportedMedia),
@@ -35,14 +40,15 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
         children: [
           _buildActionToolbar(),
           Expanded(
-            child: UnsortedPhotoGrid(
+            child: EditImageGrid(
+              filter: _filter,
               scrollDirection: Axis.vertical,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 mainAxisSpacing: 1,
                 crossAxisSpacing: 1,
               ),
-              listStateCubit: _photoListCubit,
+              listStateCubit: _imageSelectionCubit,
               showMappingsOverlay: true,
             ),
           ),
@@ -50,6 +56,13 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
         ],
       ),
     );
+  }
+
+  void _loadIfNot() {
+    if (_filter != null) return;
+
+    final arguments = ModalRoute.of(context).settings.arguments as EditImageListArguments;
+    _filter = arguments.filter;
   }
 
   Widget _buildActionToolbar() {
@@ -128,8 +141,8 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
 
   Widget _buildSelectionToolbar() {
     return StreamBuilder(
-      stream: _photoListCubit.outState,
-      initialData: _photoListCubit.initialState,
+      stream: _imageSelectionCubit.outState,
+      initialData: _imageSelectionCubit.initialState,
       builder: (context, snapshot) => _buildSelectionToolbarWithState(snapshot.data),
     );
   }
@@ -157,11 +170,11 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
   }
 
   void _selectAll() {
-    _photoListCubit.selectAll();
+    _imageSelectionCubit.selectAll();
   }
 
   void _selectNone() {
-    _photoListCubit.selectNone();
+    _imageSelectionCubit.selectNone();
   }
 
   void _onPublishPressed() {
@@ -180,8 +193,16 @@ class _SortUnsortedMediaScreenState extends State<SortUnsortedMediaScreen> {
 
   @override
   void dispose() {
-    _photoSelectionSubscription.cancel();
+    _imageSelectionSubscription.cancel();
     // TODO: implement dispose
     super.dispose();
   }
+}
+
+class EditImageListArguments {
+  final EditImageFilter filter;
+
+  EditImageListArguments({
+    @required this.filter,
+  });
 }

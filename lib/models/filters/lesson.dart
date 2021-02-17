@@ -17,15 +17,10 @@ class LessonFilter extends AbstractFilter {
   }
 
   @override
-  Map<String, String> toQueryParams() {
-    var result = Map<String, String>();
-
-    result['subjectId'] = subjectId.toString();
-
-    if (teacherId != null) {
-      result['teacherId'] = teacherId.toString();
-    }
-
-    return result;
+  Map<String, dynamic> toJson() {
+    return {
+      'subjectId': subjectId,
+      'teacherId': teacherId,
+    };
   }
 }

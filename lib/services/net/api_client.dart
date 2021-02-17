@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:courseplease/models/contact/editable_contact.dart';
+import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/abstract.dart';
@@ -105,14 +106,22 @@ class ApiClient {
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getEntities(
     String name,
-    Map<String, String> filter,
-    String pageToken,
+    AbstractFilter filter,
+    String pageToken, // Nullable
   ) async {
+    final queryParameters = Map<String, String>();
+
+    queryParameters['filter'] = filter.toString();
+
+    if (pageToken != null) {
+      queryParameters['pageToken'] = pageToken;
+    }
+
     return _createListLoadResultResponse(
       await sendRequest(
         method: HttpMethod.get,
         path: '/api1/{@lang}/' + name,
-        queryParameters: _paramsWithPageToken(filter, pageToken),
+        queryParameters: queryParameters,
       ),
     );
   }

@@ -1,23 +1,22 @@
 import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/repositories/lesson.dart';
-import 'package:courseplease/repositories/photo.dart';
+import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/screens/choose_product_subject/choose_product_subject.dart';
 import 'package:courseplease/screens/edit_integration/edit_integration.dart';
 import 'package:courseplease/screens/edit_profile/edit_profile.dart';
-import 'package:courseplease/screens/photo/photo.dart';
+import 'package:courseplease/screens/image/image.dart';
 import 'package:courseplease/screens/home/home.dart';
 import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
-import 'package:courseplease/screens/sort_unsorted_media/sort_unsorted_media.dart';
+import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
 import 'package:courseplease/screens/teacher/teacher.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'blocs/authentication.dart';
 import 'screens/lesson/lesson.dart';
@@ -35,8 +34,8 @@ void main() {
 
   GetIt.instance
       ..registerSingleton<ProductSubjectRepository>(productSubjectRepository)
-      ..registerSingleton<GalleryPhotoRepository>(GalleryPhotoRepository())
-      ..registerSingleton<UnsortedPhotoRepository>(UnsortedPhotoRepository())
+      ..registerSingleton<GalleryImageRepository>(GalleryImageRepository())
+      ..registerSingleton<EditorImageRepository>(EditorImageRepository())
       ..registerSingleton<TeacherRepository>(TeacherRepository())
       ..registerSingleton<LessonRepository>(LessonRepository())
 
@@ -68,12 +67,12 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
         ChooseProductSubjectScreen.routeName: (context) => ChooseProductSubjectScreen(),
         EditIntegrationScreen.routeName:      (context) => EditIntegrationScreen(),
         EditProfileScreen.routeName:          (context) => EditProfileScreen(),
-        GalleryPhotoLightboxScreen.routeName: (context) => GalleryPhotoLightboxScreen(),
+        ViewImageLightboxScreen.routeName:    (context) => ViewImageLightboxScreen(),
         LessonScreen.routeName:               (context) => LessonScreen(),
         SignInWebviewScreen.routeName:        (context) => SignInWebviewScreen(),
-        SortUnsortedMediaScreen.routeName:    (context) => SortUnsortedMediaScreen(),
+        EditImageListScreen.routeName:        (context) => EditImageListScreen(),
         TeacherScreen.routeName:              (context) => TeacherScreen(),
-        UnsortedPhotoLightboxScreen.routeName:(context) => UnsortedPhotoLightboxScreen(),
+        EditImageLightboxScreen.routeName:    (context) => EditImageLightboxScreen(),
       },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
