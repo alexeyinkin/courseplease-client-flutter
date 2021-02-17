@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:charcode/html_entity.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/blocs/sort_unsorted.dart';
+import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/widgets/contact_title.dart';
 import 'package:courseplease/widgets/image_grid.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/product_subject_dropdown.dart';
@@ -22,6 +25,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
   SortUnsortedImagesCubit _sortUnsortedImagesCubit;
 
   EditImageFilter _filter;
+  Map<int, EditableContact> _contactsByIds;
 
   _EditImageListScreenState() {
     _sortUnsortedImagesCubit = SortUnsortedImagesCubit(listStateCubit: _imageSelectionCubit);
@@ -34,7 +38,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).sortImportedMedia),
+        title: _buildTitle(),
       ),
       body: Column(
         children: [
@@ -63,6 +67,56 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
 
     final arguments = ModalRoute.of(context).settings.arguments as EditImageListArguments;
     _filter = arguments.filter;
+    _contactsByIds = arguments.contactsByIds;
+  }
+
+  Widget _buildTitle() {
+    final widgets = <Widget>[];
+    String trailing = null;
+
+    switch (_filter.contactIds.length) {
+      case 0:
+        break;
+      case 1:
+        final contactId = _filter.contactIds[0];
+        if (!_contactsByIds.containsKey(contactId)) {
+          widgets.add(Text("1 Profile"));
+        } else {
+          widgets.add(ContactTitleWidget(contact: _contactsByIds[contactId]));
+        }
+        trailing = "All Images";
+        break;
+      default:
+        widgets.add(Text(_filter.contactIds.length.toString() + " Profiles"));
+        trailing = "All Images";
+    }
+
+    if (_filter.unsorted) {
+      trailing = AppLocalizations.of(context).sortImportedMedia;
+    } else {
+      switch (_filter.albumIds.length) {
+        case 0:
+          break;
+        case 1:
+          trailing = "1 Album"; // TODO: Show album's title.
+          break;
+        default:
+          trailing = _filter.contactIds.length.toString() + " Albums";
+      }
+    }
+
+    if (trailing != null) {
+      widgets.add(Text(trailing));
+    }
+
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: alternateWidgetListWith(
+        widgets,
+        Text(' ' + String.fromCharCode($mdash) + ' '),
+      ), // em dash
+      //spacing: 10,
+    );
   }
 
   Widget _buildActionToolbar() {
@@ -201,8 +255,12 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
 
 class EditImageListArguments {
   final EditImageFilter filter;
+  final Map<int, EditableContact> contactsByIds;
 
   EditImageListArguments({
     @required this.filter,
-  });
+    @required Map<int, EditableContact> contactsByIds, // Nullable
+  }) :
+      this.contactsByIds = contactsByIds ?? Map<int, EditableContact>()
+  ;
 }

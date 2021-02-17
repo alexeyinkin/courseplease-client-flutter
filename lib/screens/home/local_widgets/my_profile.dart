@@ -115,7 +115,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
       arguments: EditImageListArguments(
         filter: EditImageFilter(
           unsorted: true,
-        )
+        ),
       ),
     );
 

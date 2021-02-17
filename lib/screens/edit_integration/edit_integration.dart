@@ -1,3 +1,5 @@
+import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
 import 'package:courseplease/screens/edit_integration/local_blocs/edit_integration.dart';
 import 'package:courseplease/models/common.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
@@ -5,11 +7,11 @@ import 'package:courseplease/models/contact/instagram.dart';
 import 'package:courseplease/models/contact/profile_sync_status.dart';
 import 'package:courseplease/screens/edit_integration/local_widgets/instagram.dart';
 import 'package:courseplease/services/net/api_client.dart';
-import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
-import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
 import 'package:courseplease/widgets/buttons.dart';
+import 'package:courseplease/widgets/contact_title.dart';
 import 'package:courseplease/widgets/icon_text_status.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -21,7 +23,7 @@ class EditIntegrationScreen extends StatefulWidget {
 }
 
 class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
-  EditableContact _contactCone; // Nullable
+  EditableContact _contactClone; // Nullable
   EditIntegrationCubit _editIntegrationCubit; // Nullable
 
   @override
@@ -39,18 +41,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.only(right: 20),
-              child: AuthProviderIcon(name: _contactCone.className),
-            ),
-            Text(
-              _contactCone.getTitle(),
-              style: AppStyle.h2,
-            ),
-          ],
-        ),
+        title: ContactTitleWidget(contact: _contactClone),
       ),
       body: Container(
         padding: EdgeInsets.all(10),
@@ -123,7 +114,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     return IconTextWidget(
       iconName: StatusIconEnum.error,
       text: AppLocalizations.of(context).editIntegrationNeverUpdated,
-      trailing: _buildUpdateNowButton(state),
+      trailing: _buildUpdateAndViewButtons(state),
     );
   }
 
@@ -138,7 +129,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     return IconTextWidget(
       iconName: StatusIconEnum.ok,
       text: AppLocalizations.of(context).editIntegrationLastUpdated(_getUpdatedTimeAgo(state.contact.profileSyncStatus)),
-      trailing: _buildUpdateNowButton(state),
+      trailing: _buildUpdateAndViewButtons(state),
     );
   }
 
@@ -146,7 +137,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     return IconTextWidget(
       iconName: StatusIconEnum.error,
       text: AppLocalizations.of(context).editIntegrationErrorLastTried(_getUpdatedTimeAgo(state.contact.profileSyncStatus)),
-      trailing: _buildUpdateNowButton(state),
+      trailing: _buildUpdateAndViewButtons(state),
     );
   }
 
@@ -154,6 +145,15 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     return formatRoughDuration(
         DateTime.now().difference(status.dateTimeUpdate),
         AppLocalizations.of(context),
+    );
+  }
+
+  Widget _buildUpdateAndViewButtons(EditIntegrationState state) {
+    return Row(
+      children: [
+        padRight(_buildUpdateNowButton(state)),
+        padRight(_buildViewDownloadedButton(state)),
+      ]
     );
   }
 
@@ -170,27 +170,48 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     _editIntegrationCubit.synchronize();
   }
 
+  Widget _buildViewDownloadedButton(EditIntegrationState state) {
+    return ElevatedButton(
+      child: Text("View Images"),
+      onPressed: _viewDownloaded,
+    );
+  }
+
+  void _viewDownloaded() async {
+    await Navigator.of(context).pushNamed(
+      EditImageListScreen.routeName,
+      arguments: EditImageListArguments(
+        filter: EditImageFilter(
+          contactIds: [_contactClone.id],
+        ),
+        contactsByIds: {_contactClone.id: _contactClone},
+      ),
+    );
+
+    // TODO: Reload current actor because there might be no more unsorted images.
+  }
+
   Widget _getDownloadNewContentsToggle() {
-    final serviceName = _contactCone.getServiceTitle();
+    final serviceName = _contactClone.getServiceTitle();
 
     return SwitchListTile(
       title: Text("Download new contents from $serviceName"),
-      value: _contactCone.downloadEnabled,
+      value: _contactClone.downloadEnabled,
       onChanged: _handleIsDownloadEnabledToggle,
     );
   }
 
   void _handleIsDownloadEnabledToggle(bool value) {
     setState(() {
-      _contactCone.downloadEnabled = value;
+      _contactClone.downloadEnabled = value;
     });
   }
 
   Widget _getProviderSettingWidget(MeResponseData meResponseData) {
-    if (_contactCone.params is InstagramContactParams) {
+    if (_contactClone.params is InstagramContactParams) {
       return InstagramContactParamsWidget(
         meResponseData: meResponseData,
-        params: _contactCone.params,
+        params: _contactClone.params,
       );
     }
     return Container();
@@ -207,9 +228,9 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
 
   void _handleSave() async {
     final request = SaveContactParamsRequest(
-      contactId:        _contactCone.id,
-      downloadEnabled:  _contactCone.downloadEnabled,
-      params:           _contactCone.params,
+      contactId:        _contactClone.id,
+      downloadEnabled:  _contactClone.downloadEnabled,
+      params:           _contactClone.params,
     );
 
     await _editIntegrationCubit.saveContactParams(request);
@@ -217,11 +238,11 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   }
 
   void _loadIfNot() {
-    if (_contactCone != null) return;
+    if (_contactClone != null) return;
 
     final arguments = ModalRoute.of(context).settings.arguments as EditIntegrationScreenArguments;
-    _contactCone = arguments.contactClone;
-    _editIntegrationCubit = EditIntegrationCubit(contactId: _contactCone.id);
+    _contactClone = arguments.contactClone;
+    _editIntegrationCubit = EditIntegrationCubit(contactId: _contactClone.id);
   }
 }
 

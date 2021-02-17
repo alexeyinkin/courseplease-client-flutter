@@ -13,3 +13,15 @@ Widget padLeft(Widget child) {
     child: child,
   );
 }
+
+List<Widget> alternateWidgetListWith(List<Widget> widgets, Widget glue) {
+  final result = <Widget>[];
+
+  for (final widget in widgets) {
+    result.add(widget);
+    result.add(glue);
+  }
+
+  result.removeLast();
+  return result;
+}
