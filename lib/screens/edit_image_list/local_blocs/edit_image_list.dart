@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/image.dart';
@@ -12,10 +13,7 @@ import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'authentication.dart';
-import 'bloc.dart';
-
-class SortUnsortedImagesCubit extends Bloc {
+class EditImageListCubit extends Bloc {
   final SelectableListCubit _listStateCubit;
   StreamSubscription _selectionCubitSubscription;
 
@@ -25,20 +23,23 @@ class SortUnsortedImagesCubit extends Bloc {
   final _productSubjectCacheBloc = GetIt.instance.get<ProductSubjectCacheBloc>();
   StreamSubscription _productSubjectCacheSubscription;
 
-  final _outStateController = BehaviorSubject<SortUnsortedState>();
-  Stream<SortUnsortedState> get outState => _outStateController.stream;
+  final _outStateController = BehaviorSubject<EditImageListState>();
+  Stream<EditImageListState> get outState => _outStateController.stream;
 
   final _apiClient = GetIt.instance.get<ApiClient>();
   final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
 
+  EditImageFilter _filter; // Nullable
   SelectableListState _selectionState;
   AuthenticationState _authenticationState;
   Map<int, ProductSubject> _productSubjects;
+  EditImageListMode _mode; // Nullable
   PublishAction _action; // Nullable
   int _subjectId; // Nullable
   Future _requestFuture; // Nullable
 
-  final initialState = SortUnsortedState(
+  final initialState = EditImageListState(
+    mode: EditImageListMode.normal,
     canPublish: false,
     action: null,
     showActions: _allActions,
@@ -60,7 +61,7 @@ class SortUnsortedImagesCubit extends Bloc {
     PublishAction.backstage,
   ];
 
-  SortUnsortedImagesCubit({
+  EditImageListCubit({
     @required SelectableListCubit listStateCubit,
   }) :
       _listStateCubit = listStateCubit
@@ -83,6 +84,17 @@ class SortUnsortedImagesCubit extends Bloc {
   void _onProductSubjectsChange(Map<int, ProductSubject> productSubjects) {
     _productSubjects = productSubjects;
     _pushOutput();
+  }
+
+  void setFilter(EditImageFilter filter) {
+    _filter = filter;
+    _mode = _getModeFromFilter(filter);
+    _pushOutput();
+  }
+
+  EditImageListMode _getModeFromFilter(EditImageFilter filter) {
+    if (filter.unsorted) return EditImageListMode.unsorted;
+    return EditImageListMode.normal;
   }
 
   void setAction(PublishAction action) {
@@ -125,7 +137,8 @@ class SortUnsortedImagesCubit extends Bloc {
   void _pushOutput() {
     if (!_isLoaded()) return;
 
-    final state = SortUnsortedState(
+    final state = EditImageListState(
+      mode: _mode,
       canPublish: _getCanPublish(),
       action: _action,
       showActions: _getShowActions(),
@@ -140,6 +153,7 @@ class SortUnsortedImagesCubit extends Bloc {
   bool _isLoaded() {
     if (_productSubjects == null) return false;
     if (_selectionState == null) return false;
+    if (_mode == null) return false;
     return true;
   }
 
@@ -248,7 +262,8 @@ class SortUnsortedImagesCubit extends Bloc {
   }
 }
 
-class SortUnsortedState {
+class EditImageListState {
+  final EditImageListMode mode;
   final bool canPublish;
   final PublishAction action; // Nullable
   final List<PublishAction> showActions;
@@ -257,7 +272,8 @@ class SortUnsortedState {
   final bool canDelete;
   final bool inProgress;
 
-  SortUnsortedState({
+  EditImageListState({
+    @required this.mode,
     @required this.canPublish,
     @required this.action,
     @required this.showActions,
@@ -273,4 +289,10 @@ enum PublishAction {
   customersPortfolio,
   backstage,
   delete,
+}
+
+enum EditImageListMode {
+  normal,
+  unsorted,
+  trash,
 }

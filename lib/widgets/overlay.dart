@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class ImageOverlay extends StatelessWidget {
   final Widget child;
+  final Color color;
 
   ImageOverlay({
     @required this.child,
-  });
+    Color color,
+  }) :
+      this.color = color ?? const Color(0x60000000)
+  ;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +17,7 @@ class ImageOverlay extends StatelessWidget {
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: getBorderRadius(),
-        color: Color(0x60000000),
+        color: color,
       ),
       child: DefaultTextStyle(
         style: TextStyle(

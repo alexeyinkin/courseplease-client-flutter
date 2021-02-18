@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:charcode/html_entity.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
-import 'package:courseplease/blocs/sort_unsorted.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/image.dart';
 import 'package:courseplease/widgets/contact_title.dart';
@@ -11,6 +10,8 @@ import 'package:courseplease/widgets/product_subject_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+
+import 'local_blocs/edit_image_list.dart';
 
 class EditImageListScreen extends StatefulWidget {
   static const routeName = '/editImageList';
@@ -22,13 +23,13 @@ class EditImageListScreen extends StatefulWidget {
 class _EditImageListScreenState extends State<EditImageListScreen> {
   final _imageSelectionCubit = SelectableListCubit<int>();
   StreamSubscription _imageSelectionSubscription;
-  SortUnsortedImagesCubit _sortUnsortedImagesCubit;
+  EditImageListCubit _editImageListCubit;
 
   EditImageFilter _filter;
   Map<int, EditableContact> _contactsByIds;
 
   _EditImageListScreenState() {
-    _sortUnsortedImagesCubit = SortUnsortedImagesCubit(listStateCubit: _imageSelectionCubit);
+    _editImageListCubit = EditImageListCubit(listStateCubit: _imageSelectionCubit);
     _imageSelectionSubscription = _imageSelectionCubit.outState.listen(_onSelectionChange);
   }
 
@@ -53,6 +54,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
                 crossAxisSpacing: 1,
               ),
               listStateCubit: _imageSelectionCubit,
+              showStatusOverlay: true,
               showMappingsOverlay: true,
             ),
           ),
@@ -68,6 +70,8 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
     final arguments = ModalRoute.of(context).settings.arguments as EditImageListArguments;
     _filter = arguments.filter;
     _contactsByIds = arguments.contactsByIds;
+
+    _editImageListCubit.setFilter(_filter);
   }
 
   Widget _buildTitle() {
@@ -121,43 +125,52 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
 
   Widget _buildActionToolbar() {
     return StreamBuilder(
-      stream: _sortUnsortedImagesCubit.outState,
-      initialData: _sortUnsortedImagesCubit.initialState,
+      stream: _editImageListCubit.outState,
+      initialData: _editImageListCubit.initialState,
       builder: (context, snapshot) => _buildActionToolbarWithState(snapshot.data),
     );
   }
 
-  Widget _buildActionToolbarWithState(SortUnsortedState actionState) {
+  Widget _buildActionToolbarWithState(EditImageListState state) {
+    switch (state.mode) {
+      case EditImageListMode.unsorted:
+        return _buildSortActionToolbar(state);
+      default:
+        return Container();
+    }
+  }
+
+  Widget _buildSortActionToolbar(EditImageListState state) {
     // TODO: Use flex? Test on small screens.
     return Row(
       children: [
         padRight(
           ElevatedButton(
-            onPressed: actionState.canPublish ? _onPublishPressed : null,
+            onPressed: state.canPublish ? _onPublishPressed : null,
             child: Text(AppLocalizations.of(context).sortImportedPublishButton),
           ),
         ),
         padRight(Text(AppLocalizations.of(context).sortImportedPublishAs)),
-        padRight(_buildAlbumDropdownButton(actionState)),
+        padRight(_buildAlbumDropdownButton(state)),
         padRight(Text(AppLocalizations.of(context).sortImportedPublishInSubject)),
         padRight(
           ProductSubjectDropdown(
-            selectedId: actionState.subjectId,
-            showIds: actionState.showSubjectIds,
-            onChanged: _sortUnsortedImagesCubit.setSubjectId,
+            selectedId: state.subjectId,
+            showIds: state.showSubjectIds,
+            onChanged: _editImageListCubit.setSubjectId,
             hint: Text(AppLocalizations.of(context).sortImportedSelectSubject),
           ),
         ),
         Spacer(),
         ElevatedButton(
-          onPressed: actionState.canDelete ? _onDeletePressed : null,
-          child: Icon(Icons.delete_forever),
+          onPressed: state.canDelete ? _onDeletePressed : null,
+          child: Icon(Icons.delete),
         )
       ],
     );
   }
 
-  Widget _buildAlbumDropdownButton(SortUnsortedState actionState) {
+  Widget _buildAlbumDropdownButton(EditImageListState actionState) {
     final items = <DropdownMenuItem<PublishAction>>[];
 
     for (final action in actionState.showActions) {
@@ -166,7 +179,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
 
     return DropdownButton<PublishAction>(
       value: actionState.action,
-      onChanged: _sortUnsortedImagesCubit.setAction,
+      onChanged: _editImageListCubit.setAction,
       hint: Text(AppLocalizations.of(context).sortImportedSelectAlbum),
       items: items,
     );
@@ -232,11 +245,11 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
   }
 
   void _onPublishPressed() {
-    _sortUnsortedImagesCubit.publishSelected();
+    _editImageListCubit.publishSelected();
   }
 
   void _onDeletePressed() {
-    _sortUnsortedImagesCubit.deleteSelected();
+    _editImageListCubit.deleteSelected();
   }
 
   void _onSelectionChange(SelectableListState selectionState) {

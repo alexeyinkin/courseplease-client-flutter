@@ -58,7 +58,7 @@ class AbstractObjectTileState<I, O extends WithId<I>, F extends AbstractFilter> 
     if (!this.widget.selectable) return Container();
     return Positioned(
       top: 0,
-      left: 0,
+      right: 0,
       child: Checkbox(
         onChanged: widget.onSelected,
         value: widget.selected,

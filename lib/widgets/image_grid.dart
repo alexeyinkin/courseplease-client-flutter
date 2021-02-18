@@ -22,6 +22,7 @@ abstract class AbstractImageGrid<F extends AbstractFilter, R extends AbstractIma
   final SliverGridDelegate gridDelegate;
   final Widget titleIfNotEmpty; // Nullable.
   final SelectableListCubit listStateCubit; // Nullable.
+  final bool showStatusOverlay;
   final bool showMappingsOverlay;
 
   AbstractImageGrid({
@@ -30,6 +31,7 @@ abstract class AbstractImageGrid<F extends AbstractFilter, R extends AbstractIma
     @required this.gridDelegate,
     this.titleIfNotEmpty,
     this.listStateCubit,
+    this.showStatusOverlay = false,
     this.showMappingsOverlay = false,
   }) : super(key: ValueKey(filter.toString()));
 
@@ -85,6 +87,10 @@ class AbstractImageGridState<F extends AbstractFilter, R extends AbstractImageRe
 
     if (widget.showMappingsOverlay) {
       overlays.add(ImageMappingsOverlay(object: object));
+    }
+
+    if (widget.showMappingsOverlay) {
+      overlays.add(ImageStatusOverlay(object: object));
     }
 
     return ImageTile(
@@ -198,6 +204,7 @@ class EditImageGrid extends AbstractImageGrid<EditImageFilter, EditorImageReposi
     @required Axis scrollDirection,
     @required SliverGridDelegate gridDelegate,
     SelectableListCubit listStateCubit,
+    bool showStatusOverlay = false,
     bool showMappingsOverlay = false,
   }) : super(
     filter: filter,
@@ -266,6 +273,75 @@ class ImageMappingsOverlay extends StatelessWidget {
             Text(textParts.join(' · ')),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ImageStatusOverlay extends StatelessWidget {
+  final ImageEntity object;
+
+  ImageStatusOverlay({
+    @required this.object,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget icon = null;
+    String text = null;
+    Color overrideOverlayColor = null;
+
+    switch (object.status) {
+      case ImageStatus.orphan:
+        icon = Icon(Icons.error);
+        text = "No Albums";
+        break;
+      case ImageStatus.inconsistent:
+        icon = Icon(Icons.error);
+        text = "Inconsistent";
+        break;
+      case ImageStatus.published:
+        break;
+      case ImageStatus.unsorted:
+        icon = Icon(Icons.visibility_off);
+        text = "Unsorted";
+        overrideOverlayColor = Color(0xA000A000);
+        break;
+      case ImageStatus.review:
+        icon = Icon(Icons.hourglass_empty);
+        text = "Review";
+        break;
+      case ImageStatus.rejected:
+        icon = Icon(Icons.cancel);
+        text = "Rejected";
+        overrideOverlayColor = Color(0xA0A00000);
+        break;
+      case ImageStatus.trash:
+        icon = Icon(Icons.delete);
+        text = "Trash";
+        break;
+      default:
+        icon = Icon(Icons.error);
+        text = "Unknown";
+    }
+
+    if (icon == null && text == null) return Container();
+
+    final widgets = <Widget>[];
+
+    if (icon != null) widgets.add(icon);
+    if (text != null) widgets.add(Text(text));
+
+    final child = widgets.length == 1
+        ? widgets[0]
+        : Row(mainAxisSize: MainAxisSize.min, children: widgets);
+
+    return Positioned(
+      top: 0,
+      left: 0,
+      child: ImageOverlay(
+        child: child,
+        color: overrideOverlayColor,
       ),
     );
   }
