@@ -7,6 +7,7 @@ import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/screens/choose_product_subject/choose_product_subject.dart';
 import 'package:courseplease/screens/edit_integration/edit_integration.dart';
 import 'package:courseplease/screens/edit_profile/edit_profile.dart';
+import 'package:courseplease/screens/edit_teaching/edit_teaching.dart';
 import 'package:courseplease/screens/image/image.dart';
 import 'package:courseplease/screens/home/home.dart';
 import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
@@ -67,6 +68,7 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
         ChooseProductSubjectScreen.routeName: (context) => ChooseProductSubjectScreen(),
         EditIntegrationScreen.routeName:      (context) => EditIntegrationScreen(),
         EditProfileScreen.routeName:          (context) => EditProfileScreen(),
+        EditTeachingScreen.routeName:         (context) => EditTeachingScreen(),
         ViewImageLightboxScreen.routeName:    (context) => ViewImageLightboxScreen(),
         LessonScreen.routeName:               (context) => LessonScreen(),
         SignInWebviewScreen.routeName:        (context) => SignInWebviewScreen(),

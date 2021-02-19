@@ -1,16 +1,17 @@
 import 'package:courseplease/blocs/model_by_id.dart';
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
+import 'package:courseplease/models/product_variant_format_with_price.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/capsules.dart';
 import 'package:courseplease/widgets/location_line.dart';
-import 'package:courseplease/widgets/price_button.dart';
 import 'package:courseplease/widgets/profile.dart';
 import 'package:courseplease/widgets/rating_and_vote_count.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
+import 'package:courseplease/widgets/teacher_subject_product_variants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -157,27 +158,22 @@ class _TeacherScreenState extends State<TeacherScreen> {
   }
 
   Widget _getFormatList(Teacher teacher) {
-    final tc = _getSelectedTeacherSubject(teacher);
-    if (tc == null) return _getFormatListPlaceholder('Not currently teaching.');
-    if (tc.productVariantFormats.isEmpty) return _getFormatListPlaceholder('Not currently teaching this subject. Try other categories or teachers.');
+    final ts = _getSelectedTeacherSubject(teacher);
+    if (ts == null) return _getFormatListPlaceholder('Not currently teaching.');
+    if (ts.productVariantFormats.isEmpty) return _getFormatListPlaceholder('Not currently teaching this subject. Try other categories or teachers.');
 
-    final children = <ListTile>[];
-
-    for (final format in tc.productVariantFormats) {
-      children.add(
-        ListTile(
-          title: Text(format.title),
-          trailing: PriceButton(money: format.maxPrice, per: 'h'),
-        ),
-      );
-    }
-    return Column(
-      children: children,
+    return TeacherSubjectProductVariantsWidget(
+      teacherSubject: ts,
+      onPressed: _onFormatPressed,
     );
   }
 
   Widget _getFormatListPlaceholder(String text) {
     return Text(text);
+  }
+
+  void _onFormatPressed(ProductVariantFormatWithPrice format) {
+
   }
 
   Widget _getLessonsBlock() {

@@ -29,6 +29,10 @@ class Money {
     return parts.join(' + ');
   }
 
+  String formatPer(String per) {
+    return toString() + ' / ' + per;
+  }
+
   bool isZero() {
     for (final cur in map.keys) {
       if (map[cur] != 0) return false;

@@ -3,6 +3,7 @@ import 'package:courseplease/models/filters/image.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/screens/edit_profile/edit_profile.dart';
 import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
+import 'package:courseplease/screens/edit_teaching/edit_teaching.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/auth/sign_out_button.dart';
@@ -84,6 +85,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
         ListTile(
           title: Text("Teaching"),
           trailing: Icon(Icons.chevron_right),
+          onTap: () => _editTeaching(),
         ),
       ],
     );
@@ -128,6 +130,12 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
       arguments: EditProfileScreenArguments(
         user: User.from(user),
       ),
+    );
+  }
+
+  void _editTeaching() {
+    Navigator.of(context).pushNamed(
+      EditTeachingScreen.routeName,
     );
   }
 

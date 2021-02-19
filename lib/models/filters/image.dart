@@ -28,11 +28,15 @@ class ViewImageFilter extends AbstractFilter {
 class EditImageFilter extends AbstractFilter {
   final List<int> albumIds;
   final List<int> contactIds;
+  final List<int> purposeIds;
+  final List<int> subjectIds;
   final bool unsorted;
 
   EditImageFilter({
     this.albumIds = const <int>[],
     this.contactIds = const <int>[],
+    this.purposeIds = const <int>[],
+    this.subjectIds = const <int>[],
     this.unsorted = false,
   });
 
@@ -41,6 +45,8 @@ class EditImageFilter extends AbstractFilter {
     return {
       'albumIds': albumIds,
       'contactIds': contactIds,
+      'purposeIds': purposeIds,
+      'subjectIds': subjectIds,
       'unsorted': unsorted,
     };
   }

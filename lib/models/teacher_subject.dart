@@ -1,14 +1,17 @@
+import 'package:courseplease/models/image_album_thumb.dart';
 import 'package:meta/meta.dart';
 import 'product_variant_format_with_price.dart';
 
 class TeacherSubject {
   final int subjectId;
   final String body;
+  final Map<int, ImageAlbumThumb> imageAlbumThumbs;
   final List<ProductVariantFormatWithPrice> productVariantFormats;
 
   TeacherSubject({
     @required this.subjectId,
     @required this.body,
+    @required this.imageAlbumThumbs,
     @required this.productVariantFormats,
   });
 
@@ -21,6 +24,7 @@ class TeacherSubject {
     return TeacherSubject(
       subjectId:              map['subjectId'],
       body:                   map['body'],
+      imageAlbumThumbs:       ImageAlbumThumb.fromMapByPurposeId(map['imageAlbumThumbs']),
       productVariantFormats:  productVariantFormats,
     );
   }

@@ -148,6 +148,7 @@ class ImageAlbumPurpose {
   static const portfolio = 4;
   static const customersPortfolio = 5;
   static const unsorted = 6;
+  static const backstage = 8;
 }
 
 enum ImageStatus {

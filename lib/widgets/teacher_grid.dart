@@ -194,7 +194,7 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
     return Container(
       alignment: Alignment.topRight,
       padding: EdgeInsets.only(bottom: 10),
-      child: PriceButton(money: widget.object.maxPrice),
+      child: PriceButton(money: widget.object.maxPrice, per: "h"),
     );
   }
 }
