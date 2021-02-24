@@ -87,10 +87,10 @@ class ApiClient {
     return MeResponseData.fromMap(mapResponse.data);
   }
 
-  Future sortUnsortedMedia(MediaSortRequest request) {
+  Future sortMedia(MediaSortRequest request) {
     return sendRequest(
       method: HttpMethod.post,
-      path: '/api1/{@lang}/sort/sortUnsortedMedia',
+      path: '/api1/{@lang}/sort',
       body: request,
     );
   }
@@ -431,26 +431,29 @@ class MediaSortRequest extends RequestBody {
   }
 }
 
-class MediaSortCommand extends JsonSerializable {
+class MediaSortCommand<F extends AbstractFilter> extends JsonSerializable {
   final String type;
   final int id;
   final String action;
-  final int subjectId; // Nullable
+  final F fetchFilter; // Nullable
+  final F setFilter; // Nullable
 
   MediaSortCommand({
     @required this.type,
     @required this.id,
     @required this.action,
-    this.subjectId,
+    this.fetchFilter,
+    this.setFilter,
   });
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      'type':       type,
-      'id':         id,
-      'action':     action,
-      'subjectId':  subjectId,
+      'type':         type,
+      'id':           id,
+      'action':       action,
+      'fetchFilter':  fetchFilter?.toJson() ?? {},
+      'setFilter':    setFilter?.toJson() ?? {},
     };
   }
 }

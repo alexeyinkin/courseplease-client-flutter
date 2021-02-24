@@ -1,5 +1,12 @@
 import 'package:flutter/widgets.dart';
 
+class SmallHorizontalPadding extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(width: 10);
+  }
+}
+
 Widget padRight(Widget child) {
   return Container(
     padding: EdgeInsets.only(right: 10),

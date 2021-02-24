@@ -20,7 +20,7 @@ class ObjectGrid<
   final Axis scrollDirection;
   final SliverGridDelegate gridDelegate;
   final Widget titleIfNotEmpty; // Nullable
-  final SelectableListCubit listStateCubit; // Nullable
+  final SelectableListCubit<I, F> listStateCubit; // Nullable
   F filter = null;
 
   ObjectGrid({
@@ -100,7 +100,7 @@ class ObjectGridState<
     BuildContext context,
     ModelListState<I, O> modelListState,
     FilteredModelListBloc listBloc,
-    SelectableListState<I> selectionState, // Nullable
+    SelectableListState<I, F> selectionState, // Nullable
   ) {
     final length = modelListState.objects.length;
     final children = <Widget>[];

@@ -21,7 +21,7 @@ abstract class AbstractImageGrid<F extends AbstractFilter, R extends AbstractIma
   final Axis scrollDirection;
   final SliverGridDelegate gridDelegate;
   final Widget titleIfNotEmpty; // Nullable.
-  final SelectableListCubit listStateCubit; // Nullable.
+  final SelectableListCubit<int, F> listStateCubit; // Nullable.
   final bool showStatusOverlay;
   final bool showMappingsOverlay;
 
@@ -148,6 +148,7 @@ class ImageTileState<F extends AbstractFilter> extends AbstractObjectTileState<i
                 fit: BoxFit.cover,
               ),
             ),
+            Positioned.fill(child: Center(child: Text(widget.object.id.toString()))), // TODO: Delete
             getCheckboxOverlay(),
             ...widget.overlays,
           ],
@@ -203,7 +204,7 @@ class EditImageGrid extends AbstractImageGrid<EditImageFilter, EditorImageReposi
     @required EditImageFilter filter,
     @required Axis scrollDirection,
     @required SliverGridDelegate gridDelegate,
-    SelectableListCubit listStateCubit,
+    SelectableListCubit<int, EditImageFilter> listStateCubit,
     bool showStatusOverlay = false,
     bool showMappingsOverlay = false,
   }) : super(

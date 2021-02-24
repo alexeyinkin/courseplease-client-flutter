@@ -7,16 +7,16 @@ import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/image.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/screens/edit_image_list/local_blocs/image_list_action.dart';
+import 'package:courseplease/screens/edit_image_list/local_widgets/unsorted_image_list_toolbar.dart';
 import 'package:courseplease/widgets/contact_title.dart';
 import 'package:courseplease/widgets/image_grid.dart';
 import 'package:courseplease/widgets/pad.dart';
-import 'package:courseplease/widgets/product_subject_dropdown.dart';
+import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get_it/get_it.dart';
-
-import 'local_blocs/edit_image_list.dart';
+import 'local_widgets/sorted_image_list_toolbar.dart';
 
 class EditImageListScreen extends StatefulWidget {
   static const routeName = '/editImageList';
@@ -26,9 +26,9 @@ class EditImageListScreen extends StatefulWidget {
 }
 
 class _EditImageListScreenState extends State<EditImageListScreen> {
-  final _imageSelectionCubit = SelectableListCubit<int>();
-  StreamSubscription _imageSelectionSubscription;
-  EditImageListCubit _editImageListCubit;
+  final _selectableListCubit = SelectableListCubit<int, EditImageFilter>();
+  StreamSubscription _selectableListSubscription;
+  ImageListActionCubit _imageListActionCubit;
 
   final _productSubjectsByIdsBloc = ModelListByIdsBloc<int, ProductSubject>(
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
@@ -38,8 +38,8 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
   Map<int, EditableContact> _contactsByIds;
 
   _EditImageListScreenState() {
-    _editImageListCubit = EditImageListCubit(listStateCubit: _imageSelectionCubit);
-    _imageSelectionSubscription = _imageSelectionCubit.outState.listen(_onSelectionChange);
+    _imageListActionCubit = ImageListActionCubit();
+    _selectableListSubscription = _selectableListCubit.outState.listen(_onSelectionChange);
   }
 
   @override
@@ -62,12 +62,11 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
                 mainAxisSpacing: 1,
                 crossAxisSpacing: 1,
               ),
-              listStateCubit: _imageSelectionCubit,
+              listStateCubit: _selectableListCubit,
               showStatusOverlay: true,
               showMappingsOverlay: true,
             ),
           ),
-          _buildSelectionToolbar(),
         ],
       ),
     );
@@ -80,7 +79,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
     _filter = arguments.filter;
     _contactsByIds = arguments.contactsByIds;
 
-    _editImageListCubit.setFilter(_filter);
+    _selectableListCubit.setFilter(_filter);
     _productSubjectsByIdsBloc.setCurrentIds(_filter.subjectIds);
   }
 
@@ -145,6 +144,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
         widgets.add(
           StreamBuilder(
             stream: _productSubjectsByIdsBloc.outState,
+            initialData: _productSubjectsByIdsBloc.initialState,
             builder: (context, snapshot) => _getProductSubjectTitleWidget(snapshot.data),
           ),
         );
@@ -190,142 +190,26 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
   }
 
   Widget _getProductSubjectTitleWidget(ModelListByIdsState<ProductSubject> state) {
-    String name = null;
-
-    if (state != null && state.objects.isNotEmpty) {
-      name = state.objects[0].title;
+    if (state.objects.isNotEmpty) {
+      return Text(state.objects[0].title);
     }
 
-    return Text(name);
+    return SmallCircularProgressIndicator();
   }
 
   Widget _buildActionToolbar() {
-    return StreamBuilder(
-      stream: _editImageListCubit.outState,
-      initialData: _editImageListCubit.initialState,
-      builder: (context, snapshot) => _buildActionToolbarWithState(snapshot.data),
+    // TODO: Enable this special case for unsorted.
+    // if (_filter.unsorted) {
+    //   return UnsortedImageListToolbar(
+    //     listActionCubit: _imageListActionCubit,
+    //     selectableListCubit: _selectableListCubit,
+    //   );
+    // }
+
+    return SortedImageListToolbar(
+      imageListActionCubit: _imageListActionCubit,
+      selectableListCubit: _selectableListCubit,
     );
-  }
-
-  Widget _buildActionToolbarWithState(EditImageListState state) {
-    switch (state.mode) {
-      case EditImageListMode.unsorted:
-        return _buildSortActionToolbar(state);
-      default:
-        return Container();
-    }
-  }
-
-  Widget _buildSortActionToolbar(EditImageListState state) {
-    // TODO: Use flex? Test on small screens.
-    return Row(
-      children: [
-        padRight(
-          ElevatedButton(
-            onPressed: state.canPublish ? _onPublishPressed : null,
-            child: Text(AppLocalizations.of(context).sortImportedPublishButton),
-          ),
-        ),
-        padRight(Text(AppLocalizations.of(context).sortImportedPublishAs)),
-        padRight(_buildAlbumDropdownButton(state)),
-        padRight(Text(AppLocalizations.of(context).sortImportedPublishInSubject)),
-        padRight(
-          ProductSubjectDropdown(
-            selectedId: state.subjectId,
-            showIds: state.showSubjectIds,
-            onChanged: _editImageListCubit.setSubjectId,
-            hint: Text(AppLocalizations.of(context).sortImportedSelectSubject),
-          ),
-        ),
-        Spacer(),
-        ElevatedButton(
-          onPressed: state.canDelete ? _onDeletePressed : null,
-          child: Icon(Icons.delete),
-        )
-      ],
-    );
-  }
-
-  Widget _buildAlbumDropdownButton(EditImageListState actionState) {
-    final items = <DropdownMenuItem<PublishAction>>[];
-
-    for (final action in actionState.showActions) {
-      items.add(_buildActionDropdownMenuItem(action));
-    }
-
-    return DropdownButton<PublishAction>(
-      value: actionState.action,
-      onChanged: _editImageListCubit.setAction,
-      hint: Text(AppLocalizations.of(context).sortImportedSelectAlbum),
-      items: items,
-    );
-  }
-
-  Widget _buildActionDropdownMenuItem(PublishAction action) {
-    String text;
-
-    switch (action) {
-      case PublishAction.portfolio:
-        text = AppLocalizations.of(context).albumMyPortfolio;
-        break;
-      case PublishAction.customersPortfolio:
-        text = AppLocalizations.of(context).albumMyStudentsPortfolio;
-        break;
-      case PublishAction.backstage:
-        text = AppLocalizations.of(context).albumBackstage;
-        break;
-    }
-
-    return DropdownMenuItem<PublishAction>(
-      value: action,
-      child: Text(text),
-    );
-  }
-
-  Widget _buildSelectionToolbar() {
-    return StreamBuilder(
-      stream: _imageSelectionCubit.outState,
-      initialData: _imageSelectionCubit.initialState,
-      builder: (context, snapshot) => _buildSelectionToolbarWithState(snapshot.data),
-    );
-  }
-
-  Widget _buildSelectionToolbarWithState(SelectableListState selectionState) {
-    return Row(
-      children: [
-        padRight(
-          ElevatedButton(
-            onPressed: selectionState.canSelectMore ? _selectAll : null,
-            // TODO: Use better icons, awaiting them here: https://github.com/Templarian/MaterialDesign/issues/5853
-            child: Icon(FlutterIcons.checkbox_multiple_marked_mco),
-          ),
-        ),
-        padRight(
-          ElevatedButton(
-            onPressed: selectionState.selected ? _selectNone : null,
-            child: Icon(FlutterIcons.checkbox_multiple_blank_mco),
-          ),
-        ),
-        Text(AppLocalizations.of(context).selectedCount(
-            selectionState.selectedIds.length)),
-      ],
-    );
-  }
-
-  void _selectAll() {
-    _imageSelectionCubit.selectAll();
-  }
-
-  void _selectNone() {
-    _imageSelectionCubit.selectNone();
-  }
-
-  void _onPublishPressed() {
-    _editImageListCubit.publishSelected();
-  }
-
-  void _onDeletePressed() {
-    _editImageListCubit.deleteSelected();
   }
 
   void _onSelectionChange(SelectableListState selectionState) {
@@ -336,8 +220,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
 
   @override
   void dispose() {
-    _imageSelectionSubscription.cancel();
-    // TODO: implement dispose
+    _selectableListSubscription.cancel();
     super.dispose();
   }
 }
