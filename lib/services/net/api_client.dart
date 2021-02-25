@@ -104,12 +104,15 @@ class ApiClient {
     );
   }
 
-  Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getEntities(
+  Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getEntities({
     String name,
     AbstractFilter filter,
     String pageToken, // Nullable
-  ) async {
-    final queryParameters = Map<String, String>();
+    Map<String, String> queryParameters, // Nullable
+  }) async {
+    if (queryParameters == null) {
+      queryParameters = Map<String, String>();
+    }
 
     queryParameters['filter'] = filter.toString();
 

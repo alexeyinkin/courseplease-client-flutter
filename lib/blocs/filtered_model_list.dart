@@ -107,6 +107,17 @@ class FilteredModelListBloc<I, O extends WithId<I>, F extends AbstractFilter> ex
     }
   }
 
+  void clearAndLoadFirstPage() {
+    _objects.clear();
+    _objectIds.clear();
+    _status = RequestStatus.ok;
+    _hasMore = true;
+    _currentLoadingFuture = null;
+    _nextPageToken = null;
+    //_pushOutput();
+    _loadMore();
+  }
+
   @override
   void dispose() {
     _outStateController.close();

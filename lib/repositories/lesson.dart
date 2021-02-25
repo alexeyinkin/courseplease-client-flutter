@@ -12,7 +12,7 @@ class LessonRepository extends AbstractFilteredRepository<int, Lesson, LessonFil
   @override
   Future<ListLoadResult<Lesson>> loadWithFilter(LessonFilter filter, String pageToken) {
     return _client
-        .getEntities(_entitiesName, filter, pageToken)
+        .getEntities(name: _entitiesName, filter: filter, pageToken: pageToken)
         .then((response) => _denormalizeList(response.data));
   }
 

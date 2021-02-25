@@ -38,7 +38,6 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
   Map<int, EditableContact> _contactsByIds;
 
   _EditImageListScreenState() {
-    _imageListActionCubit = ImageListActionCubit();
     _selectableListSubscription = _selectableListCubit.outState.listen(_onSelectionChange);
   }
 
@@ -81,6 +80,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
 
     _selectableListCubit.setFilter(_filter);
     _productSubjectsByIdsBloc.setCurrentIds(_filter.subjectIds);
+    _imageListActionCubit = ImageListActionCubit(filter: _filter);
   }
 
   Widget _buildTitle() {

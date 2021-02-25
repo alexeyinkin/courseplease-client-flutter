@@ -72,11 +72,7 @@ class SelectableListCubit<I, F extends AbstractFilter> extends Bloc {
       _allIds[id] = id;
     }
 
-    for (final id in _selectedIds.keys) {
-      if (!_allIds.containsKey(id)) {
-        allIds.remove(id);
-      }
-    }
+    _selectedIds.removeWhere((key, _) => !_allIds.containsKey(key));
 
     if (allIds.isNotEmpty) {
       _wasSourceListEverNotEmpty = true;

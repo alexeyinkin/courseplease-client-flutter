@@ -36,6 +36,11 @@ class FilteredModelListCache {
     return _map[objectType][filterType][filterString];
   }
 
+  Map<Type, Map<String, FilteredModelListBloc>> getModelListsByObjectType<O>() {
+    final objectType = _typeOf<O>();
+    return UnmodifiableMapView<Type, Map<String, FilteredModelListBloc>>(_map[objectType]);
+  }
+
   Map<String, FilteredModelListBloc> getModelListsByObjectAndFilterTypes<O, F>() {
     final objectType = _typeOf<O>();
     final filterType = _typeOf<F>();

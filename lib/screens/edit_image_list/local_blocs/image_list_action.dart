@@ -1,21 +1,37 @@
+import 'dart:convert';
+import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/blocs/list_action.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/models/image.dart';
+import 'package:courseplease/repositories/image.dart';
+import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meta/meta.dart';
 
 class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
+  final EditImageFilter filter;
   final _apiClient = GetIt.instance.get<ApiClient>();
+  final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
 
   static const _mediaType = 'image';
 
-  Future move(SelectableListState selectableListState, EditImageFilter setFilter) async {
+  ImageListActionCubit({
+    @required this.filter,
+  });
+
+  Future<void> move(SelectableListState selectableListState, EditImageFilter setFilter) async {
     setActionInProgress(MediaSortActionEnum.unlink);
     final future = _apiClient.sortMedia(_getMoveRequest(selectableListState, setFilter));
-    _programFuture(future);
 
-    return future;
+    return future
+        .then(_onRequestSuccess)
+        .then((_) => _removeImageIds(selectableListState.selectedIds.keys.toList()))
+        .catchError(_onRequestError);
   }
 
   MediaSortRequest _getMoveRequest(SelectableListState selectableListState, EditImageFilter setFilter) {
@@ -36,10 +52,12 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
     );
   }
 
-  Future link(List<int> imageIds, EditImageFilter setFilter) async {
+  Future<void> link(List<int> imageIds, EditImageFilter setFilter) async {
     setActionInProgress(MediaSortActionEnum.unlink);
     final future = _apiClient.sortMedia(_getLinkRequest(imageIds, setFilter));
-    _programFuture(future);
+    future
+        .then(_onRequestSuccess)
+        .catchError(_onRequestError);
 
     return future;
   }
@@ -61,10 +79,13 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
     );
   }
 
-  Future unlink(SelectableListState selectableListState) async {
+  Future<void> unlink(SelectableListState selectableListState) async {
     setActionInProgress(MediaSortActionEnum.unlink);
     final future = _apiClient.sortMedia(_getUnlinkRequest(selectableListState));
-    _programFuture(future);
+    future
+        .then(_onRequestSuccess)
+        .then((_) => _removeImageIds(selectableListState.selectedIds.keys.toList()))
+        .catchError(_onRequestError);
 
     return future;
   }
@@ -86,15 +107,41 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
     );
   }
 
-  void _programFuture(Future future) {
-    future
-        .then(_onRequestSuccess)
-        .catchError(_onRequestError);
-  }
-
   void _onRequestSuccess(_) {
     setActionInProgress(null);
-    // TODO: Update this and possibly other lists.
+    _authenticationCubit.reloadCurrentActor(); // Could have added teaching subjects.
+    // TODO: Reload only if really added. Check this when creating 'link' and 'move' commands.
+
+    // TODO: Make a more granular clearing.
+    //       We have image IDs. One way is to go through all the lists
+    //       and to re-validate if images with those IDs still match the list's filter.
+    //       Also add images if they were not matching the filter but started to match.
+    //       Though list ordering is challenging in this process.
+    _clearAllOtherImageLists();
+  }
+
+  void _removeImageIds(List<int> imageIds) {
+    final list = _getCurrentModelList();
+    list.removeObjectIds(imageIds);
+  }
+
+  FilteredModelListBloc<int, ImageEntity, EditImageFilter> _getCurrentModelList() {
+    return _filteredModelListCache.getOrCreate<int, ImageEntity, EditImageFilter, EditorImageRepository>(filter);
+  }
+
+  void _clearAllOtherImageLists() {
+    final listsByFilterTypes = _filteredModelListCache.getModelListsByObjectType<ImageEntity>();
+    final currentFilterJson = jsonEncode(filter);
+
+    for (final listsByFilters in listsByFilterTypes.values) {
+      for (final filterJson in listsByFilters.keys) {
+        if (filterJson == currentFilterJson) {
+          continue;
+        }
+
+        listsByFilters[filterJson].clearAndLoadFirstPage();
+      }
+    }
   }
 
   void _onRequestError(_) {
