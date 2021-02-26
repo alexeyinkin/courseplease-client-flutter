@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
@@ -199,6 +200,44 @@ class ViewImageGridState extends AbstractImageGridState<ViewImageFilter, Gallery
   }
 }
 
+class FixedIdsImageGrid extends AbstractImageGrid<
+  IdsSubsetFilter<int, ImageEntity>,
+  AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
+> {
+  FixedIdsImageGrid({
+    @required IdsSubsetFilter<int, ImageEntity> filter,
+    @required Axis scrollDirection,
+    @required SliverGridDelegate gridDelegate,
+    Widget titleIfNotEmpty, // Nullable
+    bool showMappingsOverlay = false,
+  }) : super(
+    filter: filter,
+    scrollDirection: scrollDirection,
+    gridDelegate: gridDelegate,
+    titleIfNotEmpty: titleIfNotEmpty,
+    showMappingsOverlay: showMappingsOverlay,
+  );
+
+  @override
+  State<AbstractImageGrid> createState() => _FixedIdsImageGridState();
+}
+
+class _FixedIdsImageGridState extends AbstractImageGridState<
+  IdsSubsetFilter<int, ImageEntity>,
+  AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
+> {
+  @override
+  void handleTap(ImageEntity image, int index) {
+    Navigator.of(context).pushNamed(
+      FixedIdsImageLightboxScreen.routeName,
+      arguments: ImageLightboxArguments<IdsSubsetFilter<int, ImageEntity>>(
+        filter: widget.filter,
+        index: index,
+      ),
+    );
+  }
+}
+
 class EditImageGrid extends AbstractImageGrid<EditImageFilter, EditorImageRepository> {
   EditImageGrid({
     @required EditImageFilter filter,
@@ -343,6 +382,55 @@ class ImageStatusOverlay extends StatelessWidget {
       child: ImageOverlay(
         child: child,
         color: overrideOverlayColor,
+      ),
+    );
+  }
+}
+
+class ResponsiveImageGrid extends StatelessWidget {
+  final IdsSubsetFilter<int, ImageEntity> idsSubsetFilter;
+  final double reserveHeight;
+
+  static const _widthFraction = .7;
+  static const _maxCrossAxisCount = 5;
+  static const _maxMainAxisCount = 3;
+
+  ResponsiveImageGrid({
+    @required this.idsSubsetFilter,
+    @required this.reserveHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ids = idsSubsetFilter.ids;
+    final screenSize = MediaQuery.of(context).size;
+    final maxPreviewWidth = screenSize.width * _widthFraction;
+    final crossAxisCount = ids.length <= _maxCrossAxisCount ? ids.length : _maxCrossAxisCount;
+    final thumbSize = maxPreviewWidth / crossAxisCount;
+    final rows = (ids.length / crossAxisCount).ceil();
+
+    final maxPreviewHeight = rows <= _maxMainAxisCount
+        ? thumbSize * rows
+        : thumbSize * (_maxMainAxisCount + .5);
+
+    final previewHeight = min(maxPreviewHeight, screenSize.height - reserveHeight);
+
+    var previewWidth = maxPreviewWidth;
+    if (previewHeight < thumbSize) {
+      previewWidth *= previewHeight / thumbSize * .9; // .9 is to show a little bit of the 2nd row.
+    }
+
+    return Container(
+      width: previewWidth,
+      height: previewHeight,
+      child: FixedIdsImageGrid(
+        filter: idsSubsetFilter,
+        scrollDirection: Axis.vertical,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: 1,
+          crossAxisSpacing: 1,
+        ),
       ),
     );
   }

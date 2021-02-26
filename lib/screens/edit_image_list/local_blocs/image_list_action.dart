@@ -125,12 +125,12 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
     list.removeObjectIds(imageIds);
   }
 
-  FilteredModelListBloc<int, ImageEntity, EditImageFilter> _getCurrentModelList() {
+  NetworkFilteredModelListBloc<int, ImageEntity, EditImageFilter> _getCurrentModelList() {
     return _filteredModelListCache.getOrCreate<int, ImageEntity, EditImageFilter, EditorImageRepository>(filter);
   }
 
   void _clearAllOtherImageLists() {
-    final listsByFilterTypes = _filteredModelListCache.getModelListsByObjectType<ImageEntity>();
+    final listsByFilterTypes = _filteredModelListCache.getNetworkModelListsByObjectType<ImageEntity>();
     final currentFilterJson = jsonEncode(filter);
 
     for (final listsByFilters in listsByFilterTypes.values) {

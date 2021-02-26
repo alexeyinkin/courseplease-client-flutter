@@ -198,13 +198,12 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
   }
 
   Widget _buildActionToolbar() {
-    // TODO: Enable this special case for unsorted.
-    // if (_filter.unsorted) {
-    //   return UnsortedImageListToolbar(
-    //     listActionCubit: _imageListActionCubit,
-    //     selectableListCubit: _selectableListCubit,
-    //   );
-    // }
+    if (_filter.unsorted) {
+      return UnsortedImageListToolbar(
+        imageListActionCubit: _imageListActionCubit,
+        selectableListCubit: _selectableListCubit,
+      );
+    }
 
     return SortedImageListToolbar(
       imageListActionCubit: _imageListActionCubit,

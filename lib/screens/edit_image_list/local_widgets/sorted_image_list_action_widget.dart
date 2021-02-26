@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/media_destination.dart';
 import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/media_destination.dart';
 import 'package:flutter/material.dart';
@@ -80,26 +81,16 @@ class SortedImageListActionWidget extends ListActionWidget<
   }
 
   void _onMoveSelected(BuildContext context, SelectableListState selectableListState) async {
-    final mediaDestinationCubit = MediaDestinationCubit();
-    mediaDestinationCubit.outAction.listen(
-      (mediaDestinationState) => _onMoveActionPressed(
+    MediaDestinationDialog.show<int, ImageEntity, EditImageFilter, EditorImageRepository>(
+      context: context,
+      selectableListState: selectableListState,
+      listActionCubit: listActionCubit,
+      onActionPressed: (mediaDestinationState) => _onMoveActionPressed(
         context,
         selectableListState,
         mediaDestinationState,
       ),
     );
-
-    await showDialog(
-      context: context,
-      builder: (context) => MediaDestinationDialog(
-        listActionCubit: listActionCubit,
-        mediaDestinationCubit: mediaDestinationCubit,
-        selectableListState: selectableListState,
-        action: MediaDestinationAction.move,
-      ),
-    );
-
-    mediaDestinationCubit.dispose();
   }
 
   void _onMoveActionPressed(
@@ -119,26 +110,16 @@ class SortedImageListActionWidget extends ListActionWidget<
   }
 
   void _onLinkSelected(BuildContext context, SelectableListState selectableListState) async {
-    final mediaDestinationCubit = MediaDestinationCubit();
-    mediaDestinationCubit.outAction.listen(
-      (mediaDestinationState) => _onLinkActionPressed(
+    MediaDestinationDialog.show<int, ImageEntity, EditImageFilter, EditorImageRepository>(
+      context: context,
+      selectableListState: selectableListState,
+      listActionCubit: listActionCubit,
+      onActionPressed: (mediaDestinationState) => _onLinkActionPressed(
         context,
         selectableListState.selectedIds.keys.toList(),
         mediaDestinationState,
       ),
     );
-
-    await showDialog(
-      context: context,
-      builder: (context) => MediaDestinationDialog(
-        listActionCubit: listActionCubit,
-        mediaDestinationCubit: mediaDestinationCubit,
-        selectableListState: selectableListState,
-        action: MediaDestinationAction.copy,
-      ),
-    );
-
-    mediaDestinationCubit.dispose();
   }
 
   void _onLinkActionPressed(

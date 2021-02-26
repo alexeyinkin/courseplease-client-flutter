@@ -84,10 +84,6 @@ class AuthenticationBloc extends Bloc{
     _testDeviceKey(_authenticationState.deviceKey);
   }
 
-  void _registerOauthTempKey(String key) {
-    // TODO: Register at courseplease.com server.
-  }
-
   void signOut() async {
     _setFreshState();
   }

@@ -103,3 +103,5 @@ String formatRoughDuration(Duration duration, AppLocalizations appLocalizations)
 
   return appLocalizations.daysAgo(duration.inDays);
 }
+
+Type typeOf<T>() => T;

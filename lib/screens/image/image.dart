@@ -59,7 +59,7 @@ abstract class AbstractImageLightboxScreenState<
   Widget _buildWithListState(
     BuildContext context,
     ModelListState<int, ImageEntity> listState,
-    FilteredModelListBloc bloc,
+    AbstractFilteredModelListBloc bloc,
   ) {
     final length = listState.objects.length;
 
@@ -161,13 +161,13 @@ abstract class AbstractImageLightboxScreenState<
 }
 
 class ViewImageLightboxScreen extends AbstractImageLightboxScreen<ViewImageFilter, GalleryImageRepository> {
-  static const routeName = '/photoLightbox';
+  static const routeName = '/imageLightbox';
 
   @override
-  State<AbstractImageLightboxScreen> createState() => ViewImageLightboxScreenState();
+  State<AbstractImageLightboxScreen> createState() => _ViewImageLightboxScreenState();
 }
 
-class ViewImageLightboxScreenState extends AbstractImageLightboxScreenState<ViewImageFilter, GalleryImageRepository> {
+class _ViewImageLightboxScreenState extends AbstractImageLightboxScreenState<ViewImageFilter, GalleryImageRepository> {
   final _teacherByIdBloc = ModelByIdBloc<int, Teacher>(
     modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Teacher, TeacherRepository>(),
   );
@@ -221,13 +221,35 @@ class ViewImageLightboxScreenState extends AbstractImageLightboxScreenState<View
 }
 
 class EditImageLightboxScreen extends AbstractImageLightboxScreen<EditImageFilter, EditorImageRepository> {
-  static const routeName = '/unsortedPhotoLightbox';
+  static const routeName = '/unsortedImageLightbox';
 
   @override
-  State<AbstractImageLightboxScreen> createState() => EditImageLightboxScreenState();
+  State<AbstractImageLightboxScreen> createState() => _EditImageLightboxScreenState();
 }
 
-class EditImageLightboxScreenState extends AbstractImageLightboxScreenState<EditImageFilter, EditorImageRepository> {
+class _EditImageLightboxScreenState extends AbstractImageLightboxScreenState<EditImageFilter, EditorImageRepository> {
+  @override
+  List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
+    return [
+      buildTitleOverlay(context, image),
+    ];
+  }
+}
+
+class FixedIdsImageLightboxScreen extends AbstractImageLightboxScreen<
+  IdsSubsetFilter<int, ImageEntity>,
+  AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
+> {
+  static const routeName = '/fixedIdsImageLightbox';
+
+  @override
+  State<AbstractImageLightboxScreen> createState() => _FixedIdsImageLightboxScreenState();
+}
+
+class _FixedIdsImageLightboxScreenState extends AbstractImageLightboxScreenState<
+  IdsSubsetFilter<int, ImageEntity>,
+  AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
+> {
   @override
   List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
     return [

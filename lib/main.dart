@@ -69,6 +69,7 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
         EditIntegrationScreen.routeName:      (context) => EditIntegrationScreen(),
         EditProfileScreen.routeName:          (context) => EditProfileScreen(),
         EditTeachingScreen.routeName:         (context) => EditTeachingScreen(),
+        FixedIdsImageLightboxScreen.routeName:(context) => FixedIdsImageLightboxScreen(),
         ViewImageLightboxScreen.routeName:    (context) => ViewImageLightboxScreen(),
         LessonScreen.routeName:               (context) => LessonScreen(),
         SignInWebviewScreen.routeName:        (context) => SignInWebviewScreen(),

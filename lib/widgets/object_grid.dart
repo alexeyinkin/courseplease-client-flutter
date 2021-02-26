@@ -81,7 +81,7 @@ class ObjectGridState<
   Widget _buildWithListState(
     BuildContext context,
     ModelListState<I, O> listState,
-    FilteredModelListBloc listBloc,
+    AbstractFilteredModelListBloc listBloc,
   ) {
     if (widget.listStateCubit == null) {
       return _buildWithListAndSelectionStates(context, listState, listBloc, null);
@@ -99,7 +99,7 @@ class ObjectGridState<
   Widget _buildWithListAndSelectionStates(
     BuildContext context,
     ModelListState<I, O> modelListState,
-    FilteredModelListBloc listBloc,
+    AbstractFilteredModelListBloc listBloc,
     SelectableListState<I, F> selectionState, // Nullable
   ) {
     final length = modelListState.objects.length;
