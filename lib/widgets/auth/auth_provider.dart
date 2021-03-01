@@ -46,6 +46,6 @@ class AuthProviderWidget extends StatelessWidget {
 
   String _getButtonTitle() {
     if (titleTemplate == null) return provider.title;
-    return titleTemplate.replaceFirst('{@title}', provider.title);
+    return titleTemplate.replaceFirst('{@providerTitle}', provider.title);
   }
 }

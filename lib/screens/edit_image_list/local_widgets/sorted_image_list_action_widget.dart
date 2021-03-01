@@ -3,6 +3,7 @@ import 'package:courseplease/models/filters/image.dart';
 import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/media_destination.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/blocs/list_action.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
@@ -32,10 +33,10 @@ class SortedImageListActionWidget extends ListActionWidget<
     SelectableListState<int, EditImageFilter> selectableListState,
   }) {
     if (!selectableListState.selected) {
-      return Text("Select Images");
+      return Text(tr('EditImageListScreen.selectImages'));
     }
 
-    final withSelectedText = "With " + selectableListState.selectedIds.length.toString() + " Selected";
+    final withSelectedText = tr('EditImageListScreen.withNSelected', namedArgs: {'n': selectableListState.selectedIds.length.toString()});
 
     return Row(
       children: [
@@ -45,20 +46,20 @@ class SortedImageListActionWidget extends ListActionWidget<
           isLoading: listActionCubitState.actionInProgress != null,
           items: [
             PopupMenuItem(
-              child: Text("Move To..."),
+              child: Text(tr('EditImageListScreen.actions.move')),
               value: MediaSortActionEnum.move,
             ),
             PopupMenuItem(
-              child: Text("Copy To..."),
+              child: Text(tr('EditImageListScreen.actions.copy')),
               value: MediaSortActionEnum.link,
             ),
             // TODO: Implement archiving.
             // PopupMenuItem(
-            //   child: Text("Archive"),
+            //   child: Text('Archive'),
             //   value: _Action.archive,
             // ),
             PopupMenuItem(
-              child: Text("Delete"),
+              child: Text(tr('EditImageListScreen.actions.delete')),
               value: MediaSortActionEnum.unlink,
             ),
           ],
@@ -90,6 +91,7 @@ class SortedImageListActionWidget extends ListActionWidget<
         selectableListState,
         mediaDestinationState,
       ),
+      action: MediaDestinationAction.move,
     );
   }
 
@@ -119,6 +121,7 @@ class SortedImageListActionWidget extends ListActionWidget<
         selectableListState.selectedIds.keys.toList(),
         mediaDestinationState,
       ),
+      action: MediaDestinationAction.copy,
     );
   }
 

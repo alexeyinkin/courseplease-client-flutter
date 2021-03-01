@@ -3,6 +3,7 @@ import 'package:courseplease/screens/home/local_widgets/images_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/product_subjects_breadcrumbs.dart';
 import 'package:courseplease/screens/home/local_widgets/teachers_tab.dart';
 import 'package:courseplease/widgets/capsules.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
@@ -36,9 +37,9 @@ class ExploreTabState extends State<ExploreTab> {
               _getChildrenSubjectsLine(context),
               TabBar(
                 tabs: [
-                  Tab(text: 'Works'),
-                  Tab(text: 'Teachers'),
-                  Tab(text: 'Lessons'),
+                  Tab(text: tr('ImagesTabWidget.title')),
+                  Tab(text: tr('TeachersTabWidget.title')),
+                  Tab(text: tr('LessonsTabWidget.title')),
                 ],
               ),
               Expanded(

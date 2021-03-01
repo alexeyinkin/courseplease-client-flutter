@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_treeview/tree_view.dart';
 import 'package:get_it/get_it.dart';
@@ -18,7 +19,7 @@ class _ChooseProductSubjectScreenState extends State<ChooseProductSubjectScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Choose Subject"),
+        title: Text(tr('SelectProductSubjectScreen.title')),
       ),
       body: StreamBuilder(
         stream: _productSubjectCacheBloc.outTopLevelObjects,

@@ -2,6 +2,7 @@ import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/screens/choose_product_subject/choose_product_subject.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
@@ -43,7 +44,7 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
       trailing: [
         DropdownMenuItem<int>(
           value: ProductSubjectDropdown.moreId,
-          child: Text("More..."),
+          child: Text(tr('common.more')),
         ),
       ],
     );

@@ -12,8 +12,8 @@ import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/contact_title.dart';
 import 'package:courseplease/widgets/icon_text_status.dart';
 import 'package:courseplease/widgets/pad.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditIntegrationScreen extends StatefulWidget {
   static const routeName = 'editIntegration';
@@ -63,33 +63,24 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
       final diff = state.contact.tokenExpire.difference(DateTime.now());
       if (diff.isNegative) return _getTokenStatusInvalid();
 
-      final daysLeft = diff.inDays;
-
-      if (daysLeft > 0) return _getTokenStatusDaysLeftWidget(daysLeft);
-      return _getTokenStatusExpiresSoon();
+      return _getTokenIsValidForWidget(diff);
     }
 
     return _getTokenStatusInvalid();
   }
 
-  Widget _getTokenStatusDaysLeftWidget(int daysLeft) {
+  Widget _getTokenIsValidForWidget(Duration duration) {
+    final durationValidFor = formatLongRoughDurationValidFor(duration);
     return IconTextWidget(
       iconName: StatusIconEnum.ok,
-      text: "Token is valid for $daysLeft more days.",
-    );
-  }
-
-  Widget _getTokenStatusExpiresSoon() {
-    return IconTextWidget(
-      iconName: StatusIconEnum.ok,
-      text: "Token is valid and will expire in less than a day.",
+      text: tr('EditIntegrationScreen.tokenIsValidFor', namedArgs: {'durationValidFor': durationValidFor}),
     );
   }
 
   Widget _getTokenStatusInvalid() {
     return IconTextWidget(
       iconName: StatusIconEnum.error,
-      text: "No token. Authorize the app to download contents.",
+      text: tr('EditIntegrationScreen.noToken'),
       // TODO: Add a button to re-authorize.
     );
   }
@@ -113,7 +104,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   Widget _buildUpdateStatusNeverUpdated(EditIntegrationState state) {
     return IconTextWidget(
       iconName: StatusIconEnum.error,
-      text: AppLocalizations.of(context).editIntegrationNeverUpdated,
+      text: tr('EditIntegrationScreen.imagesNeverSynchronized'),
       trailing: _buildUpdateAndViewButtons(state),
     );
   }
@@ -121,14 +112,14 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   Widget _buildUpdateStatusRunning() {
     return IconTextWidget(
       iconName: StatusIconEnum.sync,
-      text: AppLocalizations.of(context).editIntegrationSynchronizingNow,
+      text: tr('EditIntegrationScreen.synchronizingNow'),
     );
   }
 
   Widget _buildUpdateStatusComplete(EditIntegrationState state) {
     return IconTextWidget(
       iconName: StatusIconEnum.ok,
-      text: AppLocalizations.of(context).editIntegrationLastUpdated(_getUpdatedTimeAgo(state.contact.profileSyncStatus)),
+      text: tr('EditIntegrationScreen.lastSynchronized', namedArgs:{'durationAgo': _getUpdatedTimeAgo(state.contact.profileSyncStatus)}),
       trailing: _buildUpdateAndViewButtons(state),
     );
   }
@@ -136,15 +127,14 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   Widget _buildUpdateStatusError(EditIntegrationState state) {
     return IconTextWidget(
       iconName: StatusIconEnum.error,
-      text: AppLocalizations.of(context).editIntegrationErrorLastTried(_getUpdatedTimeAgo(state.contact.profileSyncStatus)),
+      text: tr('EditIntegrationScreen.errorLastTried', namedArgs:{'durationAgo': _getUpdatedTimeAgo(state.contact.profileSyncStatus)}),
       trailing: _buildUpdateAndViewButtons(state),
     );
   }
 
   String _getUpdatedTimeAgo(ProfileSyncStatus status) {
-    return formatRoughDuration(
-        DateTime.now().difference(status.dateTimeUpdate),
-        AppLocalizations.of(context),
+    return formatLongRoughDurationAgo(
+      DateTime.now().difference(status.dateTimeUpdate),
     );
   }
 
@@ -159,7 +149,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
 
   Widget _buildUpdateNowButton(EditIntegrationState state) {
     return ElevatedButtonWithProgress(
-      child: Text(AppLocalizations.of(context).editIntegrationUpdateNow),
+      child: Text(tr('EditIntegrationScreen.buttons.synchronizeNow')),
       onPressed: _updateNow,
       isLoading: state.currentAction == EditIntegrationCurrentAction.sync,
       enabled: state.currentAction == EditIntegrationCurrentAction.none,
@@ -172,7 +162,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
 
   Widget _buildViewDownloadedButton(EditIntegrationState state) {
     return ElevatedButton(
-      child: Text("View Images"),
+      child: Text(tr('EditIntegrationScreen.buttons.viewImages')),
       onPressed: _viewDownloaded,
     );
   }
@@ -195,7 +185,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     final serviceName = _contactClone.getServiceTitle();
 
     return SwitchListTile(
-      title: Text("Download new contents from $serviceName"),
+      title: Text(tr('EditIntegrationScreen.downloadNewContentFrom', namedArgs: {'serviceName': serviceName})),
       value: _contactClone.downloadEnabled,
       onChanged: _handleIsDownloadEnabledToggle,
     );
@@ -219,7 +209,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
 
   Widget _getSaveButton(EditIntegrationState state) {
     return ElevatedButtonWithProgress(
-      child: Text("Save"),
+      child: Text(tr('common.buttons.save')),
       onPressed: _handleSave,
       isLoading: state.currentAction == EditIntegrationCurrentAction.save,
       enabled: state.currentAction == EditIntegrationCurrentAction.none,

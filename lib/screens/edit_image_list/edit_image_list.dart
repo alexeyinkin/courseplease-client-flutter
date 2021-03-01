@@ -13,8 +13,8 @@ import 'package:courseplease/widgets/contact_title.dart';
 import 'package:courseplease/widgets/image_grid.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'local_widgets/sorted_image_list_toolbar.dart';
 
@@ -93,28 +93,28 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
       case 1:
         final contactId = _filter.contactIds[0];
         if (!_contactsByIds.containsKey(contactId)) {
-          widgets.add(Text("1 Profile"));
+          widgets.add(Text(plural('EditImageListScreen.title.profiles', 1)));
         } else {
           widgets.add(ContactTitleWidget(contact: _contactsByIds[contactId]));
         }
-        trailing = "All Images";
+        trailing = tr('EditImageListScreen.title.allImages');
         break;
       default:
-        widgets.add(Text(_filter.contactIds.length.toString() + " Profiles"));
-        trailing = "All Images";
+        widgets.add(Text(plural('EditImageListScreen.title.profiles', _filter.contactIds.length)));
+        trailing = tr('EditImageListScreen.title.allImages');
     }
 
     if (_filter.unsorted) {
-      trailing = AppLocalizations.of(context).sortImportedMedia;
+      trailing = tr('MyProfileWidget.sortImportedMedia');
     } else {
       switch (_filter.albumIds.length) {
         case 0:
           break;
         case 1:
-          trailing = "1 Album"; // TODO: Show album's title.
+          trailing = plural('EditImageListScreen.title.albums', 1); // TODO: Show the album title.
           break;
         default:
-          trailing = _filter.contactIds.length.toString() + " Albums";
+          trailing = plural('EditImageListScreen.title.profiles', _filter.contactIds.length);
       }
     }
 
@@ -134,7 +134,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
         );
         break;
       default:
-        widgets.add(Text(_filter.purposeIds.length.toString() + " Album Types"));
+        widgets.add(Text(plural('EditImageListScreen.title.purposes', _filter.purposeIds.length)));
     }
 
     switch (_filter.subjectIds.length) {
@@ -150,11 +150,11 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
         );
         break;
       default:
-        widgets.add(Text(_filter.subjectIds.length.toString() + " Subjects"));
+        widgets.add(Text(plural('EditImageListScreen.title.subjects', _filter.purposeIds.length)));
     }
 
     if (widgets.isEmpty) {
-      widgets.add(Text("All My Images"));
+      widgets.add(Text(tr('EditImageListScreen.title.allMyImages')));
     }
 
     return Wrap(
@@ -167,26 +167,12 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
     );
   }
 
-  Widget _getAlbumPurposeWidget(int purposeId, ModelListByIdsState<ProductSubject> state) {
-    String name;
+  Widget _getAlbumPurposeWidget(int purposeId, ModelListByIdsState<ProductSubject> subjectsState) {
+    final key = subjectsState == null || subjectsState.objects.length != 1
+        ? purposeId.toString() + '_asTheOnly'
+        : ImageAlbumPurpose.getTitleKey(purposeId, subjectsState.objects[0]);
 
-    switch (purposeId) {
-      case ImageAlbumPurpose.portfolio:
-        name = "My Portfolio";
-        break;
-      case ImageAlbumPurpose.customersPortfolio:
-        name = "My Students' Works";
-        break;
-      case ImageAlbumPurpose.backstage:
-        if (state != null && state.objects.length == 1 && state.objects[0].allowsImagePortfolio) {
-          name = "Other Photos";
-        } else {
-          name = "Photos";
-        }
-      // TODO: default: Log.
-    }
-
-    return Text(name ?? '');
+    return Text(tr('models.Image.purposes.' + key));
   }
 
   Widget _getProductSubjectTitleWidget(ModelListByIdsState<ProductSubject> state) {

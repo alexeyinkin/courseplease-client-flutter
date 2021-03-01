@@ -11,9 +11,9 @@ import 'package:courseplease/widgets/linked_profiles.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/profile.dart';
 import 'package:courseplease/widgets/unsorted_media_preview.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 
 class MyProfileWidget extends StatefulWidget {
@@ -73,17 +73,17 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Edit",
+          tr('MyProfileWidget.edit'),
           style: AppStyle.h2,
         ),
         _getSortUnsortedMenuItemIfShould(meResponseData),
         ListTile(
-          title: Text("Edit Profile"),
+          title: Text(tr('MyProfileWidget.myProfile')),
           trailing: Icon(Icons.chevron_right),
           onTap: () => _editProfile(meResponseData.user),
         ),
         ListTile(
-          title: Text("Teaching"),
+          title: Text(tr('MyProfileWidget.myTeaching')),
           trailing: Icon(Icons.chevron_right),
           onTap: () => _editTeaching(),
         ),
@@ -95,7 +95,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     if (!meResponseData.hasUnsortedMedia) return Container();
 
     return ListTile(
-      title: Text(AppLocalizations.of(context).sortImportedMedia),
+      title: Text(tr('MyProfileWidget.sortImportedMedia')),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -146,7 +146,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Linked Profiles",
+          tr('MyProfileWidget.linkedProfiles'),
           style: AppStyle.h2,
         ),
         LinkedProfilesWidget(meResponseData: data),

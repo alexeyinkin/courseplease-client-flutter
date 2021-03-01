@@ -1,7 +1,9 @@
 import 'package:courseplease/models/contact/instagram.dart';
 import 'package:courseplease/screens/choose_product_subject/choose_product_subject.dart';
 import 'package:courseplease/services/net/api_client.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/product_subject_dropdown.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class InstagramContactParamsWidget extends StatefulWidget {
@@ -23,9 +25,9 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Place new images to:"),
+        Text(tr('InstagramContactParamsWidget.placeNewImagesTo.title')),
         RadioListTile(
-          title: Text("Unsorted, so I can set category for each work or delete it"),
+          title: Text(tr('InstagramContactParamsWidget.placeNewImagesTo.unsorted')),
           value: InstagramNewImageAction.unsorted,
           groupValue: widget.params.newImageAction,
           onChanged: _handleNewPhotoActionChange,
@@ -33,7 +35,8 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
         RadioListTile(
           title: Row(
             children: [
-              Text("My portfolio as a teacher of "),
+              Text(tr('InstagramContactParamsWidget.placeNewImagesTo.portfolio')),
+              SmallHorizontalPadding(),
               _getPortfolioProductSubjectSelect(),
             ],
           ),
@@ -55,12 +58,12 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
 
   Widget _getChoosePortfolioProductSubjectButton() {
     return ElevatedButton(
-      onPressed: _choosePortfolioProductSubject,
-      child: Text("Choose subject..."),
+      onPressed: _selectPortfolioProductSubject,
+      child: Text(tr('InstagramContactParamsWidget.buttons.selectSubject')),
     );
   }
 
-  void _choosePortfolioProductSubject() async {
+  void _selectPortfolioProductSubject() async {
     final id = await Navigator.of(context).pushNamed(
       ChooseProductSubjectScreen.routeName,
     );
@@ -77,7 +80,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
       onChanged: _handleNewPhotoPortfolioSubjectIdChange,
       hint: Opacity(
         opacity: .5,
-        child: Text("(Choose)"),
+        child: Text(tr('InstagramContactParamsWidget.buttons.selectSubject')),
       ),
     );
   }

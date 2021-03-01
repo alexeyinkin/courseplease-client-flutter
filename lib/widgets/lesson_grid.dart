@@ -173,7 +173,7 @@ class LessonTileState extends AbstractObjectTileState<int, Lesson, LessonFilter>
         return _getVideoCoverContent();
     }
 
-    return Text("Unknown lesson type: " + widget.object.type);
+    throw Exception('Unknown lesson type: ' + widget.object.type);
   }
 
   Widget _getVideoCoverContent() {

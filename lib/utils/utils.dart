@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:courseplease/models/interfaces.dart';
 
@@ -88,20 +88,48 @@ String generatePassword(int length) {
   return result;
 }
 
-String formatRoughDuration(Duration duration, AppLocalizations appLocalizations) {
+String formatShortRoughDuration(Duration duration) {
   if (duration.inSeconds < 60) {
-    return appLocalizations.justNow;
+    return tr('util.shortDuration.zero');
   }
 
   if (duration.inMinutes < 60) {
-    return appLocalizations.minutesAgo(duration.inMinutes);
+    return tr('util.shortDuration.m', namedArgs: {'n': duration.inMinutes.toString()});
   }
 
   if (duration.inHours < 24) {
-    return appLocalizations.hoursAgo(duration.inHours);
+    return tr('util.shortDuration.h', namedArgs: {'n': duration.inHours.toString()});
   }
 
-  return appLocalizations.daysAgo(duration.inDays);
+  return tr('util.shortDuration.d', namedArgs: {'n': duration.inDays.toString()});
+}
+
+String formatLongRoughDurationAgo(Duration duration) {
+  if (duration.inSeconds < 60) {
+    return tr('util.longDurationAgo.zero');
+  }
+
+  if (duration.inMinutes < 60) {
+    return plural('util.longDurationAgo.minutesAgo', duration.inMinutes);
+  }
+
+  if (duration.inHours < 24) {
+    return plural('util.longDurationAgo.hoursAgo', duration.inHours);
+  }
+
+  return plural('util.longDurationAgo.daysAgo', duration.inDays);
+}
+
+String formatLongRoughDurationValidFor(Duration duration) {
+  if (duration.inMinutes < 60) {
+    return plural('util.longDurationValidFor.minutes', duration.inMinutes);
+  }
+
+  if (duration.inHours < 24) {
+    return plural('util.longDurationValidFor.hours', duration.inHours);
+  }
+
+  return plural('util.longDurationValidFor.days', duration.inDays);
 }
 
 Type typeOf<T>() => T;

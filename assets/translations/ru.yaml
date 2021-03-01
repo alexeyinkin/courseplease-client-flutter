@@ -1,0 +1,192 @@
+common:
+    buttons:
+        cancel:         'Отмена'
+        edit:           'Редактировать'
+        save:           'Сохранить'
+    more:               'Ещё...'
+    sentenceSeparator:  '. '
+
+ContactStatusCubit:
+    downloadEnabledFalse:   'Ничего не выгружать'
+    errorLastTried:         'Ошибка, последняя попытка {durationAgo}'
+    lastSynchronized:       'Последняя выгрузка {durationAgo}'
+    synchronizingNow:       'Идёт выгрузка'
+
+EditImageListScreen:
+
+    actions:
+        move:           'Переместить в альбом...'
+        copy:           'Копировать в альбом...'
+        delete:         'Удалить'
+
+    publishNSelected:   'Опубликовать {n}'
+    selectImages:       'Выберите изображения'
+    withNSelected:      'Действия с {n}'
+
+    title:
+        allImages:      'Все изображения'           # Trailing after something else.
+        allMyImages:    'Все мои изображения'       # A sole title.
+        albums:
+            one:        '{} альбом'
+            few:        '{} альбома'
+            other:      '{} альбомов'
+        profiles:
+            one:        '{} профиль'
+            few:        '{} профиля'
+            other:      '{} профилей'
+        purposes:
+            one:        '{} тип альбомов'
+            few:        '{} типа альбомов'
+            other:      '{} типов альбомов'
+        subjects:
+            one:        '{} предмет'
+            few:        '{} предмета'
+            other:      '{} предметов'
+
+EditIntegrationScreen:
+    downloadNewContentFrom:     'Выгружать новые изображения из {serviceName}'
+    noToken:                    'Нет токена. Авторизуйте приложение, чтобы выгружать изображения'
+    tokenIsValidFor:            'Токен действует ещё {durationValidFor}'
+
+    # Statuses
+    errorLastTried:             'Ошибка, последняя попытка {durationAgo}'
+    imagesNeverSynchronized:    'Изображения никогда не выгружались'
+    lastSynchronized:           'Последняя выгрузка {durationAgo}'
+    synchronizingNow:           'Идёт выгрузка'
+
+    buttons:
+        synchronizeNow:         'Выгрузить сейчас'
+        viewImages:             'Показать изображения'
+
+EditTeachingScreen:
+    title:          'Предметы, которые я преподаю'
+
+ExploreTabWidget:
+    iconTitle:      'Подбор'
+
+ImagesTabWidget:
+    title:          'Работы'
+
+InstagramContactParamsWidget:
+    buttons:
+        selectSubject:  'Выберите предмет...'
+
+    placeNewImagesTo:
+        title:      'Куда сохранять новые изображения:'
+        unsorted:   'В Неразобранные, чтобы я выбирал альбом для каждого'
+        portfolio:  'В моё портфолио в качестве преподавателя по'
+
+
+InstagramStatusCubit:
+    addNewImagesToUnsorted:     'Сохранять новые изображения в Неразобранные'
+    addNewImagesToPortfolio:    'Сохранять новые изображения в Моё портфолио в качестве преподавателя по {subjectTitle}'
+
+LessonsTabWidget:
+    title:          'Уроки'
+
+MediaDestinationDialog:
+
+    nOf:
+        image:
+            one:    '{} изображение'
+            few:    '{} изображения'
+            other:  '{} изображений'
+
+    doWith:
+        move:       'Переместить {what}'
+        copy:       'Копировать {what}'
+        publish:    'Опубликовать {what}'
+
+    do:
+        move:       'Переместить'
+        copy:       'Копировать'
+        publish:    'Опубликовать'
+
+MediaDestinationWidget:
+    toSubject:      'В предмет'
+    selectSubject:  '(Выберите предмет)'
+    asPurpose:      'В качестве'
+    selectPurpose:  '(Выберите альбом)'
+
+MessagesTabWidget:
+    iconTitle:      'Сообщения'
+
+models:
+    Image:
+        purposes:
+            4:              'Мои готовые работы'
+            5:              'Работы моих учеников'
+            8:              'Прочие фотографии'
+            8_asTheOnly:    'Фотографии'
+        statuses:
+            noAlbums:       'Нет альбомов'
+            inconsistent:   'Ошибка'
+            unsorted:       'Неразобранное'
+            review:         'На модерации'
+            rejected:       'Отклонено'
+            trash:          'Удалено'
+            unknown:        'Неизвестно'
+
+MyProfileTabWidget:
+    iconTitle:          'Профиль'
+
+MyProfileWidget:
+    edit:               'Редактировать'
+    linkedProfiles:     'Интеграции с соц. сетями'
+    myProfile:          'Мой профиль'
+    myTeaching:         'Мои предметы'
+    sortImportedMedia:  'Разобрать импортированное'
+
+PickedTabWidget:
+    iconTitle:      'Избранное'
+
+SelectProductSubjectScreen:
+    title:          'Выберите предмет'
+
+SignInWidget:
+    #Title is replaced manually in AuthProviderWidget
+    continueWith:   'Войти через {@providerTitle}'
+
+TeachersTabWidget:
+    title:          'Преподаватели'
+
+util:
+    amountPerUnit:  '{amount} / {unit}'
+
+    longDurationAgo:
+        zero:       'Только что'
+        minutesAgo:
+            one:    '{} минуту назад'
+            few:    '{} минуты назад'
+            other:  '{} минут назад'
+        hoursAgo:
+            one:    '{} час назад'
+            few:    '{} часа назад'
+            other:  '{} часов назад'
+        daysAgo:
+            one:    '{} день назад'
+            few:    '{} дня назад'
+            other:  '{} дней назад'
+
+    longDurationValidFor:
+        minutes:
+            one:    '{} минуту'
+            few:    '{} минуты'
+            other:  '{} минут'
+        hours:
+            one:    '{} час'
+            few:    '{} часа'
+            other:  '{} часов'
+        days:
+            one:    '{} день'
+            few:    '{} дня'
+            other:  '{} дней'
+
+    shortDuration:
+        zero:       'Только что'
+        m:          '{n}м'
+        h:          '{n}ч'
+        d:          '{n}д'
+
+    units:
+        h:          'ч'

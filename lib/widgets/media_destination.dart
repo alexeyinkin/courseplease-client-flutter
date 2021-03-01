@@ -7,7 +7,9 @@ import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/product_subject_dropdown.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -16,12 +18,6 @@ import 'image_grid.dart';
 
 class MediaDestinationWidget extends StatelessWidget {
   final MediaDestinationCubit mediaDestinationCubit;
-
-  static final purposeNames = {
-    ImageAlbumPurpose.portfolio: "My Portfolio",
-    ImageAlbumPurpose.customersPortfolio: "My Students' Works",
-    ImageAlbumPurpose.backstage: "Other Photos", // TODO: Make dependant on the media type.
-  };
 
   MediaDestinationWidget({
     this.mediaDestinationCubit,
@@ -49,12 +45,13 @@ class MediaDestinationWidget extends StatelessWidget {
   Widget _getSubjectRow(MediaDestinationState state) {
     return Row(
       children: [
-        Text("To "),
+        Text(tr('MediaDestinationWidget.toSubject')),
+        SmallHorizontalPadding(),
         ProductSubjectDropdown(
           selectedId: state.subjectId,
           showIds: state.showSubjectIds,
           onChanged: mediaDestinationCubit.setSubjectId,
-          hint: Text("(Select a Subject)"),
+          hint: Text(tr('MediaDestinationWidget.selectSubject')),
         ),
       ],
     );
@@ -68,7 +65,7 @@ class MediaDestinationWidget extends StatelessWidget {
     for (final purposeId in state.showPurposeIds) {
       items.add(
         DropdownMenuItem<int>(
-          child: Text(MediaDestinationWidget.purposeNames[purposeId] ?? ''),
+          child: Text(tr('models.Image.purposes.' + purposeId.toString())),
           value: purposeId,
         ),
       );
@@ -76,12 +73,13 @@ class MediaDestinationWidget extends StatelessWidget {
 
     return Row(
       children: [
-        Text("As "),
+        Text(tr('MediaDestinationWidget.asPurpose')),
+        SmallHorizontalPadding(),
         DropdownButton<int>(
           value: state.purposeId,
           items: items,
           onChanged: mediaDestinationCubit.setPurposeId,
-          hint: Text("(Select)"),
+          hint: Text(tr('MediaDestinationWidget.selectPurpose')),
         ),
       ],
     );
@@ -111,11 +109,15 @@ class MediaDestinationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final actionString = _getActionString();
+    final nOfTr = plural('MediaDestinationDialog.nOf.image', selectableListState.selectedIds.length, context: context);
+    final doWithTr = tr('MediaDestinationDialog.doWith.' + actionString, namedArgs:{'what': nOfTr});
+
     return AlertDialog(
-      title: Text("Move N Images"),
+      title: Text(doWithTr),
       actions: [
         ElevatedButton(
-          child: Text("Cancel"),
+          child: Text(tr('common.buttons.cancel')),
           onPressed: () => _close(context),
         ),
         _getActionButton(),
@@ -131,6 +133,10 @@ class MediaDestinationDialog extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getActionString() {
+    return enumValueAfterDot(action);
   }
 
   Widget _getActionButton() {
@@ -153,8 +159,11 @@ class MediaDestinationDialog extends StatelessWidget {
     ListActionCubitState listActionCubitState,
     MediaDestinationState mediaDestinationState,
   ) {
+    final actionString = _getActionString();
+    final doTr = tr('MediaDestinationDialog.do.' + actionString);
+
     return ElevatedButtonWithProgress(
-      child: Text("Go"),
+      child: Text(doTr),
       onPressed: mediaDestinationCubit.onActionPressed,
       isLoading: listActionCubitState.actionInProgress != null,
       enabled: mediaDestinationState.canSubmit,
@@ -171,10 +180,11 @@ class MediaDestinationDialog extends StatelessWidget {
     F extends AbstractFilter,
     R extends AbstractFilteredRepository<I, O, F>
   >({
-    BuildContext context,
-    SelectableListState selectableListState,
-    ListActionCubit listActionCubit,
-    ValueChanged<MediaDestinationState> onActionPressed,
+    @required BuildContext context,
+    @required SelectableListState selectableListState,
+    @required ListActionCubit listActionCubit,
+    @required ValueChanged<MediaDestinationState> onActionPressed,
+    @required MediaDestinationAction action,
   }) async {
     final entityType = typeOf<O>();
     if (entityType != ImageEntity) { // TODO: Generalize beyond images.
@@ -196,7 +206,7 @@ class MediaDestinationDialog extends StatelessWidget {
         listActionCubit: listActionCubit,
         mediaDestinationCubit: mediaDestinationCubit,
         selectableListState: selectableListState,
-        action: MediaDestinationAction.copy,
+        action: action,
         previewWidgets: [
           ResponsiveImageGrid(
             idsSubsetFilter: idsSubsetFilter as IdsSubsetFilter<int, ImageEntity>,

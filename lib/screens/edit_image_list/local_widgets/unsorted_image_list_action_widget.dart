@@ -4,6 +4,7 @@ import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/media_destination.dart';
 import 'package:courseplease/widgets/pad.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/blocs/list_action.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
@@ -33,10 +34,10 @@ class UnsortedImageListActionWidget extends ListActionWidget<
     SelectableListState<int, EditImageFilter> selectableListState,
   }) {
     if (!selectableListState.selected) {
-      return Text("Select Images");
+      return Text(tr('EditImageListScreen.selectImages'));
     }
 
-    final withSelectedText = "Publish " + selectableListState.selectedIds.length.toString();
+    final withSelectedText = tr('EditImageListScreen.publishNSelected', namedArgs: {'n': selectableListState.selectedIds.length.toString()});
 
     return Row(
       children: [
@@ -80,6 +81,7 @@ class UnsortedImageListActionWidget extends ListActionWidget<
         selectableListState,
         mediaDestinationState,
       ),
+      action: MediaDestinationAction.publish,
     );
   }
 

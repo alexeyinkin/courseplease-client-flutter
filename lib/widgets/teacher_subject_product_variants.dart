@@ -66,7 +66,7 @@ class TeacherSubjectProductVariantWidget extends StatelessWidget {
                   ),
                 )
               ),
-              child: Text(" "),
+              child: Text(' '),
             ),
           ),
         ],
@@ -76,7 +76,7 @@ class TeacherSubjectProductVariantWidget extends StatelessWidget {
   }
 
   Widget _getPriceWidget() {
-    final moneyFormatted = format.maxPrice.formatPer("h");
+    final moneyFormatted = format.maxPrice.formatPer('h');
 
     if (showButton) {
       return ElevatedButton(

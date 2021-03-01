@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/screens/edit_teaching/local_widgets/view_teacher_subject.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -17,7 +18,7 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Teaching Subjects"),
+        title: Text(tr('EditTeachingScreen.title')),
       ),
       body: StreamBuilder(
         stream: _authenticationCubit.outState,

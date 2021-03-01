@@ -4,6 +4,7 @@ import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/contact/instagram.dart';
 import 'package:courseplease/models/product_subject.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:get_it/get_it.dart';
 import 'model_by_id.dart';
 
@@ -44,18 +45,18 @@ class InstagramStatusCubit extends ContactStatusCubit {
     if (contact.downloadEnabled) {
       switch (params.newImageAction) {
         case InstagramNewImageAction.unsorted:
-          descriptionParts.add("Add new photos to Unsorted.");
+          descriptionParts.add(tr('InstagramStatusCubit.addNewImagesToUnsorted'));
           break;
         case InstagramNewImageAction.portfolio:
           final subjectTitle = _newPhotoSubject == null
               ? '...'
               : _newPhotoSubject.title;
-          descriptionParts.add("Add now photos to portfolio as a teacher of $subjectTitle.");
+          descriptionParts.add(tr('InstagramStatusCubit.addNewImagesToPortfolio', namedArgs:{'subjectTitle': subjectTitle}));
           break;
       }
     }
 
-    return descriptionParts.join(' ');
+    return descriptionParts.join(tr('common.sentenceSeparator'));
   }
 
   @override

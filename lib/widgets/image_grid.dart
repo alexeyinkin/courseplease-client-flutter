@@ -7,9 +7,9 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
 import 'package:courseplease/widgets/pad.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/filters/image.dart';
 import '../models/interfaces.dart';
 import '../models/image.dart';
@@ -295,9 +295,8 @@ class ImageMappingsOverlay extends StatelessWidget {
 
     if (mapping.dateTimeSyncFromRemote != null) {
       textParts.add(
-        formatRoughDuration(
+        formatShortRoughDuration(
           DateTime.now().difference(mapping.dateTimeSyncFromRemote),
-          AppLocalizations.of(context),
         ),
       );
     }
@@ -334,35 +333,35 @@ class ImageStatusOverlay extends StatelessWidget {
     switch (object.status) {
       case ImageStatus.orphan:
         icon = Icon(Icons.error);
-        text = "No Albums";
+        text = tr('models.Image.statuses.noAlbums');
         break;
       case ImageStatus.inconsistent:
         icon = Icon(Icons.error);
-        text = "Inconsistent";
+        text = tr('models.Image.statuses.inconsistent');
         break;
       case ImageStatus.published:
         break;
       case ImageStatus.unsorted:
         icon = Icon(Icons.visibility_off);
-        text = "Unsorted";
+        text = tr('models.Image.statuses.unsorted');
         overrideOverlayColor = Color(0xA000A000);
         break;
       case ImageStatus.review:
         icon = Icon(Icons.hourglass_empty);
-        text = "Review";
+        text = tr('models.Image.statuses.review');
         break;
       case ImageStatus.rejected:
         icon = Icon(Icons.cancel);
-        text = "Rejected";
+        text = tr('models.Image.statuses.rejected');
         overrideOverlayColor = Color(0xA0A00000);
         break;
       case ImageStatus.trash:
         icon = Icon(Icons.delete);
-        text = "Trash";
+        text = tr('models.Image.statuses.trash');
         break;
       default:
         icon = Icon(Icons.error);
-        text = "Unknown";
+        text = tr('models.Image.statuses.unknown');
     }
 
     if (icon == null && text == null) return Container();

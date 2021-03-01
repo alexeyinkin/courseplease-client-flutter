@@ -1,15 +1,16 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/screens/home/local_widgets/explore_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/messages_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/picked_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/profile_tab.dart';
 
-class Home extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => HomeState();
+  State<StatefulWidget> createState() => _HomeScreenState();
 }
 
-class HomeState extends State<Home> {
+class _HomeScreenState extends State<HomeScreen> {
   var _currentTab = 0;
   final _pageStorageBucket = PageStorageBucket();
 
@@ -36,21 +37,21 @@ class HomeState extends State<Home> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            label: 'Explore',
+            label: tr('ExploreTabWidget.iconTitle'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: 'Picked',
+            label: tr('PickedTabWidget.iconTitle'),
             backgroundColor: Colors.red,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
-            label: 'Messages',
+            label: tr('MessagesTabWidget.iconTitle'),
             backgroundColor: Colors.green,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: tr('MyProfileTabWidget.iconTitle'),
           ),
         ],
       ),
@@ -62,21 +63,4 @@ class HomeState extends State<Home> {
       _currentTab = index;
     });
   }
-
-  void _popup() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-          builder: (context) {
-            return Scaffold(
-              appBar: AppBar(title: Text('Popup')),
-              body: Center(child: Text('Popup body.')),
-            );
-          }
-      ),
-    );
-  }
-}
-
-abstract class TitleWidgetProvider extends StatefulWidget {
-  Widget getTitleWidget();
 }

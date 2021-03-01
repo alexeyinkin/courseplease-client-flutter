@@ -12,8 +12,9 @@ class PriceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String title = money.toString();
-    if (per != null) title += ' / ' + per;
+    final title = (per == null)
+        ? money.toString()
+        : money.formatPer(per);
 
     return ElevatedButton(
       child: Text(title),

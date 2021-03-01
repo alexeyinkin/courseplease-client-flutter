@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 class Money {
   final Map<String, double> map;
 
@@ -30,7 +32,8 @@ class Money {
   }
 
   String formatPer(String per) {
-    return toString() + ' / ' + per;
+    final unit = tr('util.units.' + per);
+    return tr('util.amountPerUnit', namedArgs: {'amount': toString(), 'unit': unit});
   }
 
   bool isZero() {

@@ -1,0 +1,183 @@
+common:
+    buttons:
+        cancel:         'Cancel'
+        edit:           'Edit'
+        save:           'Save'
+    more:               'More...'
+    sentenceSeparator:  '. '
+
+ContactStatusCubit:
+    downloadEnabledFalse:   'Not downloading anything'
+    errorLastTried:         'Error, last tried {durationAgo}'
+    lastSynchronized:       'Last synchronized {durationAgo}'
+    synchronizingNow:       'Synchronizing now'
+
+EditImageListScreen:
+
+    actions:
+        move:           'Move to Album...'
+        copy:           'Copy to Album...'
+        delete:         'Delete'
+
+    publishNSelected:   'Publish {n}'
+    selectImages:       'Select Images'
+    withNSelected:      'With {n}'
+
+    title:
+        # Trailing after something else.
+        allImages:      'All Images'
+        # A sole title.
+        allMyImages:    'All My Images'
+        albums:
+            one:        '{} Album'
+            other:      '{} Albums'
+        profiles:
+            one:        '{} Profile'
+            other:      '{} Profiles'
+        purposes:
+            one:        '{} Album Type'
+            other:      '{} Album Types'
+        subjects:
+            one:        '{} Subject'
+            other:      '{} Subjects'
+
+EditIntegrationScreen:
+    downloadNewContentFrom:     'Download new images from {serviceName}'
+    noToken:                    'No token. Authorize the app to download the images'
+    tokenIsValidFor:            'Token is valid for {durationValidFor}'
+
+    # Statuses
+    errorLastTried:             'Error, last tried {durationAgo}'
+    imagesNeverSynchronized:    'Never synchronized'
+    lastSynchronized:           'Last synchronized {durationAgo}'
+    synchronizingNow:           'Synchronizing now'
+
+    buttons:
+        synchronizeNow:         'Synchronize Now'
+        viewImages:             'View Images'
+
+EditTeachingScreen:
+    title:          'Subjects that I Teach'
+
+ExploreTabWidget:
+    iconTitle:      'Explore'
+
+ImagesTabWidget:
+    title:          'Works'
+
+InstagramContactParamsWidget:
+    buttons:
+        selectSubject:  'Select Subject...'
+
+    placeNewImagesTo:
+        title:      'Place new images to:'
+        unsorted:   'Unsorted, so I can set an album for each one'
+        portfolio:  'To My Portfolio as a teacher of'
+
+
+InstagramStatusCubit:
+    addNewImagesToUnsorted:     'Place new images to Unsorted'
+    addNewImagesToPortfolio:    'Place new images to My Portfolio as a teacher of {subjectTitle}'
+
+LessonsTabWidget:
+    title:          'Lessons'
+
+MediaDestinationDialog:
+
+    nOf:
+        image:
+            one:    '{} Image'
+            other:  '{} Images'
+
+    doWith:
+        move:       'Move {what}'
+        copy:       'Copy {what}'
+        publish:    'Publish {what}'
+
+    do:
+        move:       'Move'
+        copy:       'Copy'
+        publish:    'Publish'
+
+MediaDestinationWidget:
+    toSubject:      'To'
+    selectSubject:  '(Select Subject)'
+    asPurpose:      'As'
+    selectPurpose:  '(Select Album)'
+
+MessagesTabWidget:
+    iconTitle:      'Messages'
+
+models:
+    Image:
+        purposes:
+            4:              'My Portfolio'
+            5:              'My Student''s Works'
+            8:              'Other Photos'
+            8_asTheOnly:    'Photos'
+        statuses:
+            noAlbums:       'No Albums'
+            inconsistent:   'Inconsistent'
+            unsorted:       'Unsorted'
+            review:         'Review'
+            rejected:       'Rejected'
+            trash:          'Deleted'
+            unknown:        'Unknown'
+
+MyProfileTabWidget:
+    iconTitle:          'Profile'
+
+MyProfileWidget:
+    edit:               'Edit'
+    linkedProfiles:     'Linked Profiles'
+    myProfile:          'My Profile'
+    myTeaching:         'My Teaching'
+    sortImportedMedia:  'Sort Imported Media'
+
+PickedTabWidget:
+    iconTitle:      'Picked'
+
+SelectProductSubjectScreen:
+    title:          'Select Subject'
+
+SignInWidget:
+    #Title is replaced manually in AuthProviderWidget
+    continueWith:   'Continue with {@providerTitle}'
+
+TeachersTabWidget:
+    title:          'Teachers'
+
+util:
+    amountPerUnit:  '{amount} / {unit}'
+
+    longDurationAgo:
+        zero:       'Just now'
+        minutesAgo:
+            one:    '{} minute ago'
+            other:  '{} minutes ago'
+        hoursAgo:
+            one:    '{} hour ago'
+            other:  '{} hours ago'
+        daysAgo:
+            one:    '{} day ago'
+            other:  '{} days ago'
+
+    longDurationValidFor:
+        minutes:
+            one:    '{} more minute'
+            other:  '{} more minutes'
+        hours:
+            one:    '{} more hour'
+            other:  '{} more hours'
+        days:
+            one:    '{} more day'
+            other:  '{} more days'
+
+    shortDuration:
+        zero:       'Just now'
+        m:          '{n}m'
+        h:          '{n}h'
+        d:          '{n}d'
+
+    units:
+        h:          'h'

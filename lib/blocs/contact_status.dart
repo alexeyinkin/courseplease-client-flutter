@@ -2,6 +2,8 @@ import 'package:courseplease/blocs/instagram_status.dart';
 import 'package:courseplease/models/common.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/contact/profile_sync_status.dart';
+import 'package:courseplease/utils/utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
@@ -32,7 +34,7 @@ abstract class ContactStatusCubit extends Bloc {
     if (contact.downloadEnabled == false) {
       return ReadableProfileSyncStatus(
         status: contact.profileSyncStatus,
-        description: "Off. Not downloading anything.",
+        description: tr('ContactStatusCubit.downloadEnabledFalse'),
       );
     }
 
@@ -59,16 +61,16 @@ abstract class ContactStatusCubit extends Bloc {
 
     switch (contact.profileSyncStatus.runStatus) {
       case RunStatus.complete:
-        descriptionParts.add(_getLastSynced(contact.profileSyncStatus));
+        descriptionParts.add(_getLastSynchronized(contact.profileSyncStatus));
         break;
       case RunStatus.running:
-        descriptionParts.add("Synchronizing now.");
+        descriptionParts.add(tr('ContactStatusCubit.synchronizingNow'));
         break;
     }
 
       return ReadableProfileSyncStatus(
         status: contact.profileSyncStatus,
-        description: descriptionParts.join(' '),
+        description: descriptionParts.join(tr('common.sentenceSeparator')),
       );
   }
 
@@ -77,26 +79,29 @@ abstract class ContactStatusCubit extends Bloc {
     return null;
   }
 
-  String _getLastSynced(ProfileSyncStatus status) {
-    final duration = DateTime.now().difference(status.dateTimeUpdate);
-    return "Last sync " + duration.inMinutes.toString() + " min ago.";
+  String _getLastSynchronized(ProfileSyncStatus status) {
+    final durationAgo = formatLongRoughDurationAgo(
+      DateTime.now().difference(status.dateTimeUpdate),
+    );
+    return tr('ContactStatusCubit.lastSynchronized', namedArgs: {'durationAgo': durationAgo});
   }
 
   ReadableProfileSyncStatus _getProfileSyncErrorStatus(EditableContact contact) {
     final descriptionParts = <String>[];
 
-    descriptionParts.add("Error.");
-    descriptionParts.add(_getLastTried(contact.profileSyncStatus));
+    descriptionParts.add(_getErrorLastTried(contact.profileSyncStatus));
 
     return ReadableProfileSyncStatus(
       status: contact.profileSyncStatus,
-      description: descriptionParts.join(' '),
+      description: descriptionParts.join(tr('common.sentenceSeparator')),
     );
   }
 
-  String _getLastTried(ProfileSyncStatus status) {
-    final duration = DateTime.now().difference(status.dateTimeUpdate);
-    return "Last tried " + duration.inMinutes.toString() + " min ago.";
+  String _getErrorLastTried(ProfileSyncStatus status) {
+    final durationAgo = formatLongRoughDurationAgo(
+      DateTime.now().difference(status.dateTimeUpdate),
+    );
+    return tr('ContactStatusCubit.errorLastTried', namedArgs: {'durationAgo': durationAgo});
   }
 
   @override

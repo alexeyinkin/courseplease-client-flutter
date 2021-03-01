@@ -16,8 +16,9 @@ import 'package:courseplease/screens/teacher/teacher.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
+import 'package:courseplease/utils/yaml_asset_loader.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'blocs/authentication.dart';
 import 'screens/lesson/lesson.dart';
@@ -48,15 +49,28 @@ void main() {
       ..registerSingleton<AuthenticationBloc>(AuthenticationBloc())
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
   ;
-  runApp(CoursePleaseApp());
+  runApp(CoursePleaseAppWrapper());
 }
 
-class CoursePleaseApp extends StatefulWidget {
+class CoursePleaseAppWrapper extends StatefulWidget {
   @override
-  State<CoursePleaseApp> createState() => CoursePleaseAppState();
+  State<CoursePleaseAppWrapper> createState() => _CoursePleaseAppWrapperState();
 }
 
-class CoursePleaseAppState extends State<CoursePleaseApp> {
+class _CoursePleaseAppWrapperState extends State<CoursePleaseAppWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    return EasyLocalization(
+      supportedLocales: [Locale('en'), Locale('ru')],
+      path: 'assets/translations',
+      assetLoader: YamlAssetLoader(),
+      fallbackLocale: Locale('en'),
+      child: CoursePleaseApp(),
+    );
+  }
+}
+
+class CoursePleaseApp extends StatelessWidget {
   static const _primaryColor = Color(0xFFDF0000);
   static const _darkInactiveColor = Color(0xFF808080);
 
@@ -77,9 +91,9 @@ class CoursePleaseAppState extends State<CoursePleaseApp> {
         TeacherScreen.routeName:              (context) => TeacherScreen(),
         EditImageLightboxScreen.routeName:    (context) => EditImageLightboxScreen(),
       },
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).appTitle,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       theme: _getDarkTheme(),
     );
   }

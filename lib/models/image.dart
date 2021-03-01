@@ -1,3 +1,4 @@
+import 'package:courseplease/models/product_subject.dart';
 import 'package:meta/meta.dart';
 
 import 'interfaces.dart';
@@ -149,6 +150,27 @@ class ImageAlbumPurpose {
   static const customersPortfolio = 5;
   static const unsorted = 6;
   static const backstage = 8;
+
+  static String getTitleKey(int purposeId, ProductSubject subject) { // Return Nullable
+    if (subject.allowsImagePortfolio) {
+      return purposeId.toString();
+    }
+
+    switch (purposeId) {
+      case backstage:
+        return purposeId.toString() + '_asTheOnly';
+    }
+
+    return null;
+  }
+
+  static String getTitleKeyIfNotTheOnly(int purposeId, ProductSubject subject) { // Return Nullable
+    if (subject.allowsImagePortfolio) {
+      return purposeId.toString();
+    }
+
+    return null;
+  }
 }
 
 enum ImageStatus {

@@ -3,8 +3,8 @@ import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/image_album_thumb.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'overlay.dart';
 
 class ImageAlbumThumbsWidget extends StatelessWidget {
@@ -131,27 +131,14 @@ class ImageAlbumThumbWidget extends StatelessWidget {
   }
 
   Widget _getTitleOverlay(BuildContext context) {
-    String name = null;
     String dateString = null;
 
-    switch (purposeId) {
-      case ImageAlbumPurpose.portfolio:
-        name = "My Portfolio";
-        break;
-      case ImageAlbumPurpose.customersPortfolio:
-        name = "My Students' Works";
-        break;
-      case ImageAlbumPurpose.backstage:
-        if (productSubject.allowsImagePortfolio) {
-          name = "Other Photos";
-        }
-        break;
-    }
+    final nameKey = ImageAlbumPurpose.getTitleKeyIfNotTheOnly(purposeId, productSubject);
+    final name = nameKey == null ? null : tr('models.Image.purposes.' + nameKey);
 
     if (thumb?.dateTimeLastPublish != null) {
-      dateString = formatRoughDuration(
+      dateString = formatShortRoughDuration(
         DateTime.now().difference(thumb.dateTimeLastPublish),
-          AppLocalizations.of(context),
       );
     }
 
