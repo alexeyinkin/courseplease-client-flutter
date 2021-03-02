@@ -50,4 +50,5 @@ enum MediaSortActionEnum {
   link,
   unlink,
   delete,
+  synchronize,
 }

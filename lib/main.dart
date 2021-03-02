@@ -52,12 +52,7 @@ void main() {
   runApp(CoursePleaseAppWrapper());
 }
 
-class CoursePleaseAppWrapper extends StatefulWidget {
-  @override
-  State<CoursePleaseAppWrapper> createState() => _CoursePleaseAppWrapperState();
-}
-
-class _CoursePleaseAppWrapperState extends State<CoursePleaseAppWrapper> {
+class CoursePleaseAppWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EasyLocalization(
@@ -77,7 +72,7 @@ class CoursePleaseApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Home(),
+      home: HomeScreen(),
       routes: {
         ChooseProductSubjectScreen.routeName: (context) => ChooseProductSubjectScreen(),
         EditIntegrationScreen.routeName:      (context) => EditIntegrationScreen(),

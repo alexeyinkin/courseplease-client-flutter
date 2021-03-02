@@ -52,7 +52,7 @@ class EditIntegrationCubit extends Bloc {
   void synchronize() async {
     _currentAction = EditIntegrationCurrentAction.sync;
     _pushOutput();
-    await _authenticationCubit.syncProfileSync(_contactId);
+    await _authenticationCubit.synchronizeProfileSynchronously(_contactId);
 
     if (_currentAction == EditIntegrationCurrentAction.sync) {
       _currentAction = EditIntegrationCurrentAction.none;

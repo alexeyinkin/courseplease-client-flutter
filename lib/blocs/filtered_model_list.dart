@@ -47,7 +47,7 @@ class NetworkFilteredModelListBloc<
 
   final _objects = <O>[];
   final _objectsByIds = Map<I, O>();
-  RequestStatus _status = RequestStatus.ok;
+  RequestStatus _status = RequestStatus.notTried;
   bool _hasMore = true;
 
   Future<void> _currentLoadingFuture; // Nullable.
@@ -62,7 +62,7 @@ class NetworkFilteredModelListBloc<
 
   @override
   void loadInitialIfNot() {
-    if (_objects.length == 0) {
+    if (_status == RequestStatus.notTried) {
       loadMoreIfCan();
     }
   }
@@ -70,6 +70,12 @@ class NetworkFilteredModelListBloc<
   @override
   void loadMoreIfCan() {
     if (!_hasMore || _status == RequestStatus.loading) return;
+    _setLoadingAndLoadMore();
+  }
+
+  void _setLoadingAndLoadMore() {
+    _status = RequestStatus.loading;
+    _pushOutput();
     _loadMore();
   }
 
@@ -80,9 +86,6 @@ class NetworkFilteredModelListBloc<
           (loadResult) => _handleLoaded(loadResult),
           onError: _handleError,
         );
-
-    _status = RequestStatus.loading;
-    _pushOutput();
   }
 
   void _handleLoaded(ListLoadResult<O> loadResult) {

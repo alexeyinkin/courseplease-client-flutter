@@ -79,10 +79,10 @@ class ApiClient {
     return MeResponseData.fromMap(mapResponse.data);
   }
 
-  Future<MeResponseData> syncProfilesSync() async {
+  Future<MeResponseData> syncAllProfilesSync() async {
     final mapResponse = await sendRequest(
       method: HttpMethod.post,
-      path: '/api1/me/syncProfilesSync',
+      path: '/api1/me/syncAllProfilesSync',
     );
     return MeResponseData.fromMap(mapResponse.data);
   }

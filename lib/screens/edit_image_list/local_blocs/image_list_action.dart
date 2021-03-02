@@ -107,6 +107,20 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
     );
   }
 
+  void synchronizeProfile(int contactId) async {
+    setActionInProgress(MediaSortActionEnum.synchronize);
+    await _authenticationCubit.synchronizeProfileSynchronously(contactId);
+    setActionInProgress(null);
+    _clearAllImageLists(); // TODO: Clear only if anything new is fetched.
+  }
+
+  void synchronizeProfiles() async {
+    setActionInProgress(MediaSortActionEnum.synchronize);
+    await _authenticationCubit.synchronizeProfilesSynchronously();
+    setActionInProgress(null);
+    _clearAllImageLists(); // TODO: Clear only if anything new is fetched.
+  }
+
   void _onRequestSuccess(_) {
     setActionInProgress(null);
     _authenticationCubit.reloadCurrentActor(); // Could have added teaching subjects.
@@ -127,6 +141,16 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
 
   NetworkFilteredModelListBloc<int, ImageEntity, EditImageFilter> _getCurrentModelList() {
     return _filteredModelListCache.getOrCreate<int, ImageEntity, EditImageFilter, EditorImageRepository>(filter);
+  }
+
+  void _clearAllImageLists() {
+    final listsByFilterTypes = _filteredModelListCache.getNetworkModelListsByObjectType<ImageEntity>();
+
+    for (final listsByFilters in listsByFilterTypes.values) {
+      for (final list in listsByFilters.values) {
+        list.clearAndLoadFirstPage();
+      }
+    }
   }
 
   void _clearAllOtherImageLists() {
