@@ -10,7 +10,9 @@ import 'package:courseplease/models/product_variant_format.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/services/net/api_client.dart';
+import 'package:courseplease/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,6 +21,7 @@ class EditTeacherSubjectCubit extends Bloc {
   final TeacherSubject _teacherSubjectClone;
   ProductSubject _productSubject; // Nullable
   bool _closeScreen = false;
+  final TextEditingController _bodyTextEditingController;
 
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   final _productSubjectsByIdsBloc = ModelListByIdsBloc<int, ProductSubject>(
@@ -43,12 +46,16 @@ class EditTeacherSubjectCubit extends Bloc {
     @required TeacherSubject teacherSubjectClone,
   }) :
       _teacherSubjectClone = teacherSubjectClone,
+      _bodyTextEditingController = TextEditingController(
+        text: markdownToControllerText(teacherSubjectClone.body),
+      ),
       initialState = EditTeacherSubjectState(
         teacherSubjectClone: teacherSubjectClone,
         productSubject: null,
         canSave: true,
         actionInProgress: null,
         closeScreen: false,
+        bodyTextEditingController: null,
       )
   {
     _ensureHaveAllFormats();
@@ -113,7 +120,7 @@ class EditTeacherSubjectCubit extends Bloc {
     return SaveConsultingProductRequest(
       subjectId: _teacherSubjectClone.subjectId,
       enabled: _teacherSubjectClone.enabled,
-      body: _teacherSubjectClone.body,
+      body: controllerTextToMarkdown(_bodyTextEditingController.text),
       productVariants: _createProductVariantRequests(),
     );
   }
@@ -149,6 +156,7 @@ class EditTeacherSubjectCubit extends Bloc {
       canSave: _actionInProgress == null,
       actionInProgress: _actionInProgress,
       closeScreen: _closeScreen,
+      bodyTextEditingController: _bodyTextEditingController,
     );
   }
 
@@ -166,6 +174,7 @@ class EditTeacherSubjectState {
   final bool canSave;
   final EditTeacherSubjectAction actionInProgress;
   final bool closeScreen;
+  final TextEditingController bodyTextEditingController; // Nullable
 
   EditTeacherSubjectState({
     @required this.teacherSubjectClone,
@@ -173,6 +182,7 @@ class EditTeacherSubjectState {
     @required this.canSave,
     @required this.actionInProgress,
     @required this.closeScreen,
+    @required this.bodyTextEditingController,
   });
 }
 

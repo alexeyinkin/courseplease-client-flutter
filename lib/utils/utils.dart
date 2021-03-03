@@ -136,4 +136,16 @@ String formatMoneyValue(double value) {
   return value.toStringAsFixed(value.truncateToDouble() == value ? 0 : 2);
 }
 
+/// Until we have a rich editor, text should be preprocessed before showing
+/// in the input. Two line breaks in markdown are one visual line break.
+String markdownToControllerText(String markdown) {
+  return markdown.replaceAll('\n\n', '\n');
+}
+
+/// Until we have a rich editor, text should be preprocessed before sending
+/// markdown to the backend. One visual line break is to line breaks in markdown.
+String controllerTextToMarkdown(String controllerText) {
+  return controllerText.replaceAll('\n', '\n\n');
+}
+
 Type typeOf<T>() => T;

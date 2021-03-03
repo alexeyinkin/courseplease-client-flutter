@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/screens/edit_teaching/local_widgets/view_teacher_subject.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -41,7 +42,7 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
     }
 
     return ListView(
-      children: children,
+      children: alternateWidgetListWith(children, SmallVerticalPadding()),
     );
   }
 }

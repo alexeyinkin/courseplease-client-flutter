@@ -62,7 +62,7 @@ EditTeacherSubjectScreen:
     tabs:
         prices:
             title:  'Цены'
-        bio:
+        body:
             title:  'О себе'
 
     title:          'Преподавание: {subjectTitle}'

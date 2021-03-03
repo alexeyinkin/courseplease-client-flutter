@@ -60,7 +60,7 @@ EditTeacherSubjectScreen:
     tabs:
         prices:
             title:  'Price'
-        bio:
+        body:
             title:  'Bio'
 
     title:          'Teaching {subjectTitle}'

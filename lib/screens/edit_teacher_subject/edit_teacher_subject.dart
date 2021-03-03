@@ -1,6 +1,6 @@
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/screens/edit_teacher_subject/local_blocs/edit_teacher_subject.dart';
-import 'package:courseplease/screens/edit_teacher_subject/local_widgets/edit_bio_tab.dart';
+import 'package:courseplease/screens/edit_teacher_subject/local_widgets/edit_body_tab.dart';
 import 'package:courseplease/screens/edit_teacher_subject/local_widgets/edit_prices_tab.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/pad.dart';
@@ -52,14 +52,14 @@ class _EditTeacherSubjectScreenState extends State<EditTeacherSubjectScreen> {
             TabBar(
               tabs: [
                 Tab(text: tr('EditTeacherSubjectScreen.tabs.prices.title')),
-                Tab(text: tr('EditTeacherSubjectScreen.tabs.bio.title')),
+                Tab(text: tr('EditTeacherSubjectScreen.tabs.body.title')),
               ],
             ),
             Expanded(
               child: TabBarView(
                 children: [
                   EditPricesTabWidget(teacherSubjectClone: state.teacherSubjectClone),
-                  EditBioTabWidget(),
+                  EditBodyTabWidget(textEditingController: state.bodyTextEditingController),
                 ],
               ),
             ),
