@@ -132,4 +132,8 @@ String formatLongRoughDurationValidFor(Duration duration) {
   return plural('util.longDurationValidFor.days', duration.inDays);
 }
 
+String formatMoneyValue(double value) {
+  return value.toStringAsFixed(value.truncateToDouble() == value ? 0 : 2);
+}
+
 Type typeOf<T>() => T;

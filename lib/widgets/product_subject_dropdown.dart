@@ -1,7 +1,7 @@
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
-import 'package:courseplease/screens/choose_product_subject/choose_product_subject.dart';
+import 'package:courseplease/screens/select_product_subject/select_product_subject.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -75,7 +75,7 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
 
   void _handleMore() async {
     final id = await Navigator.of(context).pushNamed(
-      ChooseProductSubjectScreen.routeName,
+      SelectProductSubjectScreen.routeName,
     );
 
     if (id != null) {

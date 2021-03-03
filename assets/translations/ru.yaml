@@ -58,6 +58,15 @@ EditIntegrationScreen:
         synchronizeNow:         'Выгрузить сейчас'
         viewImages:             'Показать изображения'
 
+EditTeacherSubjectScreen:
+    tabs:
+        prices:
+            title:  'Цены'
+        bio:
+            title:  'О себе'
+
+    title:          'Преподавание: {subjectTitle}'
+
 EditTeachingScreen:
     title:          'Предметы, которые я преподаю'
 
@@ -127,6 +136,11 @@ models:
             trash:          'Удалено'
             unknown:        'Неизвестно'
 
+    ProductVariantFormat:
+        'consulting/teachers-place':    'У учителя'
+        'consulting/students-place':    'У ученика'
+        'consulting/online':            'Online'
+
 MyProfileTabWidget:
     iconTitle:          'Профиль'
 
@@ -190,3 +204,11 @@ util:
 
     units:
         h:          'ч'
+
+    currencySymbols:
+        EUR:        '€'
+        RUB:        '₽'
+        USD:        '$'
+
+ViewTeacherSubjectWidget:
+    disabled:       'Не беру клиентов'

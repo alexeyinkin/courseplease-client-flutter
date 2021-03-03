@@ -38,6 +38,8 @@ class IconTextWidget extends StatelessWidget {
         return Icon(Icons.check_circle, color: Color(0xFF00A000), size: 24);
       case StatusIconEnum.error:
         return Icon(Icons.cancel, color: Color(0xFFA00000), size: 24);
+      case StatusIconEnum.off:
+        return Icon(Icons.cancel, color: Color(0xFF808080), size: 24);
       case StatusIconEnum.sync:
         return Icon(Icons.sync, color: Color(0xFF808080), size: 24);
     }
@@ -49,5 +51,6 @@ class IconTextWidget extends StatelessWidget {
 enum StatusIconEnum {
   ok,
   error,
+  off,
   sync,
 }

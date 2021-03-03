@@ -4,7 +4,9 @@ import 'package:courseplease/models/filters/image.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
+import 'package:courseplease/screens/edit_teacher_subject/edit_teacher_subject.dart';
 import 'package:courseplease/theme/theme.dart';
+import 'package:courseplease/widgets/icon_text_status.dart';
 import 'package:courseplease/widgets/image_album_thumb.dart';
 import 'package:courseplease/widgets/teacher_subject_product_variants.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -72,6 +74,7 @@ class _ViewTeacherSubjectWidgetState extends State<ViewTeacherSubjectWidget> {
               ],
             ),
           ),
+          _getStatusWidget(),
           Container(
             padding: EdgeInsets.only(bottom: 20),
             child: Markdown(
@@ -79,7 +82,7 @@ class _ViewTeacherSubjectWidgetState extends State<ViewTeacherSubjectWidget> {
               shrinkWrap: true,
             ),
           ),
-          TeacherSubjectProductVariantsWidget(teacherSubject: widget.teacherSubject),
+          _getProductVariantsWidget(),
           ImageAlbumThumbsWidget(
             thumbsByPurposeIds: widget.teacherSubject.imageAlbumThumbs,
             productSubject: subject,
@@ -91,7 +94,29 @@ class _ViewTeacherSubjectWidgetState extends State<ViewTeacherSubjectWidget> {
   }
 
   void _edit() {
+    Navigator.of(context).pushNamed(
+      EditTeacherSubjectScreen.routeName,
+      arguments: EditTeacherSubjectScreenArguments(
+        teacherSubjectClone: TeacherSubject.from(widget.teacherSubject),
+      ),
+    );
+  }
 
+  Widget _getStatusWidget() {
+    if (!widget.teacherSubject.enabled) {
+      return IconTextWidget(
+        iconName: StatusIconEnum.off,
+        text: tr('ViewTeacherSubjectWidget.disabled'),
+      );
+    }
+    return Container();
+  }
+
+  Widget _getProductVariantsWidget() {
+    if (!widget.teacherSubject.enabled) {
+      return Container();
+    }
+    return TeacherSubjectProductVariantsWidget(teacherSubject: widget.teacherSubject);
   }
 
   void _showAlbum(ProductSubject subject, int purposeId) async {

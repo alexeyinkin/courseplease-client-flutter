@@ -1,3 +1,4 @@
+import 'package:courseplease/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class Money {
@@ -17,6 +18,10 @@ class Money {
     return Money(map);
   }
 
+  factory Money.zero() {
+    return Money(Map<String, double>());
+  }
+
   String toString() {
     final parts = <String>[];
 
@@ -24,7 +29,7 @@ class Money {
       final value = map[cur];
       var valueString;
 
-      valueString = value.toStringAsFixed(value.truncateToDouble() == value ? 0 : 2);
+      valueString = formatMoneyValue(value);
       parts.add(valueString + ' ' + curToSymbol(cur));
     }
 
@@ -44,6 +49,14 @@ class Money {
     return true;
   }
 
+  bool isPositive() {
+    // TODO: Convert. Now following the backend incomplete method.
+    for (final value in map.values) {
+      return value > 0;
+    }
+    return false;
+  }
+
   static String curToSymbol(String cur) {
     switch (cur) {
       case 'USD': return '\$';
@@ -51,5 +64,18 @@ class Money {
       case 'RUB': return '₽';
     }
     return cur;
+  }
+
+  String getFirstKey() { // Nullable
+    return map.isEmpty ? null : map.keys.first;
+  }
+
+  double getFirstValue() { // Nullable
+    return map.isEmpty ? null : map[map.keys.first];
+  }
+
+  void replaceFrom(Money money) {
+    map.clear();
+    map.addAll(money.map);
   }
 }

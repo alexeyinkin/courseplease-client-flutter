@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_treeview/tree_view.dart';
 import 'package:get_it/get_it.dart';
 
-class ChooseProductSubjectScreen extends StatefulWidget {
+class SelectProductSubjectScreen extends StatefulWidget {
   static const routeName = '/chooseProductSubject';
 
   @override
-  State<ChooseProductSubjectScreen> createState() => _ChooseProductSubjectScreenState();
+  State<SelectProductSubjectScreen> createState() => _SelectProductSubjectScreenState();
 }
 
-class _ChooseProductSubjectScreenState extends State<ChooseProductSubjectScreen> {
+class _SelectProductSubjectScreenState extends State<SelectProductSubjectScreen> {
   final _productSubjectCacheBloc = GetIt.instance.get<ProductSubjectCacheBloc>();
 
   @override

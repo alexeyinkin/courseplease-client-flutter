@@ -42,4 +42,14 @@ class ImageAlbumThumb {
 
     return result;
   }
+
+  factory ImageAlbumThumb.from(ImageAlbumThumb obj) {
+    return ImageAlbumThumb(
+      id:                         obj.id,
+      purposeId:                  obj.purposeId,
+      lastPublishedImageThumbUrl: obj.lastPublishedImageThumbUrl,
+      publishedImageCount:        obj.publishedImageCount,
+      dateTimeLastPublish:        obj.dateTimeLastPublish,
+    );
+  }
 }

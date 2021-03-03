@@ -174,6 +174,11 @@ class AuthenticationBloc extends Bloc{
     _setMe(me, _authenticationState.deviceKey);
   }
 
+  Future<void> saveConsultingProduct(SaveConsultingProductRequest request) async {
+    final me = await _apiClient.saveConsultingProduct(request);
+    _setMe(me, _authenticationState.deviceKey);
+  }
+
   Future<void> saveContactParams(SaveContactParamsRequest request) async {
     final me = await _apiClient.saveContactParams(request);
     _setMe(me, _authenticationState.deviceKey);

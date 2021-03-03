@@ -13,3 +13,9 @@ class ProductVariantFormat {
     );
   }
 }
+
+class ProductVariantFormatIntNameEnum {
+  static const consultingTeachersPlace = 'consulting/teachers-place';
+  static const consultingStudentsPlace = 'consulting/students-place';
+  static const consultingOnline = 'consulting/online';
+}

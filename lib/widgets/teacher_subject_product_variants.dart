@@ -17,11 +17,12 @@ class TeacherSubjectProductVariantsWidget extends StatelessWidget {
     final children = <Widget>[];
 
     for (final format in teacherSubject.productVariantFormats) {
+      if (!format.enabled) continue;
+
       children.add(
         TeacherSubjectProductVariantWidget(
           format: format,
-          onPressed: () => _onFormatPressed(format),
-          showButton: onPressed != null,
+          priceWidget: _getPriceWidget(format),
         ),
       );
     }
@@ -29,6 +30,19 @@ class TeacherSubjectProductVariantsWidget extends StatelessWidget {
     return Column(
       children: children,
     );
+  }
+
+  Widget _getPriceWidget(ProductVariantFormatWithPrice format) {
+    final moneyFormatted = format.maxPrice.formatPer('h');
+
+    if (onPressed != null) {
+      return ElevatedButton(
+        child: Text(moneyFormatted),
+        onPressed: () => _onFormatPressed(format),
+      );
+    }
+
+    return Text(moneyFormatted, style: AppStyle.h3);
   }
 
   void _onFormatPressed(ProductVariantFormatWithPrice format) {
@@ -40,13 +54,11 @@ class TeacherSubjectProductVariantsWidget extends StatelessWidget {
 
 class TeacherSubjectProductVariantWidget extends StatelessWidget {
   final ProductVariantFormatWithPrice format;
-  final VoidCallback onPressed;
-  final bool showButton;
+  final Widget priceWidget;
 
   TeacherSubjectProductVariantWidget({
     @required this.format,
-    @required this.onPressed,
-    @required this.showButton,
+    @required this.priceWidget,
   });
 
   @override
@@ -71,20 +83,7 @@ class TeacherSubjectProductVariantWidget extends StatelessWidget {
           ),
         ],
       ),
-      trailing: _getPriceWidget(),
+      trailing: priceWidget,
     );
-  }
-
-  Widget _getPriceWidget() {
-    final moneyFormatted = format.maxPrice.formatPer('h');
-
-    if (showButton) {
-      return ElevatedButton(
-        child: Text(moneyFormatted),
-        onPressed: onPressed,
-      );
-    }
-
-    return Text(moneyFormatted, style: AppStyle.h3);
   }
 }

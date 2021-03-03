@@ -7,6 +7,13 @@ class SmallHorizontalPadding extends StatelessWidget {
   }
 }
 
+class SmallVerticalPadding extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(height: 10);
+  }
+}
+
 Widget padRight(Widget child) {
   return Container(
     padding: EdgeInsets.only(right: 10),

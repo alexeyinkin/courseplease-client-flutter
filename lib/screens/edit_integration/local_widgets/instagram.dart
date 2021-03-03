@@ -1,5 +1,5 @@
 import 'package:courseplease/models/contact/instagram.dart';
-import 'package:courseplease/screens/choose_product_subject/choose_product_subject.dart';
+import 'package:courseplease/screens/select_product_subject/select_product_subject.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/product_subject_dropdown.dart';
@@ -65,7 +65,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
 
   void _selectPortfolioProductSubject() async {
     final id = await Navigator.of(context).pushNamed(
-      ChooseProductSubjectScreen.routeName,
+      SelectProductSubjectScreen.routeName,
     );
 
     if (id != null) {

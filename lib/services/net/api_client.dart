@@ -95,6 +95,15 @@ class ApiClient {
     );
   }
 
+  Future<MeResponseData> saveConsultingProduct(SaveConsultingProductRequest request) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/me/saveConsultingProduct',
+      body: request,
+    );
+    return MeResponseData.fromMap(mapResponse.data);
+  }
+
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
       await sendRequest(
@@ -322,6 +331,7 @@ class MeResponseData {
   final User user; // Nullable.
   final List<TeacherSubject> teacherSubjects;
   final List<EditableContact> contacts;
+  final List<String> allowedCurs;
   final bool hasUnsortedMedia;
 
   MeResponseData._({
@@ -329,6 +339,7 @@ class MeResponseData {
     @required this.user,
     @required this.teacherSubjects,
     @required this.contacts,
+    @required this.allowedCurs,
     @required this.hasUnsortedMedia,
   });
 
@@ -340,6 +351,7 @@ class MeResponseData {
       user:             userMap == null ? null : User.fromMap(userMap),
       teacherSubjects:  TeacherSubject.fromMaps(map['teacherSubjects']),
       contacts:         EditableContact.fromMaps(map['contacts']),
+      allowedCurs:      map['allowedCurs'].cast<String>(),
       hasUnsortedMedia: map['hasUnsortedMedia'],
     );
   }
@@ -430,6 +442,51 @@ class MediaSortRequest extends RequestBody {
   Map<String, dynamic> toJson() {
     return {
       'commands': commands,
+    };
+  }
+}
+
+class SaveConsultingProductRequest extends RequestBody {
+  final int subjectId;
+  final bool enabled;
+  final String body;
+  final List<SaveConsultingProductVariantRequest> productVariants;
+
+  SaveConsultingProductRequest({
+    @required this.subjectId,
+    @required this.enabled,
+    @required this.body,
+    @required this.productVariants,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'subjectId': subjectId,
+      'enabled': enabled,
+      'body': body,
+      'productVariants': productVariants,
+    };
+  }
+}
+
+class SaveConsultingProductVariantRequest extends RequestBody {
+  final String formatIntName;
+  final bool enabled;
+  final Map<String, double> price;
+
+  SaveConsultingProductVariantRequest({
+    @required this.formatIntName,
+    @required this.enabled,
+    @required this.price,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'formatIntName': formatIntName,
+      'enabled': enabled,
+      'price': price,
     };
   }
 }

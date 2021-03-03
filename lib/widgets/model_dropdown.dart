@@ -37,7 +37,7 @@ class _ModelDropdownState<I, O extends WithIdTitle<I>> extends State<ModelDropdo
 
   Widget _buildWithModels(List<O> objects) {
     final items = objects
-        .map((obj) => DropdownMenuItem(value: obj.id, child: Text(obj.title)))
+        .map((obj) => DropdownMenuItem<I>(value: obj.id, child: Text(obj.title)))
         .toList();
 
     if (widget.trailing.isNotEmpty) {

@@ -56,6 +56,15 @@ EditIntegrationScreen:
         synchronizeNow:         'Synchronize Now'
         viewImages:             'View Images'
 
+EditTeacherSubjectScreen:
+    tabs:
+        prices:
+            title:  'Price'
+        bio:
+            title:  'Bio'
+
+    title:          'Teaching {subjectTitle}'
+
 EditTeachingScreen:
     title:          'Subjects that I Teach'
 
@@ -124,6 +133,11 @@ models:
             trash:          'Deleted'
             unknown:        'Unknown'
 
+    ProductVariantFormat:
+        'consulting/teachers-place':    'Teacher''s Place'
+        'consulting/students-place':    'Student''s Place'
+        'consulting/online':            'Online'
+
 MyProfileTabWidget:
     iconTitle:          'Profile'
 
@@ -181,3 +195,11 @@ util:
 
     units:
         h:          'h'
+
+    currencySymbols:
+        EUR:        '€'
+        RUB:        '₽'
+        USD:        '$'
+
+ViewTeacherSubjectWidget:
+    disabled:       'Not accepting customers'
