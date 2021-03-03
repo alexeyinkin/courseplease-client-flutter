@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/screens/edit_teacher_subject/local_blocs/edit_teacher_subject.dart';
 import 'package:courseplease/screens/edit_teacher_subject/local_widgets/edit_body_tab.dart';
@@ -31,7 +32,10 @@ class _EditTeacherSubjectScreenState extends State<EditTeacherSubjectScreen> {
 
   Widget _buildWithState(EditTeacherSubjectState state) {
     if (state.closeScreen) {
-      Navigator.of(context).pop();
+      Timer(Duration.zero, () {
+        Navigator.of(context).pop();
+      });
+
       return Container(); // TODO: Show confirmation.
     }
 

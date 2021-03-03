@@ -17,6 +17,15 @@ class EditFormatPriceWidget extends StatefulWidget {
 }
 
 class _EditFormatPriceWidgetState extends State<EditFormatPriceWidget> {
+  FocusNode _valueFocusNode;
+  final _valueTextEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _valueFocusNode = FocusNode();
+  }
+
   @override
   Widget build(BuildContext context) {
     return TeacherSubjectProductVariantWidget(
@@ -34,6 +43,8 @@ class _EditFormatPriceWidgetState extends State<EditFormatPriceWidget> {
               child: EditMoneyWidget(
                 money: widget.productVariantFormatWithPrice.maxPrice,
                 curs: widget.curs,
+                valueFocusNode: _valueFocusNode,
+                valueTextEditingController: _valueTextEditingController,
               ),
             ),
           ],
@@ -45,6 +56,22 @@ class _EditFormatPriceWidgetState extends State<EditFormatPriceWidget> {
   void _onEnabledChanged(bool value) {
     setState(() {
       widget.productVariantFormatWithPrice.enabled = value;
+      if (value) {
+        _valueFocusNode.requestFocus();
+
+        // TODO: Fix this. For some reason selecting all here not works now.
+        _valueTextEditingController.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: _valueTextEditingController.text.length,
+        );
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _valueTextEditingController.dispose();
+    _valueFocusNode.dispose();
+    super.dispose();
   }
 }

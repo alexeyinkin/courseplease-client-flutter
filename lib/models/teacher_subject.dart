@@ -53,7 +53,8 @@ class TeacherSubject {
   static Map<int, ImageAlbumThumb> _cloneImageAlbumThumbs(Map<int, ImageAlbumThumb> imageAlbumThumbs) {
     final result = Map<int, ImageAlbumThumb>();
     for (final purposeId in imageAlbumThumbs.keys) {
-      result[purposeId] = ImageAlbumThumb.from(imageAlbumThumbs[purposeId]);
+      final album = imageAlbumThumbs[purposeId];
+      result[purposeId] = (album == null) ? null : ImageAlbumThumb.from(album);
     }
     return result;
   }
@@ -64,6 +65,16 @@ class TeacherSubject {
       result.add(ProductVariantFormatWithPrice.from(format));
     }
     return result;
+  }
+
+  factory TeacherSubject.createBySubjectId(int subjectId) {
+    return TeacherSubject(
+      subjectId:              subjectId,
+      enabled:                true,
+      body:                   '',
+      imageAlbumThumbs:       Map<int, ImageAlbumThumb>(),
+      productVariantFormats:  [],
+    );
   }
 
   static List<int> getSubjectIds(List<TeacherSubject> subjects) {

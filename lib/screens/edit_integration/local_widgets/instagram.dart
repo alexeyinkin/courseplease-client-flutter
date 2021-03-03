@@ -64,10 +64,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
   }
 
   void _selectPortfolioProductSubject() async {
-    final id = await Navigator.of(context).pushNamed(
-      SelectProductSubjectScreen.routeName,
-    );
-
+    final id = await SelectProductSubjectScreen.selectSubjectId(context);
     if (id != null) {
       _handleNewPhotoPortfolioSubjectIdChange(id);
     }

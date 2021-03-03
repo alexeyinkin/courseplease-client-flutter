@@ -1,6 +1,7 @@
 import 'package:courseplease/models/product_variant_format_with_price.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/theme/theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class TeacherSubjectProductVariantsWidget extends StatelessWidget {
@@ -66,7 +67,7 @@ class TeacherSubjectProductVariantWidget extends StatelessWidget {
     return ListTile(
       title: Row(
         children: [
-          Text(format.title),
+          Text(tr('models.ProductVariantFormat.' + format.intName)),
           Container(width: 10),
           Expanded(
             child: Container(

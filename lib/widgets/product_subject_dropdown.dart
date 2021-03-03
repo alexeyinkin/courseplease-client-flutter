@@ -74,10 +74,7 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
   }
 
   void _handleMore() async {
-    final id = await Navigator.of(context).pushNamed(
-      SelectProductSubjectScreen.routeName,
-    );
-
+    final id = await SelectProductSubjectScreen.selectSubjectId(context);
     if (id != null) {
       widget.onChanged(id);
     }

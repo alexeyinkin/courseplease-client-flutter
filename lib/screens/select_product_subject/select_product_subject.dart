@@ -10,6 +10,12 @@ class SelectProductSubjectScreen extends StatefulWidget {
 
   @override
   State<SelectProductSubjectScreen> createState() => _SelectProductSubjectScreenState();
+
+  static Future<int> selectSubjectId(BuildContext context) { // Nullable
+    return Navigator.of(context)
+        .pushNamed(SelectProductSubjectScreen.routeName)
+        .then((idDynamic) => idDynamic as int); // int?
+  }
 }
 
 class _SelectProductSubjectScreenState extends State<SelectProductSubjectScreen> {
