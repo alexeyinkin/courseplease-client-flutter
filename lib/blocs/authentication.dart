@@ -203,12 +203,14 @@ class AuthenticationBloc extends Bloc{
 
 class AuthenticationState {
   final AuthenticationStatus status;
+  final DeviceValidity deviceValidity;
   final String deviceKey; // Nullable
   final MeResponseData data; // Nullable
   final List<int> teacherSubjectIds;
 
   AuthenticationState({
     @required this.status,
+    @required this.deviceValidity,
     this.deviceKey,
     this.data,
     this.teacherSubjectIds = const <int>[],
@@ -217,18 +219,21 @@ class AuthenticationState {
   factory AuthenticationState.notLoadedFromStorage() {
     return AuthenticationState(
       status: AuthenticationStatus.notLoadedFromStorage,
+      deviceValidity: DeviceValidity.determining,
     );
   }
 
   factory AuthenticationState.fresh() {
     return AuthenticationState(
       status: AuthenticationStatus.fresh,
+      deviceValidity: DeviceValidity.determining,
     );
   }
 
   factory AuthenticationState.deviceKey(String deviceKey) {
     return AuthenticationState(
       status: AuthenticationStatus.deviceKey,
+      deviceValidity: DeviceValidity.valid,
       deviceKey: deviceKey,
     );
   }
@@ -236,6 +241,7 @@ class AuthenticationState {
   factory AuthenticationState.requested(AuthenticationState previous) {
     return AuthenticationState(
       status: AuthenticationStatus.requested,
+      deviceValidity: DeviceValidity.valid,
       deviceKey: previous.deviceKey,
     );
   }
@@ -246,6 +252,7 @@ class AuthenticationState {
   ) {
     return AuthenticationState(
       status: AuthenticationStatus.authenticated,
+      deviceValidity: DeviceValidity.valid,
       deviceKey: deviceKey,
       data: response,
       teacherSubjectIds: TeacherSubject.getSubjectIds(response.teacherSubjects),
@@ -255,6 +262,7 @@ class AuthenticationState {
   factory AuthenticationState.deviceKeyFailed() {
     return AuthenticationState(
       status: AuthenticationStatus.deviceKeyFailed,
+      deviceValidity: DeviceValidity.invalid,
     );
   }
 }
@@ -278,6 +286,21 @@ enum AuthenticationStatus {
   /// Could not connect to the server to register device.
   /// TODO: Allow to retry after some time or on each data request.
   deviceKeyFailed,
+}
+
+enum DeviceValidity {
+  /// Either checking a known device key or registering a new one.
+  /// Will resolve to valid or invalid.
+  determining,
+
+  valid,
+
+  /// The device key is invalid and no attempt is running to get a valid key.
+  /// Will get here if the check at server has failed.
+  /// The app will check the status again on restart.
+  /// Until then no action is taken.
+  /// In future a deemed bad actor might get this status.
+  invalid,
 }
 
 abstract class AuthenticationEvent {}

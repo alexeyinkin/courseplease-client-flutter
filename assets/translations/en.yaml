@@ -68,6 +68,10 @@ EditTeacherSubjectScreen:
 EditTeachingScreen:
     title:          'Subjects that I Teach'
 
+errors:
+    noInternet:     'Could not load the info'
+    notAuthorized:  'Access denied'
+
 ExploreTabWidget:
     iconTitle:      'Explore'
 

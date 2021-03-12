@@ -70,6 +70,10 @@ EditTeacherSubjectScreen:
 EditTeachingScreen:
     title:          'Предметы, которые я преподаю'
 
+errors:
+    noInternet:     'Не удалось получить информацию'
+    notAuthorized:  'Доступ закрыт'
+
 ExploreTabWidget:
     iconTitle:      'Подбор'
 

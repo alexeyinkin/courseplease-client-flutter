@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/current_product_subject.dart';
+import 'package:courseplease/widgets/auth/device_validity.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/image_grid.dart';
 import '../../../models/filters/image.dart';
@@ -9,18 +10,22 @@ class ImagesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.watch<CurrentProductSubjectBloc>();
 
-    return Center(
-      child: StreamBuilder<int>(
-        stream: bloc.outCurrentId,
-        builder: (context, snapshot) {
-          final filter = ViewImageFilter(subjectId: snapshot.data);
-          return _buildWithFilter(filter);
-        }
-      ),
+    return StreamBuilder<int>(
+      stream: bloc.outCurrentId,
+      builder: (context, snapshot) {
+        final filter = ViewImageFilter(subjectId: snapshot.data);
+        return _buildWithFilter(filter);
+      }
     );
   }
 
   Widget _buildWithFilter(ViewImageFilter filter) {
+    return CommonDeviceValidityWidget(
+      validDeviceBuilder: (_) => _buildValidWithFilter(filter),
+    );
+  }
+
+  Widget _buildValidWithFilter(ViewImageFilter filter) {
     return ViewImageGrid(
       filter: filter,
       scrollDirection: Axis.vertical,
