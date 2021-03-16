@@ -23,7 +23,7 @@ class UnsortedImageListToolbar extends StatelessWidget {
         ListSelectionWidget(
           selectableListCubit: selectableListCubit,
         ),
-        SmallHorizontalPadding(),
+        SmallPadding(),
         UnsortedImageListActionWidget(
           imageListActionCubit: imageListActionCubit,
           selectableListCubit: selectableListCubit,

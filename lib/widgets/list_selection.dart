@@ -26,7 +26,7 @@ class ListSelectionWidget extends ListActionWidget {
           // TODO: Use better icons, awaiting them here: https://github.com/Templarian/MaterialDesign/issues/5853
           child: Icon(FlutterIcons.checkbox_multiple_marked_mco),
         ),
-        SmallHorizontalPadding(),
+        SmallPadding(),
         ElevatedButton(
           onPressed: selectableListState.selected ? _selectNone : null,
           child: Icon(FlutterIcons.checkbox_multiple_blank_mco),

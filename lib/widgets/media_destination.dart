@@ -46,7 +46,7 @@ class MediaDestinationWidget extends StatelessWidget {
     return Row(
       children: [
         Text(tr('MediaDestinationWidget.toSubject')),
-        SmallHorizontalPadding(),
+        SmallPadding(),
         ProductSubjectDropdown(
           selectedId: state.subjectId,
           showIds: state.showSubjectIds,
@@ -74,7 +74,7 @@ class MediaDestinationWidget extends StatelessWidget {
     return Row(
       children: [
         Text(tr('MediaDestinationWidget.asPurpose')),
-        SmallHorizontalPadding(),
+        SmallPadding(),
         DropdownButton<int>(
           value: state.purposeId,
           items: items,

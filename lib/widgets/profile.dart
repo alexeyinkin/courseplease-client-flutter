@@ -1,5 +1,6 @@
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/theme/theme.dart';
+import 'package:courseplease/widgets/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -42,19 +43,11 @@ class ProfileWidget extends StatelessWidget {
   }
 
   Widget _getUserpic(User user) {
-    final userpicUrlTail = user.userpicUrls['300x300'] ?? null;
-
-    if (userpicUrlTail == null) {
-      return Icon(Icons.person, size: _getAvatarSize());
-    }
-
-    final userpicUrl = 'https://courseplease.com' + userpicUrlTail;
-
     return Container(
       padding: EdgeInsets.only(bottom: 20),
-      child: CircleAvatar(
-        radius: _getAvatarSize() / 2,
-        backgroundImage: NetworkImage(userpicUrl),
+      child: UserpicWidget(
+        user: user,
+        size: _getAvatarSize(),
       ),
     );
   }
@@ -66,8 +59,8 @@ class ProfileWidget extends StatelessWidget {
   Widget _getNameLine(User user) {
     return Container(
       padding: EdgeInsets.only(bottom: 20),
-      child: Text(
-        user.firstName + ' ' + user.lastName,
+      child: UserNameWidget(
+        user: user,
         style: AppStyle.pageTitle,
       ),
     );

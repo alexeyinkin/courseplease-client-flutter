@@ -1,16 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-class SmallHorizontalPadding extends StatelessWidget {
+class SmallPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(width: 10);
-  }
-}
-
-class SmallVerticalPadding extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(height: 10);
+    return Container(width: 10, height: 10);
   }
 }
 

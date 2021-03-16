@@ -77,31 +77,20 @@ class AbstractImageGridState<F extends AbstractFilter, R extends AbstractImageRe
   void handleTap(ImageEntity image, int index) {}
 
   @protected
-  ImageTile<F> createTile({
-    @required ImageEntity object,
-    @required int index,
-    @required VoidCallback onTap,
-    bool selected,
-    ValueChanged<bool> onSelected,
-  }) {
+  ImageTile<F> createTile(TileCreationRequest<int, ImageEntity, F> request) {
     final overlays = <Widget>[];
 
     if (widget.showMappingsOverlay) {
-      overlays.add(ImageMappingsOverlay(object: object));
+      overlays.add(ImageMappingsOverlay(object: request.object));
     }
 
     if (widget.showMappingsOverlay) {
-      overlays.add(ImageStatusOverlay(object: object));
+      overlays.add(ImageStatusOverlay(object: request.object));
     }
 
     return ImageTile(
-      object: object,
-      filter: widget.filter,
-      index: index,
-      onTap: onTap,
+      request: request,
       selectable: widget.listStateCubit != null,
-      selected: selected,
-      onSelected: onSelected,
       overlays: overlays,
     );
   }
@@ -109,22 +98,12 @@ class AbstractImageGridState<F extends AbstractFilter, R extends AbstractImageRe
 
 class ImageTile<F extends AbstractFilter> extends AbstractObjectTile<int, ImageEntity, F> {
   ImageTile({
-    @required object,
-    @required filter,
-    @required index,
-    VoidCallback onTap, // Nullable
+    @required TileCreationRequest<int, ImageEntity, F> request,
     bool selectable = false,
-    bool selected = false,
-    ValueChanged<bool> onSelected, // Nullable
     List<Widget> overlays = const <Widget>[],
   }) : super(
-    object: object,
-    filter: filter,
-    index: index,
-    onTap: onTap,
+    request: request,
     selectable: selectable,
-    selected: selected,
-    onSelected: onSelected,
     overlays: overlays,
   );
 

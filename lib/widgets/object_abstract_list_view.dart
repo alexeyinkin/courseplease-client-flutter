@@ -1,0 +1,161 @@
+import 'package:courseplease/blocs/filtered_model_list.dart';
+import 'package:courseplease/blocs/selectable_list.dart';
+import 'package:courseplease/repositories/abstract.dart';
+import 'package:courseplease/services/filtered_model_list_factory.dart';
+import 'package:courseplease/widgets/abstract_object_tile.dart';
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import '../models/filters/abstract.dart';
+import '../models/interfaces.dart';
+
+abstract class ObjectAbstractListView<
+  I,
+  O extends WithId<I>,
+  F extends AbstractFilter,
+  R extends AbstractFilteredRepository<I, O, F>,
+  T extends AbstractObjectTile<I, O, F>
+> extends StatefulWidget {
+  final TileFactory<I, O, F, T> tileFactory;
+  final TileCallback<I, O> onTap; // Nullable
+  final Axis scrollDirection;
+  final Widget titleIfNotEmpty; // Nullable
+  final SelectableListCubit<I, F> listStateCubit; // Nullable
+  F filter = null;
+
+  ObjectAbstractListView({
+    @required this.filter,
+    @required this.tileFactory,
+    this.onTap, // Nullable
+    @required this.scrollDirection,
+    this.titleIfNotEmpty, // Nullable
+    this.listStateCubit, // Nullable
+  });
+}
+
+abstract class ObjectAbstractListViewState<
+  I,
+  O extends WithId<I>,
+  F extends AbstractFilter,
+  R extends AbstractFilteredRepository<I, O, F>,
+  T extends AbstractObjectTile<I, O, F>,
+  W extends ObjectAbstractListView<I, O, F, R, T>
+> extends State<W> with AutomaticKeepAliveClientMixin<W> {
+  final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
+
+  @override
+  bool wantKeepAlive = true;
+
+  @override
+  void initState() {
+    super.initState(); // For AutomaticKeepAliveClientMixin.
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    final listBloc = _filteredModelListCache.getOrCreate<I, O, F, R>(widget.filter);
+    listBloc.loadInitialIfNot();
+
+    return StreamBuilder(
+      stream: listBloc.outState,
+      initialData: listBloc.initialState,
+      builder: (context, snapshot) => _buildWithListState(context, snapshot.data, listBloc),
+    );
+  }
+
+  Widget _buildWithListState(
+    BuildContext context,
+    ModelListState<I, O> listState,
+    AbstractFilteredModelListBloc listBloc,
+  ) {
+    if (widget.listStateCubit == null) {
+      return _buildWithListAndSelectionStates(context, listState, listBloc, null);
+    }
+
+    widget.listStateCubit.setAll(listState.objectIds);
+
+    return StreamBuilder(
+      stream: widget.listStateCubit.outState,
+      initialData: widget.listStateCubit.initialState,
+      builder: (context, snapshot) => _buildWithListAndSelectionStates(context, listState, listBloc, snapshot.data),
+    );
+  }
+
+  Widget _buildWithListAndSelectionStates(
+    BuildContext context,
+    ModelListState<I, O> modelListState,
+    AbstractFilteredModelListBloc listBloc,
+    SelectableListState<I, F> selectableListState, // Nullable
+  ) {
+    final length = modelListState.objects.length;
+    final children = <Widget>[];
+
+    if (length > 0 && widget.titleIfNotEmpty != null) {
+      children.add(widget.titleIfNotEmpty);
+    }
+
+    children.add(
+      Expanded(
+        child: getListViewWidget(
+          modelListState,
+          listBloc,
+          selectableListState,
+        ),
+      ),
+    );
+
+    return Container(
+      // If no objects, set small height so they have a chance to load.
+      // Otherwise do not interfere with height, let the outer code to set it.
+      height: length > 0 ? null : 10,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+
+  Widget getListViewWidget(
+    ModelListState<I, O> modelListState,
+    AbstractFilteredModelListBloc listBloc,
+    SelectableListState<I, F> selectableListState,
+  );
+
+  @protected
+  Widget buildTile(
+    int index,
+    ModelListState<I, O> modelListState,
+    AbstractFilteredModelListBloc listBloc,
+    SelectableListState<I, F> selectableListState,
+  ) {
+    final length = modelListState.objects.length;
+
+    if (index < length) {
+      final object = modelListState.objects[index];
+      final selected = selectableListState == null
+          ? false
+          : selectableListState.selectedIds.containsKey(object.id);
+
+      final request = TileCreationRequest<I, O, F>(
+        object: object,
+        index: index,
+        filter: widget.filter,
+        onTap: () => widget.onTap(object, index),
+        selected: selected,
+        onSelected: (selected) => _onSelected(object, selected),
+      );
+      return widget.tileFactory(request);
+    }
+
+    listBloc.loadMoreIfCan();
+    return Text(index.toString());
+  }
+
+  void _onSelected(O object, bool selected) {
+    if (widget.listStateCubit != null) {
+      widget.listStateCubit.setSelected(object.id, selected);
+    }
+  }
+}

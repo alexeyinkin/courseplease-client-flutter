@@ -53,4 +53,12 @@ class User implements WithId<int> {
       bio:          map['bio'] ?? '',
     );
   }
+
+  static List<User> fromMaps(List maps) {
+    return maps
+        .cast<Map<String, dynamic>>()
+        .map((map) => User.fromMap(map))
+        .toList()
+        .cast<User>();
+  }
 }

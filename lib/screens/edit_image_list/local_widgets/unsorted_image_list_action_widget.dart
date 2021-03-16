@@ -51,7 +51,7 @@ class UnsortedImageListActionWidget extends ListActionWidget<
           isLoading: _isDropdownActionInProgress(listActionCubitState),
           onPressed: () => _showPublishDialog(context, selectableListState),
         ),
-        SmallHorizontalPadding(),
+        SmallPadding(),
         ElevatedButtonWithProgress(
           child: Icon(Icons.delete),
           isLoading: listActionCubitState.actionInProgress == MediaSortActionEnum.delete,

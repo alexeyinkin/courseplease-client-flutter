@@ -15,6 +15,10 @@ class AppStyle {
     fontSize: 24,
   );
 
+  static const bold = TextStyle(
+    fontWeight: FontWeight.bold,
+  );
+
   static const breadcrumbItem = TextStyle(
     fontSize: 36,
   );
@@ -36,4 +40,10 @@ class AppStyle {
     fontSize: 18,
     fontWeight: FontWeight.bold,
   );
+
+  static const minor = TextStyle(
+    fontSize: 10,
+  );
+
+  static const unreadColor = Color(0x80DF4040);
 }

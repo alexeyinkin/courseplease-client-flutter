@@ -7,21 +7,18 @@ import '../models/filters/abstract.dart';
 import '../models/interfaces.dart';
 import 'object_abstract_list_view.dart';
 
-class ObjectGrid<
+class ObjectLinearListView<
   I,
   O extends WithId<I>,
   F extends AbstractFilter,
   R extends AbstractFilteredRepository<I, O, F>,
   T extends AbstractObjectTile<I, O, F>
 > extends ObjectAbstractListView<I, O, F, R, T> {
-  final SliverGridDelegate gridDelegate;
-
-  ObjectGrid({
+  ObjectLinearListView({
     @required F filter,
     @required TileFactory<I, O, F, T> tileFactory,
     TileCallback<I, O> onTap, // Nullable
     @required Axis scrollDirection,
-    @required this.gridDelegate,
     Widget titleIfNotEmpty, // Nullable
     SelectableListCubit<I, F> listStateCubit, // Nullable
   }) : super(
@@ -34,16 +31,16 @@ class ObjectGrid<
   );
 
   @override
-  State<ObjectGrid> createState() => ObjectGridState<I, O, F, R, T>();
+  State<ObjectLinearListView> createState() => ObjectLinearListViewState<I, O, F, R, T>();
 }
 
-class ObjectGridState<
+class ObjectLinearListViewState<
   I,
   O extends WithId<I>,
   F extends AbstractFilter,
   R extends AbstractFilteredRepository<I, O, F>,
   T extends AbstractObjectTile<I, O, F>
-> extends ObjectAbstractListViewState<I, O, F, R, T, ObjectGrid<I, O, F, R, T>> {
+> extends ObjectAbstractListViewState<I, O, F, R, T, ObjectLinearListView<I, O, F, R, T>> {
   final _scrollController = ScrollController(keepScrollOffset: false);
 
   @override
@@ -52,11 +49,10 @@ class ObjectGridState<
     AbstractFilteredModelListBloc listBloc,
     SelectableListState<I, F> selectableListState,
   ) {
-    return GridView.builder(
+    return ListView.builder(
       controller:       _scrollController,
-      key:              PageStorageKey('ObjectGrid_' + T.runtimeType.toString() + '_' + widget.filter.toString()),
+      key:              PageStorageKey('ObjectLinearListViewState_' + T.runtimeType.toString() + '_' + widget.filter.toString()),
       scrollDirection:  widget.scrollDirection,
-      gridDelegate:     widget.gridDelegate,
       itemCount:        modelListState.hasMore ? null : modelListState.objects.length,
       itemBuilder:      (context, index) => buildTile(index, modelListState, listBloc, selectableListState),
     );

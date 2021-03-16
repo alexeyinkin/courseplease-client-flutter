@@ -44,10 +44,10 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
 
   void loadByIdIfNot(I id) {
     if (_objectsByIds.containsKey(id) || _futuresByIds.containsKey(id)) return;
-    _loadByd(id);
+    _loadById(id);
   }
 
-  void _loadByd(I id) {
+  void _loadById(I id) {
     final future = _repository.loadById(id);
     _futuresByIds[id] = future;
 

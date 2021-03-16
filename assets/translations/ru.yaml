@@ -5,6 +5,7 @@ common:
         save:           'Сохранить'
     more:               'Ещё...'
     sentenceSeparator:  '. '
+    yesterday:          'Вчера'
 
 ContactStatusCubit:
     downloadEnabledFalse:   'Ничего не выгружать'
@@ -157,6 +158,9 @@ MyProfileWidget:
 
 PickedTabWidget:
     iconTitle:      'Избранное'
+
+SelectChatPlaceholderWidget:
+    text:           'Выберите чат'
 
 SelectProductSubjectScreen:
     title:          'Выберите предмет'

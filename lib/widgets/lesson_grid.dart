@@ -77,20 +77,9 @@ class LessonGridState extends State<LessonGrid> {
     );
   }
 
-  LessonTile _createTile({
-    @required Lesson object,
-    @required int index,
-    @required VoidCallback onTap,
-    bool selected = false,
-    ValueChanged<bool> onSelected, // Nullable
-  }) {
+  LessonTile _createTile(TileCreationRequest<int, Lesson, LessonFilter> request) {
     return LessonTile(
-      object: object,
-      filter: widget.filter,
-      index: index,
-      onTap: onTap,
-      selected: selected,
-      onSelected: onSelected,
+      request: request,
     );
   }
 
@@ -107,21 +96,9 @@ class LessonGridState extends State<LessonGrid> {
 
 class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
   LessonTile({
-    @required Lesson object,
-    @required LessonFilter filter,
-    @required int index,
-    VoidCallback onTap, // Nullable
-    bool selectable = false,
-    bool selected = false,
-    ValueChanged<bool> onSelected, // Nullable
+    @required TileCreationRequest<int, Lesson, LessonFilter> request,
   }) : super(
-    object: object,
-    filter: filter,
-    index: index,
-    onTap: onTap,
-    selectable: selectable,
-    selected: selected,
-    onSelected: onSelected,
+    request: request,
   );
 
   @override

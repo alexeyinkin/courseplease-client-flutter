@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:courseplease/models/interfaces.dart';
@@ -29,6 +30,15 @@ Map<String, String> toStringStringMap(mapOrEmptyList) {
   return (mapOrEmptyList is List)
       ? Map<String, String>()  // Empty PHP array converted to array instead of map.
       : mapOrEmptyList.cast<String, String>();
+}
+
+O whereId<I, O extends WithId<I>>(List<O> objects, I id) { // Return Nullable
+  for (final object in objects) {
+    if (object.id == id) {
+      return object;
+    }
+  }
+  return null;
 }
 
 List<O> whereIds<I, O extends WithId<I>>(List<O> objects, List<I> ids) {
@@ -86,6 +96,30 @@ String generatePassword(int length) {
   }
 
   return result;
+}
+
+String formatTimeOrDate(DateTime dt, Locale locale) {
+  final now = DateTime.now();
+  final localeString = locale.toString();
+  DateFormat format;
+
+  if (now.day == dt.day && now.month == dt.month && now.year == dt.year) {
+    format = DateFormat.Hm(localeString);
+  } else if (false) { // TODO: Calculate if yesterday.
+    return tr('common.yesterday');
+  } else if (now.year == dt.year) {
+    format = DateFormat.MMMd(localeString);
+  } else {
+    format = DateFormat.yMMMd(localeString);
+  }
+
+  return format.format(dt);
+}
+
+String formatTime(DateTime dt, Locale locale) {
+  final localeString = locale.toString();
+  final format = DateFormat.Hm(localeString);
+  return format.format(dt);
 }
 
 String formatShortRoughDuration(Duration duration) {

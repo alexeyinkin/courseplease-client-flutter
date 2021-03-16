@@ -33,19 +33,9 @@ class LessonRepository extends AbstractFilteredRepository<int, Lesson, LessonFil
         .then((response) => _denormalizeOne(response.data));
   }
 
-  @override
-  Future<List<Lesson>> loadByIds(List<int> ids) {
-    throw Exception('Not implemented');
-  }
-
   // Nullable
   Lesson _denormalizeOne(Map<String, dynamic> mapResult) {
     if (mapResult == null) return null;
     return Lesson.fromMap(mapResult);
-  }
-
-  @override
-  Future<List<Lesson>> loadAll() {
-    throw UnimplementedError();
   }
 }

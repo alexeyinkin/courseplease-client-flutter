@@ -23,7 +23,7 @@ class SortedImageListToolbar extends StatelessWidget {
         ListSelectionWidget(
           selectableListCubit: selectableListCubit,
         ),
-        SmallHorizontalPadding(),
+        SmallPadding(),
         SortedImageListActionWidget(
           imageListActionCubit: imageListActionCubit,
           selectableListCubit: selectableListCubit,

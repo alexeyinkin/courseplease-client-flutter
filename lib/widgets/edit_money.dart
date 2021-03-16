@@ -57,7 +57,7 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
     return Row(
       children: [
         _getValueInput(),
-        SmallHorizontalPadding(),
+        SmallPadding(),
         _getCurrencyDropdown(),
         Text(perH),
       ],

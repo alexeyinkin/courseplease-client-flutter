@@ -70,22 +70,9 @@ class TeacherGridState extends State<TeacherGrid> {
     );
   }
 
-  TeacherTile _createTile({
-    @required Teacher object,
-    @required int index,
-    @required VoidCallback onTap,
-    bool selectable = false,
-    bool selected = false,
-    ValueChanged<bool> onSelected, // Nullable
-  }) {
+  TeacherTile _createTile(TileCreationRequest<int, Teacher, TeacherFilter> request) {
     return TeacherTile(
-      object: object,
-      filter: widget.filter,
-      index: index,
-      onTap: onTap,
-      selectable: false,
-      selected: selected,
-      onSelected: onSelected,
+      request: request,
     );
   }
 
@@ -102,21 +89,9 @@ class TeacherGridState extends State<TeacherGrid> {
 
 class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
   TeacherTile({
-    @required Teacher object,
-    @required TeacherFilter filter,
-    @required int index,
-    VoidCallback onTap, // Nullable
-    bool selectable = false,
-    bool selected = false,
-    ValueChanged<bool> onSelected, // Nullable
+    @required TileCreationRequest<int, Teacher, TeacherFilter> request,
   }) : super(
-    object: object,
-    filter: filter,
-    index: index,
-    onTap: onTap,
-    selectable: selectable,
-    selected: selected,
-    onSelected: onSelected,
+    request: request,
   );
 
   @override

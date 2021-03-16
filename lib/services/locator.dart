@@ -1,6 +1,8 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
+import 'package:courseplease/repositories/chat.dart';
+import 'package:courseplease/repositories/chat_message.dart';
 import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/product_subject.dart';
@@ -29,11 +31,13 @@ void _initializeNetwork() {
 
 void _initializeRepositories() {
   GetIt.instance
-      ..registerSingleton<ProductSubjectRepository>(ProductSubjectRepository())
-      ..registerSingleton<GalleryImageRepository>(GalleryImageRepository())
+      ..registerSingleton<ChatRepository>(ChatRepository())
+      ..registerSingleton<ChatMessageRepository>(ChatMessageRepository())
       ..registerSingleton<EditorImageRepository>(EditorImageRepository())
-      ..registerSingleton<TeacherRepository>(TeacherRepository())
+      ..registerSingleton<GalleryImageRepository>(GalleryImageRepository())
       ..registerSingleton<LessonRepository>(LessonRepository())
+      ..registerSingleton<ProductSubjectRepository>(ProductSubjectRepository())
+      ..registerSingleton<TeacherRepository>(TeacherRepository())
   ;
 }
 

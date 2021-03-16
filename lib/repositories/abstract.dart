@@ -17,9 +17,17 @@ class ListLoadResult<T> {
 }
 
 abstract class AbstractRepository<I, O extends WithId<I>> {
-  Future<List<O>> loadAll();
-  Future<O> loadById(I id);
-  Future<List<O>> loadByIds(List<I> ids);
+  Future<List<O>> loadAll() {
+    throw UnimplementedError();
+  }
+
+  Future<O> loadById(I id) { // Return Future of Nullable
+    throw UnimplementedError();
+  }
+
+  Future<List<O>> loadByIds(List<I> ids) {
+    throw UnimplementedError();
+  }
 }
 
 abstract class AbstractFilteredRepository<

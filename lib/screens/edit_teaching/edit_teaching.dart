@@ -56,7 +56,7 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
       ),
       body: ListView(
         controller: _scrollController,
-        children: alternateWidgetListWith(children, SmallVerticalPadding()),
+        children: alternateWidgetListWith(children, SmallPadding()),
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
       ),

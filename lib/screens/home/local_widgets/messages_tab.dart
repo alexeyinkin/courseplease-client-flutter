@@ -1,23 +1,18 @@
+import 'package:courseplease/widgets/messaging/chats.dart';
+import 'package:courseplease/widgets/auth/authenticated_or_not.dart';
 import 'package:flutter/material.dart';
 
-class MessagesTab extends StatefulWidget {// implements TitleWidgetProvider {
+class MessagesTab extends StatefulWidget {
   @override
   State<MessagesTab> createState() => MessagesTabState();
-
-  // @override
-  // Widget? getTitleWidget() {
-  //   return null;
-  // }
 }
 
 class MessagesTabState extends State<MessagesTab> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'This is the Messages tab.',
-        style: TextStyle(fontSize: 36),
-      ),
+    return AuthenticatedOrNotWidget(
+      authenticatedBuilder: (_) => ChatsWidget(),
+      notAuthenticatedBuilder: (_) => Text("Not Authenticated"), // TODO: Make a widget
     );
   }
 }

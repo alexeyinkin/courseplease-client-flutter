@@ -33,19 +33,9 @@ class TeacherRepository extends AbstractFilteredRepository<int, Teacher, Teacher
         .then((response) => _denormalizeOne(response.data));
   }
 
-  @override
-  Future<List<Teacher>> loadByIds(List<int> ids) {
-    throw Exception('Not implemented');
-  }
-
   // Nullable
   Teacher _denormalizeOne(Map<String, dynamic> mapResult) {
     if (mapResult == null) return null;
     return Teacher.fromMap(mapResult);
-  }
-
-  @override
-  Future<List<Teacher>> loadAll() {
-    throw UnimplementedError();
   }
 }

@@ -90,7 +90,7 @@ class _EditTeacherSubjectScreenState extends State<EditTeacherSubjectScreen> {
     return Row(
       children: [
         Text(tr('EditTeacherSubjectScreen.title', namedArgs: {'subjectTitle': subjectTitle})),
-        SmallHorizontalPadding(),
+        SmallPadding(),
         Switch(
           value: state.teacherSubjectClone.enabled,
           onChanged: _editTeacherSubjectCubit.setEnabled,

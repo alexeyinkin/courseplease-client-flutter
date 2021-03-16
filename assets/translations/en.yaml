@@ -5,6 +5,7 @@ common:
         save:           'Save'
     more:               'More...'
     sentenceSeparator:  '. '
+    yesterday:          'Yesterday'
 
 ContactStatusCubit:
     downloadEnabledFalse:   'Not downloading anything'
@@ -154,6 +155,9 @@ MyProfileWidget:
 
 PickedTabWidget:
     iconTitle:      'Picked'
+
+SelectChatPlaceholderWidget:
+    text:           'Select a Chat'
 
 SelectProductSubjectScreen:
     title:          'Select Subject'

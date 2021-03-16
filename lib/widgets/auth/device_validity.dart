@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/widgets/fitted_icon_text.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -73,29 +74,9 @@ class CommonDeviceValidityWidget extends StatelessWidget {
   }
 }
 
-class InvalidDeviceWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: FittedBox(
-        child: Container(
-          padding: EdgeInsets.all(30),
-          child: Opacity(
-            opacity: .25,
-            child: Column(
-              children: [
-                Icon(
-                  Icons.error,
-                  size: 60,
-                ),
-                Text(
-                  tr('errors.notAuthorized'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+class InvalidDeviceWidget extends FittedIconTextWidget {
+  InvalidDeviceWidget() : super(
+    iconData: Icons.error,
+    text: tr('errors.notAuthorized'),
+  );
 }

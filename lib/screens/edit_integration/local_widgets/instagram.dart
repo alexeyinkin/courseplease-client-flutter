@@ -36,7 +36,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
           title: Row(
             children: [
               Text(tr('InstagramContactParamsWidget.placeNewImagesTo.portfolio')),
-              SmallHorizontalPadding(),
+              SmallPadding(),
               _getPortfolioProductSubjectSelect(),
             ],
           ),

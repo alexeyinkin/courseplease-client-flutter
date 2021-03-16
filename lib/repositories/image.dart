@@ -28,21 +28,6 @@ abstract class AbstractImageRepository<F extends AbstractFilter> extends Abstrac
 
     return ListLoadResult<ImageEntity>(objects, mapResult.nextPageToken);
   }
-
-  @override
-  Future<ImageEntity> loadById(int id) {
-    throw Exception('Not implemented');
-  }
-
-  @override
-  Future<List<ImageEntity>> loadByIds(List<int> ids) {
-    throw Exception('Not implemented');
-  }
-
-  @override
-  Future<List<ImageEntity>> loadAll() {
-    throw UnimplementedError();
-  }
 }
 
 class GalleryImageRepository extends AbstractImageRepository<ViewImageFilter> {

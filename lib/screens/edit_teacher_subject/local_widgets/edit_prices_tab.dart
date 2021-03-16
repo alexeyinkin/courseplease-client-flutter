@@ -50,6 +50,6 @@ class EditPricesTabWidget extends StatelessWidget {
       );
     }
 
-    return alternateWidgetListWith(children, SmallVerticalPadding());
+    return alternateWidgetListWith(children, SmallPadding());
   }
 }
