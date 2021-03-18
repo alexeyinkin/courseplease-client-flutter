@@ -7,7 +7,7 @@ class ContactTitleWidget extends StatelessWidget {
   final EditableContact contact;
 
   ContactTitleWidget({
-    @required this.contact,
+    required this.contact,
   });
 
   @override

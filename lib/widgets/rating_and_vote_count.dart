@@ -8,7 +8,7 @@ class RatingAndVoteCountWidget extends StatelessWidget {
   final bool hideIfEmpty;
 
   RatingAndVoteCountWidget({
-    @required this.rating,
+    required this.rating,
     this.hideIfEmpty = true,
   });
 

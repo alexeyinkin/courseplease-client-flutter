@@ -2,18 +2,17 @@ import 'dart:io';
 
 import 'package:courseplease/utils/auth/platform.dart';
 import 'package:device_info/device_info.dart';
-import 'package:meta/meta.dart';
 
 /// All the info that can be obtained about a device.
 class DeviceInfo {
   final PlatformInstance platform;
-  final AndroidDeviceInfo androidDeviceInfo;
-  final IosDeviceInfo iosDeviceInfo;
+  final AndroidDeviceInfo? androidDeviceInfo;
+  final IosDeviceInfo? iosDeviceInfo;
 
   DeviceInfo._({
-    @required this.platform,
-    @required this.androidDeviceInfo,
-    @required this.iosDeviceInfo,
+    required this.platform,
+    required this.androidDeviceInfo,
+    required this.iosDeviceInfo,
   });
 
   static Future<DeviceInfo> getCurrent() async {
@@ -24,14 +23,14 @@ class DeviceInfo {
     );
   }
 
-  static Future<AndroidDeviceInfo> _getAndroidDeviceInfo() async { // Nullable
+  static Future<AndroidDeviceInfo?> _getAndroidDeviceInfo() async {
     if (!Platform.isAndroid) return null;
 
     final plugin = DeviceInfoPlugin();
     return plugin.androidInfo;
   }
 
-  static Future<IosDeviceInfo> _getIosDeviceInfo() async { // Nullable
+  static Future<IosDeviceInfo?> _getIosDeviceInfo() async {
     if (!Platform.isIOS) return null;
 
     final plugin = DeviceInfoPlugin();
@@ -48,7 +47,8 @@ class DeviceInfo {
     return map;
   }
 
-  Map<String, dynamic> _androidDeviceInfoToJson() { // Nullable
+  Map<String, dynamic>? _androidDeviceInfoToJson() {
+    final androidDeviceInfo = this.androidDeviceInfo;
     if (androidDeviceInfo == null) return null;
 
     final map = Map<String, dynamic>();
@@ -92,7 +92,8 @@ class DeviceInfo {
     return map;
   }
 
-  Map<String, dynamic> _iosDeviceInfoToJson() { // Nullable
+  Map<String, dynamic>? _iosDeviceInfoToJson() {
+    final iosDeviceInfo = this.iosDeviceInfo;
     if (iosDeviceInfo == null) return null;
 
     final map = Map<String, dynamic>();

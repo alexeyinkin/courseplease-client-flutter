@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'interfaces.dart';
 
 class ProductSubject implements WithIdTitle<int>, WithIdChildrenParent<int, ProductSubject, ProductSubject> {
@@ -6,13 +5,13 @@ class ProductSubject implements WithIdTitle<int>, WithIdChildrenParent<int, Prod
   final String title;
   final bool allowsImagePortfolio;
   final List<ProductSubject> children;
-  ProductSubject parent; // Nullable
+  ProductSubject? parent;
 
   ProductSubject({
-    @required this.id,
-    @required this.title,
-    @required this.allowsImagePortfolio,
-    @required this.children,
+    required this.id,
+    required this.title,
+    required this.allowsImagePortfolio,
+    required this.children,
   });
 
   factory ProductSubject.fromMap(Map<String, dynamic> map) {

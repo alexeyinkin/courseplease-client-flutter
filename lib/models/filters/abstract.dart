@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/services/net/api_client.dart';
-import 'package:meta/meta.dart';
 import '../interfaces.dart';
 
 abstract class AbstractFilter implements JsonSerializable {
@@ -16,8 +15,8 @@ class IdsSubsetFilter<I, O extends WithId<I>> extends AbstractFilter {
   final AbstractFilteredModelListBloc<I, O, AbstractFilter> nestedList;
 
   IdsSubsetFilter({
-    @required this.ids,
-    @required this.nestedList,
+    required this.ids,
+    required this.nestedList,
   });
 
   @override

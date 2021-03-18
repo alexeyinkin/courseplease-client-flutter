@@ -12,7 +12,7 @@ abstract class AbstractImageRepository<F extends AbstractFilter> extends Abstrac
   String getEntitiesName();
 
   @override
-  Future<ListLoadResult<ImageEntity>> loadWithFilter(F filter, String pageToken) {
+  Future<ListLoadResult<ImageEntity>> loadWithFilter(F filter, String? pageToken) {
     return _client
         .getEntities(name: getEntitiesName(), filter: filter, pageToken: pageToken)
         .then((response) => denormalizeList(response.data));

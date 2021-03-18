@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class EditBodyTabWidget extends StatelessWidget {
-  final TextEditingController textEditingController; // Nullable
+  final TextEditingController textEditingController;
 
   EditBodyTabWidget({
-    @required this.textEditingController,
+    required this.textEditingController,
   });
 
   @override

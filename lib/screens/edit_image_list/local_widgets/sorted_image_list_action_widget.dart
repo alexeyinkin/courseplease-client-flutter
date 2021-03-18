@@ -11,16 +11,16 @@ import 'package:courseplease/models/image.dart';
 import 'package:courseplease/screens/edit_image_list/local_blocs/image_list_action.dart';
 import 'package:courseplease/widgets/list_action.dart';
 
-class SortedImageListActionWidget extends ListActionWidget<
-    int,
-    ImageEntity,
-    EditImageFilter,
-    MediaSortActionEnum,
-    ImageListActionCubit
+class SortedImageListActionWidget extends AbstractListActionWidget<
+  int,
+  ImageEntity,
+  EditImageFilter,
+  MediaSortActionEnum,
+  ImageListActionCubit
 > {
   SortedImageListActionWidget({
-    @required ImageListActionCubit imageListActionCubit,
-    @required SelectableListCubit<int, EditImageFilter> selectableListCubit,
+    required ImageListActionCubit imageListActionCubit,
+    required SelectableListCubit<int, EditImageFilter> selectableListCubit,
   }) : super(
     listActionCubit: imageListActionCubit,
     selectableListCubit: selectableListCubit,
@@ -28,9 +28,9 @@ class SortedImageListActionWidget extends ListActionWidget<
 
   @override
   Widget buildWithStates({
-    BuildContext context,
-    ListActionCubitState<MediaSortActionEnum> listActionCubitState,
-    SelectableListState<int, EditImageFilter> selectableListState,
+    required BuildContext context,
+    required ListActionCubitState<MediaSortActionEnum> listActionCubitState,
+    required SelectableListState<int, EditImageFilter> selectableListState,
   }) {
     if (!selectableListState.selected) {
       return Text(tr('EditImageListScreen.selectImages'));
@@ -71,7 +71,7 @@ class SortedImageListActionWidget extends ListActionWidget<
   void _onActionSelected(
     BuildContext context,
     MediaSortActionEnum action,
-    SelectableListState selectableListState,
+    SelectableListState<int, EditImageFilter> selectableListState,
   ) {
     switch (action) {
       case MediaSortActionEnum.move: _onMoveSelected(context, selectableListState); break;
@@ -81,7 +81,10 @@ class SortedImageListActionWidget extends ListActionWidget<
     }
   }
 
-  void _onMoveSelected(BuildContext context, SelectableListState selectableListState) async {
+  void _onMoveSelected(
+    BuildContext context,
+    SelectableListState<int, EditImageFilter> selectableListState,
+  ) async {
     MediaDestinationDialog.show<int, ImageEntity, EditImageFilter, EditorImageRepository>(
       context: context,
       selectableListState: selectableListState,
@@ -97,21 +100,29 @@ class SortedImageListActionWidget extends ListActionWidget<
 
   void _onMoveActionPressed(
     BuildContext context,
-    SelectableListState selectableListState,
+    SelectableListState<int, EditImageFilter> selectableListState,
     MediaDestinationState mediaDestinationState,
   ) async {
     await listActionCubit.move(
       selectableListState,
-      EditImageFilter(
-        purposeIds: [mediaDestinationState.purposeId],
-        subjectIds: [mediaDestinationState.subjectId],
-      ),
+      _mediaDestinationStateToSetFilter(mediaDestinationState),
     );
     _closeDialog(context);
     // TODO: Show a confirmation.
   }
 
-  void _onLinkSelected(BuildContext context, SelectableListState selectableListState) async {
+  // TODO: Move to a common superclass with UnsortedImageListActionWidget
+  EditImageFilter _mediaDestinationStateToSetFilter(MediaDestinationState state) {
+    return EditImageFilter(
+      purposeIds: state.purposeId == null ? [] : [state.purposeId!],
+      subjectIds: state.subjectId == null ? [] : [state.subjectId!],
+    );
+  }
+
+  void _onLinkSelected(
+    BuildContext context,
+    SelectableListState<int, EditImageFilter> selectableListState,
+  ) async {
     MediaDestinationDialog.show<int, ImageEntity, EditImageFilter, EditorImageRepository>(
       context: context,
       selectableListState: selectableListState,
@@ -132,10 +143,7 @@ class SortedImageListActionWidget extends ListActionWidget<
   ) async {
     await listActionCubit.link(
       ids,
-      EditImageFilter(
-        purposeIds: [mediaDestinationState.purposeId],
-        subjectIds: [mediaDestinationState.subjectId],
-      ),
+      _mediaDestinationStateToSetFilter(mediaDestinationState),
     );
     _closeDialog(context);
     // TODO: Show a confirmation.
@@ -149,7 +157,9 @@ class SortedImageListActionWidget extends ListActionWidget<
     // TODO: Implement archiving.
   }
 
-  void _onUnlinkSelected(SelectableListState selectableListState) async {
+  void _onUnlinkSelected(
+    SelectableListState<int, EditImageFilter> selectableListState,
+  ) async {
     await listActionCubit.unlink(selectableListState);
     // TODO: Show a confirmation.
   }

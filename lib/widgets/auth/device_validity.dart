@@ -11,9 +11,9 @@ class DeviceValidityWidget extends StatefulWidget {
   final WidgetBuilder invalidDeviceBuilder;
 
   DeviceValidityWidget({
-    @required this.determiningDeviceBuilder,
-    @required this.validDeviceBuilder,
-    @required this.invalidDeviceBuilder,
+    required this.determiningDeviceBuilder,
+    required this.validDeviceBuilder,
+    required this.invalidDeviceBuilder,
   });
 
   @override
@@ -25,10 +25,9 @@ class DeviceValidityWidgetState extends State<DeviceValidityWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<AuthenticationState>(
       stream: _authenticationCubit.outState,
-      initialData: _authenticationCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(context, snapshot.data),
+      builder: (context, snapshot) => _buildWithState(context, snapshot.data ?? _authenticationCubit.initialState),
     );
   }
 
@@ -61,7 +60,7 @@ class CommonDeviceValidityWidget extends StatelessWidget {
   final WidgetBuilder validDeviceBuilder;
 
   CommonDeviceValidityWidget({
-    @required this.validDeviceBuilder,
+    required this.validDeviceBuilder,
   });
 
   @override

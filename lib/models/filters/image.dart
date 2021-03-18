@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'package:meta/meta.dart';
 import 'abstract.dart';
 
 class ViewImageFilter extends AbstractFilter {
-  final int subjectId;
-  final int teacherId; // Nullable
+  final int? subjectId;
+  final int? teacherId;
 
   ViewImageFilter({
-    @required this.subjectId,
+    required this.subjectId,
     this.teacherId,
   });
 

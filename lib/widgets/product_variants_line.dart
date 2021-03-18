@@ -6,7 +6,7 @@ class ProductVariantsLineWidget extends StatelessWidget {
   final List<ProductVariantFormat> formats;
 
   ProductVariantsLineWidget({
-    @required this.formats,
+    required this.formats,
   });
 
   @override

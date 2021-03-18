@@ -4,26 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-class SignInWebviewScreen extends StatefulWidget {
-  static const routeName = '/signInWith';
+class SignInWebviewScreen extends StatelessWidget {
+  final String uri;
 
-  @override
-  State<SignInWebviewScreen> createState() => _SignInWebviewScreenState();
-}
+  SignInWebviewScreen({
+    required this.uri,
+  });
 
-class _SignInWebviewScreenState extends State<SignInWebviewScreen> {
-  String _uri; // Nullable
+  static Future<void> show({
+    required BuildContext context,
+    required String uri,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignInWebviewScreen(
+          uri: uri,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    _setUrlIfNot(context);
-
     return WebviewScaffold(
-      url: _uri,
+      url: uri,
       javascriptChannels: <JavascriptChannel>[
         JavascriptChannel(
           name: 'appWebview',
-          onMessageReceived: _onMessageReceived,
+          onMessageReceived: (message) => _onMessageReceived(context, message),
         ),
       ].toSet(),
       appBar: AppBar(
@@ -32,14 +41,7 @@ class _SignInWebviewScreenState extends State<SignInWebviewScreen> {
     );
   }
 
-  void _setUrlIfNot(BuildContext context) {
-    if (_uri != null) return;
-
-    final arguments = ModalRoute.of(context).settings.arguments as SignInWebviewArguments;
-    _uri = arguments.uri;
-  }
-
-  void _onMessageReceived(JavascriptMessage message) {
+  void _onMessageReceived(BuildContext context, JavascriptMessage message) {
     final map = jsonDecode(message.message);
 
     Navigator.of(context).pop(
@@ -50,18 +52,11 @@ class _SignInWebviewScreenState extends State<SignInWebviewScreen> {
   }
 }
 
-class SignInWebviewArguments {
-  final String uri;
-  SignInWebviewArguments({
-    @required this.uri,
-  });
-}
-
 class SignInWebviewResult {
   final SignInWebviewStatus status;
 
   SignInWebviewResult({
-    @required this.status,
+    required this.status,
   });
 }
 

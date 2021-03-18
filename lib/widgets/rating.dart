@@ -6,7 +6,10 @@ class RatingWidget extends StatelessWidget {
   final Rating rating;
   final int scale;
 
-  RatingWidget({@required this.rating, this.scale = 5});
+  RatingWidget({
+    required this.rating,
+    this.scale = 5,
+  });
 
   @override
   Widget build(BuildContext context) {

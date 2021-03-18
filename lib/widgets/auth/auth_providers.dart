@@ -8,9 +8,9 @@ class AuthProvidersWidget extends StatelessWidget {
   final ValueChanged<AuthProvider> onTap;
 
   AuthProvidersWidget({
-    @required this.providers,
-    this.titleTemplate,
-    this.onTap,
+    required this.providers,
+    required this.titleTemplate,
+    required this.onTap,
   });
 
   @override
@@ -35,8 +35,6 @@ class AuthProvidersWidget extends StatelessWidget {
   }
 
   void _handleTap(AuthProvider provider) {
-    if (onTap != null) {
-      onTap(provider);
-    }
+    onTap(provider);
   }
 }

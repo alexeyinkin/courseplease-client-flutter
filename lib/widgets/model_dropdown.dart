@@ -3,36 +3,41 @@ import 'package:courseplease/models/interfaces.dart';
 import 'package:flutter/material.dart';
 
 class ModelDropdown<I, O extends WithIdTitle<I>> extends StatefulWidget {
-  final I selectedId;
+  final I? selectedId;
   final List<I> showIds;
-  final ModelListByIdsBloc modelListByIdsBloc;
+  final ModelListByIdsBloc<I, O> modelListByIdsBloc;
   final ValueChanged<I> onChanged;
-  final Widget hint; // Nullable
-  final List<DropdownMenuItem> trailing;
+  final Widget? hint;
+  final List<DropdownMenuItem<I>> trailing;
 
   ModelDropdown({
-    @required this.selectedId,
-    @required this.showIds,
-    @required this.modelListByIdsBloc,
-    @required this.onChanged,
+    required this.selectedId,
+    required this.showIds,
+    required this.modelListByIdsBloc,
+    required this.onChanged,
     this.hint,
-    this.trailing = const <DropdownMenuItem>[],
-  });
+    List<DropdownMenuItem<I>>? trailing,
+  }) :
+      trailing = trailing ?? <DropdownMenuItem<I>>[]
+  ;
 
   @override
   State<StatefulWidget> createState() => _ModelDropdownState<I, O>();
 }
 
-class _ModelDropdownState<I, O extends WithIdTitle<I>> extends State<ModelDropdown> {
+class _ModelDropdownState<I, O extends WithIdTitle<I>> extends State<ModelDropdown<I, O>> {
   @override
   Widget build(BuildContext context) {
     widget.modelListByIdsBloc.setCurrentIds(widget.showIds);
 
-    return StreamBuilder(
+    return StreamBuilder<ModelListByIdsState<O>>(
       stream: widget.modelListByIdsBloc.outState,
-      initialData: widget.modelListByIdsBloc.initialState,
-      builder: (context, snapshot) => _buildWithModels(snapshot.data.objects),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? widget.modelListByIdsBloc.initialState),
     );
+  }
+
+  Widget _buildWithState(ModelListByIdsState<O> state) {
+    return _buildWithModels(state.objects);
   }
 
   Widget _buildWithModels(List<O> objects) {
@@ -41,7 +46,7 @@ class _ModelDropdownState<I, O extends WithIdTitle<I>> extends State<ModelDropdo
         .toList();
 
     if (widget.trailing.isNotEmpty) {
-      items.add(DropdownMenuItemSeparator<I>());
+      items.add(_DropdownMenuItemSeparator<I>());
 
       for (final item in widget.trailing) {
         items.add(item);
@@ -56,15 +61,15 @@ class _ModelDropdownState<I, O extends WithIdTitle<I>> extends State<ModelDropdo
     );
   }
 
-  void _handleChange(I id) { // Nullable
+  void _handleChange(I? id) {
     if (id != null) {
       widget.onChanged(id);
     }
   }
 }
 
-class DropdownMenuItemSeparator<T> extends DropdownMenuItem<T> {
-  DropdownMenuItemSeparator() : super(child: Container()); // Trick the assertion.
+class _DropdownMenuItemSeparator<T> extends DropdownMenuItem<T> {
+  _DropdownMenuItemSeparator() : super(child: Container()); // Trick the assertion.
 
   @override
   Widget build(BuildContext context) {

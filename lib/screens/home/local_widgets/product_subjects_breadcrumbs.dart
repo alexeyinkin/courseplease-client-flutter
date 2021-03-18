@@ -1,6 +1,7 @@
 import 'package:courseplease/blocs/current_product_subject.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/product_subject_with_status.dart';
+import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 import 'package:provider/provider.dart';
@@ -13,12 +14,17 @@ class ProductSubjectsBreadcrumbs extends StatelessWidget {
 
     return StreamBuilder<List<ProductSubjectWithStatus>>(
       stream: bloc.outBreadcrumbs,
-      initialData: [],
       builder: (context, snapshot) {
+        final subjects = snapshot.data;
+
+        if (subjects == null) {
+          return SmallCircularProgressIndicator(scale: .5);
+        }
+
         return Align(
           alignment: Alignment.topLeft,
           child: BreadCrumb(
-            items: _getBreadcrumbArray(snapshot.data, bloc),
+            items: _getBreadcrumbArray(subjects, bloc),
             divider: Icon(Icons.chevron_right, size: 36),
           ),
         );

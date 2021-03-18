@@ -11,8 +11,8 @@ class InstagramContactParamsWidget extends StatefulWidget {
   final InstagramContactParams params;
 
   InstagramContactParamsWidget({
-    @required this.meResponseData,
-    @required this.params,
+    required this.meResponseData,
+    required this.params,
   });
 
   @override
@@ -85,14 +85,17 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
   List<int> _getTeacherSubjectIds() {
     final result = <int>[];
 
-    for (final teacherSubject in widget.meResponseData.teacherSubjects ?? []) {
+    for (final teacherSubject in widget.meResponseData.teacherSubjects) {
       result.add(teacherSubject.subjectId);
     }
 
     return result;
   }
 
-  void _handleNewPhotoActionChange(InstagramNewImageAction value) {
+  void _handleNewPhotoActionChange(InstagramNewImageAction? value) {
+    if (value == null) {
+      throw Exception('Never happens as all radios have values.');
+    }
     setState(() {
       widget.params.newImageAction = value;
     });

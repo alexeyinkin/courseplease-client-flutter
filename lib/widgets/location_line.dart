@@ -1,6 +1,5 @@
 import 'package:courseplease/models/location.dart';
 import 'package:courseplease/widgets/flag_icon.dart';
-import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'subway_station.dart';
 
@@ -9,7 +8,7 @@ class LocationLineWidget extends StatelessWidget {
   final double textOpacity;
 
   LocationLineWidget({
-    @required this.location,
+    required this.location,
     this.textOpacity = 1,
   });
 

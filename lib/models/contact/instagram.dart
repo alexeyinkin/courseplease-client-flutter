@@ -1,15 +1,13 @@
 import 'package:courseplease/utils/utils.dart';
-import 'package:meta/meta.dart';
-
 import 'editable_contact.dart';
 
 class InstagramContactParams extends ContactParams {
   InstagramNewImageAction newImageAction;
-  int newImageSubjectId; // Nullable
+  int? newImageSubjectId;
 
   InstagramContactParams({
-    @required this.newImageAction,
-    @required this.newImageSubjectId,
+    required this.newImageAction,
+    required this.newImageSubjectId,
   });
 
   factory InstagramContactParams.fromMap(Map<String, dynamic> map) {

@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import '../interfaces.dart';
 
 class Contact implements WithId<int> {
@@ -8,10 +7,10 @@ class Contact implements WithId<int> {
   final String username;
 
   Contact({
-    @required this.id,
-    @required this.className,
-    @required this.value,
-    @required this.username,
+    required this.id,
+    required this.className,
+    required this.value,
+    required this.username,
   });
 
   String getTitle() {

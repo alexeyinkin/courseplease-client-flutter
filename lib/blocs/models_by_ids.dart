@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/utils/utils.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:collection/collection.dart';
 
@@ -12,17 +11,16 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
   final ModelCacheBloc<I, O> _modelCacheBloc;
   final initialState = ModelListByIdsState<O>(objects: <O>[], requestStatus: RequestStatus.notTried);
 
-  var _allObjectsByIds = Map<I, O>();
   var _currentIds = <I>[];
-  ModelListByIdsState<O> _state = ModelListByIdsState<O>(objects: <O>[], requestStatus: RequestStatus.notTried);
+  ModelCacheState<I, O>? _cacheState;
 
   final _outStateController = BehaviorSubject<ModelListByIdsState<O>>();
   Stream<ModelListByIdsState<O>> get outState => _outStateController.stream;
 
   ModelListByIdsBloc({
-    @required ModelCacheBloc<I, O> modelCacheBloc,
+    required ModelCacheBloc<I, O> modelCacheBloc,
   }) : _modelCacheBloc = modelCacheBloc {
-    _modelCacheBloc.outObjectsByIds.listen(_handleLoadedAnythingNew);
+    _modelCacheBloc.outState.listen(_handleLoadedAnythingNew);
   }
 
   void setCurrentIds(List<I> ids) {
@@ -30,12 +28,7 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
 
     _currentIds = ids;
     _modelCacheBloc.loadListIfNot(ids);
-    _updateState();
     _pushOutput();
-  }
-
-  void _updateState() {
-    _state = _createState();
   }
 
   ModelListByIdsState<O> _createState() {
@@ -43,14 +36,24 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
       return ModelListByIdsState<O>(objects: <O>[], requestStatus: RequestStatus.ok);
     }
 
+    final cacheState = _cacheState;
+    if (cacheState == null) {
+      return ModelListByIdsState(objects: <O>[], requestStatus: RequestStatus.loading);
+    }
+
     final objects = <O>[];
     bool complete = true;
 
     for (final id in _currentIds) {
-      if (!_allObjectsByIds.containsKey(id)) {
+      final object = cacheState.objectsByIds[id];
+
+      if (object != null) {
+        objects.add(object);
+        continue;
+      }
+
+      if (!cacheState.failedIds.containsKey(id)) {
         complete = false;
-      } else {
-        objects.add(_allObjectsByIds[id]);
       }
     }
 
@@ -59,14 +62,13 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
         : ModelListByIdsState(objects: objects, requestStatus: RequestStatus.loading);
   }
 
-  void _handleLoadedAnythingNew(Map<I, O> objectsByIds) {
-    _allObjectsByIds = objectsByIds;
-    _updateState();
+  void _handleLoadedAnythingNew(ModelCacheState<I, O> state) {
+    _cacheState = state;
     _pushOutput();
   }
 
   void _pushOutput() {
-    _outStateController.sink.add(_state);
+    _outStateController.sink.add(_createState());
   }
 
   @override
@@ -80,7 +82,7 @@ class ModelListByIdsState<O extends WithId> {
   final RequestStatus requestStatus;
 
   ModelListByIdsState({
-    @required this.objects,
-    @required this.requestStatus,
+    required this.objects,
+    required this.requestStatus,
   });
 }

@@ -1,23 +1,20 @@
-import 'package:courseplease/blocs/list_action.dart';
 import 'package:courseplease/widgets/list_action.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:meta/meta.dart';
 
-class ListSelectionWidget extends ListActionWidget {
+class ListSelectionWidget extends AbstractListSelectionWidget {
   ListSelectionWidget({
-    @required SelectableListCubit selectableListCubit,
+    required SelectableListCubit selectableListCubit,
   }) : super(
     selectableListCubit: selectableListCubit,
   );
 
   @override
-  Widget buildWithStates({
-    BuildContext context,
-    ListActionCubitState<void> listActionCubitState, // Nullable
-    SelectableListState selectableListState,
+  Widget buildWithSelectableListState({
+    required BuildContext context,
+    required SelectableListState selectableListState,
   }) {
     return Row(
       children: [

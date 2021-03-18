@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SelectableListCubit<I, F extends AbstractFilter> extends Bloc {
@@ -9,19 +8,27 @@ class SelectableListCubit<I, F extends AbstractFilter> extends Bloc {
   final Map<I, I> _selectedIds = Map<I, I>();
   bool _canSelectMore = false;
   bool _wasSourceListEverNotEmpty = false;
-  F _filter = null;
+  F _filter;
 
-  final initialState = SelectableListState<I, F>(
-    selected: false,
-    selectedIds: Map<I, I>(),
-    canSelectMore: false,
-    isEmpty: true,
-    wasEmptied: false,
-    filter: null,
-  );
+  late SelectableListState<I, F> initialState;
 
   final _outStateController = BehaviorSubject<SelectableListState<I, F>>();
   Stream<SelectableListState<I, F>> get outState => _outStateController.stream;
+
+  SelectableListCubit({
+    required F initialFilter,
+  }) :
+      _filter = initialFilter
+  {
+    initialState = SelectableListState<I, F>(
+      selected: false,
+      selectedIds: Map<I, I>(),
+      canSelectMore: false,
+      isEmpty: true,
+      wasEmptied: false,
+      filter: initialFilter,
+    );
+  }
 
   void setFilter(F filter) {
     _filter = filter;
@@ -111,14 +118,14 @@ class SelectableListState<I, F extends AbstractFilter> {
   final bool canSelectMore;
   final bool isEmpty;
   final bool wasEmptied;
-  final F filter; // Nullable
+  final F filter;
 
   SelectableListState({
-    @required this.selected,
-    @required this.selectedIds,
-    @required this.canSelectMore,
-    @required this.isEmpty,
-    @required this.wasEmptied,
-    @required this.filter,
+    required this.selected,
+    required this.selectedIds,
+    required this.canSelectMore,
+    required this.isEmpty,
+    required this.wasEmptied,
+    required this.filter,
   });
 }

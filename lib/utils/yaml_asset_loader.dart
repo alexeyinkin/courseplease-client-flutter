@@ -52,7 +52,7 @@ class YamlAssetLoader extends AssetLoader {
 
 //Loader for single yaml file
 class YamlSingleAssetLoader extends AssetLoader {
-  Map yamlData;
+  Map? yamlData;
 
   @override
   Future<Map<String, dynamic>> load(String path, Locale locale) async {
@@ -63,7 +63,7 @@ class YamlSingleAssetLoader extends AssetLoader {
     } else {
       log('easy localization loader: Yaml already loaded, read cache');
     }
-    return yamlData[locale.toString()];
+    return (yamlData ?? {})[locale.toString()];
   }
 }
 

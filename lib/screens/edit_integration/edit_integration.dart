@@ -18,30 +18,56 @@ import 'package:flutter/material.dart';
 class EditIntegrationScreen extends StatefulWidget {
   static const routeName = 'editIntegration';
 
+  final EditableContact contactClone;
+
+  EditIntegrationScreen({
+    required this.contactClone,
+  });
+
   @override
-  State<StatefulWidget> createState() => _EditIntegrationScreenState();
+  State<StatefulWidget> createState() => _EditIntegrationScreenState(
+    contactClone: contactClone,
+  );
+
+  static Future<void> show({
+    required BuildContext context,
+    required EditableContact contactClone,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditIntegrationScreen(
+          contactClone: contactClone,
+        ),
+      ),
+    );
+  }
 }
 
 class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
-  EditableContact _contactClone; // Nullable
-  EditIntegrationCubit _editIntegrationCubit; // Nullable
+  final EditableContact contactClone;
+  late final EditIntegrationCubit _editIntegrationCubit;
+
+  _EditIntegrationScreenState({
+    required this.contactClone,
+  }) {
+    _editIntegrationCubit = EditIntegrationCubit(contactId: contactClone.id);
+  }
 
   @override
   Widget build(BuildContext context) {
-    _loadIfNot();
-
-    return StreamBuilder(
+    return StreamBuilder<EditIntegrationState>(
       stream: _editIntegrationCubit.outState,
       builder: (context, snapshot) => _buildWithState(snapshot.data),
     );
   }
 
-  Widget _buildWithState(EditIntegrationState state) {
+  Widget _buildWithState(EditIntegrationState? state) {
     if (state == null) return Container();
 
     return Scaffold(
       appBar: AppBar(
-        title: ContactTitleWidget(contact: _contactClone),
+        title: ContactTitleWidget(contact: contactClone),
       ),
       body: Container(
         padding: EdgeInsets.all(10),
@@ -60,7 +86,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
 
   Widget _getTokenStatusWidget(EditIntegrationState state) {
     if (state.contact.tokenExpire != null) {
-      final diff = state.contact.tokenExpire.difference(DateTime.now());
+      final diff = state.contact.tokenExpire!.difference(DateTime.now());
       if (diff.isNegative) return _getTokenStatusInvalid();
 
       return _getTokenIsValidForWidget(diff);
@@ -133,8 +159,11 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   }
 
   String _getUpdatedTimeAgo(ProfileSyncStatus status) {
+    if (status.dateTimeUpdate == null) {
+      throw Exception('dateTimeUpdate is required for status ' + status.runStatus.toString());
+    }
     return formatLongRoughDurationAgo(
-      DateTime.now().difference(status.dateTimeUpdate),
+      DateTime.now().difference(status.dateTimeUpdate!),
     );
   }
 
@@ -168,40 +197,39 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   }
 
   void _viewDownloaded() async {
-    await Navigator.of(context).pushNamed(
-      EditImageListScreen.routeName,
-      arguments: EditImageListArguments(
-        filter: EditImageFilter(
-          contactIds: [_contactClone.id],
-        ),
-        contactsByIds: {_contactClone.id: _contactClone},
+    EditImageListScreen.show(
+      context: context,
+      filter: EditImageFilter(
+        contactIds: [contactClone.id],
       ),
+      contactsByIds: {contactClone.id: contactClone},
     );
 
-    // TODO: Reload current actor because there might be no more unsorted images.
+    // TODO: Reload current actor because there might appear no more unsorted images.
   }
 
   Widget _getDownloadNewContentsToggle() {
-    final serviceName = _contactClone.getServiceTitle();
+    final serviceName = contactClone.getServiceTitle();
 
     return SwitchListTile(
       title: Text(tr('EditIntegrationScreen.downloadNewContentFrom', namedArgs: {'serviceName': serviceName})),
-      value: _contactClone.downloadEnabled,
+      value: contactClone.downloadEnabled,
       onChanged: _handleIsDownloadEnabledToggle,
     );
   }
 
   void _handleIsDownloadEnabledToggle(bool value) {
     setState(() {
-      _contactClone.downloadEnabled = value;
+      contactClone.downloadEnabled = value;
     });
   }
 
+  // TODO: Extract to a factory
   Widget _getProviderSettingWidget(MeResponseData meResponseData) {
-    if (_contactClone.params is InstagramContactParams) {
+    if (contactClone.params is InstagramContactParams) {
       return InstagramContactParamsWidget(
         meResponseData: meResponseData,
-        params: _contactClone.params,
+        params: contactClone.params as InstagramContactParams,
       );
     }
     return Container();
@@ -218,28 +246,12 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
 
   void _handleSave() async {
     final request = SaveContactParamsRequest(
-      contactId:        _contactClone.id,
-      downloadEnabled:  _contactClone.downloadEnabled,
-      params:           _contactClone.params,
+      contactId:        contactClone.id,
+      downloadEnabled:  contactClone.downloadEnabled,
+      params:           contactClone.params,
     );
 
     await _editIntegrationCubit.saveContactParams(request);
     Navigator.of(context).pop();
   }
-
-  void _loadIfNot() {
-    if (_contactClone != null) return;
-
-    final arguments = ModalRoute.of(context).settings.arguments as EditIntegrationScreenArguments;
-    _contactClone = arguments.contactClone;
-    _editIntegrationCubit = EditIntegrationCubit(contactId: _contactClone.id);
-  }
-}
-
-class EditIntegrationScreenArguments {
-  final EditableContact contactClone;
-
-  EditIntegrationScreenArguments({
-    @required this.contactClone,
-  });
 }

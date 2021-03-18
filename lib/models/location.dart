@@ -1,5 +1,4 @@
 import 'package:courseplease/models/subway_station.dart';
-import 'package:meta/meta.dart';
 
 class Location {
   final double latitude;
@@ -10,12 +9,12 @@ class Location {
   final List<SubwayStation> subwayStations;
 
   Location({
-    @required this.latitude,
-    @required this.longitude,
-    @required this.countryCode,
-    @required this.city,
-    @required this.publicLine,
-    @required this.subwayStations,
+    required this.latitude,
+    required this.longitude,
+    required this.countryCode,
+    required this.city,
+    required this.publicLine,
+    required this.subwayStations,
   });
 
   factory Location.from(Location location) {
@@ -36,11 +35,11 @@ class Location {
         .cast<SubwayStation>();
 
     return Location(
-      latitude: map['latitude'].toDouble(),
-      longitude: map['longitude'].toDouble(),
-      countryCode: map['countryCode'],
-      city: map['city'],
-      publicLine: map['publicLine'],
+      latitude:       map['latitude'].toDouble(),
+      longitude:      map['longitude'].toDouble(),
+      countryCode:    map['countryCode'],
+      city:           map['city'],
+      publicLine:     map['publicLine'],
       subwayStations: subwayStations,
     );
   }

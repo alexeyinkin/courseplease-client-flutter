@@ -3,21 +3,17 @@ import 'package:flutter/material.dart';
 
 class PriceButton extends StatelessWidget {
   final Money money;
-  final String per; // Nullable
+  final String? per;
 
   PriceButton({
-    @required this.money,
+    required this.money,
     this.per,
   });
 
   @override
   Widget build(BuildContext context) {
-    final title = (per == null)
-        ? money.toString()
-        : money.formatPer(per);
-
     return ElevatedButton(
-      child: Text(title),
+      child: Text(money.formatPer(per)),
       onPressed: (){},
     );
   }

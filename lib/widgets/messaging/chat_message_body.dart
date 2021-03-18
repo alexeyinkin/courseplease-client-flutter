@@ -8,7 +8,7 @@ class ChatMessageBody extends StatelessWidget {
   final ChatMessage message;
 
   ChatMessageBody({
-    @required this.message,
+    required this.message,
   });
 
   @override
@@ -36,13 +36,11 @@ class ChatMessageBody extends StatelessWidget {
   }
 
   InlineSpan _getInsertDateSpan(BuildContext context) {
-    final localization = EasyLocalization.of(context);
-
     return WidgetSpan(
       child: Opacity(
         opacity: .5,
         child: Text(
-          formatTime(message.dateTimeInsert, localization.locale),
+          formatTime(message.dateTimeInsert, requireLocale(context)),
           style: AppStyle.minor,
         ),
       ),
@@ -50,8 +48,6 @@ class ChatMessageBody extends StatelessWidget {
   }
 
   InlineSpan _getEditDateSpan(BuildContext context) {
-    final localization = EasyLocalization.of(context);
-
     // TODO: Show on a separate line to emphasize the edit.
     return WidgetSpan(
       child: Opacity(
@@ -60,7 +56,7 @@ class ChatMessageBody extends StatelessWidget {
           children: [
             Icon(Icons.edit, size: 12),
             Text(
-              ' ' + formatTime(message.dateTimeInsert, localization.locale),
+              ' ' + formatTime(message.dateTimeInsert, requireLocale(context)),
               style: AppStyle.minor,
             ),
           ],

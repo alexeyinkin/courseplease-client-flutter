@@ -15,12 +15,12 @@ class ObjectLinearListView<
   T extends AbstractObjectTile<I, O, F>
 > extends ObjectAbstractListView<I, O, F, R, T> {
   ObjectLinearListView({
-    @required F filter,
-    @required TileFactory<I, O, F, T> tileFactory,
-    TileCallback<I, O> onTap, // Nullable
-    @required Axis scrollDirection,
-    Widget titleIfNotEmpty, // Nullable
-    SelectableListCubit<I, F> listStateCubit, // Nullable
+    required F filter,
+    required TileFactory<I, O, F, T> tileFactory,
+    TileCallback<I, O>? onTap,
+    required Axis scrollDirection,
+    Widget? titleIfNotEmpty,
+    SelectableListCubit<I, F>? listStateCubit,
   }) : super(
     filter: filter,
     tileFactory: tileFactory,
@@ -47,7 +47,7 @@ class ObjectLinearListViewState<
   Widget getListViewWidget(
     ModelListState<I, O> modelListState,
     AbstractFilteredModelListBloc listBloc,
-    SelectableListState<I, F> selectableListState,
+    SelectableListState<I, F>? selectableListState,
   ) {
     return ListView.builder(
       controller:       _scrollController,

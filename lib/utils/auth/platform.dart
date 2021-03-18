@@ -2,7 +2,6 @@ import 'dart:io';
 
 /// Contains info from dart's Platform class but in an instance.
 class PlatformInstance {
-  // Everything is Nullable in this class.
   final Map<String, String> environment;
   final String executable;
   final List<String> executableArguments;
@@ -11,7 +10,7 @@ class PlatformInstance {
   final int numberOfProcessors;
   final String operatingSystem;
   final String operatingSystemVersion;
-  final String packageConfig;
+  final String? packageConfig;
   final String pathSeparator;
   final String resolvedExecutable;
   final Uri script;
@@ -48,7 +47,7 @@ class PlatformInstance {
     map['packageConfig']          = packageConfig;
     map['pathSeparator']          = pathSeparator;
     map['resolvedExecutable']     = resolvedExecutable;
-    map['script']                 = script?.toString();
+    map['script']                 = script.toString();
     map['version']                = version;
 
     return map;

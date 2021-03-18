@@ -10,16 +10,6 @@ import 'sign_in_webview/sign_in_webview.dart';
 import 'teacher/teacher.dart';
 
 final routeBuilders = {
-  EditImageLightboxScreen.routeName:        (context) => EditImageLightboxScreen(),
-  EditImageListScreen.routeName:            (context) => EditImageListScreen(),
-  EditIntegrationScreen.routeName:          (context) => EditIntegrationScreen(),
-  EditProfileScreen.routeName:              (context) => EditProfileScreen(),
-  EditTeacherSubjectScreen.routeName:       (context) => EditTeacherSubjectScreen(),
   EditTeachingScreen.routeName:             (context) => EditTeachingScreen(),
-  FixedIdsImageLightboxScreen.routeName:    (context) => FixedIdsImageLightboxScreen(),
-  LessonScreen.routeName:                   (context) => LessonScreen(),
   SelectProductSubjectScreen.routeName:     (context) => SelectProductSubjectScreen(),
-  SignInWebviewScreen.routeName:            (context) => SignInWebviewScreen(),
-  TeacherScreen.routeName:                  (context) => TeacherScreen(),
-  ViewImageLightboxScreen.routeName:        (context) => ViewImageLightboxScreen(),
 };

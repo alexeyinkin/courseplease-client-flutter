@@ -1,23 +1,22 @@
 import 'package:courseplease/models/contact/contact.dart';
 import 'package:courseplease/models/contact/instagram.dart';
-import 'package:meta/meta.dart';
 import 'profile_sync_status.dart';
 
 class EditableContact extends Contact {
   bool downloadEnabled;
-  final DateTime tokenExpire; // Nullable.
+  final DateTime? tokenExpire;
   final ProfileSyncStatus profileSyncStatus;
   final ContactParams params;
 
   EditableContact({
-    @required int id,
-    @required String className,
-    @required String value,
-    @required String username,
-    @required this.downloadEnabled,
-    @required this.tokenExpire,
-    @required this.profileSyncStatus,
-    @required this.params,
+    required int id,
+    required String className,
+    required String value,
+    required String username,
+    required this.downloadEnabled,
+    required this.tokenExpire,
+    required this.profileSyncStatus,
+    required this.params,
   }) : super(
     id:         id,
     className:  className,

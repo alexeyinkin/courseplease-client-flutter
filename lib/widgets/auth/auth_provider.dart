@@ -6,12 +6,12 @@ import 'auth_provider_icon.dart';
 
 class AuthProviderWidget extends StatelessWidget {
   final AuthProvider provider;
-  final String titleTemplate;
-  final VoidCallback onTap; // Nullable
+  final String? titleTemplate;
+  final VoidCallback? onTap;
 
   AuthProviderWidget({
-    @required this.provider,
-    this.titleTemplate,
+    required this.provider,
+    required this.titleTemplate,
     this.onTap,
   });
 
@@ -46,6 +46,6 @@ class AuthProviderWidget extends StatelessWidget {
 
   String _getButtonTitle() {
     if (titleTemplate == null) return provider.title;
-    return titleTemplate.replaceFirst('{@providerTitle}', provider.title);
+    return titleTemplate!.replaceFirst('{@providerTitle}', provider.title);
   }
 }

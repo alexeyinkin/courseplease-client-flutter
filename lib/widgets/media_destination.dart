@@ -20,15 +20,14 @@ class MediaDestinationWidget extends StatelessWidget {
   final MediaDestinationCubit mediaDestinationCubit;
 
   MediaDestinationWidget({
-    this.mediaDestinationCubit,
+    required this.mediaDestinationCubit,
   });
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<MediaDestinationState>(
       stream: mediaDestinationCubit.outState,
-      initialData: mediaDestinationCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? mediaDestinationCubit.initialState),
     );
   }
 
@@ -100,17 +99,17 @@ class MediaDestinationDialog extends StatelessWidget {
   final List<Widget> previewWidgets;
 
   MediaDestinationDialog({
-    @required this.listActionCubit,
-    @required this.mediaDestinationCubit,
-    @required this.selectableListState,
-    @required this.action,
+    required this.listActionCubit,
+    required this.mediaDestinationCubit,
+    required this.selectableListState,
+    required this.action,
     this.previewWidgets = const <Widget>[],
   });
 
   @override
   Widget build(BuildContext context) {
     final actionString = _getActionString();
-    final nOfTr = plural('MediaDestinationDialog.nOf.image', selectableListState.selectedIds.length, context: context);
+    final nOfTr = plural('MediaDestinationDialog.nOf.image', selectableListState.selectedIds.length);
     final doWithTr = tr('MediaDestinationDialog.doWith.' + actionString, namedArgs:{'what': nOfTr});
 
     return AlertDialog(
@@ -140,18 +139,19 @@ class MediaDestinationDialog extends StatelessWidget {
   }
 
   Widget _getActionButton() {
-    return StreamBuilder(
+    return StreamBuilder<ListActionCubitState>(
       stream: listActionCubit.outState,
-      initialData: listActionCubit.initialState,
-      builder: (context, snapshot) => _buildActionButtonWithActionState(snapshot.data),
+      builder: (context, snapshot) => _buildActionButtonWithActionState(snapshot.data ?? listActionCubit.initialState),
     );
   }
 
   Widget _buildActionButtonWithActionState(ListActionCubitState listActionCubitState) {
-    return StreamBuilder(
+    return StreamBuilder<MediaDestinationState>(
       stream: mediaDestinationCubit.outState,
-      initialData: mediaDestinationCubit.initialState,
-      builder: (context, snapshot) => _buildActionButtonWithStates(listActionCubitState, snapshot.data),
+      builder: (context, snapshot) => _buildActionButtonWithStates(
+        listActionCubitState,
+        snapshot.data ?? mediaDestinationCubit.initialState,
+      ),
     );
   }
 
@@ -180,11 +180,11 @@ class MediaDestinationDialog extends StatelessWidget {
     F extends AbstractFilter,
     R extends AbstractFilteredRepository<I, O, F>
   >({
-    @required BuildContext context,
-    @required SelectableListState selectableListState,
-    @required ListActionCubit listActionCubit,
-    @required ValueChanged<MediaDestinationState> onActionPressed,
-    @required MediaDestinationAction action,
+    required BuildContext context,
+    required SelectableListState<I, F> selectableListState,
+    required ListActionCubit listActionCubit,
+    required ValueChanged<MediaDestinationState> onActionPressed,
+    required MediaDestinationAction action,
   }) async {
     final entityType = typeOf<O>();
     if (entityType != ImageEntity) { // TODO: Generalize beyond images.

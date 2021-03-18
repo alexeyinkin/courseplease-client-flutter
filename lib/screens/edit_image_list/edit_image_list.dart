@@ -19,32 +19,57 @@ import 'package:get_it/get_it.dart';
 import 'local_widgets/sorted_image_list_toolbar.dart';
 
 class EditImageListScreen extends StatefulWidget {
-  static const routeName = '/editImageList';
+  final EditImageFilter filter;
+  final Map<int, EditableContact> contactsByIds;
+
+  EditImageListScreen({
+    required this.filter,
+    required this.contactsByIds,
+  });
 
   @override
   State<EditImageListScreen> createState() => _EditImageListScreenState();
+
+  static Future<void> show({
+    required BuildContext context,
+    required EditImageFilter filter,
+    Map<int, EditableContact>? contactsByIds,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditImageListScreen(
+          filter: filter,
+          contactsByIds: contactsByIds ?? Map<int, EditableContact>(),
+        ),
+      ),
+    );
+  }
 }
 
 class _EditImageListScreenState extends State<EditImageListScreen> {
-  final _selectableListCubit = SelectableListCubit<int, EditImageFilter>();
-  StreamSubscription _selectableListSubscription;
-  ImageListActionCubit _imageListActionCubit;
+  final _selectableListCubit = SelectableListCubit<int, EditImageFilter>(initialFilter: EditImageFilter());
+  late final StreamSubscription _selectableListSubscription;
+  late final ImageListActionCubit _imageListActionCubit;
 
   final _productSubjectsByIdsBloc = ModelListByIdsBloc<int, ProductSubject>(
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
   );
-
-  EditImageFilter _filter;
-  Map<int, EditableContact> _contactsByIds;
 
   _EditImageListScreenState() {
     _selectableListSubscription = _selectableListCubit.outState.listen(_onSelectionChange);
   }
 
   @override
-  Widget build(BuildContext context) {
-    _loadIfNot();
+  void initState() {
+    super.initState();
+    _selectableListCubit.setFilter(widget.filter);
+    _productSubjectsByIdsBloc.setCurrentIds(widget.filter.subjectIds);
+    _imageListActionCubit = ImageListActionCubit(filter: widget.filter);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: _buildTitle(),
@@ -54,7 +79,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
           _buildActionToolbar(),
           Expanded(
             child: EditImageGrid(
-              filter: _filter,
+              filter: widget.filter,
               scrollDirection: Axis.vertical,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
@@ -71,50 +96,38 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
     );
   }
 
-  void _loadIfNot() {
-    if (_filter != null) return;
-
-    final arguments = ModalRoute.of(context).settings.arguments as EditImageListArguments;
-    _filter = arguments.filter;
-    _contactsByIds = arguments.contactsByIds;
-
-    _selectableListCubit.setFilter(_filter);
-    _productSubjectsByIdsBloc.setCurrentIds(_filter.subjectIds);
-    _imageListActionCubit = ImageListActionCubit(filter: _filter);
-  }
-
   Widget _buildTitle() {
     final widgets = <Widget>[];
-    String trailing = null;
+    String? trailing;
 
-    switch (_filter.contactIds.length) {
+    switch (widget.filter.contactIds.length) {
       case 0:
         break;
       case 1:
-        final contactId = _filter.contactIds[0];
-        if (!_contactsByIds.containsKey(contactId)) {
+        final contactId = widget.filter.contactIds[0];
+        if (!widget.contactsByIds.containsKey(contactId)) {
           widgets.add(Text(plural('EditImageListScreen.title.profiles', 1)));
         } else {
-          widgets.add(ContactTitleWidget(contact: _contactsByIds[contactId]));
+          widgets.add(ContactTitleWidget(contact: widget.contactsByIds[contactId]!));
         }
         trailing = tr('EditImageListScreen.title.allImages');
         break;
       default:
-        widgets.add(Text(plural('EditImageListScreen.title.profiles', _filter.contactIds.length)));
+        widgets.add(Text(plural('EditImageListScreen.title.profiles', widget.filter.contactIds.length)));
         trailing = tr('EditImageListScreen.title.allImages');
     }
 
-    if (_filter.unsorted) {
+    if (widget.filter.unsorted) {
       trailing = tr('MyProfileWidget.sortImportedMedia');
     } else {
-      switch (_filter.albumIds.length) {
+      switch (widget.filter.albumIds.length) {
         case 0:
           break;
         case 1:
           trailing = plural('EditImageListScreen.title.albums', 1); // TODO: Show the album title.
           break;
         default:
-          trailing = plural('EditImageListScreen.title.profiles', _filter.contactIds.length);
+          trailing = plural('EditImageListScreen.title.profiles', widget.filter.contactIds.length);
       }
     }
 
@@ -122,35 +135,36 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
       widgets.add(Text(trailing));
     }
 
-    switch (_filter.purposeIds.length) {
+    switch (widget.filter.purposeIds.length) {
       case 0:
         break;
       case 1:
         widgets.add(
-          StreamBuilder(
+          StreamBuilder<ModelListByIdsState<ProductSubject>>(
             stream: _productSubjectsByIdsBloc.outState,
-            builder: (context, snapshot) => _getAlbumPurposeWidget(_filter.purposeIds[0], snapshot.data),
+            builder: (context, snapshot) => _getAlbumPurposeWidget(widget.filter.purposeIds[0], snapshot.data),
           ),
         );
         break;
       default:
-        widgets.add(Text(plural('EditImageListScreen.title.purposes', _filter.purposeIds.length)));
+        widgets.add(Text(plural('EditImageListScreen.title.purposes', widget.filter.purposeIds.length)));
     }
 
-    switch (_filter.subjectIds.length) {
+    switch (widget.filter.subjectIds.length) {
       case 0:
         break;
       case 1:
         widgets.add(
-          StreamBuilder(
+          StreamBuilder<ModelListByIdsState<ProductSubject>>(
             stream: _productSubjectsByIdsBloc.outState,
-            initialData: _productSubjectsByIdsBloc.initialState,
-            builder: (context, snapshot) => _getProductSubjectTitleWidget(snapshot.data),
+            builder: (context, snapshot) => _getProductSubjectTitleWidget(
+              snapshot.data ?? _productSubjectsByIdsBloc.initialState,
+            ),
           ),
         );
         break;
       default:
-        widgets.add(Text(plural('EditImageListScreen.title.subjects', _filter.purposeIds.length)));
+        widgets.add(Text(plural('EditImageListScreen.title.subjects', widget.filter.purposeIds.length)));
     }
 
     if (widgets.isEmpty) {
@@ -167,10 +181,13 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
     );
   }
 
-  Widget _getAlbumPurposeWidget(int purposeId, ModelListByIdsState<ProductSubject> subjectsState) {
+  Widget _getAlbumPurposeWidget(
+    int purposeId,
+    ModelListByIdsState<ProductSubject>? subjectsState,
+  ) {
     final key = subjectsState == null || subjectsState.objects.length != 1
         ? purposeId.toString() + '_asTheOnly'
-        : ImageAlbumPurpose.getTitleKey(purposeId, subjectsState.objects[0]);
+        : ImageAlbumPurpose.requireTitleKey(purposeId, subjectsState.objects[0]);
 
     return Text(tr('models.Image.purposes.' + key));
   }
@@ -184,7 +201,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
   }
 
   Widget _buildActionToolbar() {
-    if (_filter.unsorted) {
+    if (widget.filter.unsorted) {
       return UnsortedImageListToolbar(
         imageListActionCubit: _imageListActionCubit,
         selectableListCubit: _selectableListCubit,
@@ -208,16 +225,4 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
     _selectableListSubscription.cancel();
     super.dispose();
   }
-}
-
-class EditImageListArguments {
-  final EditImageFilter filter;
-  final Map<int, EditableContact> contactsByIds;
-
-  EditImageListArguments({
-    @required this.filter,
-    Map<int, EditableContact> contactsByIds, // Nullable
-  }) :
-      this.contactsByIds = contactsByIds ?? Map<int, EditableContact>()
-  ;
 }

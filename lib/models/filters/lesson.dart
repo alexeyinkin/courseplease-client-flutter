@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'package:meta/meta.dart';
 import 'abstract.dart';
 
 class LessonFilter extends AbstractFilter {
-  final int subjectId;
-  final int teacherId; // Nullable.
+  final int? subjectId;
+  final int? teacherId;
 
   LessonFilter({
-    @required this.subjectId,
+    this.subjectId,
     this.teacherId,
   });
 

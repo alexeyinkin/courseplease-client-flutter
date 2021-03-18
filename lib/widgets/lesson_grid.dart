@@ -3,6 +3,7 @@ import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/duration.dart';
+import 'package:courseplease/widgets/error/id.dart';
 import 'package:flutter/rendering.dart';
 import '../screens/lesson/lesson.dart';
 import '../models/filters/lesson.dart';
@@ -16,13 +17,13 @@ class LessonGrid extends StatefulWidget {
   LessonFilter filter;
   final Axis scrollDirection;
   final int crossAxisCount;
-  Widget titleIfNotEmpty; // Nullable
+  Widget? titleIfNotEmpty;
 
   LessonGrid({
-    @required this.filter,
-    @required this.scrollDirection,
-    @required this.crossAxisCount,
-    this.titleIfNotEmpty, // Nullable
+    required this.filter,
+    required this.scrollDirection,
+    required this.crossAxisCount,
+    this.titleIfNotEmpty,
   }) : super(key: ValueKey(filter.subjectId));
 
   @override
@@ -84,19 +85,17 @@ class LessonGridState extends State<LessonGrid> {
   }
 
   void _handleTap(Lesson lesson, int index) {
-    Navigator.of(context).pushNamed(
-      LessonScreen.routeName,
-      arguments: LessonScreenArguments(
-        id: lesson.id,
-        autoplay: true, // TODO: No autoplay if tapped the title and not the cover.
-      ),
+    LessonScreen.show(
+      context: context,
+      lessonId: lesson.id,
+      autoplay: true, // TODO: No autoplay if tapped the title and not the cover.
     );
   }
 }
 
 class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
   LessonTile({
-    @required TileCreationRequest<int, Lesson, LessonFilter> request,
+    required TileCreationRequest<int, Lesson, LessonFilter> request,
   }) : super(
     request: request,
   );
@@ -179,8 +178,11 @@ class LessonTileState extends AbstractObjectTileState<int, Lesson, LessonFilter>
   }
 
   Widget _getTextCoverContent() {
+    final url = _getUrl();
+    if (url == null) return IdErrorWidget(object: widget.object);
+
     return CachedNetworkImage(
-      imageUrl: _getUrl(),
+      imageUrl: url,
       fit: BoxFit.cover,
     );
   }
@@ -197,7 +199,9 @@ class LessonTileState extends AbstractObjectTileState<int, Lesson, LessonFilter>
     widget.onTap();
   }
 
-  String _getUrl() {
-    return 'https://courseplease.com' + widget.object.coverUrls['1920x1080'];
+  String? _getUrl() {
+    final urlPath = widget.object.coverUrls['1920x1080'];
+    if (urlPath == null) return null;
+    return 'https://courseplease.com' + urlPath;
   }
 }

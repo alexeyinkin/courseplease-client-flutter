@@ -7,7 +7,7 @@ import 'package:get_it/get_it.dart';
 class ProductSubjectRepository extends AbstractRepository<int, ProductSubject> {
   static const _entitiesName = 'gallery/subjects';
   final _client = GetIt.instance.get<ApiClient>();
-  Future<List<ProductSubject>> _allFuture; // Nullable
+  Future<List<ProductSubject>>? _allFuture;
 
   Future<List<ProductSubject>> loadAll() {
     if (_allFuture == null) {
@@ -15,10 +15,10 @@ class ProductSubjectRepository extends AbstractRepository<int, ProductSubject> {
           .getAllEntities(_entitiesName)
           .then((response) => _denormalize(response.data));
 
-      _allFuture.then((_) => {_allFuture = null});
+      _allFuture!.then((_) => {_allFuture = null});
     }
 
-    return _allFuture;
+    return _allFuture!;
   }
 
   List<ProductSubject> _denormalize(ListLoadResult<Map<String, dynamic>> mapResult) {
@@ -32,7 +32,7 @@ class ProductSubjectRepository extends AbstractRepository<int, ProductSubject> {
   }
 
   @override
-  Future<ProductSubject> loadById(int id) {
+  Future<ProductSubject?> loadById(int id) {
     return loadAll().then((objects) => whereId(objects, id));
   }
 

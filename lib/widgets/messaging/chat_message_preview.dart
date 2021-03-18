@@ -1,4 +1,3 @@
-import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/user.dart';
@@ -15,9 +14,9 @@ class ChatMessagePreviewWidget extends StatelessWidget {
   final User currentUser;
 
   ChatMessagePreviewWidget({
-    @required this.chat,
-    @required this.message,
-    @required this.currentUser,
+    required this.chat,
+    required this.message,
+    required this.currentUser,
   });
 
   @override
@@ -30,7 +29,7 @@ class ChatMessagePreviewWidget extends StatelessWidget {
     );
   }
 
-  User _getSenderUser() { // Return Nullable
+  User? _getSenderUser() {
     if (message.senderUserId == null) return null;
     if (message.senderUserId == currentUser.id) return currentUser;
 
@@ -43,11 +42,13 @@ class ChatMessagePreviewWidget extends StatelessWidget {
     throw Exception('User not found among chat participants: ' + message.senderUserId.toString());
   }
 
-  Widget _getPreview({User senderUser, bool mineAndUnread}) {
-    final mine = senderUser != null && senderUser.id == currentUser.id;
+  Widget _getPreview({
+    required User? senderUser,
+    required bool mineAndUnread,
+  }) {
     final children = <Widget>[];
 
-    if (mine) {
+    if (senderUser != null && senderUser.id == currentUser.id) {
       children.add(UserpicWidget(user: senderUser, size: 30));
     }
     children.add(
@@ -106,7 +107,7 @@ class _MineAndUnreadContainer extends StatelessWidget {
   final Widget child;
 
   _MineAndUnreadContainer({
-    @required this.child,
+    required this.child,
   });
 
   @override

@@ -22,21 +22,30 @@ class Money {
     return Money(Map<String, double>());
   }
 
+  factory Money.fromNullableMap(Map<String?, double?> nullableMap) {
+    final map = Map<String, double>();
+
+    for (final entry in nullableMap.entries) {
+      if (entry.key == null || entry.value == null) continue;
+      map[entry.key!] = entry.value!;
+    }
+
+    return Money(map);
+  }
+
   String toString() {
     final parts = <String>[];
 
-    for (final cur in map.keys) {
-      final value = map[cur];
-      var valueString;
-
-      valueString = formatMoneyValue(value);
-      parts.add(valueString + ' ' + curToSymbol(cur));
+    for (final entry in map.entries) {
+      parts.add(formatMoneyValue(entry.value) + ' ' + curToSymbol(entry.key));
     }
 
     return parts.join(' + ');
   }
 
-  String formatPer(String per) {
+  String formatPer(String? per) {
+    if (per == null) return toString();
+
     final unit = tr('util.units.' + per);
     return tr('util.amountPerUnit', namedArgs: {'amount': toString(), 'unit': unit});
   }
@@ -66,11 +75,11 @@ class Money {
     return cur;
   }
 
-  String getFirstKey() { // Nullable
+  String? getFirstKey() {
     return map.isEmpty ? null : map.keys.first;
   }
 
-  double getFirstValue() { // Nullable
+  double? getFirstValue() {
     return map.isEmpty ? null : map[map.keys.first];
   }
 

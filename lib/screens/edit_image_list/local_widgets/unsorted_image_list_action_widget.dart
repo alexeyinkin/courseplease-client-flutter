@@ -12,7 +12,7 @@ import 'package:courseplease/models/image.dart';
 import 'package:courseplease/screens/edit_image_list/local_blocs/image_list_action.dart';
 import 'package:courseplease/widgets/list_action.dart';
 
-class UnsortedImageListActionWidget extends ListActionWidget<
+class UnsortedImageListActionWidget extends AbstractListActionWidget<
     int,
     ImageEntity,
     EditImageFilter,
@@ -20,8 +20,8 @@ class UnsortedImageListActionWidget extends ListActionWidget<
     ImageListActionCubit
 > {
   UnsortedImageListActionWidget({
-    @required ImageListActionCubit imageListActionCubit,
-    @required SelectableListCubit<int, EditImageFilter> selectableListCubit,
+    required ImageListActionCubit imageListActionCubit,
+    required SelectableListCubit<int, EditImageFilter> selectableListCubit,
   }) : super(
     listActionCubit: imageListActionCubit,
     selectableListCubit: selectableListCubit,
@@ -29,9 +29,9 @@ class UnsortedImageListActionWidget extends ListActionWidget<
 
   @override
   Widget buildWithStates({
-    BuildContext context,
-    ListActionCubitState<MediaSortActionEnum> listActionCubitState,
-    SelectableListState<int, EditImageFilter> selectableListState,
+    required BuildContext context,
+    required ListActionCubitState<MediaSortActionEnum> listActionCubitState,
+    required SelectableListState<int, EditImageFilter> selectableListState,
   }) {
     if (!selectableListState.selected) {
       return Text(tr('EditImageListScreen.selectImages'));
@@ -71,7 +71,10 @@ class UnsortedImageListActionWidget extends ListActionWidget<
     }
   }
 
-  void _showPublishDialog(BuildContext context, SelectableListState selectableListState) async {
+  void _showPublishDialog(
+    BuildContext context,
+    SelectableListState<int, EditImageFilter> selectableListState,
+  ) async {
     MediaDestinationDialog.show<int, ImageEntity, EditImageFilter, EditorImageRepository>(
       context: context,
       selectableListState: selectableListState,
@@ -86,26 +89,33 @@ class UnsortedImageListActionWidget extends ListActionWidget<
   }
 
   void _onMoveActionPressed(
-      BuildContext context,
-      SelectableListState selectableListState,
-      MediaDestinationState mediaDestinationState,
-      ) async {
+    BuildContext context,
+    SelectableListState<int, EditImageFilter> selectableListState,
+    MediaDestinationState mediaDestinationState,
+  ) async {
     await listActionCubit.move(
       selectableListState,
-      EditImageFilter(
-        purposeIds: [mediaDestinationState.purposeId],
-        subjectIds: [mediaDestinationState.subjectId],
-      ),
+      _mediaDestinationStateToSetFilter(mediaDestinationState),
     );
     _closeDialog(context);
     // TODO: Show a confirmation.
+  }
+
+  // TODO: Move to a common superclass with SortedImageListActionWidget
+  EditImageFilter _mediaDestinationStateToSetFilter(MediaDestinationState state) {
+    return EditImageFilter(
+      purposeIds: state.purposeId == null ? [] : [state.purposeId!],
+      subjectIds: state.subjectId == null ? [] : [state.subjectId!],
+    );
   }
 
   void _closeDialog(BuildContext context) {
     Navigator.of(context, rootNavigator: true).pop();
   }
 
-  void _onUnlinkPressed(SelectableListState selectableListState) async {
+  void _onUnlinkPressed(
+    SelectableListState<int, EditImageFilter> selectableListState,
+  ) async {
     await listActionCubit.unlink(selectableListState);
     // TODO: Show a confirmation.
   }

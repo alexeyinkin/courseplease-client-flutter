@@ -10,56 +10,57 @@ import 'bloc.dart';
 class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
   final AbstractRepository<I, O> _repository;
 
-  List<O> _allObjectsInOrder; // Unused?
-  final _objectsByIds = Map<I, O>(); // O or Null.
-
-  Future<List<O>> _allObjectsFuture; // Nullable.
-  final _futuresByIds = Map<I, Future>(); // Future of object or list.
+  final _objectsByIds = Map<I, O>();
+  final _triedIds = Map<I, void>();
+  final _failedIds = Map<I, void>();
+  bool _triedAll = false;
 
   final _outObjectsByIdsController = BehaviorSubject<Map<I, O>>();
   Stream<Map<I, O>> get outObjectsByIds => _outObjectsByIdsController.stream;
 
+  final _outStateController = BehaviorSubject<ModelCacheState<I, O>>();
+  Stream<ModelCacheState<I, O>> get outState => _outStateController.stream;
+
   ModelCacheBloc({
-    @required AbstractRepository<I, O> repository,
+    required AbstractRepository<I, O> repository,
   }) : _repository = repository {
     print('Creating ModelCacheBloc for ' + _typeOf<O>().toString());
   }
 
   void loadAllIfNot() {
-    if (_allObjectsInOrder != null || _allObjectsFuture != null) return;
+    if (_triedAll) return;
     loadAll();
   }
 
-  void loadAll() {
-    this._allObjectsFuture = _repository.loadAll();
-    this._allObjectsFuture.then(_handleLoadedAll);
-  }
+  void loadAll() async {
+    _triedAll = true;
 
-  void _handleLoadedAll(List<O> objects) {
-    _allObjectsInOrder = objects;
-    _allObjectsFuture = null;
-    _addSuccessfulObjects(objects);
+    final all = await _repository.loadAll();
+    _addSuccessfulObjects(all);
     pushOutput();
   }
 
   void loadByIdIfNot(I id) {
-    if (_objectsByIds.containsKey(id) || _futuresByIds.containsKey(id)) return;
+    if (_triedAll || _triedIds.containsKey(id)) return;
     _loadById(id);
   }
 
-  void _loadById(I id) {
-    final future = _repository.loadById(id);
-    _futuresByIds[id] = future;
+  void _loadById(I id) async {
+    _triedIds[id] = true;
 
-    future.then(
-      (object) => _handleLoaded([id], [object]),
-      onError: (_, __) => _handleError([id]),
-    );
+    final object = await _repository.loadById(id);
+
+    if (object == null) {
+      _addFailedObject(id);
+    } else {
+      addSuccessfulObject(object);
+    }
+    pushOutput();
   }
 
   void _handleLoaded(List<I> ids, List<O> objects) {
     _addSuccessfulObjects(objects);
-    _addFailedObjects(_getMissingIds(ids));
+    _addFailedObjects(_getNotLoadedIds(ids));
     pushOutput();
   }
 
@@ -72,60 +73,80 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
   @protected
   void addSuccessfulObject(O object) {
     _objectsByIds[object.id] = object;
-    _futuresByIds.remove(object.id);
   }
 
   void _addFailedObjects(List<I> ids) {
     for (final id in ids) {
-      _objectsByIds[id] = null;
-      _futuresByIds.remove(id);
+      _addFailedObject(id);
     }
   }
 
+  void _addFailedObject(I id) {
+    _failedIds[id] = true;
+  }
+
   void loadListIfNot(List<I> ids) {
-    final idsToLoad = _getMissingIds(ids);
+    final idsToLoad = _getNotTriedIds(ids);
     if (idsToLoad.isEmpty) return;
     _loadList(idsToLoad);
   }
 
-  void _loadList(List<I> ids) {
-    final future = _repository.loadByIds(ids);
-
-    for (final id in ids) {
-      _futuresByIds[id] = future;
-    }
-
-    future.then(
-      (objects) => _handleLoaded(ids, objects),
-      onError: (_, __) => _handleError(ids),
-    );
+  void _loadList(List<I> ids) async {
+    final objects = await _repository.loadByIds(ids);
+    _handleLoaded(ids, objects);
   }
 
-  List<I> _getMissingIds(List<I> ids) {
-    final result = <I>[];
+  List<I> _getNotTriedIds(List<I> ids) {
+    if (_triedAll) return [];
 
+    final result = <I>[];
     for (final id in ids) {
-      if (_objectsByIds.containsKey(id) || _futuresByIds.containsKey(id)) continue;
+      if (_triedIds.containsKey(id)) continue;
       result.add(id);
     }
+    return result;
+  }
 
+  List<I> _getNotLoadedIds(List<I> ids) {
+    final result = <I>[];
+    for (final id in ids) {
+      if (_objectsByIds.containsKey(id)) continue;
+      result.add(id);
+    }
     return result;
   }
 
   @protected
   void pushOutput() {
     _outObjectsByIdsController.sink.add(UnmodifiableMapView<I, O>(_objectsByIds));
+    _outStateController.sink.add(_createState());
   }
 
-  void _handleError(List<I> ids) {
-    _addFailedObjects(ids);
-    pushOutput();
+  ModelCacheState<I, O> _createState() {
+    return ModelCacheState<I, O>(
+      objectsByIds: _objectsByIds,
+      triedIds: _triedIds,
+      failedIds: _failedIds,
+    );
   }
 
   @override
   void dispose() {
+    _outStateController.close();
     _outObjectsByIdsController.close();
   }
 
   Type _typeOf<T>() => T;
+}
+
+class ModelCacheState<I, O extends WithId<I>> {
+  final Map<I, O> objectsByIds;
+  final Map<I, void> triedIds;
+  final Map<I, void> failedIds;
+
+  ModelCacheState({
+    required this.objectsByIds,
+    required this.triedIds,
+    required this.failedIds,
+  });
 }

@@ -9,16 +9,16 @@ import 'package:courseplease/widgets/list_action.dart';
 
 /// Shows a button to synchronize one or all profiles
 /// if it is applicable to the current filter.
-class ConditionalSynchronizeProfilesButton extends ListActionWidget<
-    int,
-    ImageEntity,
-    EditImageFilter,
-    MediaSortActionEnum,
-    ImageListActionCubit
+class ConditionalSynchronizeProfilesButton extends AbstractListActionWidget<
+  int,
+  ImageEntity,
+  EditImageFilter,
+  MediaSortActionEnum,
+  ImageListActionCubit
 > {
   ConditionalSynchronizeProfilesButton({
-    @required ImageListActionCubit imageListActionCubit,
-    @required SelectableListCubit<int, EditImageFilter> selectableListCubit,
+    required ImageListActionCubit imageListActionCubit,
+    required SelectableListCubit<int, EditImageFilter> selectableListCubit,
   }) : super(
     listActionCubit: imageListActionCubit,
     selectableListCubit: selectableListCubit,
@@ -26,9 +26,9 @@ class ConditionalSynchronizeProfilesButton extends ListActionWidget<
 
   @override
   Widget buildWithStates({
-    BuildContext context,
-    ListActionCubitState<MediaSortActionEnum> listActionCubitState,
-    SelectableListState<int, EditImageFilter> selectableListState,
+    required BuildContext context,
+    required ListActionCubitState<MediaSortActionEnum> listActionCubitState,
+    required SelectableListState<int, EditImageFilter> selectableListState,
   }) {
     if (selectableListState.filter == null) return Container();
 
@@ -56,8 +56,8 @@ class _SynchronizeProfilesButton extends StatelessWidget {
   final ListActionCubitState<MediaSortActionEnum> listActionCubitState;
 
   _SynchronizeProfilesButton({
-    @required this.imageListActionCubit,
-    @required this.listActionCubitState,
+    required this.imageListActionCubit,
+    required this.listActionCubitState,
   });
 
   @override
@@ -80,9 +80,9 @@ class _SynchronizeProfileButton extends StatelessWidget {
   final int contactId;
 
   _SynchronizeProfileButton({
-    @required this.imageListActionCubit,
-    @required this.listActionCubitState,
-    @required this.contactId,
+    required this.imageListActionCubit,
+    required this.listActionCubitState,
+    required this.contactId,
   });
 
   @override

@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:meta/meta.dart';
 import 'auth_provider.dart';
 
 class FacebookAuthProvider extends AuthProvider {
@@ -8,9 +7,9 @@ class FacebookAuthProvider extends AuthProvider {
   static const version = '9.0';
 
   FacebookAuthProvider({
-    @required int id,
-    @required String redirectHostAndPort,
-    @required this.appId,
+    required int id,
+    required String redirectHostAndPort,
+    required this.appId,
   }) : super(
     id: id,
     redirectHostAndPort: redirectHostAndPort,

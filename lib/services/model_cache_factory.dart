@@ -19,7 +19,7 @@ class ModelCacheCache {
       _map[type] = _factory.create<I, O, R>();
     }
 
-    return _map[type];
+    return _map[type] as ModelCacheBloc<I, O>;
   }
 
   ModelWithChildrenCacheBloc<I, O> getOrCreateWithChildren<
@@ -33,7 +33,7 @@ class ModelCacheCache {
       _map[type] = _factory.createWithChildren<I, O, R>();
     }
 
-    return _map[type];
+    return _map[type] as ModelWithChildrenCacheBloc<I, O>;
   }
 
   Type _typeOf<T>() => T;

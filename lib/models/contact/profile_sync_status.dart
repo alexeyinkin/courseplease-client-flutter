@@ -1,12 +1,10 @@
-import 'package:meta/meta.dart';
-
 class ProfileSyncStatus {
   final int runStatus;
-  final DateTime dateTimeUpdate; // Nullable.
+  final DateTime? dateTimeUpdate;
 
   ProfileSyncStatus({
-    @required this.runStatus,
-    @required this.dateTimeUpdate,
+    required this.runStatus,
+    required this.dateTimeUpdate,
   });
 
   factory ProfileSyncStatus.fromMap(Map<String, dynamic> map) {

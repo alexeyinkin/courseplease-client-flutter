@@ -57,6 +57,12 @@ EditIntegrationScreen:
         synchronizeNow:         'Synchronize Now'
         viewImages:             'View Images'
 
+EditProfileScreen:
+    firstName:      'First Name'
+    middleName:     'Middle Name'
+    lastName:       'Last Name'
+    addLanguage:    'Add a Language'
+
 EditTeacherSubjectScreen:
     tabs:
         prices:
@@ -165,6 +171,10 @@ SelectProductSubjectScreen:
 SignInWidget:
     #Title is replaced manually in AuthProviderWidget
     continueWith:   'Continue with {@providerTitle}'
+
+TeacherScreen:
+    notCurrentlyTeaching:       'Not currently teaching.'
+    notCurrentlyTeachingThis:   'Not currently teaching this subject. Try other categories or teachers.'
 
 TeachersTabWidget:
     title:          'Teachers'

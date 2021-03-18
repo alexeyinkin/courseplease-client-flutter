@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 class IconTextWidget extends StatelessWidget {
   final StatusIconEnum iconName;
-  final Icon icon; // Nullable.
+  final Icon? icon;
   final String text;
-  final Widget trailing; // Nullable.
+  final Widget? trailing;
 
   IconTextWidget({
-    @required this.iconName,
+    required this.iconName,
     this.icon,
-    @required this.text,
+    required this.text,
     this.trailing,
   });
 
@@ -22,7 +22,7 @@ class IconTextWidget extends StatelessWidget {
     ];
 
     if (trailing != null) {
-      children.add(trailing);
+      children.add(trailing!);
     }
 
     return Row(
@@ -31,7 +31,7 @@ class IconTextWidget extends StatelessWidget {
   }
 
   Widget _getIcon() {
-    if (icon != null) return icon;
+    if (icon != null) return icon!;
 
     switch (iconName) {
       case StatusIconEnum.ok:

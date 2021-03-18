@@ -17,13 +17,13 @@ class ObjectGrid<
   final SliverGridDelegate gridDelegate;
 
   ObjectGrid({
-    @required F filter,
-    @required TileFactory<I, O, F, T> tileFactory,
-    TileCallback<I, O> onTap, // Nullable
-    @required Axis scrollDirection,
-    @required this.gridDelegate,
-    Widget titleIfNotEmpty, // Nullable
-    SelectableListCubit<I, F> listStateCubit, // Nullable
+    required F filter,
+    required TileFactory<I, O, F, T> tileFactory,
+    TileCallback<I, O>? onTap,
+    required Axis scrollDirection,
+    required this.gridDelegate,
+    Widget? titleIfNotEmpty,
+    SelectableListCubit<I, F>? listStateCubit,
   }) : super(
     filter: filter,
     tileFactory: tileFactory,
@@ -50,7 +50,7 @@ class ObjectGridState<
   Widget getListViewWidget(
     ModelListState<I, O> modelListState,
     AbstractFilteredModelListBloc listBloc,
-    SelectableListState<I, F> selectableListState,
+    SelectableListState<I, F>? selectableListState,
   ) {
     return GridView.builder(
       controller:       _scrollController,

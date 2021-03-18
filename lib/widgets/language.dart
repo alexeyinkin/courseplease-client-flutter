@@ -1,5 +1,5 @@
 import 'package:courseplease/utils/language.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 import 'flag_icon.dart';
 
@@ -7,7 +7,7 @@ class LanguageWidget extends StatelessWidget {
   final String lang;
 
   LanguageWidget({
-    @required this.lang,
+    required this.lang,
   });
 
   @override

@@ -6,8 +6,8 @@ class UserpicWidget extends StatelessWidget {
   final double size;
 
   UserpicWidget({
-    @required this.user,
-    @required this.size,
+    required this.user,
+    required this.size,
   });
 
   @override
@@ -29,10 +29,10 @@ class UserpicWidget extends StatelessWidget {
 
 class UserNameWidget extends StatelessWidget {
   final User user;
-  final TextStyle style; // Nullable
+  final TextStyle? style;
 
   UserNameWidget({
-    @required this.user,
+    required this.user,
     this.style,
   });
 

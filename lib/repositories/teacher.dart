@@ -10,7 +10,7 @@ class TeacherRepository extends AbstractFilteredRepository<int, Teacher, Teacher
   final _client = GetIt.instance.get<ApiClient>();
 
   @override
-  Future<ListLoadResult<Teacher>> loadWithFilter(TeacherFilter filter, String pageToken) {
+  Future<ListLoadResult<Teacher>> loadWithFilter(TeacherFilter filter, String? pageToken) {
     return _client
         .getEntities(name: _entitiesName, filter: filter, pageToken: pageToken)
         .then((response) => _denormalizeList(response.data));
@@ -27,14 +27,13 @@ class TeacherRepository extends AbstractFilteredRepository<int, Teacher, Teacher
   }
 
   @override
-  Future<Teacher> loadById(int id) {
+  Future<Teacher?> loadById(int id) {
     return _client
         .getEntity(_entitiesName, id)
-        .then((response) => _denormalizeOne(response.data));
+        .then((response) => _denormalizeOneOrNull(response.data));
   }
 
-  // Nullable
-  Teacher _denormalizeOne(Map<String, dynamic> mapResult) {
+  Teacher? _denormalizeOneOrNull(Map<String, dynamic>? mapResult) {
     if (mapResult == null) return null;
     return Teacher.fromMap(mapResult);
   }

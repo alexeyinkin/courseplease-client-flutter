@@ -22,12 +22,12 @@ class TileCreationRequest<
   final ValueChanged<bool> onSelected;
 
   TileCreationRequest({
-    @required this.object,
-    @required this.index,
-    @required this.filter,
-    @required this.onTap,
-    @required this.selected,
-    @required this.onSelected,
+    required this.object,
+    required this.index,
+    required this.filter,
+    required this.onTap,
+    required this.selected,
+    required this.onSelected,
   });
 }
 
@@ -49,7 +49,7 @@ class AbstractObjectTile<I, O extends WithId<I>, F extends AbstractFilter> exten
   final List<Widget> overlays;
 
   AbstractObjectTile({
-    @required TileCreationRequest<I, O, F> request,
+    required TileCreationRequest<I, O, F> request,
     this.selectable = false,
     this.overlays = const <Widget>[],
   }) :
@@ -82,10 +82,17 @@ class AbstractObjectTileState<I, O extends WithId<I>, F extends AbstractFilter> 
       top: 0,
       right: 0,
       child: Checkbox(
-        onChanged: widget.onSelected,
+        onChanged: _onSelected,
         value: widget.selected,
         activeColor: Colors.black,
       ),
     );
+  }
+
+  void _onSelected(bool? value) {
+    if (value == null) {
+      throw Exception('Never happens as null is for tristate checkboxes only.');
+    }
+    widget.onSelected(value);
   }
 }

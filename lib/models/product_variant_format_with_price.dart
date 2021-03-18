@@ -1,19 +1,18 @@
-import 'package:meta/meta.dart';
 import 'money.dart';
 
 class ProductVariantFormatWithPrice {
   final String intName;
   final String title;
   bool enabled;
-  final Money minPrice; // Nullable
-  final Money maxPrice; // Nullable
+  final Money? minPrice;
+  final Money? maxPrice;
 
   ProductVariantFormatWithPrice({
-    @required this.intName,
-    @required this.title,
-    @required this.enabled,
-    @required this.minPrice,
-    @required this.maxPrice,
+    required this.intName,
+    required this.title,
+    required this.enabled,
+    required this.minPrice,
+    required this.maxPrice,
   });
 
   factory ProductVariantFormatWithPrice.fromMap(Map<String, dynamic> map) {

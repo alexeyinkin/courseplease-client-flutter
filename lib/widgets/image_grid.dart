@@ -6,6 +6,7 @@ import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
+import 'package:courseplease/widgets/error/id.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -21,15 +22,15 @@ abstract class AbstractImageGrid<F extends AbstractFilter, R extends AbstractIma
   final F filter;
   final Axis scrollDirection;
   final SliverGridDelegate gridDelegate;
-  final Widget titleIfNotEmpty; // Nullable.
-  final SelectableListCubit<int, F> listStateCubit; // Nullable.
+  final Widget? titleIfNotEmpty;
+  final SelectableListCubit<int, F>? listStateCubit;
   final bool showStatusOverlay;
   final bool showMappingsOverlay;
 
   AbstractImageGrid({
-    @required this.filter,
-    @required this.scrollDirection,
-    @required this.gridDelegate,
+    required this.filter,
+    required this.scrollDirection,
+    required this.gridDelegate,
     this.titleIfNotEmpty,
     this.listStateCubit,
     this.showStatusOverlay = false,
@@ -41,7 +42,7 @@ abstract class AbstractImageGrid<F extends AbstractFilter, R extends AbstractIma
   }
 }
 
-class AbstractImageGridState<F extends AbstractFilter, R extends AbstractImageRepository<F>> extends State<AbstractImageGrid> {
+class AbstractImageGridState<F extends AbstractFilter, R extends AbstractImageRepository<F>> extends State<AbstractImageGrid<F, R>> {
   @override
   Widget build(BuildContext context) {
     return widget.isFilterValid(widget.filter)
@@ -98,7 +99,7 @@ class AbstractImageGridState<F extends AbstractFilter, R extends AbstractImageRe
 
 class ImageTile<F extends AbstractFilter> extends AbstractObjectTile<int, ImageEntity, F> {
   ImageTile({
-    @required TileCreationRequest<int, ImageEntity, F> request,
+    required TileCreationRequest<int, ImageEntity, F> request,
     bool selectable = false,
     List<Widget> overlays = const <Widget>[],
   }) : super(
@@ -120,14 +121,7 @@ class ImageTileState<F extends AbstractFilter> extends AbstractObjectTileState<i
         tag: 'image_' + widget.filter.toString() + '_' + widget.object.id.toString(),
         child: Stack(
           children: [
-            Positioned.fill(
-              child: CachedNetworkImage(
-                imageUrl: _getUrl(),
-                errorWidget: (context, url, error) => Row(children:[Icon(Icons.error), Text(widget.object.id.toString())]),
-                fadeInDuration: Duration(),
-                fit: BoxFit.cover,
-              ),
-            ),
+            _getImageOverlay(),
             Positioned.fill(child: Center(child: Text(widget.object.id.toString()))), // TODO: Delete
             getCheckboxOverlay(),
             ...widget.overlays,
@@ -137,17 +131,37 @@ class ImageTileState<F extends AbstractFilter> extends AbstractObjectTileState<i
     );
   }
 
-  String _getUrl() {
-    return 'https://courseplease.com' + widget.object.urls['300x300'];
+  Widget _getImageOverlay() {
+    final imageUrl = _getUrl();
+
+    if (imageUrl == null) {
+      return IdErrorWidget(object: widget.object);
+    }
+
+    return Positioned.fill(
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        errorWidget: (context, url, error) => IdErrorWidget(object: widget.object),
+        fadeInDuration: Duration(),
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+
+  String? _getUrl() {
+    final urlPath = widget.object.urls['300x300'];
+    if (urlPath == null) return null;
+    return 'https://courseplease.com' + urlPath;
   }
 }
 
+// TODO: Rename and move to a separate file
 class ViewImageGrid extends AbstractImageGrid<ViewImageFilter, GalleryImageRepository> {
   ViewImageGrid({
-    @required ViewImageFilter filter,
-    @required Axis scrollDirection,
-    @required SliverGridDelegate gridDelegate,
-    Widget titleIfNotEmpty, // Nullable
+    required ViewImageFilter filter,
+    required Axis scrollDirection,
+    required SliverGridDelegate gridDelegate,
+    Widget? titleIfNotEmpty,
     bool showMappingsOverlay = false,
   }) : super(
     filter: filter,
@@ -169,25 +183,24 @@ class ViewImageGrid extends AbstractImageGrid<ViewImageFilter, GalleryImageRepos
 class ViewImageGridState extends AbstractImageGridState<ViewImageFilter, GalleryImageRepository> {
   @override
   void handleTap(ImageEntity image, int index) {
-    Navigator.of(context).pushNamed(
-      ViewImageLightboxScreen.routeName,
-      arguments: ImageLightboxArguments<ViewImageFilter>(
-        filter: widget.filter,
-        index: index,
-      ),
+    ViewImageLightboxScreenLauncher.show(
+      context: context,
+      filter: widget.filter,
+      initialIndex: index,
     );
   }
 }
 
+// TODO: Rename? and move to a separate file
 class FixedIdsImageGrid extends AbstractImageGrid<
   IdsSubsetFilter<int, ImageEntity>,
   AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
 > {
   FixedIdsImageGrid({
-    @required IdsSubsetFilter<int, ImageEntity> filter,
-    @required Axis scrollDirection,
-    @required SliverGridDelegate gridDelegate,
-    Widget titleIfNotEmpty, // Nullable
+    required IdsSubsetFilter<int, ImageEntity> filter,
+    required Axis scrollDirection,
+    required SliverGridDelegate gridDelegate,
+    Widget? titleIfNotEmpty,
     bool showMappingsOverlay = false,
   }) : super(
     filter: filter,
@@ -207,22 +220,21 @@ class _FixedIdsImageGridState extends AbstractImageGridState<
 > {
   @override
   void handleTap(ImageEntity image, int index) {
-    Navigator.of(context).pushNamed(
-      FixedIdsImageLightboxScreen.routeName,
-      arguments: ImageLightboxArguments<IdsSubsetFilter<int, ImageEntity>>(
-        filter: widget.filter,
-        index: index,
-      ),
+    ImageLightboxScreenLauncher.showWithTitles<IdsSubsetFilter<int, ImageEntity>, AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>>(
+      context: context,
+      filter: widget.filter,
+      initialIndex: index,
     );
   }
 }
 
+// TODO: Rename and move to a separate file
 class EditImageGrid extends AbstractImageGrid<EditImageFilter, EditorImageRepository> {
   EditImageGrid({
-    @required EditImageFilter filter,
-    @required Axis scrollDirection,
-    @required SliverGridDelegate gridDelegate,
-    SelectableListCubit<int, EditImageFilter> listStateCubit,
+    required EditImageFilter filter,
+    required Axis scrollDirection,
+    required SliverGridDelegate gridDelegate,
+    SelectableListCubit<int, EditImageFilter>? listStateCubit,
     bool showStatusOverlay = false,
     bool showMappingsOverlay = false,
   }) : super(
@@ -240,45 +252,49 @@ class EditImageGrid extends AbstractImageGrid<EditImageFilter, EditorImageReposi
 class EditImageGridState extends AbstractImageGridState<EditImageFilter, EditorImageRepository> {
   @override
   void handleTap(ImageEntity image, int index) {
-    Navigator.of(context).pushNamed(
-      EditImageLightboxScreen.routeName,
-      arguments: ImageLightboxArguments<EditImageFilter>(
-        filter: widget.filter,
-        index: index,
-      ),
+    ImageLightboxScreenLauncher.showWithTitles<EditImageFilter, EditorImageRepository>(
+      context: context,
+      filter: widget.filter,
+      initialIndex: index,
     );
   }
 }
 
+// TODO: Move to a separate file
 class ImageMappingsOverlay extends StatelessWidget {
   final ImageEntity object;
 
   ImageMappingsOverlay({
-    @required this.object,
+    required this.object,
   });
 
   @override
   Widget build(BuildContext context) {
     if (object.mappings.isEmpty) return Container();
+
+    final children = <Widget>[];
     final mapping = object.mappings[0];
 
-    final icon = mapping.classShortIntName == null
-        ? Container()
-        : padRight(AuthProviderIcon(name: mapping.classShortIntName, scale: .5));
+    if (mapping.classShortIntName != null) {
+      children.add(AuthProviderIcon(name: mapping.classShortIntName!, scale: .5));
+      children.add(SmallPadding());
+    }
 
     final textParts = <String>[];
 
     if (mapping.contactUsername != null) {
-      textParts.add(mapping.contactUsername);
+      textParts.add(mapping.contactUsername!);
     }
 
     if (mapping.dateTimeSyncFromRemote != null) {
       textParts.add(
         formatShortRoughDuration(
-          DateTime.now().difference(mapping.dateTimeSyncFromRemote),
+          DateTime.now().difference(mapping.dateTimeSyncFromRemote!),
         ),
       );
     }
+
+    children.add(Text(textParts.join(' · ')));
 
     return Positioned(
       left: 0,
@@ -286,28 +302,26 @@ class ImageMappingsOverlay extends StatelessWidget {
       bottom: 0,
       child: ImageOverlay(
         child: Row(
-          children: [
-            icon,
-            Text(textParts.join(' · ')),
-          ],
+          children: children,
         ),
       ),
     );
   }
 }
 
+// TODO: Move to a separate file
 class ImageStatusOverlay extends StatelessWidget {
   final ImageEntity object;
 
   ImageStatusOverlay({
-    @required this.object,
+    required this.object,
   });
 
   @override
   Widget build(BuildContext context) {
-    Widget icon = null;
-    String text = null;
-    Color overrideOverlayColor = null;
+    Widget? icon;
+    String? text;
+    Color? overrideOverlayColor;
 
     switch (object.status) {
       case ImageStatus.orphan:
@@ -365,6 +379,7 @@ class ImageStatusOverlay extends StatelessWidget {
   }
 }
 
+// TODO: Rename? and move to a separate file
 class ResponsiveImageGrid extends StatelessWidget {
   final IdsSubsetFilter<int, ImageEntity> idsSubsetFilter;
   final double reserveHeight;
@@ -374,8 +389,8 @@ class ResponsiveImageGrid extends StatelessWidget {
   static const _maxMainAxisCount = 3;
 
   ResponsiveImageGrid({
-    @required this.idsSubsetFilter,
-    @required this.reserveHeight,
+    required this.idsSubsetFilter,
+    required this.reserveHeight,
   });
 
   @override

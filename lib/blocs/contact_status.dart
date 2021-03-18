@@ -14,6 +14,14 @@ abstract class ContactStatusCubit extends Bloc {
 
   EditableContact _contact;
 
+  ContactStatusCubit({
+    required EditableContact contact,
+  }) :
+      _contact = contact
+  {
+    pushOutput();
+  }
+
   void setContact(EditableContact contact) {
     if (contact != _contact) {
       // Contact will only change if it is re-parsed from an API request
@@ -75,13 +83,19 @@ abstract class ContactStatusCubit extends Bloc {
   }
 
   @protected
-  String getProfileSyncOkDescription(EditableContact contact) { // Return nullable
+  String? getProfileSyncOkDescription(EditableContact contact) {
     return null;
   }
 
   String _getLastSynchronized(ProfileSyncStatus status) {
+    final dateTimeUpdate = status.dateTimeUpdate;
+
+    if (dateTimeUpdate == null) {
+      throw Exception('Complete status must have dateTimeUpdate');
+    }
+
     final durationAgo = formatLongRoughDurationAgo(
-      DateTime.now().difference(status.dateTimeUpdate),
+      DateTime.now().difference(dateTimeUpdate),
     );
     return tr('ContactStatusCubit.lastSynchronized', namedArgs: {'durationAgo': durationAgo});
   }
@@ -98,8 +112,14 @@ abstract class ContactStatusCubit extends Bloc {
   }
 
   String _getErrorLastTried(ProfileSyncStatus status) {
+    final dateTimeUpdate = status.dateTimeUpdate;
+
+    if (dateTimeUpdate == null) {
+      throw Exception('Error status must have dateTimeUpdate when the error was caused');
+    }
+
     final durationAgo = formatLongRoughDurationAgo(
-      DateTime.now().difference(status.dateTimeUpdate),
+      DateTime.now().difference(dateTimeUpdate),
     );
     return tr('ContactStatusCubit.errorLastTried', namedArgs: {'durationAgo': durationAgo});
   }
@@ -115,16 +135,16 @@ class ReadableProfileSyncStatus {
   final String description;
 
   ReadableProfileSyncStatus({
-    @required this.status,
-    @required this.description,
+    required this.status,
+    required this.description,
   });
 }
 
 class ContactStatusCubitFactory {
-  ContactStatusCubit create(EditableContact contact) { // Return nullable
+  ContactStatusCubit? create(EditableContact contact) {
     switch (contact.className) {
       case 'instagram':
-        return InstagramStatusCubit();
+        return InstagramStatusCubit(contact: contact);
     }
 
     return null;

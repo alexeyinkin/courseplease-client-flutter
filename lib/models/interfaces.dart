@@ -11,7 +11,7 @@ abstract class WithChildren<T> {
 }
 
 abstract class WithParent<T> {
-  T get parent;
+  T? get parent;
 }
 
 abstract class WithIdTitle<T> implements WithId<T>, WithTitle {}

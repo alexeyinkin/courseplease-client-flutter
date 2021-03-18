@@ -20,10 +20,9 @@ class _ChatsWidgetState extends State<ChatsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<ChatsCubitState>(
       stream: _chatsCubit.outState,
-      initialData: _chatsCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _chatsCubit.initialState),
     );
   }
 
@@ -65,8 +64,13 @@ class _ChatsWidgetState extends State<ChatsWidget> {
       return SelectChatPlaceholderWidget();
     }
 
+    final filter = state.chatMessageFilter;
+    if (filter == null) {
+      throw Exception('Filter must be not null if the chat is.');
+    }
+
     return ChatMessageListWidget(
-      filter: state.chatMessageFilter,
+      filter: filter,
     );
   }
 }

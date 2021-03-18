@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:http/http.dart' as http;
 
 class ListLoadResult<T> {
   final List<T> objects;
-  final String nextPageToken; // Nullable
+  final String? nextPageToken;
 
   ListLoadResult(this.objects, this.nextPageToken);
 
@@ -21,7 +19,7 @@ abstract class AbstractRepository<I, O extends WithId<I>> {
     throw UnimplementedError();
   }
 
-  Future<O> loadById(I id) { // Return Future of Nullable
+  Future<O?> loadById(I id) {
     throw UnimplementedError();
   }
 
@@ -35,12 +33,12 @@ abstract class AbstractFilteredRepository<
   O extends WithId<I>,
   F extends AbstractFilter
 > extends AbstractRepository<I, O> {
-  Future<ListLoadResult<O>> loadWithFilter(F filter, String pageToken);
+  Future<ListLoadResult<O>> loadWithFilter(F filter, String? pageToken);
 }
 
 @Deprecated('Use ApiClient for network operations.')
 class NetworkMapDataProvider {
-  Future<ListLoadResult<Map<String, dynamic>>> loadList(Uri uri, String pageToken) {
+  Future<ListLoadResult<Map<String, dynamic>>> loadList(Uri uri, String? pageToken) {
     if (pageToken != null) {
       final paramsClone = Map<String, String>.from(uri.queryParameters);
       paramsClone['pageToken'] = pageToken;
@@ -53,7 +51,7 @@ class NetworkMapDataProvider {
     }
 
     return http
-        .get(uri.toString(), headers: _getHeaders())
+        .get(uri, headers: _getHeaders())
         .then(_parseListResponse);
   }
 
@@ -73,35 +71,7 @@ class NetworkMapDataProvider {
     return ListLoadResult(items, nextPageToken);
   }
 
-  Future<Map<String, dynamic>> getSingle(String url) {
-    return http
-        .get(url, headers: _getHeaders())
-        .then(_parseSingleResponse);
-  }
-
-  Future<Map<String, dynamic>> postSingle(String url, Map<String, dynamic> body) {
-    final headers = _getHeaders();
-    headers['Content-Type'] = ContentType.json.toString();
-
-    return http
-        .post(url, headers: headers, body: jsonEncode(body))
-        .then(_parseSingleResponse);
-  }
-
   Map<String, String> _getHeaders() {
     return {};
-  }
-
-  Map<String, dynamic> _parseSingleResponse(http.Response response) {
-    if (response.statusCode != 200) {
-      throw Exception('Failed to fetch.');
-    }
-
-    return _parseSingleString(response.body);
-  }
-
-  Map<String, dynamic> _parseSingleString(String str) {
-    var map = jsonDecode(str);
-    return map['data'] as Map<String, dynamic>; // Nullable
   }
 }

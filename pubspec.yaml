@@ -19,7 +19,7 @@ version: 0.0.1+1
 
 environment:
   #sdk: ">=2.12.0-133.2.beta <3.0.0"
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -27,37 +27,39 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  cached_network_image: ^2.5.0
-  charcode: ^1.1.3
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.1
-  device_info: ^1.0.0
-  easy_localization: ^2.3.3+1
-  flag: ^3.1.0
-  flutter_breadcrumb: ^0.1.2
-  flutter_icons: ^1.1.0
-  flutter_markdown: ^0.5.2
-  flutter_secure_storage: ^3.3.5
-  flutter_svg: ^0.19.2+1
-  flutter_webview_plugin: ^0.3.11
-  flutter_tags: ^0.4.9+1
-  flutter_treeview: ^0.8.0+1
-  get_it: ^5.0.4
-  http: ^0.12.2
-  intl: ^0.17.0-nullsafety.2
-  meta: ^1.2.4
-  package_info: ^0.4.3+2
-  provider: ^4.3.2+3
-  rxdart: ^0.25.0
+  bubble: ^1.2.1
+  cached_network_image: ^3.0.0-nullsafety       # Unstable
+  charcode: ^1.2.0
+  device_info: ^2.0.0
+  easy_localization: ^3.0.0
+  flag: ^5.0.0-nullsafety                       # Unstable
+  flutter_breadcrumb: ^1.0.0
+  flutter_icons: ^1.1.0                         # No null-safety
+  flutter_markdown: ^0.6.0
+  flutter_secure_storage: ^4.1.0
+  flutter_svg: ^0.21.0-nullsafety.0             # Unstable
+  flutter_webview_plugin: ^0.3.11               # No null-safety
+  flutter_tags: ^1.0.0-nullsafety.1             # Unstable
+  flutter_treeview: ^0.8.0+1                    # No null-safety
+  get_it: ^6.0.0
+  http: ^0.13.0
+  intl: ^0.17.0
+  meta: ^1.3.0
+  package_info: ^2.0.0
+  provider: ^5.0.0
+  rxdart: ^0.26.0
+  yaml: ^3.1.0
   #youtube_player_flutter: ^7.0.0+7
-  youtube_player_iframe: ^1.2.0+2
+  #youtube_player_iframe: ^1.2.0+2               # No null-safety
+  youtube_plyr_iframe: ^2.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  integration_test:
-    sdk: flutter
+# This is commented out because it is incompatible with null-safety packages.
+# And we have no tests so far anyway.
+#  integration_test:
+#    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

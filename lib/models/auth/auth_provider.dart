@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:meta/meta.dart';
-
 abstract class AuthProvider {
   final int id;
   final String redirectHostAndPort;
@@ -15,11 +13,11 @@ abstract class AuthProvider {
   static const defaultProductionHostAndPort = 'courseplease.com';
 
   AuthProvider({
-    @required this.id,
-    @required this.redirectHostAndPort,
-    @required this.intName,
-    @required this.title,
-    @required this.color,
+    required this.id,
+    required this.redirectHostAndPort,
+    required this.intName,
+    required this.title,
+    required this.color,
   });
 
   String getOauthUrl(String state);

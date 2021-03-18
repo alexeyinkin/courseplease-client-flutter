@@ -1,15 +1,21 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/product_subject_with_status.dart';
+import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
 
 class CurrentProductSubjectBloc implements Bloc {
+  // TODO: Start at root when the root screen is developed.
   int _currentId = 7;
   int _lastId = 16;
   var _subjectsByIds = Map<int, ProductSubject>();
+
+  final _productSubjectCacheBloc = GetIt.instance.get<ProductSubjectCacheBloc>();
+  late final StreamSubscription _productSubjectCacheBlocSubscription;
 
   final _outCurrentIdController = BehaviorSubject<int>();
   Stream<int> get outCurrentId => _outCurrentIdController.stream;
@@ -20,7 +26,11 @@ class CurrentProductSubjectBloc implements Bloc {
   final _outChildrenController = BehaviorSubject<List<ProductSubject>>();
   Stream<List<ProductSubject>> get outChildren => _outChildrenController.stream;
 
-  void setSubjectsByIds(Map<int, ProductSubject> map) {
+  CurrentProductSubjectBloc() {
+    _productSubjectCacheBlocSubscription = _productSubjectCacheBloc.outObjectsByIds.listen(_setSubjectsByIds);
+  }
+
+  void _setSubjectsByIds(Map<int, ProductSubject> map) {
     _subjectsByIds = map;
     _pushOutput();
   }
@@ -81,7 +91,9 @@ class CurrentProductSubjectBloc implements Bloc {
 
   @override
   void dispose() {
-    _outBreadcrumbsController.close();
+    _productSubjectCacheBlocSubscription.cancel();
     _outChildrenController.close();
+    _outBreadcrumbsController.close();
+    _outCurrentIdController.close();
   }
 }

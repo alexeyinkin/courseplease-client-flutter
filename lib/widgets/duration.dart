@@ -5,7 +5,7 @@ class DurationWidget extends StatelessWidget {
   final Duration duration;
 
   DurationWidget({
-    @required this.duration,
+    required this.duration,
   });
 
   @override

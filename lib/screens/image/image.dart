@@ -8,6 +8,7 @@ import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/theme/theme.dart';
+import 'package:courseplease/widgets/error/id.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/overlay.dart';
 import 'package:courseplease/widgets/rating_and_vote_count.dart';
@@ -18,38 +19,62 @@ import '../../models/filters/image.dart';
 import '../../models/image.dart';
 import '../../models/teacher.dart';
 
-abstract class AbstractImageLightboxScreen<
+typedef List<Widget> ImageOverlayBuilder(BuildContext context, ImageEntity entity, bool controlsVisible);
+
+// TODO: Move somewhere
+const controlsAnimationDuration = Duration(milliseconds: 250);
+
+class ImageLightboxScreen<
   F extends AbstractFilter,
   R extends AbstractImageRepository<F>
 > extends StatefulWidget {
+  final F filter;
+  final int initialIndex;
+  final ImageOverlayBuilder? imageOverlayBuilder;
+
+  ImageLightboxScreen({
+    required this.filter,
+    required this.initialIndex,
+    this.imageOverlayBuilder,
+  });
+
+  @override
+  ImageLightboxScreenState<F, R> createState() => ImageLightboxScreenState(
+    filter: filter,
+    index: initialIndex,
+  );
 }
 
-abstract class AbstractImageLightboxScreenState<
+class ImageLightboxScreenState<
   F extends AbstractFilter,
   R extends AbstractImageRepository<F>
-> extends State<AbstractImageLightboxScreen<F, R>> {
+> extends State<ImageLightboxScreen<F, R>> {
   final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
 
-  PageController _pageController;
-  F _filter;
-  int _index;
+  late final PageController _pageController;
+  final F filter;
+  int index;
   bool _controlsVisible = true;
 
-  @protected
-  static const controlsAnimationDuration = Duration(milliseconds: 250);
+  ImageLightboxScreenState({
+    required this.filter,
+    required this.index,
+  }) {
+    _pageController = PageController(
+      initialPage: index,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    _parseArgumentsIfNot(context);
-    final listBloc = _filteredModelListCache.getOrCreate<int, ImageEntity, F, R>(_filter);
+    final listBloc = _filteredModelListCache.getOrCreate<int, ImageEntity, F, R>(filter);
 
-    return StreamBuilder(
+    return StreamBuilder<ModelListState<int, ImageEntity>>(
       stream: listBloc.outState,
-      initialData: listBloc.initialState,
       builder: (context, snapshot) {
         return _buildWithListState(
           context,
-          snapshot.data,
+          snapshot.data ?? listBloc.initialState,
           listBloc,
         );
       },
@@ -89,7 +114,11 @@ abstract class AbstractImageLightboxScreenState<
 
   Widget _buildPage(BuildContext context, ModelListState<int, ImageEntity> listState, int index) {
     final image = listState.objects[index];
-    final url = 'https://courseplease.com' + image.getLightboxUrl();
+
+    final urlTail = image.getLightboxUrl();
+    if (urlTail == null) return IdErrorWidget(object: image);
+
+    final url = 'https://courseplease.com' + urlTail;
 
     return Dismissible(
       key: ValueKey('page-' + index.toString()),
@@ -105,32 +134,48 @@ abstract class AbstractImageLightboxScreenState<
               child: CachedNetworkImage(
                 imageUrl: url,
                 placeholder: (context, url) => SmallCircularProgressIndicator(),
-                errorWidget: (context, url, error) => Row(children:[Icon(Icons.error), Text(image.id.toString())]),
+                errorWidget: (context, url, error) => IdErrorWidget(object: image),
                 fadeInDuration: Duration(),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          ...buildOverlays(context, image),
+          ..._buildOverlays(context, image),
         ],
       ),
     );
   }
 
-  @protected
-  List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
-    return <Widget>[];
+  List<Widget> _buildOverlays(BuildContext context, ImageEntity image) {
+    if (widget.imageOverlayBuilder == null) return [];
+    return widget.imageOverlayBuilder!(context, image, _controlsVisible);
   }
 
-  @protected
-  Widget buildTitleOverlay(BuildContext context, ImageEntity image) {
+  void _toggleControls() {
+    setState(() {
+      _controlsVisible = !_controlsVisible;
+    });
+  }
+}
+
+class ImageTitleOverlay extends StatelessWidget {
+  final ImageEntity image;
+  final bool controlsVisible;
+
+  ImageTitleOverlay({
+    required this.image,
+    required this.controlsVisible,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     if (image.title == '') return Container();
 
     return Positioned(
       top: 10,
       left: 10,
       child: AnimatedOpacity(
-        opacity: _controlsVisible ? 1.0 : 0.0,
+        opacity: controlsVisible ? 1.0 : 0.0,
         duration: controlsAnimationDuration,
         child: RoundedOverlay(
           child: Text(
@@ -141,63 +186,49 @@ abstract class AbstractImageLightboxScreenState<
       ),
     );
   }
-
-  void _parseArgumentsIfNot(BuildContext context) {
-    if (_filter == null) {
-      final arguments = ModalRoute.of(context).settings.arguments as ImageLightboxArguments<F>;
-      _filter = arguments.filter;
-      _index = arguments.index;
-      _pageController = PageController(
-        initialPage: _index,
-      );
-    }
-  }
-
-  void _toggleControls() {
-    setState(() {
-      _controlsVisible = !_controlsVisible;
-    });
-  }
 }
 
-class ViewImageLightboxScreen extends AbstractImageLightboxScreen<ViewImageFilter, GalleryImageRepository> {
-  static const routeName = '/imageLightbox';
+class ImageTeacherOverlay extends StatefulWidget {
+  final int teacherId;
+  final bool controlsVisible;
+
+  ImageTeacherOverlay({
+    required this.teacherId,
+    required this.controlsVisible,
+  });
 
   @override
-  State<AbstractImageLightboxScreen> createState() => _ViewImageLightboxScreenState();
+  _ImageTeacherOverlayState createState() => _ImageTeacherOverlayState();
 }
 
-class _ViewImageLightboxScreenState extends AbstractImageLightboxScreenState<ViewImageFilter, GalleryImageRepository> {
+class _ImageTeacherOverlayState extends State<ImageTeacherOverlay> {
   final _teacherByIdBloc = ModelByIdBloc<int, Teacher>(
     modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Teacher, TeacherRepository>(),
   );
 
   @override
-  List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
-    return [
-      buildTitleOverlay(context, image),
-      _buildTeacherOverlay(context, image.authorId),
-    ];
+  void initState() {
+    super.initState();
+    _teacherByIdBloc.setCurrentId(widget.teacherId);
   }
 
-  Widget _buildTeacherOverlay(BuildContext context, int teacherId) {
-    _teacherByIdBloc.setCurrentId(teacherId);
-    return StreamBuilder(
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<ModelByIdState<int, Teacher>>(
       stream: _teacherByIdBloc.outState,
-      initialData: _teacherByIdBloc.initialState,
-      builder: (context, snapshot) => _buildTeacherOverlayWithState(snapshot.data),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _teacherByIdBloc.initialState),
     );
   }
 
-  Widget _buildTeacherOverlayWithState(ModelByIdState<int, Teacher> teacherByIdState) {
+  Widget _buildWithState(ModelByIdState<int, Teacher> teacherByIdState) {
     final teacher = teacherByIdState.object;
 
     return teacher == null
-        ? _buildTeacherOverlayWithoutTeacher(teacherByIdState)
-        : _buildTeacherOverlayWithTeacher(teacher);
+        ? _buildWithoutTeacher(teacherByIdState)
+        : _buildWithTeacher(teacher);
   }
 
-  Widget _buildTeacherOverlayWithoutTeacher(ModelByIdState<int, Teacher> teacherByIdState) {
+  Widget _buildWithoutTeacher(ModelByIdState<int, Teacher> teacherByIdState) {
     switch (teacherByIdState.requestStatus) {
       case RequestStatus.notTried:
       case RequestStatus.loading:
@@ -207,11 +238,11 @@ class _ViewImageLightboxScreenState extends AbstractImageLightboxScreenState<Vie
     }
   }
 
-  Widget _buildTeacherOverlayWithTeacher(Teacher teacher) {
+  Widget _buildWithTeacher(Teacher teacher) {
     return Positioned(
       child: AnimatedOpacity(
-        opacity: _controlsVisible ? 1.0 : 0.0,
-        duration: AbstractImageLightboxScreenState.controlsAnimationDuration,
+        opacity: widget.controlsVisible ? 1.0 : 0.0,
+        duration: controlsAnimationDuration,
         child: ImageTeacherTile(teacher: teacher),
       ),
       left: 10,
@@ -220,58 +251,207 @@ class _ViewImageLightboxScreenState extends AbstractImageLightboxScreenState<Vie
   }
 }
 
-class EditImageLightboxScreen extends AbstractImageLightboxScreen<EditImageFilter, EditorImageRepository> {
-  static const routeName = '/unsortedImageLightbox';
-
-  @override
-  State<AbstractImageLightboxScreen> createState() => _EditImageLightboxScreenState();
-}
-
-class _EditImageLightboxScreenState extends AbstractImageLightboxScreenState<EditImageFilter, EditorImageRepository> {
-  @override
-  List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
-    return [
-      buildTitleOverlay(context, image),
-    ];
+class ViewImageLightboxScreenLauncher {
+  static Future<void> show({
+    required BuildContext context,
+    required ViewImageFilter filter,
+    required int initialIndex,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageLightboxScreen<ViewImageFilter, GalleryImageRepository>(
+          filter: filter,
+          initialIndex: initialIndex,
+          imageOverlayBuilder: (context, image, controlsVisible) => [
+            ImageTitleOverlay(image: image, controlsVisible: controlsVisible),
+            ImageTeacherOverlay(teacherId: image.authorId, controlsVisible: controlsVisible),
+          ],
+        ),
+      ),
+    );
   }
 }
 
-class FixedIdsImageLightboxScreen extends AbstractImageLightboxScreen<
-  IdsSubsetFilter<int, ImageEntity>,
-  AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
-> {
-  static const routeName = '/fixedIdsImageLightbox';
+// class ViewImageLightboxScreen extends AbstractImageLightboxScreen<ViewImageFilter, GalleryImageRepository> {
+//   static const routeName = '/imageLightbox';
+//
+//   ViewImageLightboxScreen({
+//     required ViewImageFilter filter,
+//     required int initialIndex,
+//   }) : super(
+//     filter: filter,
+//     initialIndex: initialIndex,
+//   );
+//
+//   @override
+//   State<AbstractImageLightboxScreen> createState() => _ViewImageLightboxScreenState(
+//     filter: filter,
+//     index: initialIndex,
+//   );
+// }
+//
+// class _ViewImageLightboxScreenState extends AbstractImageLightboxScreenState<ViewImageFilter, GalleryImageRepository> {
+//   final _teacherByIdBloc = ModelByIdBloc<int, Teacher>(
+//     modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Teacher, TeacherRepository>(),
+//   );
+//
+//   _ViewImageLightboxScreenState({
+//     required ViewImageFilter filter,
+//     required int index,
+//   }) : super(
+//     filter: filter,
+//     index: index,
+//   );
+//
+//   @override
+//   List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
+//     return [
+//       buildTitleOverlay(context, image),
+//       _buildTeacherOverlay(context, image.authorId),
+//     ];
+//   }
+//
+//   Widget _buildTeacherOverlay(BuildContext context, int teacherId) {
+//     _teacherByIdBloc.setCurrentId(teacherId);
+//     return StreamBuilder<ModelByIdState<int, Teacher>>(
+//       stream: _teacherByIdBloc.outState,
+//       builder: (context, snapshot) => _buildTeacherOverlayWithState(snapshot.data ?? _teacherByIdBloc.initialState),
+//     );
+//   }
+//
+//   Widget _buildTeacherOverlayWithState(ModelByIdState<int, Teacher> teacherByIdState) {
+//     final teacher = teacherByIdState.object;
+//
+//     return teacher == null
+//         ? _buildTeacherOverlayWithoutTeacher(teacherByIdState)
+//         : _buildTeacherOverlayWithTeacher(teacher);
+//   }
+//
+//   Widget _buildTeacherOverlayWithoutTeacher(ModelByIdState<int, Teacher> teacherByIdState) {
+//     switch (teacherByIdState.requestStatus) {
+//       case RequestStatus.notTried:
+//       case RequestStatus.loading:
+//         return SmallCircularProgressIndicator();
+//       default:
+//         return Center(child: Icon(Icons.error));
+//     }
+//   }
+//
+//   Widget _buildTeacherOverlayWithTeacher(Teacher teacher) {
+//     return Positioned(
+//       child: AnimatedOpacity(
+//         opacity: _controlsVisible ? 1.0 : 0.0,
+//         duration: AbstractImageLightboxScreenState.controlsAnimationDuration,
+//         child: ImageTeacherTile(teacher: teacher),
+//       ),
+//       left: 10,
+//       bottom: 10,
+//     );
+//   }
+// }
 
-  @override
-  State<AbstractImageLightboxScreen> createState() => _FixedIdsImageLightboxScreenState();
-}
-
-class _FixedIdsImageLightboxScreenState extends AbstractImageLightboxScreenState<
-  IdsSubsetFilter<int, ImageEntity>,
-  AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
-> {
-  @override
-  List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
-    return [
-      buildTitleOverlay(context, image),
-    ];
+class ImageLightboxScreenLauncher {
+  static Future<void> showWithTitles<F extends AbstractFilter, R extends AbstractImageRepository<F>>({
+    required BuildContext context,
+    required F filter,
+    required int initialIndex,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageLightboxScreen<F, R>(
+          filter: filter,
+          initialIndex: initialIndex,
+          imageOverlayBuilder: (context, image, controlsVisible) => [
+            ImageTitleOverlay(image: image, controlsVisible: controlsVisible),
+          ],
+        ),
+      ),
+    );
   }
 }
 
-class ImageLightboxArguments<F extends AbstractFilter> {
-  final F filter;
-  final int index;
+// class EditImageLightboxScreen extends AbstractImageLightboxScreen<EditImageFilter, EditorImageRepository> {
+//   static const routeName = '/unsortedImageLightbox';
+//
+//   EditImageLightboxScreen({
+//     required EditImageFilter filter,
+//     required int initialIndex,
+//   }) : super(
+//     filter: filter,
+//     initialIndex: initialIndex,
+//   );
+//
+//   @override
+//   State<AbstractImageLightboxScreen> createState() => _EditImageLightboxScreenState(
+//     filter: filter,
+//     index: initialIndex,
+//   );
+// }
+//
+// class _EditImageLightboxScreenState extends AbstractImageLightboxScreenState<EditImageFilter, EditorImageRepository> {
+//   _EditImageLightboxScreenState({
+//     required EditImageFilter filter,
+//     required int index,
+//   }) : super(
+//     filter: filter,
+//     index: index
+//   );
+//
+//   @override
+//   List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
+//     return [
+//       buildTitleOverlay(context, image),
+//     ];
+//   }
+// }
 
-  ImageLightboxArguments({
-    this.filter,
-    this.index,
-  });
-}
+// class FixedIdsImageLightboxScreen extends AbstractImageLightboxScreen<
+//   IdsSubsetFilter<int, ImageEntity>,
+//   AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
+// > {
+//   static const routeName = '/fixedIdsImageLightbox';
+//
+//   FixedIdsImageLightboxScreen({
+//     required IdsSubsetFilter<int, ImageEntity> filter,
+//     required int initialIndex,
+//   }) : super(
+//     filter: filter,
+//     initialIndex: initialIndex,
+//   );
+//
+//   @override
+//   State<AbstractImageLightboxScreen> createState() => _FixedIdsImageLightboxScreenState(
+//     filter: filter,
+//     index: initialIndex,
+//   );
+// }
+//
+// class _FixedIdsImageLightboxScreenState extends AbstractImageLightboxScreenState<
+//   IdsSubsetFilter<int, ImageEntity>,
+//   AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>
+// > {
+//   _FixedIdsImageLightboxScreenState({
+//     required IdsSubsetFilter<int, ImageEntity> filter,
+//     required int index,
+//   }) : super(
+//     filter: filter,
+//     index: index,
+//   );
+//
+//   @override
+//   List<Widget> buildOverlays(BuildContext context, ImageEntity image) {
+//     return [
+//       buildTitleOverlay(context, image),
+//     ];
+//   }
+// }
 
 class ImageTeacherTile extends StatelessWidget {
   final Teacher teacher;
   ImageTeacherTile({
-    @required this.teacher,
+    required this.teacher,
   });
 
   @override

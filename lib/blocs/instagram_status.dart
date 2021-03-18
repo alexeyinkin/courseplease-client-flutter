@@ -9,32 +9,31 @@ import 'package:get_it/get_it.dart';
 import 'model_by_id.dart';
 
 class InstagramStatusCubit extends ContactStatusCubit {
-  final _newPhotoSubjectBloc = ModelByIdBloc<int, ProductSubject>(
+  final _newImageSubjectBloc = ModelByIdBloc<int, ProductSubject>(
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
   );
-  StreamSubscription _newPhotoSubjectSubscription;
-  ProductSubject _newPhotoSubject; // Nullable
+  late StreamSubscription _newPhotoSubjectSubscription;
+  ProductSubject? _newPhotoSubject;
 
-  InstagramStatusCubit() {
-    _newPhotoSubjectSubscription = _newPhotoSubjectBloc.outState.listen(
+  InstagramStatusCubit({
+    required EditableContact contact,
+  }) : super(
+    contact: contact,
+  ) {
+    _newPhotoSubjectSubscription = _newImageSubjectBloc.outState.listen(
       (state) => _onNewPhotoSubjectChange(state.object)
     );
-  }
 
-  void _onNewPhotoSubjectChange(ProductSubject subject) {
-    _newPhotoSubject = subject;
-    pushOutput();
-  }
-
-  @override
-  void setContact(EditableContact contact) {
     final params = contact.params as InstagramContactParams;
 
     if (params.newImageSubjectId != null) {
-      _newPhotoSubjectBloc.setCurrentId(params.newImageSubjectId);
+      _newImageSubjectBloc.setCurrentId(params.newImageSubjectId);
     }
+  }
 
-    super.setContact(contact);
+  void _onNewPhotoSubjectChange(ProductSubject? subject) {
+    _newPhotoSubject = subject;
+    pushOutput();
   }
 
   @override
@@ -50,7 +49,7 @@ class InstagramStatusCubit extends ContactStatusCubit {
         case InstagramNewImageAction.portfolio:
           final subjectTitle = _newPhotoSubject == null
               ? '...'
-              : _newPhotoSubject.title;
+              : _newPhotoSubject!.title;
           descriptionParts.add(tr('InstagramStatusCubit.addNewImagesToPortfolio', namedArgs:{'subjectTitle': subjectTitle}));
           break;
       }

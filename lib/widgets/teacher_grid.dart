@@ -17,7 +17,9 @@ import '../models/teacher.dart';
 class TeacherGrid extends StatefulWidget {
   TeacherFilter filter;
 
-  TeacherGrid({@required this.filter}) : super(key: ValueKey(filter.toString()));
+  TeacherGrid({
+    required this.filter,
+  }) : super(key: ValueKey(filter.toString()));
 
   @override
   State<TeacherGrid> createState() {
@@ -77,19 +79,17 @@ class TeacherGridState extends State<TeacherGrid> {
   }
 
   void _handleTap(Teacher teacher, int index) {
-    Navigator.of(context).pushNamed(
-      TeacherScreen.routeName,
-      arguments: TeacherScreenArguments(
-        id: teacher.id,
-        subjectId: widget.filter.subjectId,
-      ),
+    TeacherScreen.show(
+      context: context,
+      teacherId: teacher.id,
+      initialSubjectId: widget.filter.subjectId,
     );
   }
 }
 
 class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
   TeacherTile({
-    @required TileCreationRequest<int, Teacher, TeacherFilter> request,
+    required TileCreationRequest<int, Teacher, TeacherFilter> request,
   }) : super(
     request: request,
   );
@@ -181,9 +181,9 @@ class TeacherImageLineWidget extends StatelessWidget {
   final double height;
 
   TeacherImageLineWidget({
-    @required this.teacherFilter,
-    @required this.teacherId,
-    @required this.height,
+    required this.teacherFilter,
+    required this.teacherId,
+    required this.height,
   });
 
   @override

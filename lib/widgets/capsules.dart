@@ -2,12 +2,12 @@ import 'package:courseplease/models/interfaces.dart';
 import 'package:flutter/material.dart';
 
 class CapsulesWidget<I, T extends WithIdTitle<I>> extends StatelessWidget {
-  final List<WithIdTitle> objects;
-  final I selectedId; // Nullable
-  final ValueChanged<T> onTap;
+  final List<T> objects;
+  final I? selectedId;
+  final ValueChanged<T>? onTap;
 
   CapsulesWidget({
-    @required this.objects,
+    required this.objects,
     this.selectedId,
     this.onTap,
   });
@@ -35,20 +35,20 @@ class CapsulesWidget<I, T extends WithIdTitle<I>> extends StatelessWidget {
     );
   }
 
-  void _handleTap(WithIdTitle object) {
-    if (onTap != null) onTap(object);
+  void _handleTap(T object) {
+    if (onTap != null) onTap!(object);
   }
 }
 
 class _CapsuleWidget extends StatelessWidget {
   final WithIdTitle object;
   final bool selected;
-  final VoidCallback onTap; // Nullable
+  final VoidCallback? onTap; // Nullable
 
   _CapsuleWidget({
-    @required this.object,
-    @required this.selected,
-    @required this.onTap,
+    required this.object,
+    required this.selected,
+    required this.onTap,
   });
 
   @override

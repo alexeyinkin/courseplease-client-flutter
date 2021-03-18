@@ -30,13 +30,13 @@ class _SignInWidgetState extends State<SignInWidget> {
   }
 
   Widget _buildProviderList() {
-    return StreamBuilder(
+    return StreamBuilder<List<AuthProvider>>(
       stream: _authenticationCubit.outProviders,
       builder: (context, snapshot) => _buildProviderListWithState(snapshot.data),
     );
   }
 
-  Widget _buildProviderListWithState(List<AuthProvider> authProviders) { // Nullable
+  Widget _buildProviderListWithState(List<AuthProvider>? authProviders) {
     return authProviders == null
         ? SmallCircularProgressIndicator()
         : _buildProviderListWithList(authProviders);

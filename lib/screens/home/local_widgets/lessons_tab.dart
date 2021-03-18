@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/current_product_subject.dart';
 import 'package:courseplease/widgets/auth/device_validity.dart';
+import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/lesson_grid.dart';
 import '../../../models/filters/lesson.dart';
@@ -13,7 +14,11 @@ class LessonsTab extends StatelessWidget {
     return StreamBuilder<int>(
       stream: bloc.outCurrentId,
       builder: (context, snapshot) {
-        final filter = LessonFilter(subjectId: snapshot.data);
+        final subjectId = snapshot.data;
+        if (subjectId == null) {
+          return SmallCircularProgressIndicator(); // TODO: Allow null in LessonFilter to show all lessons?
+        }
+        final filter = LessonFilter(subjectId: subjectId);
         return _buildWithFilter(filter);
       }
     );

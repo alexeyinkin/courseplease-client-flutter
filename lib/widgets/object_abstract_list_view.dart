@@ -16,19 +16,19 @@ abstract class ObjectAbstractListView<
   T extends AbstractObjectTile<I, O, F>
 > extends StatefulWidget {
   final TileFactory<I, O, F, T> tileFactory;
-  final TileCallback<I, O> onTap; // Nullable
+  final TileCallback<I, O>? onTap;
   final Axis scrollDirection;
-  final Widget titleIfNotEmpty; // Nullable
-  final SelectableListCubit<I, F> listStateCubit; // Nullable
-  F filter = null;
+  final Widget? titleIfNotEmpty;
+  final SelectableListCubit<I, F>? listStateCubit;
+  final F filter;
 
   ObjectAbstractListView({
-    @required this.filter,
-    @required this.tileFactory,
-    this.onTap, // Nullable
-    @required this.scrollDirection,
-    this.titleIfNotEmpty, // Nullable
-    this.listStateCubit, // Nullable
+    required this.filter,
+    required this.tileFactory,
+    this.onTap,
+    required this.scrollDirection,
+    this.titleIfNotEmpty,
+    this.listStateCubit,
   });
 }
 
@@ -57,10 +57,13 @@ abstract class ObjectAbstractListViewState<
     final listBloc = _filteredModelListCache.getOrCreate<I, O, F, R>(widget.filter);
     listBloc.loadInitialIfNot();
 
-    return StreamBuilder(
+    return StreamBuilder<ModelListState<I, O>>(
       stream: listBloc.outState,
-      initialData: listBloc.initialState,
-      builder: (context, snapshot) => _buildWithListState(context, snapshot.data, listBloc),
+      builder: (context, snapshot) => _buildWithListState(
+        context,
+        snapshot.data ?? listBloc.initialState,
+        listBloc,
+      ),
     );
   }
 
@@ -73,12 +76,16 @@ abstract class ObjectAbstractListViewState<
       return _buildWithListAndSelectionStates(context, listState, listBloc, null);
     }
 
-    widget.listStateCubit.setAll(listState.objectIds);
+    widget.listStateCubit!.setAll(listState.objectIds);
 
-    return StreamBuilder(
-      stream: widget.listStateCubit.outState,
-      initialData: widget.listStateCubit.initialState,
-      builder: (context, snapshot) => _buildWithListAndSelectionStates(context, listState, listBloc, snapshot.data),
+    return StreamBuilder<SelectableListState<I, F>>(
+      stream: widget.listStateCubit!.outState,
+      builder: (context, snapshot) => _buildWithListAndSelectionStates(
+        context,
+        listState,
+        listBloc,
+        snapshot.data ?? widget.listStateCubit!.initialState,
+      ),
     );
   }
 
@@ -86,13 +93,13 @@ abstract class ObjectAbstractListViewState<
     BuildContext context,
     ModelListState<I, O> modelListState,
     AbstractFilteredModelListBloc listBloc,
-    SelectableListState<I, F> selectableListState, // Nullable
+    SelectableListState<I, F>? selectableListState,
   ) {
     final length = modelListState.objects.length;
     final children = <Widget>[];
 
     if (length > 0 && widget.titleIfNotEmpty != null) {
-      children.add(widget.titleIfNotEmpty);
+      children.add(widget.titleIfNotEmpty!);
     }
 
     children.add(
@@ -120,7 +127,7 @@ abstract class ObjectAbstractListViewState<
   Widget getListViewWidget(
     ModelListState<I, O> modelListState,
     AbstractFilteredModelListBloc listBloc,
-    SelectableListState<I, F> selectableListState,
+    SelectableListState<I, F>? selectableListState,
   );
 
   @protected
@@ -128,7 +135,7 @@ abstract class ObjectAbstractListViewState<
     int index,
     ModelListState<I, O> modelListState,
     AbstractFilteredModelListBloc listBloc,
-    SelectableListState<I, F> selectableListState,
+    SelectableListState<I, F>? selectableListState,
   ) {
     final length = modelListState.objects.length;
 
@@ -142,7 +149,7 @@ abstract class ObjectAbstractListViewState<
         object: object,
         index: index,
         filter: widget.filter,
-        onTap: () => widget.onTap(object, index),
+        onTap: () => _onTap(object, index),
         selected: selected,
         onSelected: (selected) => _onSelected(object, selected),
       );
@@ -153,9 +160,13 @@ abstract class ObjectAbstractListViewState<
     return Text(index.toString());
   }
 
-  void _onSelected(O object, bool selected) {
-    if (widget.listStateCubit != null) {
-      widget.listStateCubit.setSelected(object.id, selected);
+  void _onTap(O object, int index) {
+    if (widget.onTap != null) {
+      widget.onTap!(object, index);
     }
+  }
+
+  void _onSelected(O object, bool selected) {
+    widget.listStateCubit?.setSelected(object.id, selected);
   }
 }

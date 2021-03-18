@@ -19,8 +19,8 @@ class ChatListWidget extends StatefulWidget {
   final ChatFilter filter;
 
   ChatListWidget({
-    @required this.chatsCubit,
-    @required this.filter,
+    required this.chatsCubit,
+    required this.filter,
   });
 
   @override
@@ -33,14 +33,18 @@ class ChatListWidgetState extends State<ChatListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<AuthenticationState>(
       stream: _authenticationCubit.outState,
-      initialData: _authenticationCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _authenticationCubit.initialState),
     );
   }
 
   Widget _buildWithState(AuthenticationState state) {
+    final user = state.data?.user;
+    if (user == null) {
+      throw Exception('Should only get here if authenticated');
+    }
+
     return Container(
       padding: EdgeInsets.all(padding),
       child: ObjectLinearListView<int, Chat, ChatFilter, ChatRepository, ChatTile>(
@@ -48,7 +52,7 @@ class ChatListWidgetState extends State<ChatListWidget> {
         tileFactory: (TileCreationRequest<int, Chat, ChatFilter> request) {
           return _createTile(
             request: request,
-            currentUser: state.data.user,
+            currentUser: user,
           );
         },
 
@@ -71,8 +75,8 @@ class ChatListWidgetState extends State<ChatListWidget> {
   }
 
   ChatTile _createTile({
-    TileCreationRequest<int, Chat, ChatFilter> request,
-    User currentUser,
+    required TileCreationRequest<int, Chat, ChatFilter> request,
+    required User currentUser,
   }) {
     return ChatTile(
       request: request,

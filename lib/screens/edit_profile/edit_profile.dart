@@ -3,6 +3,7 @@ import 'package:courseplease/models/user.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/language.dart';
 import 'package:courseplease/widgets/language.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
@@ -11,12 +12,34 @@ import 'package:get_it/get_it.dart';
 class EditProfileScreen extends StatefulWidget {
   static const routeName = '/editProfile';
 
+  final User userClone;
+
+  EditProfileScreen({
+    required this.userClone,
+  });
+
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  State<EditProfileScreen> createState() => _EditProfileScreenState(
+    userClone: userClone,
+  );
+
+  static Future<void> show({
+    required BuildContext context,
+    required User userClone,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfileScreen(
+          userClone: userClone,
+        ),
+      ),
+    );
+  }
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  User _user; // Nullable.
+  final User userClone;
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   final _formKey = GlobalKey<FormState>();
 
@@ -24,10 +47,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _middleNameController = TextEditingController();
   final _lastNameController = TextEditingController();
 
+  _EditProfileScreenState({
+    required this.userClone,
+  }) {
+    _firstNameController.text = userClone.firstName;
+    _middleNameController.text = userClone.middleName;
+    _lastNameController.text = userClone.lastName;
+  }
+
   @override
   Widget build(BuildContext context) {
-    _loadIfNot();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile'),
@@ -51,21 +80,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  void _loadIfNot() {
-    if (_user == null) {
-      final arguments = ModalRoute.of(context).settings.arguments as EditProfileScreenArguments;
-      _user = arguments.user;
-      _firstNameController.text = _user.firstName;
-      _middleNameController.text = _user.middleName;
-      _lastNameController.text = _user.lastName;
-    }
-  }
-
   Widget _getFirstNameInput() {
     return TextFormField(
       controller: _firstNameController,
       decoration: InputDecoration(
-        labelText: 'First Name',
+        labelText: tr('EditProfileScreen.firstName'),
       ),
       validator: _notEmpty,
     );
@@ -75,7 +94,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return TextFormField(
       controller: _middleNameController,
       decoration: InputDecoration(
-        labelText: 'Middle Name',
+        labelText: tr('EditProfileScreen.middleName'),
       ),
     );
   }
@@ -84,7 +103,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return TextFormField(
       controller: _lastNameController,
       decoration: InputDecoration(
-        labelText: 'Last Name',
+        labelText: tr('EditProfileScreen.lastName'),
       ),
       validator: _notEmpty,
     );
@@ -95,15 +114,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       padding: EdgeInsets.only(top: 20, bottom: 20),
       child: Tags(
         textField: TagsTextField(
-          hintText: 'Add a language',
+          hintText: tr('EditProfileScreen.addLanguage'),
           onSubmitted: _filterAndAddLang,
           constraintSuggestion: true,
-          suggestions: ['en', 'ru', 'es'],
+          suggestions: ['en', 'ru', 'es'], // TODO: All languages
         ),
-        itemCount: _user.langs.length,
+        itemCount: userClone.langs.length,
         itemBuilder: (index) {
-          final lang = _user.langs[index];
-          final removeButton = _user.langs.length == 1
+          final lang = userClone.langs[index];
+          final removeButton = userClone.langs.length == 1
               ? null
               : ItemTagsRemoveButton(onRemoved: () {_removeLang(lang); return true;});
 
@@ -116,7 +135,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             removeButton: removeButton,
             color: Color(0x40808080),
-            textColor: Color(0xffff0000),
+            textColor: Color(0xffff0000), // TODO: Use theme colors
           );
         },
       ),
@@ -124,33 +143,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _filterAndAddLang(String lang) {
-    final index = _user.langs.indexOf(lang);
+    final index = userClone.langs.indexOf(lang);
 
     if (index != -1) return;
 
     setState(() {
-      _user.langs.add(lang);
+      userClone.langs.add(lang);
     });
   }
 
   void _removeLang(String lang) {
-    final index = _user.langs.indexOf(lang);
+    final index = userClone.langs.indexOf(lang);
 
     if (index == -1) return;
 
     setState(() {
-      _user.langs.removeAt(index);
+      userClone.langs.removeAt(index);
     });
   }
 
   void _save() {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       final request = SaveProfileRequest(
         firstName:  _firstNameController.text,
         middleName: _middleNameController.text,
         lastName:   _lastNameController.text,
-        sex:        _user.sex,
-        langs:      _user.langs,
+        sex:        userClone.sex,
+        langs:      userClone.langs,
       );
 
       _authenticationCubit.saveProfile(request);
@@ -158,8 +177,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  String _notEmpty(String value) { // Nullable
-    if (value == '') return 'Should not be empty.';
+  String? _notEmpty(String? value) {
+    if (value == null || value == '') return 'Should not be empty.';
     return null;
   }
 
@@ -169,12 +188,4 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _middleNameController.dispose();
     _lastNameController.dispose();
   }
-}
-
-class EditProfileScreenArguments {
-  final User user;
-
-  EditProfileScreenArguments({
-    @required this.user,
-  });
 }

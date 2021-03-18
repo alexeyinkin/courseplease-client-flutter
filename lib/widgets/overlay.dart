@@ -5,8 +5,8 @@ class ImageOverlay extends StatelessWidget {
   final Color color;
 
   ImageOverlay({
-    @required this.child,
-    Color color,
+    required this.child,
+    Color? color,
   }) :
       this.color = color ?? const Color(0x60000000)
   ;
@@ -29,12 +29,12 @@ class ImageOverlay extends StatelessWidget {
   }
 
   @protected
-  BorderRadius getBorderRadius() => null; // Nullable.
+  BorderRadius? getBorderRadius() => null;
 }
 
 class RoundedOverlay extends ImageOverlay {
   RoundedOverlay({
-    @required Widget child,
+    required Widget child,
   }) : super (
     child: child,
   );

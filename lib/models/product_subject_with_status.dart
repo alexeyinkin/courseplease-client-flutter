@@ -1,13 +1,12 @@
 import 'package:courseplease/models/product_subject.dart';
-import 'package:meta/meta.dart';
 
 class ProductSubjectWithStatus {
   final ProductSubject subject;
   final ProductSubjectStatus status;
 
   ProductSubjectWithStatus({
-    @required this.subject,
-    @required this.status,
+    required this.subject,
+    required this.status,
   });
 }
 

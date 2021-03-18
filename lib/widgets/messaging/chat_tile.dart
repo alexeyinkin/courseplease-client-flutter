@@ -16,8 +16,8 @@ class ChatTile extends AbstractObjectTile<int, Chat, ChatFilter> {
   final User currentUser;
 
   ChatTile({
-    @required TileCreationRequest<int, Chat, ChatFilter> request,
-    @required this.currentUser,
+    required TileCreationRequest<int, Chat, ChatFilter> request,
+    required this.currentUser,
   }) : super(
     request: request,
   );
@@ -89,8 +89,6 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter> {
   }
 
   Widget _getNameAndPreviewWidget(Chat chat, ChatMessage lastMessage) {
-    final localization = EasyLocalization.of(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -98,7 +96,7 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter> {
           children: [
             _getChatNameWidget(chat),
             Spacer(),
-            Text(formatTimeOrDate(lastMessage.dateTimeInsert, localization.locale)),
+            Text(formatTimeOrDate(lastMessage.dateTimeInsert, requireLocale(context))),
           ],
         ),
         SmallPadding(),

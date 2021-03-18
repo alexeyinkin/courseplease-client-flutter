@@ -12,8 +12,8 @@ class UnsortedImageListToolbar extends StatelessWidget {
   final SelectableListCubit<int, EditImageFilter> selectableListCubit;
 
   UnsortedImageListToolbar({
-    @required this.imageListActionCubit,
-    @required this.selectableListCubit,
+    required this.imageListActionCubit,
+    required this.selectableListCubit,
   });
 
   @override

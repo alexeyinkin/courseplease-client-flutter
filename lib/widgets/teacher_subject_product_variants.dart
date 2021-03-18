@@ -1,3 +1,4 @@
+import 'package:courseplease/models/money.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/theme/theme.dart';
@@ -6,10 +7,10 @@ import 'package:flutter/material.dart';
 
 class TeacherSubjectProductVariantsWidget extends StatelessWidget {
   final TeacherSubject teacherSubject;
-  final ValueChanged<ProductVariantFormatWithPrice> onPressed; // Nullable
+  final ValueChanged<ProductVariantFormatWithPrice>? onPressed;
 
   TeacherSubjectProductVariantsWidget({
-    @required this.teacherSubject,
+    required this.teacherSubject,
     this.onPressed,
   });
 
@@ -19,11 +20,12 @@ class TeacherSubjectProductVariantsWidget extends StatelessWidget {
 
     for (final format in teacherSubject.productVariantFormats) {
       if (!format.enabled) continue;
+      if (format.maxPrice == null) continue;
 
       children.add(
         TeacherSubjectProductVariantWidget(
           format: format,
-          priceWidget: _getPriceWidget(format),
+          priceWidget: _getPriceWidget(format, format.maxPrice!),
         ),
       );
     }
@@ -33,8 +35,8 @@ class TeacherSubjectProductVariantsWidget extends StatelessWidget {
     );
   }
 
-  Widget _getPriceWidget(ProductVariantFormatWithPrice format) {
-    final moneyFormatted = format.maxPrice.formatPer('h');
+  Widget _getPriceWidget(ProductVariantFormatWithPrice format, Money price) {
+    final moneyFormatted = price.formatPer('h');
 
     if (onPressed != null) {
       return ElevatedButton(
@@ -48,7 +50,7 @@ class TeacherSubjectProductVariantsWidget extends StatelessWidget {
 
   void _onFormatPressed(ProductVariantFormatWithPrice format) {
     if (onPressed != null) {
-      onPressed(format);
+      onPressed!(format);
     }
   }
 }
@@ -58,12 +60,14 @@ class TeacherSubjectProductVariantWidget extends StatelessWidget {
   final Widget priceWidget;
 
   TeacherSubjectProductVariantWidget({
-    @required this.format,
-    @required this.priceWidget,
+    required this.format,
+    required this.priceWidget,
   });
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyText1?.color ?? AppStyle.errorColor;
+
     return ListTile(
       title: Row(
         children: [
@@ -75,7 +79,7 @@ class TeacherSubjectProductVariantWidget extends StatelessWidget {
                 border: Border(
                   bottom: BorderSide(
                     style: BorderStyle.solid,
-                    color: Color.lerp(Theme.of(context).textTheme.bodyText1.color, null, .6),
+                    color: Color.lerp(textColor, null, .6) ?? AppStyle.errorColor,
                   ),
                 )
               ),

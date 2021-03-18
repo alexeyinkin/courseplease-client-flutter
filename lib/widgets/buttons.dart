@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 class ElevatedButtonWithProgress extends StatelessWidget {
   final Widget child;
   final bool isLoading;
-  final VoidCallback onPressed; // Nullable
+  final VoidCallback? onPressed;
   final bool enabled;
 
   ElevatedButtonWithProgress({
-    @required this.child,
-    @required this.isLoading,
-    @required this.onPressed,
+    required this.child,
+    required this.isLoading,
+    required this.onPressed,
     this.enabled = true,
   });
 
@@ -43,10 +43,10 @@ class ElevatedButtonWithDropdownMenu<T> extends StatelessWidget {
   final bool enabled;
 
   ElevatedButtonWithDropdownMenu({
-    @required this.child,
-    @required this.items,
-    @required this.onSelected,
-    @required this.isLoading,
+    required this.child,
+    required this.items,
+    required this.onSelected,
+    required this.isLoading,
     this.enabled = true,
   });
 
@@ -67,6 +67,11 @@ class ElevatedButtonWithDropdownMenu<T> extends StatelessWidget {
 
   void _onPressed(BuildContext context) {
     final renderObject = context.findRenderObject();
+
+    if (renderObject == null) {
+      throw Exception('context.findRenderObject() returned null');
+    }
+
     final translation = renderObject.getTransformTo(null).getTranslation();
     final rect = renderObject.paintBounds.shift(Offset(translation.x, translation.y));
     final screenSize = MediaQuery.of(context).size;
@@ -83,7 +88,7 @@ class ElevatedButtonWithDropdownMenu<T> extends StatelessWidget {
     ).then(_onSelected);
   }
 
-  void _onSelected(T result) { // Nullable
+  void _onSelected(T? result) {
     if (result != null) {
       onSelected(result);
     }

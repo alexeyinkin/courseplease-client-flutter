@@ -7,8 +7,8 @@ class AuthenticatedOrNotWidget extends StatefulWidget {
   final WidgetBuilder notAuthenticatedBuilder;
 
   AuthenticatedOrNotWidget({
-    @required this.authenticatedBuilder,
-    @required this.notAuthenticatedBuilder,
+    required this.authenticatedBuilder,
+    required this.notAuthenticatedBuilder,
   });
 
   @override
@@ -20,10 +20,9 @@ class AuthenticatedOrNotWidgetState extends State<AuthenticatedOrNotWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<AuthenticationState>(
       stream: _authenticationCubit.outState,
-      initialData: _authenticationCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(context, snapshot.data),
+      builder: (context, snapshot) => _buildWithState(context, snapshot.data ?? _authenticationCubit.initialState),
     );
   }
 

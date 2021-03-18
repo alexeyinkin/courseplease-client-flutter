@@ -2,14 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class CurrencyDropdownWidget extends StatelessWidget {
-  final String value;
+  final String? value;
   final List<String> values;
   final ValueChanged<String> onChanged;
 
   CurrencyDropdownWidget({
-    @required this.value,
-    @required this.values,
-    @required this.onChanged,
+    required this.value,
+    required this.values,
+    required this.onChanged,
   });
 
   @override
@@ -20,14 +20,14 @@ class CurrencyDropdownWidget extends StatelessWidget {
 
     if (value != null && !values.contains(value)) {
       items.add(
-        DropdownMenuItem<String>(value: value, child: Text(_getCurrencyTitle(value))),
+        DropdownMenuItem<String>(value: value, child: Text(_getCurrencyTitle(value!))),
       );
     }
 
     return DropdownButton<String>(
       value: value,
       items: items,
-      onChanged: onChanged,
+      onChanged: (String? value) => onChanged(value!),
     );
   }
 

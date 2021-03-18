@@ -14,7 +14,6 @@ import 'package:courseplease/utils/auth/device_info_for_server.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AuthenticationBloc extends Bloc{
@@ -69,6 +68,9 @@ class AuthenticationBloc extends Bloc{
   }
 
   void _requestAuthorization(AuthProvider provider, String oauthTempToken, BuildContext context) async {
+    final deviceKey = _authenticationState.deviceKey;
+    if (deviceKey == null) throw Exception('deviceKey is required for this');
+
     final stateAssoc = {
       'key': oauthTempToken,
       'host': AuthProvider.defaultProductionHostAndPort,
@@ -76,19 +78,19 @@ class AuthenticationBloc extends Bloc{
     final state = jsonEncode(stateAssoc);
     final uri = provider.getOauthUrl(state);
 
-    final signInResult = await Navigator.of(context).pushNamed(
-      SignInWebviewScreen.routeName,
-      arguments: SignInWebviewArguments(uri: uri),
+    final signInResult = SignInWebviewScreen.show(
+      context: context,
+      uri: uri,
     );
 
-    _testDeviceKey(_authenticationState.deviceKey);
+    _testDeviceKey(deviceKey);
   }
 
   void signOut() async {
     _setFreshState();
   }
 
-  Future<String> _loadDeviceKey() async { // Nullable.
+  Future<String?> _loadDeviceKey() async {
     return _secureStorage.read(key: _deviceKeyKey);
   }
 
@@ -166,32 +168,50 @@ class AuthenticationBloc extends Bloc{
   }
 
   void reloadCurrentActor() {
-    _testDeviceKey(_authenticationState.deviceKey);
+    final deviceKey = _authenticationState.deviceKey;
+    if (deviceKey == null) throw Exception('deviceKey is required for this');
+
+    _testDeviceKey(deviceKey);
   }
 
   void saveProfile(SaveProfileRequest request) async {
+    final deviceKey = _authenticationState.deviceKey;
+    if (deviceKey == null) throw Exception('deviceKey is required for this');
+
     final me = await _apiClient.saveProfile(request);
-    _setMe(me, _authenticationState.deviceKey);
+    _setMe(me, deviceKey);
   }
 
   Future<void> saveConsultingProduct(SaveConsultingProductRequest request) async {
+    final deviceKey = _authenticationState.deviceKey;
+    if (deviceKey == null) throw Exception('deviceKey is required for this');
+
     final me = await _apiClient.saveConsultingProduct(request);
-    _setMe(me, _authenticationState.deviceKey);
+    _setMe(me, deviceKey);
   }
 
   Future<void> saveContactParams(SaveContactParamsRequest request) async {
+    final deviceKey = _authenticationState.deviceKey;
+    if (deviceKey == null) throw Exception('deviceKey is required for this');
+
     final me = await _apiClient.saveContactParams(request);
-    _setMe(me, _authenticationState.deviceKey);
+    _setMe(me, deviceKey);
   }
 
   Future<void> synchronizeProfileSynchronously(int contactId) async {
+    final deviceKey = _authenticationState.deviceKey;
+    if (deviceKey == null) throw Exception('deviceKey is required for this');
+
     final me = await _apiClient.syncProfileSync(contactId);
-    _setMe(me, _authenticationState.deviceKey);
+    _setMe(me, deviceKey);
   }
 
   Future<void> synchronizeProfilesSynchronously() async {
+    final deviceKey = _authenticationState.deviceKey;
+    if (deviceKey == null) throw Exception('deviceKey is required for this');
+
     final me = await _apiClient.syncAllProfilesSync();
-    _setMe(me, _authenticationState.deviceKey);
+    _setMe(me, deviceKey);
   }
 
   @override
@@ -204,13 +224,13 @@ class AuthenticationBloc extends Bloc{
 class AuthenticationState {
   final AuthenticationStatus status;
   final DeviceValidity deviceValidity;
-  final String deviceKey; // Nullable
-  final MeResponseData data; // Nullable
+  final String? deviceKey;
+  final MeResponseData? data;
   final List<int> teacherSubjectIds;
 
   AuthenticationState({
-    @required this.status,
-    @required this.deviceValidity,
+    required this.status,
+    required this.deviceValidity,
     this.deviceKey,
     this.data,
     this.teacherSubjectIds = const <int>[],
@@ -310,7 +330,7 @@ class RequestAuthorizationEvent extends AuthenticationEvent {
   final BuildContext context;
 
   RequestAuthorizationEvent({
-    @required this.provider,
-    @required this.context,
+    required this.provider,
+    required this.context,
   });
 }

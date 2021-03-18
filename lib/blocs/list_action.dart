@@ -13,7 +13,7 @@ abstract class ListActionCubit<I, A> extends Bloc {
     actionInProgress: null,
   );
 
-  A _actionInProgress;
+  A? _actionInProgress;
 
   @protected
   void pushOutput() {
@@ -25,7 +25,7 @@ abstract class ListActionCubit<I, A> extends Bloc {
   }
 
   @protected
-  void setActionInProgress(A action) { // Nullable
+  void setActionInProgress(A? action) {
     _actionInProgress = action;
     pushOutput();
   }
@@ -38,10 +38,11 @@ abstract class ListActionCubit<I, A> extends Bloc {
 
 class ListActionCubitState<A> {
   final bool enabled;
-  final A actionInProgress; // Nullable
+  final A? actionInProgress;
+
   ListActionCubitState({
-    @required this.enabled,
-    @required this.actionInProgress,
+    required this.enabled,
+    required this.actionInProgress,
   });
 }
 

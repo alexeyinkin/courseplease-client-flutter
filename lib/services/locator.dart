@@ -21,8 +21,7 @@ void initializeServiceLocator() {
 }
 
 void _initializeNetwork() {
-  final apiClient = ApiClient();
-  apiClient.setLang('en'); // TODO: Use the device locale.
+  final apiClient = ApiClient(lang: 'en'); // TODO: Use the device locale.
 
   GetIt.instance
       ..registerSingleton<ApiClient>(apiClient)

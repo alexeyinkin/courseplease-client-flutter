@@ -6,7 +6,7 @@ class SubwayStationWidget extends StatelessWidget {
   final double textOpacity;
 
   SubwayStationWidget({
-    @required this.subwayStation,
+    required this.subwayStation,
     this.textOpacity = 1,
   });
 

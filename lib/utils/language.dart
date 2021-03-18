@@ -1,4 +1,4 @@
-String getLanguageName(String lang) { // Return nullable
+String? getLanguageName(String lang) {
   switch (lang) {
     case 'en': return 'English';
     case 'cn': return 'Chinese';
@@ -8,8 +8,8 @@ String getLanguageName(String lang) { // Return nullable
     case 'fr': return 'French';
     case 'ms': return 'Malay';
     case 'ru': return 'Русский';
-    default: return null;
   }
+  return null;
 }
 
 String langToCountryCode(String lang) {

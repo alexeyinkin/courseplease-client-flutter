@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'package:courseplease/blocs/model_cache.dart';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ModelWithChildrenCacheBloc<I, O extends WithIdChildrenParent<I, O, O>> extends ModelCacheBloc<I, O>{
@@ -12,7 +11,7 @@ class ModelWithChildrenCacheBloc<I, O extends WithIdChildrenParent<I, O, O>> ext
   Stream<List<O>> get outTopLevelObjects => _outTopLevelObjectsController.stream;
 
   ModelWithChildrenCacheBloc({
-    @required AbstractRepository<I, O> repository,
+    required AbstractRepository<I, O> repository,
   }) : super(repository: repository);
 
   @override

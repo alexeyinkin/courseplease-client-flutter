@@ -10,17 +10,17 @@ import 'package:get_it/get_it.dart';
 import 'model_dropdown.dart';
 
 class ProductSubjectDropdown extends StatefulWidget {
-  final int selectedId;
+  final int? selectedId;
   final List<int> showIds;
   final ValueChanged<int> onChanged;
-  final Widget hint; // Nullable
+  final Widget? hint;
 
   static const moreId = -1;
 
   ProductSubjectDropdown({
-    @required this.selectedId,
-    @required this.showIds,
-    @required this.onChanged,
+    required this.selectedId,
+    required this.showIds,
+    required this.onChanged,
     this.hint,
   });
 
@@ -53,8 +53,8 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
   List<int> _getShowIds() {
     final result = List<int>.from(widget.showIds);
 
-    if (!result.contains(widget.selectedId)) {
-      result.add(widget.selectedId);
+    if (widget.selectedId != null && !result.contains(widget.selectedId)) {
+      result.add(widget.selectedId!);
     }
 
     return result;

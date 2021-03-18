@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'package:meta/meta.dart';
 import 'abstract.dart';
 
 class TeacherFilter extends AbstractFilter {
-  final int subjectId;
+  final int? subjectId;
 
   TeacherFilter({
-    @required this.subjectId,
+    required this.subjectId,
   });
 
   String toString() {

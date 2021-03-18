@@ -10,23 +10,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class EditTeacherSubjectScreen extends StatefulWidget {
-  static const routeName = '/editTeacherSubject';
+  final TeacherSubject teacherSubjectClone;
+
+  EditTeacherSubjectScreen({
+    required this.teacherSubjectClone,
+  });
 
   @override
-  _EditTeacherSubjectScreenState createState() => _EditTeacherSubjectScreenState();
+  _EditTeacherSubjectScreenState createState() => _EditTeacherSubjectScreenState(
+    teacherSubjectClone: teacherSubjectClone,
+  );
+
+  static Future<void> show({
+    required BuildContext context,
+    required TeacherSubject teacherSubjectClone,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditTeacherSubjectScreen(
+          teacherSubjectClone: teacherSubjectClone,
+        ),
+      ),
+    );
+  }
 }
 
 class _EditTeacherSubjectScreenState extends State<EditTeacherSubjectScreen> {
-  EditTeacherSubjectCubit _editTeacherSubjectCubit; // Nullable
+  late final EditTeacherSubjectCubit _editTeacherSubjectCubit;
+
+  _EditTeacherSubjectScreenState({
+    required TeacherSubject teacherSubjectClone,
+  }) {
+    _editTeacherSubjectCubit = EditTeacherSubjectCubit(
+      teacherSubjectClone: teacherSubjectClone,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    _loadIfNot();
-
-    return StreamBuilder(
+    return StreamBuilder<EditTeacherSubjectState>(
       stream: _editTeacherSubjectCubit.outState,
-      initialData: _editTeacherSubjectCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data),
+      builder: (context, snapshot) => _buildWithState(
+        snapshot.data ?? _editTeacherSubjectCubit.initialState,
+      ),
     );
   }
 
@@ -73,19 +100,10 @@ class _EditTeacherSubjectScreenState extends State<EditTeacherSubjectScreen> {
     );
   }
 
-  void _loadIfNot() {
-    if (_editTeacherSubjectCubit != null) return;
-
-    final arguments = ModalRoute.of(context).settings.arguments as EditTeacherSubjectScreenArguments;
-    _editTeacherSubjectCubit = EditTeacherSubjectCubit(
-      teacherSubjectClone: arguments.teacherSubjectClone,
-    );
-  }
-
   Widget _getSubjectTitleWidget(EditTeacherSubjectState state) {
     final subjectTitle = (state.productSubject == null)
         ? '...'
-        : state.productSubject.title;
+        : state.productSubject!.title;
 
     return Row(
       children: [
@@ -110,11 +128,4 @@ class _EditTeacherSubjectScreenState extends State<EditTeacherSubjectScreen> {
   void _save() {
     _editTeacherSubjectCubit.save();
   }
-}
-
-class EditTeacherSubjectScreenArguments {
-  final TeacherSubject teacherSubjectClone;
-  EditTeacherSubjectScreenArguments({
-    @required this.teacherSubjectClone,
-  });
 }

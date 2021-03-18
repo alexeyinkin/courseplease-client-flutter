@@ -6,7 +6,7 @@ class AuthProviderIcon extends StatelessWidget {
   final double scale;
 
   AuthProviderIcon({
-    @required this.name,
+    required this.name,
     this.scale = 1,
   });
 

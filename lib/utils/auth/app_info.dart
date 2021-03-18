@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:package_info/package_info.dart';
 
 class AppInfo {
@@ -6,8 +5,8 @@ class AppInfo {
   final String buildNumber;
 
   AppInfo._({
-    @required this.version,
-    @required this.buildNumber,
+    required this.version,
+    required this.buildNumber,
   });
 
   static getCurrent() async {

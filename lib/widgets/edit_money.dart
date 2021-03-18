@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 class EditMoneyWidget extends StatefulWidget {
   final Money money;
   final List<String> curs;
-  final FocusNode valueFocusNode; // Nullable
-  final TextEditingController valueTextEditingController; // Nullable
+  final FocusNode? valueFocusNode;
+  final TextEditingController valueController;
 
   EditMoneyWidget({
-    @required this.money,
-    @required this.curs,
+    required this.money,
+    required this.curs,
     this.valueFocusNode,
-    this.valueTextEditingController,
+    required this.valueController,
   });
 
   @override
@@ -23,8 +23,7 @@ class EditMoneyWidget extends StatefulWidget {
 }
 
 class _EditMoneyWidgetState extends State<EditMoneyWidget> {
-  TextEditingController _valueController; // Nullable
-  String _cur; // Nullable
+  String? _cur;
 
   @override
   void initState() {
@@ -32,22 +31,13 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
 
     _cur = widget.money.getFirstKey() ?? widget.curs[0];
 
-    final double value = widget.money.map[_cur]; // Nullable
+    final double? value = widget.money.map[_cur];
     final String valueString = (value == null || value == 0)
         ? ''
         : formatMoneyValue(value);
 
-    if (widget.valueTextEditingController == null) {
-      _valueController = TextEditingController();
-    }
-
-    final valueController = _getValueTextEditingController();
-    valueController.text = valueString;
-    valueController.addListener(_onValueChanged);
-  }
-
-  TextEditingController _getValueTextEditingController() {
-    return widget.valueTextEditingController ?? _valueController;
+    widget.valueController.text = valueString;
+    widget.valueController.addListener(_onValueChanged);
   }
 
   @override
@@ -68,7 +58,7 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
     return SizedBox(
       width: 80,
       child: TextFormField(
-        controller: _getValueTextEditingController(),
+        controller: widget.valueController,
         textAlign: TextAlign.end,
         keyboardType: TextInputType.number,
         focusNode: widget.valueFocusNode,
@@ -81,10 +71,9 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
   }
 
   void _onValueInputTap() {
-    final controller = _getValueTextEditingController();
-    controller.selection = TextSelection(
+    widget.valueController.selection = TextSelection(
       baseOffset: 0,
-      extentOffset: controller.text.length,
+      extentOffset: widget.valueController.text.length,
     );
   }
 
@@ -100,8 +89,8 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
     _updateWidgetMoney();
   }
 
-  double _parseValue() { // Nullable
-    return double.tryParse(_getValueTextEditingController().text);
+  double? _parseValue() {
+    return double.tryParse(widget.valueController.text);
   }
 
   void _onCurrencyChanged(String cur) {
@@ -112,15 +101,7 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
   void _updateWidgetMoney() {
     setState(() {
       final value = _parseValue();
-      widget.money.replaceFrom(Money({_cur: value}));
+      widget.money.replaceFrom(Money.fromNullableMap({_cur: value}));
     });
-  }
-
-  @override
-  void dispose() {
-    if (_valueController != null) {
-      _valueController.dispose();
-    }
-    super.dispose();
   }
 }

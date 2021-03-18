@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 class FittedIconTextWidget extends StatelessWidget {
-  final IconData iconData; // Nullable
-  final String text; // Nullable
+  final IconData? iconData;
+  final String? text;
 
   FittedIconTextWidget({
     this.iconData,
@@ -17,7 +17,7 @@ class FittedIconTextWidget extends StatelessWidget {
       children.add(Icon(iconData, size: 60));
     }
     if (text != null) {
-      children.add(Text(text));
+      children.add(Text(text!));
     }
 
     return Container(

@@ -4,12 +4,13 @@ import 'package:courseplease/widgets/teacher_subject_product_variants.dart';
 import 'package:flutter/material.dart';
 
 class EditFormatPriceWidget extends StatefulWidget {
-  final ProductVariantFormatWithPrice productVariantFormatWithPrice; // Nullable
+  /// All possible formats, filled by [EditTeacherSubjectCubit._ensureHaveAllFormats]
+  final ProductVariantFormatWithPrice productVariantFormatWithPrice;
   final List<String> curs;
 
   EditFormatPriceWidget({
-    @required this.productVariantFormatWithPrice,
-    @required this.curs,
+    required this.productVariantFormatWithPrice,
+    required this.curs,
   });
 
   @override
@@ -17,14 +18,8 @@ class EditFormatPriceWidget extends StatefulWidget {
 }
 
 class _EditFormatPriceWidgetState extends State<EditFormatPriceWidget> {
-  FocusNode _valueFocusNode;
+  final FocusNode _valueFocusNode = FocusNode();
   final _valueTextEditingController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _valueFocusNode = FocusNode();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +36,10 @@ class _EditFormatPriceWidgetState extends State<EditFormatPriceWidget> {
             Visibility(
               visible: widget.productVariantFormatWithPrice.enabled,
               child: EditMoneyWidget(
-                money: widget.productVariantFormatWithPrice.maxPrice,
+                money: widget.productVariantFormatWithPrice.maxPrice!,
                 curs: widget.curs,
                 valueFocusNode: _valueFocusNode,
-                valueTextEditingController: _valueTextEditingController,
+                valueController: _valueTextEditingController,
               ),
             ),
           ],

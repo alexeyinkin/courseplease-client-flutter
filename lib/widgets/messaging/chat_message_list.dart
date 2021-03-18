@@ -15,7 +15,7 @@ class ChatMessageListWidget extends StatefulWidget {
   final ChatMessageFilter filter;
 
   ChatMessageListWidget({
-    @required this.filter,
+    required this.filter,
   });
 
   @override
@@ -27,21 +27,25 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<AuthenticationState>(
       stream: _authenticationCubit.outState,
-      initialData: _authenticationCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _authenticationCubit.initialState),
     );
   }
 
   Widget _buildWithState(AuthenticationState state) {
+    final user = state.data?.user;
+    if (user == null) {
+      throw Exception('Should only get here if authenticated');
+    }
+
     return Container(
       child: ObjectLinearListView<int, ChatMessage, ChatMessageFilter, ChatMessageRepository, ChatMessageTile>(
         filter: widget.filter,
         tileFactory: (TileCreationRequest<int, ChatMessage, ChatMessageFilter> request) {
           return _createTile(
             request: request,
-            currentUser: state.data.user,
+            currentUser: user,
           );
         },
 
@@ -64,8 +68,8 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
   }
 
   ChatMessageTile _createTile({
-    TileCreationRequest<int, ChatMessage, ChatMessageFilter> request,
-    User currentUser,
+    required TileCreationRequest<int, ChatMessage, ChatMessageFilter> request,
+    required User currentUser,
   }) {
     return ChatMessageTile(
       request: request,

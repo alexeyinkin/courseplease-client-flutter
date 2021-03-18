@@ -6,7 +6,7 @@ class LinkedProfilesWidget extends StatelessWidget {
   final MeResponseData meResponseData;
 
   LinkedProfilesWidget({
-    @required this.meResponseData,
+    required this.meResponseData,
   });
 
   @override

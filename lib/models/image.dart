@@ -1,6 +1,4 @@
 import 'package:courseplease/models/product_subject.dart';
-import 'package:meta/meta.dart';
-
 import 'interfaces.dart';
 import 'mapping.dart';
 
@@ -17,13 +15,13 @@ class ImageEntity implements WithId<int> {
   static const lightboxFormat = '2000x2000';
 
   ImageEntity({
-    @required this.id,
-    @required this.title,
-    @required this.urls,
-    @required this.authorId,
-    @required this.status,
-    @required this.albums,
-    @required this.mappings,
+    required this.id,
+    required this.title,
+    required this.urls,
+    required this.authorId,
+    required this.status,
+    required this.albums,
+    required this.mappings,
   });
 
   factory ImageEntity.fromMap(Map<String, dynamic> map) {
@@ -44,14 +42,14 @@ class ImageEntity implements WithId<int> {
     );
   }
 
-  String getLightboxUrl() {
+  String? getLightboxUrl() {
     return urls[lightboxFormat];
   }
 
   static ImageStatus getStatus(List<ImageAlbumLink> links) {
     if (links.isEmpty) return ImageStatus.orphan;
 
-    ImageAlbumLink unsortedAlbum = null;
+    ImageAlbumLink? unsortedAlbum;
     for (final link in links) {
       if (link.purposeId == ImageAlbumPurpose.unsorted) {
         unsortedAlbum = link;
@@ -62,7 +60,7 @@ class ImageEntity implements WithId<int> {
       return ImageStatus.inconsistent; // TODO: Log
     }
 
-    ImageAlbumLink undeletedAlbum = null;
+    ImageAlbumLink? undeletedAlbum;
     for (final link in links) {
       if (link.dateTimeDelete == null) {
         undeletedAlbum = link;
@@ -72,7 +70,7 @@ class ImageEntity implements WithId<int> {
     if (undeletedAlbum == null) return ImageStatus.trash;
     if (unsortedAlbum != null) return ImageStatus.unsorted;
 
-    ImageAlbumLink nonRejectedAlbum = null;
+    ImageAlbumLink? nonRejectedAlbum;
     for (final link in links) {
       if (link.status != ImageAlbumLinkStatus.rejected) {
         nonRejectedAlbum = link;
@@ -81,7 +79,7 @@ class ImageEntity implements WithId<int> {
     }
     if (nonRejectedAlbum == null) return ImageStatus.rejected;
 
-    ImageAlbumLink publishedAlbum = null;
+    ImageAlbumLink? publishedAlbum;
     for (final link in links) {
       if (link.status == ImageAlbumLinkStatus.published) {
         publishedAlbum = link;
@@ -90,7 +88,7 @@ class ImageEntity implements WithId<int> {
     }
     if (publishedAlbum != null) return ImageStatus.published;
 
-    ImageAlbumLink nonReviewAlbum = null;
+    ImageAlbumLink? nonReviewAlbum;
     for (final link in links) {
       if (link.status != ImageAlbumLinkStatus.review) {
         nonReviewAlbum = link;
@@ -107,15 +105,15 @@ class ImageAlbumLink {
   final int albumId;
   final int purposeId;
   final int status;
-  final DateTime dateTimeDelete; // Nullable
+  final DateTime? dateTimeDelete;
   final List<int> subjectIds;
 
   ImageAlbumLink({
-    @required this.albumId,
-    @required this.purposeId,
-    @required this.status,
-    @required this.dateTimeDelete,
-    @required this.subjectIds,
+    required this.albumId,
+    required this.purposeId,
+    required this.status,
+    required this.dateTimeDelete,
+    required this.subjectIds,
   });
 
   factory ImageAlbumLink.fromMap(Map<String, dynamic> map) {
@@ -151,7 +149,7 @@ class ImageAlbumPurpose {
   static const unsorted = 6;
   static const backstage = 8;
 
-  static String getTitleKey(int purposeId, ProductSubject subject) { // Return Nullable
+  static String requireTitleKey(int purposeId, ProductSubject subject) {
     if (subject.allowsImagePortfolio) {
       return purposeId.toString();
     }
@@ -161,10 +159,10 @@ class ImageAlbumPurpose {
         return purposeId.toString() + '_asTheOnly';
     }
 
-    return null;
+    throw Exception('Unknown purposeId ' + purposeId.toString() + ' for subject ' + subject.title);
   }
 
-  static String getTitleKeyIfNotTheOnly(int purposeId, ProductSubject subject) { // Return Nullable
+  static String? getTitleKeyIfNotTheOnly(int purposeId, ProductSubject subject) {
     if (subject.allowsImagePortfolio) {
       return purposeId.toString();
     }

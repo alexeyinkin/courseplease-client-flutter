@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _currentTab,
         type: BottomNavigationBarType.fixed,
         onTap: _onTabTap,
-        unselectedItemColor: Theme.of(context).textTheme.caption.color,
+        unselectedItemColor: Theme.of(context).textTheme.caption!.color,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
@@ -42,12 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: tr('PickedTabWidget.iconTitle'),
-            backgroundColor: Colors.red,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: tr('MessagesTabWidget.iconTitle'),
-            backgroundColor: Colors.green,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

@@ -6,6 +6,7 @@ import 'package:courseplease/models/product_subject.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'authentication.dart';
+import 'model_cache.dart';
 
 class MediaDestinationCubit extends Bloc {
   final _outStateController = BehaviorSubject<MediaDestinationState>();
@@ -15,10 +16,10 @@ class MediaDestinationCubit extends Bloc {
   Stream<MediaDestinationState> get outAction => _outActionController.stream;
 
   final _authenticationBloc = GetIt.instance.get<AuthenticationBloc>();
-  StreamSubscription _authenticationBlocSubscription;
+  late StreamSubscription _authenticationBlocSubscription;
 
   final _productSubjectCacheBloc = GetIt.instance.get<ProductSubjectCacheBloc>();
-  StreamSubscription _productSubjectCacheSubscription;
+  late StreamSubscription _productSubjectCacheSubscription;
 
   final initialState = MediaDestinationState(
     canSubmit: false,
@@ -29,12 +30,12 @@ class MediaDestinationCubit extends Bloc {
     inProgress: false,
   );
 
-  AuthenticationState _authenticationState;
-  Map<int, ProductSubject> _productSubjects;
-  int _purposeId; // Nullable
-  int _subjectId; // Nullable
-  List<int> _showSubjectIds; // Nullable
-  Future _requestFuture; // Nullable
+  AuthenticationState? _authenticationState;
+  Map<int, ProductSubject>? _productSubjects;
+  int? _purposeId;
+  int? _subjectId;
+  List<int>? _showSubjectIds;
+  Future? _requestFuture;
 
   static const _allPurposes = [
     ImageAlbumPurpose.portfolio,
@@ -48,7 +49,7 @@ class MediaDestinationCubit extends Bloc {
 
   MediaDestinationCubit() {
     _authenticationBlocSubscription = _authenticationBloc.outState.listen(_onAuthenticationChange);
-    _productSubjectCacheSubscription = _productSubjectCacheBloc.outObjectsByIds.listen(_onProductSubjectsChange);
+    _productSubjectCacheSubscription = _productSubjectCacheBloc.outState.listen(_onProductSubjectsChange);
   }
 
   void _onAuthenticationChange(AuthenticationState authenticationState) {
@@ -57,8 +58,8 @@ class MediaDestinationCubit extends Bloc {
     _pushOutput();
   }
 
-  void _onProductSubjectsChange(Map<int, ProductSubject> productSubjects) {
-    _productSubjects = productSubjects;
+  void _onProductSubjectsChange(ModelCacheState<int, ProductSubject> state) {
+    _productSubjects = state.objectsByIds;
     _updateShowSubjectIds();
     _pushOutput();
   }
@@ -68,10 +69,10 @@ class MediaDestinationCubit extends Bloc {
       return;
     }
 
-    _showSubjectIds = _getShowSubjectIds(_authenticationState.teacherSubjectIds);
+    _showSubjectIds = _getShowSubjectIds(_authenticationState!.teacherSubjectIds);
 
-    if (_showSubjectIds.length == 1 && _subjectId == null) {
-      _subjectId = _showSubjectIds[0];
+    if (_showSubjectIds!.length == 1 && _subjectId == null) {
+      _subjectId = _showSubjectIds![0];
     }
   }
 
@@ -92,7 +93,7 @@ class MediaDestinationCubit extends Bloc {
       purposeId: _getEffectivePurposeId(),
       showPurposeIds: _getShowPurposeIds(),
       subjectId: _subjectId,
-      showSubjectIds: _showSubjectIds,
+      showSubjectIds: _showSubjectIds ?? [],
       inProgress: _requestFuture != null,
     );
   }
@@ -103,7 +104,7 @@ class MediaDestinationCubit extends Bloc {
     return true;
   }
 
-  int _getEffectivePurposeId() { // Nullable
+  int? _getEffectivePurposeId() {
     final showPurposeIds = _getShowPurposeIds();
     if (showPurposeIds.length == 1) {
       return showPurposeIds[0];
@@ -116,7 +117,11 @@ class MediaDestinationCubit extends Bloc {
       return [];
     }
 
-    final ps = _productSubjects[_subjectId];
+    final ps = _productSubjects![_subjectId];
+    if (ps == null) {
+      throw Exception('Never happens as subjectId can only be picked from the list of them all.');
+    }
+
     return ps.allowsImagePortfolio ? _allPurposes : _nonPortfolioPurposes;
   }
 
@@ -124,7 +129,7 @@ class MediaDestinationCubit extends Bloc {
     final showIds = <int>[];
 
     for (final id in teacherSubjectIds) {
-      if (!_productSubjects.containsKey(id)) {
+      if (!(_productSubjects ?? {}).containsKey(id)) {
         // A disabled subject for which the user has a display.
         // Disabled subjects do not come from server.
         continue;
@@ -134,7 +139,7 @@ class MediaDestinationCubit extends Bloc {
     return showIds;
   }
 
-  void setPurposeId(int purposeId) {
+  void setPurposeId(int? purposeId) {
     if (_purposeId == purposeId) return;
     _purposeId = purposeId;
     _pushOutput();
@@ -144,7 +149,10 @@ class MediaDestinationCubit extends Bloc {
     if (_productSubjects == null) return;
 
     bool changed = false;
-    final ps = _productSubjects[subjectId];
+    final ps = _productSubjects![subjectId];
+    if (ps == null) {
+      throw Exception('Never happens as subjectId can only be picked from the list of them all.');
+    }
 
     if (!ps.allowsImagePortfolio && _isPurposeAPortfolio(_purposeId)) {
       _purposeId = ImageAlbumPurpose.backstage;
@@ -161,7 +169,7 @@ class MediaDestinationCubit extends Bloc {
     }
   }
 
-  bool _isPurposeAPortfolio(int purposeId) {
+  bool _isPurposeAPortfolio(int? purposeId) {
     switch (purposeId) {
       case ImageAlbumPurpose.portfolio:
       case ImageAlbumPurpose.customersPortfolio:
@@ -186,19 +194,19 @@ class MediaDestinationCubit extends Bloc {
 
 class MediaDestinationState {
   final bool canSubmit;
-  final int purposeId; // Nullable
+  final int? purposeId;
   final List<int> showPurposeIds;
-  final int subjectId; // Nullable
+  final int? subjectId;
   final List<int> showSubjectIds;
   final bool inProgress;
 
   MediaDestinationState({
-    this.canSubmit,
-    this.purposeId,
-    this.showPurposeIds,
-    this.subjectId,
-    this.showSubjectIds,
-    this.inProgress,
+    required this.canSubmit,
+    required this.purposeId,
+    required this.showPurposeIds,
+    required this.subjectId,
+    required this.showSubjectIds,
+    required this.inProgress,
   });
 }
 

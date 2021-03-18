@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:courseplease/models/interfaces.dart';
+import 'package:flutter/material.dart';
 
 enum RequestStatus {
   notTried,
@@ -32,7 +33,7 @@ Map<String, String> toStringStringMap(mapOrEmptyList) {
       : mapOrEmptyList.cast<String, String>();
 }
 
-O whereId<I, O extends WithId<I>>(List<O> objects, I id) { // Return Nullable
+O? whereId<I, O extends WithId<I>>(List<O> objects, I id) {
   for (final object in objects) {
     if (object.id == id) {
       return object;
@@ -49,16 +50,6 @@ List<O> whereIds<I, O extends WithId<I>>(List<O> objects, List<I> ids) {
     if (idsMap.containsKey(object.id)) {
       result.add(object);
     }
-  }
-
-  return result;
-}
-
-Map<K, V> whereKeys<K, V>(Map<K, V> map, List<K> keys) {
-  final result = Map<K, V>();
-
-  for (final key in keys) {
-    result[key] = map[key];
   }
 
   return result;
@@ -180,6 +171,12 @@ String markdownToControllerText(String markdown) {
 /// markdown to the backend. One visual line break is to line breaks in markdown.
 String controllerTextToMarkdown(String controllerText) {
   return controllerText.replaceAll('\n', '\n\n');
+}
+
+Locale requireLocale(BuildContext context) {
+  final localization = EasyLocalization.of(context);
+  if (localization == null) throw Exception('No locale');
+  return localization.locale;
 }
 
 Type typeOf<T>() => T;

@@ -18,7 +18,7 @@ abstract class AbstractFilteredModelListBloc<
   Stream<ModelListState<I, O>> get outState => _outStateController.stream;
 
   AbstractFilteredModelListBloc({
-    @required this.filter,
+    required this.filter,
   });
 
   final initialState = ModelListState<I, O>(
@@ -50,12 +50,12 @@ class NetworkFilteredModelListBloc<
   RequestStatus _status = RequestStatus.notTried;
   bool _hasMore = true;
 
-  Future<void> _currentLoadingFuture; // Nullable.
-  String _nextPageToken = null;
+  Future<void>? _currentLoadingFuture;
+  String? _nextPageToken;
 
   NetworkFilteredModelListBloc({
-    @required this.repository,
-    F filter,
+    required this.repository,
+    required F filter,
   }) : super(
     filter: filter,
   );
@@ -155,11 +155,11 @@ class ModelListState<I, O extends WithId<I>> {
   final bool hasMore;
 
   ModelListState({
-    @required this.objects,
-    @required this.objectIds,
-    @required this.objectsByIds,
-    @required this.status,
-    @required this.hasMore,
+    required this.objects,
+    required this.objectIds,
+    required this.objectsByIds,
+    required this.status,
+    required this.hasMore,
   });
 }
 
@@ -167,13 +167,14 @@ class SubsetFilteredModelListBloc<
   I,
   O extends WithId<I>
 > extends AbstractFilteredModelListBloc<I, O, IdsSubsetFilter<I, O>> {
-  final IdsSubsetFilter<I, O> idsSubsetFilter;
-  StreamSubscription<ModelListState<I, O>> _nestedBlocSubscription;
+  late StreamSubscription<ModelListState<I, O>> _nestedBlocSubscription;
 
   SubsetFilteredModelListBloc({
-    @required this.idsSubsetFilter,
-  }) {
-    _nestedBlocSubscription = idsSubsetFilter.nestedList.outState.listen(
+    required IdsSubsetFilter<I, O> filter,
+  }) : super(
+    filter: filter,
+  ) {
+    _nestedBlocSubscription = filter.nestedList.outState.listen(
       _onNestedBlocStateChanged
     );
   }
@@ -182,7 +183,7 @@ class SubsetFilteredModelListBloc<
     final objects = <O>[];
     final objectsByIds = Map<I, O>();
 
-    for (final id in idsSubsetFilter.ids) {
+    for (final id in filter.ids) {
       final object = nestedState.objectsByIds[id];
       if (object == null) {
         continue; // TODO: Throw?
@@ -204,12 +205,12 @@ class SubsetFilteredModelListBloc<
 
   @override
   void loadInitialIfNot() {
-    // Noting we can do about loading as the content is pushed from the nested bloc.
+    // Nothing we can do about loading as the content is pushed from the nested bloc.
   }
 
   @override
   void loadMoreIfCan() {
-    // Noting we can do about loading as the content is pushed from the nested bloc.
+    // Nothing we can do about loading as the content is pushed from the nested bloc.
   }
 
   @override

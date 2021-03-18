@@ -8,13 +8,13 @@ import 'device_info.dart';
 /// A subset of [DeviceInfo] that is to be sent to the server.
 class DeviceInfoForServer {
   final PlatformInstanceForServer platform;
-  final AndroidDeviceInfoForServer androidDeviceInfo; // Nullable.
-  final IosDeviceInfoForServer iosDeviceInfo; // Nullable.
+  final AndroidDeviceInfoForServer? androidDeviceInfo;
+  final IosDeviceInfoForServer? iosDeviceInfo;
 
   DeviceInfoForServer._({
-    @required this.platform,
-    @required this.androidDeviceInfo,
-    @required this.iosDeviceInfo,
+    required this.platform,
+    required this.androidDeviceInfo,
+    required this.iosDeviceInfo,
   });
 
   factory DeviceInfoForServer.fromDeviceInfo(DeviceInfo deviceInfo) {
@@ -42,9 +42,9 @@ class PlatformInstanceForServer {
   final String operatingSystemVersion;
 
   PlatformInstanceForServer._({
-    @required this.localeName,
-    @required this.operatingSystem,
-    @required this.operatingSystemVersion,
+    required this.localeName,
+    required this.operatingSystem,
+    required this.operatingSystemVersion,
   });
 
   factory PlatformInstanceForServer.fromPlatformInstance(PlatformInstance platformInstance) {
@@ -73,13 +73,13 @@ class AndroidDeviceInfoForServer {
   final AndroidBuildVersionForServer version;
 
   AndroidDeviceInfoForServer._({
-    @required this.androidId,
-    @required this.brand,
-    @required this.model,
-    @required this.version,
+    required this.androidId,
+    required this.brand,
+    required this.model,
+    required this.version,
   });
 
-  factory AndroidDeviceInfoForServer.fromAndroidDeviceInfo(AndroidDeviceInfo androidDeviceInfo) { // Nullable argument and return
+  static AndroidDeviceInfoForServer? fromAndroidDeviceInfo(AndroidDeviceInfo? androidDeviceInfo) {
     if (androidDeviceInfo == null) return null;
 
     return AndroidDeviceInfoForServer._(
@@ -103,14 +103,14 @@ class AndroidDeviceInfoForServer {
 }
 
 class AndroidBuildVersionForServer {
-  final String baseOS;
+  final String? baseOS;
   final String release;
   final int sdkInt;
 
   AndroidBuildVersionForServer._({
-    @required this.baseOS,
-    @required this.release,
-    @required this.sdkInt,
+    required this.baseOS,
+    required this.release,
+    required this.sdkInt,
   });
 
   factory AndroidBuildVersionForServer.fromAndroidBuildVersion(AndroidBuildVersion androidBuildVersion) {
@@ -144,17 +144,17 @@ class IosDeviceInfoForServer {
   final IosUtsnameForServer utsname;
 
   IosDeviceInfoForServer._({
-    @required this.name,
-    @required this.systemName,
-    @required this.systemVersion,
-    @required this.model,
-    @required this.localizedModel,
-    @required this.identifierForVendor,
-    @required this.isPhysicalDevice,
-    @required this.utsname,
+    required this.name,
+    required this.systemName,
+    required this.systemVersion,
+    required this.model,
+    required this.localizedModel,
+    required this.identifierForVendor,
+    required this.isPhysicalDevice,
+    required this.utsname,
   });
 
-  factory IosDeviceInfoForServer.fromIosDeviceInfo(IosDeviceInfo iosDeviceInfo) { // Nullable argument and return
+  static IosDeviceInfoForServer? fromIosDeviceInfo(IosDeviceInfo? iosDeviceInfo) {
     if (iosDeviceInfo == null) return null;
 
     return IosDeviceInfoForServer._(
@@ -194,11 +194,11 @@ class IosUtsnameForServer {
   final String machine;
 
   IosUtsnameForServer._({
-    @required this.sysname,
-    @required this.nodename,
-    @required this.release,
-    @required this.version,
-    @required this.machine,
+    required this.sysname,
+    required this.nodename,
+    required this.release,
+    required this.version,
+    required this.machine,
   });
 
   factory IosUtsnameForServer.fromIosUtsname(IosUtsname iosUtsname) {

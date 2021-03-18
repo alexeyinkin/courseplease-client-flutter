@@ -10,7 +10,7 @@ class ProfileWidget extends StatelessWidget {
   final List<Widget> childrenUnderName;
 
   ProfileWidget({
-    @required this.user,
+    required this.user,
     this.childrenUnderUserpic = const <Widget>[],
     this.childrenUnderName = const <Widget>[],
   });

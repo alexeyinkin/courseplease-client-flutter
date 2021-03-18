@@ -1,11 +1,10 @@
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:meta/meta.dart';
 
 class ChatMessageFilter extends AbstractFilter {
   final int chatId;
 
   ChatMessageFilter({
-    @required this.chatId,
+    required this.chatId,
   });
 
   @override

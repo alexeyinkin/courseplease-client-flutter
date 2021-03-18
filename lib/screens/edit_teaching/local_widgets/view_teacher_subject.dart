@@ -18,7 +18,7 @@ class ViewTeacherSubjectWidget extends StatefulWidget {
   final TeacherSubject teacherSubject;
 
   ViewTeacherSubjectWidget({
-    @required this.teacherSubject,
+    required this.teacherSubject,
   });
 
   @override
@@ -32,18 +32,19 @@ class _ViewTeacherSubjectWidgetState extends State<ViewTeacherSubjectWidget> {
 
   @override
   void initState() {
+    super.initState();
     _productSubjectsByIdsBloc.setCurrentIds([widget.teacherSubject.subjectId]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<ModelListByIdsState<ProductSubject>>(
       stream: _productSubjectsByIdsBloc.outState,
       builder: (context, snapshot) => _buildWithState(snapshot.data),
     );
   }
 
-  Widget _buildWithState(ModelListByIdsState<ProductSubject> state) {
+  Widget _buildWithState(ModelListByIdsState<ProductSubject>? state) {
     if (state == null || state.objects.isEmpty) return Container();
 
     final subject = state.objects[0];
@@ -94,11 +95,9 @@ class _ViewTeacherSubjectWidgetState extends State<ViewTeacherSubjectWidget> {
   }
 
   void _edit() {
-    Navigator.of(context).pushNamed(
-      EditTeacherSubjectScreen.routeName,
-      arguments: EditTeacherSubjectScreenArguments(
-        teacherSubjectClone: TeacherSubject.from(widget.teacherSubject),
-      ),
+    EditTeacherSubjectScreen.show(
+      context: context,
+      teacherSubjectClone: TeacherSubject.from(widget.teacherSubject),
     );
   }
 
@@ -120,16 +119,14 @@ class _ViewTeacherSubjectWidgetState extends State<ViewTeacherSubjectWidget> {
   }
 
   void _showAlbum(ProductSubject subject, int purposeId) async {
-    await Navigator.of(context).pushNamed(
-      EditImageListScreen.routeName,
-      arguments: EditImageListArguments(
-        filter: EditImageFilter(
-          purposeIds: [purposeId],
-          subjectIds: [subject.id],
-        ),
+    await EditImageListScreen.show(
+      context: context,
+      filter: EditImageFilter(
+        purposeIds: [purposeId],
+        subjectIds: [subject.id],
       ),
     );
 
-    // TODO: Reload current actor because there might be no more unsorted images.
+    // TODO: Reload current actor because there might appear no more unsorted images.
   }
 }

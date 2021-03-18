@@ -10,7 +10,7 @@ class ChatMessageRepository extends AbstractFilteredRepository<int, ChatMessage,
   final _client = GetIt.instance.get<ApiClient>();
 
   @override
-  Future<ListLoadResult<ChatMessage>> loadWithFilter(ChatMessageFilter filter, String pageToken) {
+  Future<ListLoadResult<ChatMessage>> loadWithFilter(ChatMessageFilter filter, String? pageToken) {
     return _client
         .getEntities(name: _entitiesName, filter: filter, pageToken: pageToken)
         .then((response) => _denormalizeList(response.data));

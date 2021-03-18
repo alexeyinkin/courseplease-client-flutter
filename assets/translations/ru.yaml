@@ -59,6 +59,12 @@ EditIntegrationScreen:
         synchronizeNow:         'Выгрузить сейчас'
         viewImages:             'Показать изображения'
 
+EditProfileScreen:
+    firstName:      'Имя'
+    middleName:     'Отчество'
+    lastName:       'Фамилия'
+    addLanguage:    'Добавить язык'
+
 EditTeacherSubjectScreen:
     tabs:
         prices:
@@ -168,6 +174,10 @@ SelectProductSubjectScreen:
 SignInWidget:
     #Title is replaced manually in AuthProviderWidget
     continueWith:   'Войти через {@providerTitle}'
+
+TeacherScreen:
+    notCurrentlyTeaching:       'Временно не преподаёт.'
+    notCurrentlyTeachingThis:   'Временно не преподаёт этот предмет. Попробуйте другие предметы или преподавателей.'
 
 TeachersTabWidget:
     title:          'Преподаватели'

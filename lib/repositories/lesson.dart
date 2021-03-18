@@ -10,7 +10,7 @@ class LessonRepository extends AbstractFilteredRepository<int, Lesson, LessonFil
   final _client = GetIt.instance.get<ApiClient>();
 
   @override
-  Future<ListLoadResult<Lesson>> loadWithFilter(LessonFilter filter, String pageToken) {
+  Future<ListLoadResult<Lesson>> loadWithFilter(LessonFilter filter, String? pageToken) {
     return _client
         .getEntities(name: _entitiesName, filter: filter, pageToken: pageToken)
         .then((response) => _denormalizeList(response.data));
@@ -27,14 +27,13 @@ class LessonRepository extends AbstractFilteredRepository<int, Lesson, LessonFil
   }
 
   @override
-  Future<Lesson> loadById(int id) {
+  Future<Lesson?> loadById(int id) {
     return _client
         .getEntity(_entitiesName, id)
-        .then((response) => _denormalizeOne(response.data));
+        .then((response) => _denormalizeOneOrNull(response.data));
   }
 
-  // Nullable
-  Lesson _denormalizeOne(Map<String, dynamic> mapResult) {
+  Lesson? _denormalizeOneOrNull(Map<String, dynamic>? mapResult) {
     if (mapResult == null) return null;
     return Lesson.fromMap(mapResult);
   }

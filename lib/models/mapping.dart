@@ -1,9 +1,8 @@
 class Mapping {
-  // Everything is Nullable.
-  final String classShortIntName;
-  final DateTime dateTimeSyncFromRemote;
-  final String contactUsername;
-  final String url;
+  final String? classShortIntName;
+  final DateTime? dateTimeSyncFromRemote;
+  final String? contactUsername;
+  final String? url;
 
   Mapping({
     this.classShortIntName,

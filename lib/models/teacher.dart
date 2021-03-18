@@ -1,6 +1,5 @@
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/utils/utils.dart';
-import 'package:meta/meta.dart';
 import 'location.dart';
 import 'money.dart';
 import 'product_variant_format.dart';
@@ -13,32 +12,35 @@ class Teacher extends User {
   final Money maxPrice;
   final Rating rating;
   final List<TeacherSubject> categories;
-  List<int> subjectIds;
+  final subjectIds = <int>[];
 
   Teacher({
-    @required int id,
-    @required String firstName,
-    @required String middleName,
-    @required String lastName,
-    @required Map<String, String> userpicUrls,
-    @required Location location,
-    @required String bio,
-    @required this.productVariantFormats,
-    @required this.minPrice,
-    @required this.maxPrice,
-    @required this.rating,
-    @required this.categories,
+    required int id,
+    required String firstName,
+    required String middleName,
+    required String lastName,
+    required String sex,
+    required List<String> langs,
+    required Map<String, String> userpicUrls,
+    required Location location,
+    required String bio,
+    required this.productVariantFormats,
+    required this.minPrice,
+    required this.maxPrice,
+    required this.rating,
+    required this.categories,
   }) : super(
     id:           id,
     firstName:    firstName,
     middleName:   middleName,
     lastName:     lastName,
+    sex:          sex,
+    langs:        langs,
     userpicUrls:  userpicUrls,
     location:     location,
     bio:          bio,
   )
   {
-    subjectIds = <int>[];
     for (final teacherCategory in categories) {
       subjectIds.add(teacherCategory.subjectId);
     }
@@ -57,6 +59,8 @@ class Teacher extends User {
       firstName:              map['firstName'],
       middleName:             map['middleName'],
       lastName:               map['lastName'],
+      sex:                    map['sex'],
+      langs:                  map['langs'],
       userpicUrls:            toStringStringMap(map['userpicUrls']),
       location:               Location.fromMap(map['location']),
       bio:                    map['bio'] ?? '',

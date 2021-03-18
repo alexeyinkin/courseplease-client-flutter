@@ -8,15 +8,37 @@ import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get_it/get_it.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:youtube_plyr_iframe/youtube_plyr_iframe.dart'; // https://github.com/sarbagyastha/youtube_player_flutter/issues/460#issuecomment-799992113
 import '../../models/lesson.dart';
 
 class LessonScreen extends StatefulWidget {
   static const routeName = '/lessonById';
 
+  final int lessonId;
+  final bool autoplay;
+
+  LessonScreen({
+    required this.lessonId,
+    required this.autoplay,
+  });
+
   @override
-  State<LessonScreen> createState() {
-    return _LessonScreenState();
+  _LessonScreenState createState() => _LessonScreenState();
+
+  static Future<void> show({
+    required BuildContext context,
+    required int lessonId,
+    required bool autoplay,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LessonScreen(
+          lessonId: lessonId,
+          autoplay: autoplay,
+        ),
+      ),
+    );
   }
 }
 
@@ -25,18 +47,19 @@ class _LessonScreenState extends State<LessonScreen> {
       modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Lesson, LessonRepository>(),
   );
 
-  int _lessonId;
-  bool _autoplay;
-  YoutubePlayerController _youtubePlayerController;
+  YoutubePlayerController? _youtubePlayerController;
+
+  @override
+  void initState() {
+    super.initState();
+    _lessonByIdBloc.setCurrentId(widget.lessonId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    _startLoadingIfNot(context);
-
-    return StreamBuilder(
+    return StreamBuilder<ModelByIdState<int, Lesson>>(
       stream: _lessonByIdBloc.outState,
-      initialData: _lessonByIdBloc.initialState,
-      builder: (context, snapshot) => _buildWithLessonState(context, snapshot.data),
+      builder: (context, snapshot) => _buildWithLessonState(context, snapshot.data ?? _lessonByIdBloc.initialState),
     );
   }
 
@@ -44,12 +67,12 @@ class _LessonScreenState extends State<LessonScreen> {
     final lesson = lessonByIdState.object;
 
     return lesson == null
-        ? _buildWithoutLesson(context, lessonByIdState)
+        ? _buildWithoutLesson(lessonByIdState)
         : _buildWithLesson(context, lesson);
   }
 
   // TODO: Extract to a separate widget
-  Widget _buildWithoutLesson(BuildContext, ModelByIdState<int, Lesson> lessonByIdState) {
+  Widget _buildWithoutLesson(ModelByIdState<int, Lesson> lessonByIdState) {
     switch (lessonByIdState.requestStatus) {
       case RequestStatus.notTried:
       case RequestStatus.loading:
@@ -97,26 +120,13 @@ class _LessonScreenState extends State<LessonScreen> {
     );
   }
 
-  void _startLoadingIfNot(BuildContext context) {
-    if (_lessonId == null) {
-      final arguments = ModalRoute.of(context).settings.arguments as LessonScreenArguments;
-      _lessonId = arguments.id;
-      _autoplay = arguments.autoplay;
-      _loadLesson();
-    }
-  }
-
-  void _loadLesson() async {
-    _lessonByIdBloc.setCurrentId(_lessonId);
-  }
-
   void _createYoutubePlayerControllerIfNot(Lesson lesson) {
     if (_youtubePlayerController != null) return;
 
     _youtubePlayerController = YoutubePlayerController(
       initialVideoId: lesson.externalId,
       params: YoutubePlayerParams(
-        autoPlay: _autoplay,
+        autoPlay: widget.autoplay,
         showControls: true,
         showFullscreenButton: true,
       ),
@@ -126,12 +136,7 @@ class _LessonScreenState extends State<LessonScreen> {
   @override
   void dispose() {
     super.dispose();
+    _youtubePlayerController?.close();
     _lessonByIdBloc.dispose();
   }
-}
-
-class LessonScreenArguments {
-  final int id;
-  final bool autoplay;
-  LessonScreenArguments({@required this.id, @required this.autoplay});
 }

@@ -26,10 +26,10 @@ class FilteredModelListCache {
       return _getOrCreateSubsetList<I, O>(filter) as AbstractFilteredModelListBloc<I, O, F>;
     }
 
-    return _getOrCreateNetworkList<I, O, F, R>(filter);
+    return getOrCreateNetworkList<I, O, F, R>(filter);
   }
 
-  NetworkFilteredModelListBloc<I, O, F> _getOrCreateNetworkList<
+  NetworkFilteredModelListBloc<I, O, F> getOrCreateNetworkList<
     I,
     O extends WithId<I>,
     F extends AbstractFilter,
@@ -43,15 +43,15 @@ class FilteredModelListCache {
       _networkLists[objectType] = Map<Type, Map<String, NetworkFilteredModelListBloc>>();
     }
 
-    if (!_networkLists[objectType].containsKey(filterType)) {
-      _networkLists[objectType][filterType] = Map<String, NetworkFilteredModelListBloc<I, O, F>>();
+    if (!_networkLists[objectType]!.containsKey(filterType)) {
+      _networkLists[objectType]![filterType] = Map<String, NetworkFilteredModelListBloc<I, O, F>>();
     }
 
-    if (!_networkLists[objectType][filterType].containsKey(filterString)) {
-      _networkLists[objectType][filterType][filterString] = _factory.createNetworkList<I, O, F, R>(filter);
+    if (!_networkLists[objectType]![filterType]!.containsKey(filterString)) {
+      _networkLists[objectType]![filterType]![filterString] = _factory.createNetworkList<I, O, F, R>(filter);
     }
 
-    return _networkLists[objectType][filterType][filterString];
+    return _networkLists[objectType]![filterType]![filterString] as NetworkFilteredModelListBloc<I, O, F>;
   }
 
   SubsetFilteredModelListBloc<I, O> _getOrCreateSubsetList<
@@ -65,23 +65,27 @@ class FilteredModelListCache {
       _subsetLists[objectType] = Map<String, SubsetFilteredModelListBloc>();
     }
 
-    if (!_subsetLists[objectType].containsKey(filterString)) {
-      _subsetLists[objectType][filterString] = _factory.createSubsetList<I, O>(filter);
+    if (!_subsetLists[objectType]!.containsKey(filterString)) {
+      _subsetLists[objectType]![filterString] = _factory.createSubsetList<I, O>(filter);
     }
 
-    return _subsetLists[objectType][filterString];
+    return _subsetLists[objectType]![filterString] as SubsetFilteredModelListBloc<I, O>;
   }
 
   Map<Type, Map<String, NetworkFilteredModelListBloc>> getNetworkModelListsByObjectType<O>() {
     final objectType = typeOf<O>();
-    return UnmodifiableMapView<Type, Map<String, NetworkFilteredModelListBloc>>(_networkLists[objectType]);
+    return UnmodifiableMapView<Type, Map<String, NetworkFilteredModelListBloc>>(
+      _networkLists[objectType] ?? {},
+    );
   }
 
   Map<String, AbstractFilteredModelListBloc> getModelListsByObjectAndFilterTypes<O, F>() {
     final objectType = typeOf<O>();
     final filterType = typeOf<F>();
 
-    return UnmodifiableMapView<String, AbstractFilteredModelListBloc>(_networkLists[objectType][filterType]);
+    return UnmodifiableMapView<String, AbstractFilteredModelListBloc>(
+      _networkLists[objectType]![filterType] ?? {},
+    );
   }
 }
 
@@ -104,7 +108,7 @@ class FilteredModelListFactory {
     O extends WithId<I>
   >(IdsSubsetFilter<I, O> filter) {
     return SubsetFilteredModelListBloc<I, O>(
-      idsSubsetFilter: filter,
+      filter: filter,
     );
   }
 }

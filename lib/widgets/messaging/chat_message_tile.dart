@@ -10,8 +10,8 @@ class ChatMessageTile extends AbstractObjectTile<int, ChatMessage, ChatMessageFi
   final User currentUser;
 
   ChatMessageTile({
-    @required TileCreationRequest<int, ChatMessage, ChatMessageFilter> request,
-    @required this.currentUser,
+    required TileCreationRequest<int, ChatMessage, ChatMessageFilter> request,
+    required this.currentUser,
   }) : super(
     request: request,
   );

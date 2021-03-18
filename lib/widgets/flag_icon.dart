@@ -5,7 +5,7 @@ class FlagIcon extends StatelessWidget {
   String countryCode;
 
   FlagIcon({
-    @required this.countryCode,
+    required this.countryCode,
   });
 
   @override

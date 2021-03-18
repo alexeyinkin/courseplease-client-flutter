@@ -15,10 +15,16 @@ class ApiClient {
   final String host = 'courseplease.com';
   static const _authorizationHeader = 'Authorization';
 
-  String _deviceKey; // Nullable.
+  String? _deviceKey;
   String _lang;
 
-  void setDeviceKey(String deviceKey) { // Nullable.
+  ApiClient({
+    required String lang,
+  }) :
+      _lang = lang
+  ;
+
+  void setDeviceKey(String? deviceKey) {
     _deviceKey = deviceKey;
   }
 
@@ -114,10 +120,10 @@ class ApiClient {
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getEntities({
-    String name,
-    AbstractFilter filter,
-    String pageToken, // Nullable
-    Map<String, String> queryParameters, // Nullable
+    required String name,
+    required AbstractFilter filter,
+    required String? pageToken,
+    Map<String, String>? queryParameters,
   }) async {
     if (queryParameters == null) {
       queryParameters = Map<String, String>();
@@ -162,11 +168,11 @@ class ApiClient {
   }
 
   Future<SuccessfulApiResponse<Map<String, dynamic>>> sendRequest({
-    @required HttpMethod method,
-    @required String path,
-    Map<String, String> queryParameters,
-    Map<String, String> headers, // Nullable.
-    RequestBody body,
+    required HttpMethod method,
+    required String path,
+    Map<String, String>? queryParameters,
+    Map<String, String>? headers,
+    RequestBody? body,
   }) async {
     if (headers == null) headers = Map<String, String>();
 
@@ -188,22 +194,23 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> sendMap({
-    @required HttpMethod method,
-    @required String path,
-    Map<String, String> queryParameters,
-    Map<String, String> headers,
-    Map<String, dynamic> body,
+    required HttpMethod method,
+    required String path,
+    Map<String, String>? queryParameters,
+    required Map<String, String> headers,
+    Map<String, dynamic>? body,
   }) async {
     final headersWithContentType = Map<String, String>();
     headersWithContentType.addAll(headers);
     headersWithContentType['Content-Type'] = ContentType.json.toString();
-    
+
+    final bodyString = jsonEncode(body);
     final responseString = await sendString(
       method: method,
       path: path,
       queryParameters: queryParameters,
       headers: headersWithContentType,
-      body: jsonEncode(body),
+      body: bodyString,
     );
 
     final map = jsonDecode(responseString);
@@ -211,17 +218,17 @@ class ApiClient {
   }
 
   Future<String> sendString({
-    @required HttpMethod method,
-    @required String path,
-    Map<String, String> queryParameters,
-    Map<String, String> headers,
-    String body,
+    required HttpMethod method,
+    required String path,
+    Map<String, String>? queryParameters,
+    required Map<String, String> headers,
+    String? body,
   }) async {
     final uri = _createUri(path: path, queryParameters: queryParameters);
     http.Response response;
 
     if (_deviceKey != null && !headers.containsKey(_authorizationHeader)) {
-      headers = mapWithEntry(headers, _authorizationHeader, _getBearerAuthorizationHeaderValue(_deviceKey));
+      headers = mapWithEntry(headers, _authorizationHeader, _getBearerAuthorizationHeaderValue(_deviceKey!));
     }
 
     switch (method) {
@@ -241,8 +248,8 @@ class ApiClient {
   }
 
   Uri _createUri({
-    @required String path,
-    Map<String, String> queryParameters,
+    required String path,
+    Map<String, String>? queryParameters,
   }) {
     path = path.replaceFirst('{@lang}', _lang);
     return Uri.https(host, path, queryParameters);
@@ -275,7 +282,7 @@ abstract class ApiResponse {
   final int status;
 
   ApiResponse({
-    @required this.status,
+    required this.status,
   });
 }
 
@@ -283,7 +290,7 @@ class SuccessfulApiResponse<T> extends ApiResponse {
   final T data;
 
   SuccessfulApiResponse({
-    @required this.data,
+    required this.data,
   }) : super(status: 1);
 }
 
@@ -291,8 +298,8 @@ class ErrorApiResponse extends ApiResponse {
   final String message;
 
   ErrorApiResponse({
-    @required int status,
-    @required this.message,
+    required int status,
+    required this.message,
   }) : super(status: status);
 }
 
@@ -302,8 +309,8 @@ class RegisterDeviceRequest extends RequestBody {
   final DeviceInfoForServer deviceInfo;
 
   RegisterDeviceRequest({
-    @required this.appInfo,
-    @required this.deviceInfo,
+    required this.appInfo,
+    required this.deviceInfo,
   });
 
   Map<String, dynamic> toJson() {
@@ -318,7 +325,7 @@ class RegisterDeviceResponseData {
   final String key;
 
   RegisterDeviceResponseData._({
-    @required this.key,
+    required this.key,
   });
 
   factory RegisterDeviceResponseData.fromMap(Map<String, dynamic> map) {
@@ -327,20 +334,20 @@ class RegisterDeviceResponseData {
 }
 
 class MeResponseData {
-  final String deviceStatus; // Nullable.
-  final User user; // Nullable.
+  final String? deviceStatus;
+  final User? user;
   final List<TeacherSubject> teacherSubjects;
   final List<EditableContact> contacts;
   final List<String> allowedCurs;
   final bool hasUnsortedMedia;
 
   MeResponseData._({
-    @required this.deviceStatus,
-    @required this.user,
-    @required this.teacherSubjects,
-    @required this.contacts,
-    @required this.allowedCurs,
-    @required this.hasUnsortedMedia,
+    required this.deviceStatus,
+    required this.user,
+    required this.teacherSubjects,
+    required this.contacts,
+    required this.allowedCurs,
+    required this.hasUnsortedMedia,
   });
 
   factory MeResponseData.fromMap(Map<String, dynamic> map) {
@@ -361,7 +368,7 @@ class CreateOAuthTempTokenRequest extends RequestBody {
   final int providerId;
 
   CreateOAuthTempTokenRequest({
-    @required this.providerId,
+    required this.providerId,
   });
 
   Map<String, dynamic> toJson() {
@@ -375,7 +382,7 @@ class CreateOAuthTempTokenResponseData {
   final String key;
 
   CreateOAuthTempTokenResponseData._({
-    @required this.key,
+    required this.key,
   });
 
   factory CreateOAuthTempTokenResponseData.fromMap(Map<String, dynamic> map) {
@@ -391,11 +398,11 @@ class SaveProfileRequest extends RequestBody {
   final List<String> langs;
 
   SaveProfileRequest({
-    @required this.firstName,
-    @required this.middleName,
-    @required this.lastName,
-    @required this.sex,
-    @required this.langs,
+    required this.firstName,
+    required this.middleName,
+    required this.lastName,
+    required this.sex,
+    required this.langs,
   });
 
   @override
@@ -416,9 +423,9 @@ class SaveContactParamsRequest extends RequestBody {
   final ContactParams params;
 
   SaveContactParamsRequest({
-    @required this.contactId,
-    @required this.downloadEnabled,
-    @required this.params,
+    required this.contactId,
+    required this.downloadEnabled,
+    required this.params,
   });
 
   @override
@@ -435,7 +442,7 @@ class MediaSortRequest extends RequestBody {
   final List<MediaSortCommand> commands;
 
   MediaSortRequest({
-    @required this.commands,
+    required this.commands,
   });
 
   @override
@@ -453,10 +460,10 @@ class SaveConsultingProductRequest extends RequestBody {
   final List<SaveConsultingProductVariantRequest> productVariants;
 
   SaveConsultingProductRequest({
-    @required this.subjectId,
-    @required this.enabled,
-    @required this.body,
-    @required this.productVariants,
+    required this.subjectId,
+    required this.enabled,
+    required this.body,
+    required this.productVariants,
   });
 
   @override
@@ -476,9 +483,9 @@ class SaveConsultingProductVariantRequest extends RequestBody {
   final Map<String, double> price;
 
   SaveConsultingProductVariantRequest({
-    @required this.formatIntName,
-    @required this.enabled,
-    @required this.price,
+    required this.formatIntName,
+    required this.enabled,
+    required this.price,
   });
 
   @override
@@ -495,13 +502,13 @@ class MediaSortCommand<F extends AbstractFilter> extends JsonSerializable {
   final String type;
   final int id;
   final String action;
-  final F fetchFilter; // Nullable
-  final F setFilter; // Nullable
+  final F? fetchFilter;
+  final F? setFilter;
 
   MediaSortCommand({
-    @required this.type,
-    @required this.id,
-    @required this.action,
+    required this.type,
+    required this.id,
+    required this.action,
     this.fetchFilter,
     this.setFilter,
   });

@@ -22,18 +22,20 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<AuthenticationState>(
       stream: _authenticationCubit.outState,
       builder: (context, snapshot) => _buildWithState(snapshot.data),
     );
   }
 
-  Widget _buildWithState(AuthenticationState state) {
-    if (state == null) return Container();
+  Widget _buildWithState(AuthenticationState? state) {
+    if (state == null || state.data == null) {
+      throw Exception('Signed out'); // TODO: Sign in prompt.
+    }
 
     final children = <Widget>[];
 
-    for (final teacherSubject in state.data.teacherSubjects) {
+    for (final teacherSubject in state.data!.teacherSubjects) {
       children.add(
         ViewTeacherSubjectWidget(
           teacherSubject: teacherSubject,
@@ -67,7 +69,11 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
     final id = await SelectProductSubjectScreen.selectSubjectId(context);
     if (id == null) return;
 
-    for (final ts in state.data.teacherSubjects) {
+    if (state.data == null) {
+      throw Exception('Signed out'); // TODO: Sign in prompt.
+    }
+
+    for (final ts in state.data!.teacherSubjects) {
       if (ts.subjectId == id) {
         _editSubject(ts);
         return;
@@ -87,11 +93,9 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
   }
 
   Future<void> _showEditSubjectScreen(TeacherSubject teacherSubjectClone) async {
-    await Navigator.of(context).pushNamed(
-      EditTeacherSubjectScreen.routeName,
-      arguments: EditTeacherSubjectScreenArguments(
-        teacherSubjectClone: teacherSubjectClone,
-      ),
+    await EditTeacherSubjectScreen.show(
+      context: context,
+      teacherSubjectClone: teacherSubjectClone,
     );
   }
 

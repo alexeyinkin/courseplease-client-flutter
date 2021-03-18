@@ -14,27 +14,26 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EditTeacherSubjectCubit extends Bloc {
   final TeacherSubject _teacherSubjectClone;
-  ProductSubject _productSubject; // Nullable
+  ProductSubject? _productSubject;
   bool _closeScreen = false;
-  final TextEditingController _bodyTextEditingController;
+  final _bodyTextEditingController = TextEditingController();
 
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   final _productSubjectsByIdsBloc = ModelListByIdsBloc<int, ProductSubject>(
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
   );
-  StreamSubscription _productSubjectsSubscription;
+  late final StreamSubscription _productSubjectsSubscription;
 
   final _outStateController = BehaviorSubject<EditTeacherSubjectState>();
   Stream<EditTeacherSubjectState> get outState => _outStateController.stream;
 
-  final EditTeacherSubjectState initialState;
+  late final EditTeacherSubjectState initialState;
 
-  EditTeacherSubjectAction _actionInProgress = null;
+  EditTeacherSubjectAction? _actionInProgress;
 
   static const formatIntNames = [
     ProductVariantFormatIntNameEnum.consultingTeachersPlace,
@@ -43,21 +42,20 @@ class EditTeacherSubjectCubit extends Bloc {
   ];
 
   EditTeacherSubjectCubit({
-    @required TeacherSubject teacherSubjectClone,
+    required TeacherSubject teacherSubjectClone,
   }) :
-      _teacherSubjectClone = teacherSubjectClone,
-      _bodyTextEditingController = TextEditingController(
-        text: markdownToControllerText(teacherSubjectClone.body),
-      ),
-      initialState = EditTeacherSubjectState(
-        teacherSubjectClone: teacherSubjectClone,
-        productSubject: null,
-        canSave: true,
-        actionInProgress: null,
-        closeScreen: false,
-        bodyTextEditingController: null,
-      )
+      _teacherSubjectClone = teacherSubjectClone
   {
+    _bodyTextEditingController.text = markdownToControllerText(teacherSubjectClone.body);
+    initialState = EditTeacherSubjectState(
+      teacherSubjectClone: teacherSubjectClone,
+      productSubject: null,
+      canSave: true,
+      actionInProgress: null,
+      closeScreen: false,
+      bodyTextEditingController: _bodyTextEditingController,
+    );
+
     _ensureHaveAllFormats();
     _initProductSubject();
     _pushOutput();
@@ -129,7 +127,7 @@ class EditTeacherSubjectCubit extends Bloc {
     final result = <SaveConsultingProductVariantRequest>[];
 
     for (final format in _teacherSubjectClone.productVariantFormats) {
-      if (format.maxPrice.isPositive()) {
+      if (format.maxPrice != null && format.maxPrice!.isPositive()) {
         result.add(_createProductVariantRequest(format));
       }
     }
@@ -140,7 +138,7 @@ class EditTeacherSubjectCubit extends Bloc {
     return SaveConsultingProductVariantRequest(
       formatIntName: format.intName,
       enabled: format.enabled,
-      price: format.maxPrice.map,
+      price: format.maxPrice!.map,
     );
   }
 
@@ -170,19 +168,19 @@ class EditTeacherSubjectCubit extends Bloc {
 
 class EditTeacherSubjectState {
   final TeacherSubject teacherSubjectClone;
-  final ProductSubject productSubject; // Nullable
+  final ProductSubject? productSubject;
   final bool canSave;
-  final EditTeacherSubjectAction actionInProgress;
+  final EditTeacherSubjectAction? actionInProgress;
   final bool closeScreen;
-  final TextEditingController bodyTextEditingController; // Nullable
+  final TextEditingController bodyTextEditingController;
 
   EditTeacherSubjectState({
-    @required this.teacherSubjectClone,
-    @required this.productSubject,
-    @required this.canSave,
-    @required this.actionInProgress,
-    @required this.closeScreen,
-    @required this.bodyTextEditingController,
+    required this.teacherSubjectClone,
+    required this.productSubject,
+    required this.canSave,
+    required this.actionInProgress,
+    required this.closeScreen,
+    required this.bodyTextEditingController,
   });
 }
 

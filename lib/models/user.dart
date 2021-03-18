@@ -1,6 +1,4 @@
 import 'package:courseplease/utils/utils.dart';
-import 'package:meta/meta.dart';
-
 import 'interfaces.dart';
 import 'location.dart';
 
@@ -16,15 +14,15 @@ class User implements WithId<int> {
   final String bio;
 
   User({
-    @required this.id,
-    @required this.firstName,
-    @required this.middleName,
-    @required this.lastName,
-    @required this.sex,
-    @required this.langs,
-    @required this.userpicUrls,
-    @required this.location,
-    @required this.bio,
+    required this.id,
+    required this.firstName,
+    required this.middleName,
+    required this.lastName,
+    required this.sex,
+    required this.langs,
+    required this.userpicUrls,
+    required this.location,
+    required this.bio,
   });
 
   factory User.from(User user) {
@@ -37,6 +35,7 @@ class User implements WithId<int> {
       langs:        List<String>.from(user.langs),
       userpicUrls:  Map<String, String>.from(user.userpicUrls),
       location:     Location.from(user.location),
+      bio:          user.bio,
     );
   }
 

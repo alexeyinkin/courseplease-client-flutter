@@ -3,6 +3,7 @@ import 'package:courseplease/screens/home/local_widgets/images_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/product_subjects_breadcrumbs.dart';
 import 'package:courseplease/screens/home/local_widgets/teachers_tab.dart';
 import 'package:courseplease/widgets/capsules.dart';
+import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -17,12 +18,7 @@ class ExploreTab extends StatefulWidget {
 }
 
 class ExploreTabState extends State<ExploreTab> {
-  CurrentProductSubjectBloc _bloc;
-
-  @override
-  void initState() {
-    _bloc = _createCurrentProductSubjectBloc();
-  }
+  final CurrentProductSubjectBloc _bloc = CurrentProductSubjectBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -58,22 +54,15 @@ class ExploreTabState extends State<ExploreTab> {
     );
   }
 
-  CurrentProductSubjectBloc _createCurrentProductSubjectBloc() {
-    final bloc = CurrentProductSubjectBloc();
-
-    final productSubjectCacheBloc = GetIt.instance.get<ProductSubjectCacheBloc>();
-    productSubjectCacheBloc.outObjectsByIds.listen(bloc.setSubjectsByIds);
-
-    return bloc;
-  }
-
   Widget _getChildrenSubjectsLine(BuildContext context) {
     return StreamBuilder<List<ProductSubject>>(
       stream: _bloc.outChildren,
-      initialData: <ProductSubject>[],
       builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return SmallCircularProgressIndicator(scale: .5);
+        }
         return CapsulesWidget<int, ProductSubject>(
-          objects: snapshot.data,
+          objects: snapshot.data!,
           onTap: (subject) => _bloc.setCurrentId(subject.id),
         );
       },

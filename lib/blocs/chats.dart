@@ -1,7 +1,6 @@
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ChatsCubit extends Bloc {
@@ -13,8 +12,8 @@ class ChatsCubit extends Bloc {
     chatMessageFilter: null,
   );
 
-  Chat _currentChat; // Nullable
-  ChatMessageFilter _chatMessageFilter; // Nullable
+  Chat? _currentChat;
+  ChatMessageFilter? _chatMessageFilter;
 
   void setCurrentChat(Chat chat) {
     if (_currentChat == chat) return;
@@ -42,11 +41,11 @@ class ChatsCubit extends Bloc {
 }
 
 class ChatsCubitState {
-  final Chat currentChat; // Nullable
-  final ChatMessageFilter chatMessageFilter; // Nullable
+  final Chat? currentChat;
+  final ChatMessageFilter? chatMessageFilter;
 
   ChatsCubitState({
-    @required this.currentChat,
-    @required this.chatMessageFilter,
+    required this.currentChat,
+    required this.chatMessageFilter,
   });
 }

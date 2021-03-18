@@ -1,23 +1,21 @@
-import 'package:meta/meta.dart';
-
 import '../interfaces.dart';
 import 'message_body.dart';
 
 class ChatMessage extends WithId<int> {
   final int id;
-  final int senderUserId; // Nullable
+  final int? senderUserId;
   final DateTime dateTimeInsert;
-  final DateTime dateTimeEdit; // Nullable
-  final DateTime dateTimeRead; // Nullable
+  final DateTime? dateTimeEdit;
+  final DateTime? dateTimeRead;
   final MessageBody body;
 
   ChatMessage({
-    @required this.id,
-    @required this.senderUserId,
-    @required this.dateTimeInsert,
-    @required this.dateTimeEdit,
-    @required this.dateTimeRead,
-    @required this.body,
+    required this.id,
+    required this.senderUserId,
+    required this.dateTimeInsert,
+    required this.dateTimeEdit,
+    required this.dateTimeRead,
+    required this.body,
   });
 
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
@@ -34,7 +32,7 @@ class ChatMessage extends WithId<int> {
     );
   }
 
-  static ChatMessage fromMapOrNull(Map<String, dynamic> map) { // Nullable, Nullable
+  static ChatMessage? fromMapOrNull(Map<String, dynamic>? map) {
     return map == null ? null : ChatMessage.fromMap(map);
   }
 }

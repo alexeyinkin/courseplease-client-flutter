@@ -10,7 +10,6 @@ import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meta/meta.dart';
 
 class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
   final EditImageFilter filter;
@@ -21,10 +20,13 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
   static const _mediaType = 'image';
 
   ImageListActionCubit({
-    @required this.filter,
+    required this.filter,
   });
 
-  Future<void> move(SelectableListState selectableListState, EditImageFilter setFilter) async {
+  Future<void> move(
+    SelectableListState<int, EditImageFilter> selectableListState,
+    EditImageFilter setFilter,
+  ) async {
     setActionInProgress(MediaSortActionEnum.unlink);
     final future = _apiClient.sortMedia(_getMoveRequest(selectableListState, setFilter));
 
@@ -34,7 +36,10 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
         .catchError(_onRequestError);
   }
 
-  MediaSortRequest _getMoveRequest(SelectableListState selectableListState, EditImageFilter setFilter) {
+  MediaSortRequest _getMoveRequest(
+    SelectableListState<int, EditImageFilter> selectableListState,
+    EditImageFilter setFilter,
+  ) {
     final commands = <MediaSortCommand>[];
     for (final id in selectableListState.selectedIds.keys) {
       commands.add(_getMoveCommand(id, selectableListState.filter, setFilter));
@@ -79,7 +84,9 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
     );
   }
 
-  Future<void> unlink(SelectableListState selectableListState) async {
+  Future<void> unlink(
+    SelectableListState<int, EditImageFilter> selectableListState,
+  ) async {
     setActionInProgress(MediaSortActionEnum.unlink);
     final future = _apiClient.sortMedia(_getUnlinkRequest(selectableListState));
     future
@@ -90,7 +97,9 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
     return future;
   }
 
-  MediaSortRequest _getUnlinkRequest(SelectableListState selectableListState) {
+  MediaSortRequest _getUnlinkRequest(
+    SelectableListState<int, EditImageFilter> selectableListState,
+  ) {
     final commands = <MediaSortCommand>[];
     for (final id in selectableListState.selectedIds.keys) {
       commands.add(_getUnlinkCommand(id, selectableListState.filter));
@@ -140,7 +149,7 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
   }
 
   NetworkFilteredModelListBloc<int, ImageEntity, EditImageFilter> _getCurrentModelList() {
-    return _filteredModelListCache.getOrCreate<int, ImageEntity, EditImageFilter, EditorImageRepository>(filter);
+    return _filteredModelListCache.getOrCreateNetworkList<int, ImageEntity, EditImageFilter, EditorImageRepository>(filter);
   }
 
   void _clearAllImageLists() {
@@ -158,12 +167,9 @@ class ImageListActionCubit extends ListActionCubit<int, MediaSortActionEnum> {
     final currentFilterJson = jsonEncode(filter);
 
     for (final listsByFilters in listsByFilterTypes.values) {
-      for (final filterJson in listsByFilters.keys) {
-        if (filterJson == currentFilterJson) {
-          continue;
-        }
-
-        listsByFilters[filterJson].clearAndLoadFirstPage();
+      for (final entry in listsByFilters.entries) {
+        if (entry.key == currentFilterJson) continue;
+        entry.value.clearAndLoadFirstPage();
       }
     }
   }

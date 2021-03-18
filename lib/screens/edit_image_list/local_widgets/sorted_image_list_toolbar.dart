@@ -12,8 +12,8 @@ class SortedImageListToolbar extends StatelessWidget {
   final SelectableListCubit<int, EditImageFilter> selectableListCubit;
 
   SortedImageListToolbar({
-    @required this.imageListActionCubit,
-    @required this.selectableListCubit,
+    required this.imageListActionCubit,
+    required this.selectableListCubit,
   });
 
   @override

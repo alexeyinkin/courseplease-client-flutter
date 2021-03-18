@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_treeview/tree_view.dart';
@@ -11,10 +12,10 @@ class SelectProductSubjectScreen extends StatefulWidget {
   @override
   State<SelectProductSubjectScreen> createState() => _SelectProductSubjectScreenState();
 
-  static Future<int> selectSubjectId(BuildContext context) { // Nullable
+  static Future<int?> selectSubjectId(BuildContext context) {
     return Navigator.of(context)
         .pushNamed(SelectProductSubjectScreen.routeName)
-        .then((idDynamic) => idDynamic as int); // int?
+        .then((idDynamic) => idDynamic as int?);
   }
 }
 
@@ -27,15 +28,18 @@ class _SelectProductSubjectScreenState extends State<SelectProductSubjectScreen>
       appBar: AppBar(
         title: Text(tr('SelectProductSubjectScreen.title')),
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<List<ProductSubject>>(
         stream: _productSubjectCacheBloc.outTopLevelObjects,
-        initialData: <ProductSubject>[],
         builder: (context, snapshot) => _buildWithTopLevelObjects(snapshot.data),
       ),
     );
   }
 
-  Widget _buildWithTopLevelObjects(List<ProductSubject> objects) {
+  Widget _buildWithTopLevelObjects(List<ProductSubject>? objects) {
+    if (objects == null) {
+      return Center(child: SmallCircularProgressIndicator());
+    }
+
     final treeViewController = TreeViewController(children: _objectsToTreeNodes(objects));
 
     return TreeView(

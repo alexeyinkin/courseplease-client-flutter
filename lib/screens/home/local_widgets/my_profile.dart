@@ -26,10 +26,9 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<AuthenticationState>(
       stream: _authenticationCubit.outState,
-      initialData: _authenticationCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _authenticationCubit.initialState),
     );
   }
 
@@ -39,12 +38,15 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   }
 
   Widget _buildWithAuthenticatedState(AuthenticationState state) {
+    // TODO: Fix this mess of exclamations.
+    //       Make a separate state class when authenticated
+    //       and where everything is not null?
     return Column(
       children: [
-        _getProfileWidget(state.data.user),
-        _getEditMenu(state.data),
-        _getExistingIntegrationsMenu(state.data),
-        _getAddIntegrationsMenu(state.data.user),
+        _getProfileWidget(state.data!.user!),
+        _getEditMenu(state.data!),
+        _getExistingIntegrationsMenu(state.data!),
+        _getAddIntegrationsMenu(state.data!.user!),
       ],
     );
   }
@@ -80,7 +82,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
         ListTile(
           title: Text(tr('MyProfileWidget.myProfile')),
           trailing: Icon(Icons.chevron_right),
-          onTap: () => _editProfile(meResponseData.user),
+          onTap: () => _editProfile(meResponseData.user!),
         ),
         ListTile(
           title: Text(tr('MyProfileWidget.myTeaching')),
@@ -112,12 +114,10 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   }
 
   void _sortUnsortedMedia() async {
-    await Navigator.of(context).pushNamed(
-      EditImageListScreen.routeName,
-      arguments: EditImageListArguments(
-        filter: EditImageFilter(
-          unsorted: true,
-        ),
+    await EditImageListScreen.show(
+      context: context,
+      filter: EditImageFilter(
+        unsorted: true,
       ),
     );
 
@@ -125,11 +125,9 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   }
 
   void _editProfile(User user) {
-    Navigator.of(context).pushNamed(
-      EditProfileScreen.routeName,
-      arguments: EditProfileScreenArguments(
-        user: User.from(user),
-      ),
+    EditProfileScreen.show(
+      context: context,
+      userClone: User.from(user),
     );
   }
 

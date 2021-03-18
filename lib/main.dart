@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:courseplease/screens/home/home.dart';
 import 'package:courseplease/screens/routes.dart';
 import 'package:courseplease/services/locator.dart';
@@ -5,9 +7,11 @@ import 'package:courseplease/utils/yaml_asset_loader.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   initializeServiceLocator();
+
   runApp(CoursePleaseAppWrapper());
 }
 

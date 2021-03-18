@@ -46,4 +46,5 @@ class AppStyle {
   );
 
   static const unreadColor = Color(0x80DF4040);
+  static const errorColor = Color(0xFFFF0000);
 }

@@ -13,15 +13,14 @@ class EditPricesTabWidget extends StatelessWidget {
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
 
   EditPricesTabWidget({
-    @required this.teacherSubjectClone,
+    required this.teacherSubjectClone,
   });
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<AuthenticationState>(
       stream: _authenticationCubit.outState,
-      initialData: _authenticationCubit.initialState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _authenticationCubit.initialState),
     );
   }
 
@@ -29,7 +28,7 @@ class EditPricesTabWidget extends StatelessWidget {
     if (state.data == null) return Container();
 
     return ListView(
-      children: _createChildren(state.data),
+      children: _createChildren(state.data!),
     );
   }
 
@@ -44,7 +43,9 @@ class EditPricesTabWidget extends StatelessWidget {
     for (final formatIntName in EditTeacherSubjectCubit.formatIntNames) {
       children.add(
         EditFormatPriceWidget(
-          productVariantFormatWithPrice: formats[formatIntName],
+          // Not checking for null because all possible formats are here,
+          // filled by [EditTeacherSubjectCubit._ensureHaveAllFormats]
+          productVariantFormatWithPrice: formats[formatIntName]!,
           curs: meResponseData.allowedCurs,
         ),
       );

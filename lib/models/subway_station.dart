@@ -1,14 +1,12 @@
-import 'package:meta/meta.dart';
-
 class SubwayStation {
   final int id;
   final String title;
   final int color;
 
   SubwayStation({
-    @required this.id,
-    @required this.title,
-    @required this.color,
+    required this.id,
+    required this.title,
+    required this.color,
   });
 
   factory SubwayStation.fromMap(Map<String, dynamic> map) {

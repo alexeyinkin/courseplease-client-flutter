@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:meta/meta.dart';
 import 'auth_provider.dart';
 
 class VkAuthProvider extends AuthProvider {
@@ -8,9 +7,9 @@ class VkAuthProvider extends AuthProvider {
   static const version = '5.126';
 
   VkAuthProvider({
-    @required int id,
-    @required String redirectHostAndPort,
-    @required this.appId,
+    required int id,
+    required String redirectHostAndPort,
+    required this.appId,
   }) : super(
     id: id,
     redirectHostAndPort: redirectHostAndPort,
@@ -36,6 +35,5 @@ class VkAuthProvider extends AuthProvider {
       }
     );
     return uri.toString();
-    //return 'https://api.instagram.com/oauth/authorize?client_id=314996693237774&redirect_uri=https://courseplease.com/auth&scope=user_profile,user_media&response_type=code';
   }
 }

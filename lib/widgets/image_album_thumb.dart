@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 import 'overlay.dart';
 
 class ImageAlbumThumbsWidget extends StatelessWidget {
-  final Map<int, ImageAlbumThumb> thumbsByPurposeIds;
+  final Map<int, ImageAlbumThumb?> thumbsByPurposeIds;
   final ProductSubject productSubject;
-  final ValueChanged<int> onTap;
+  final ValueChanged<int>? onTap;
 
   ImageAlbumThumbsWidget({
-    @required this.thumbsByPurposeIds,
-    @required this.productSubject,
+    required this.thumbsByPurposeIds,
+    required this.productSubject,
     this.onTap,
   });
 
@@ -46,22 +46,22 @@ class ImageAlbumThumbsWidget extends StatelessWidget {
 
   void _onTap(int purposeId) {
     if (onTap != null) {
-      onTap(purposeId);
+      onTap!(purposeId);
     }
   }
 }
 
 class ImageAlbumThumbWidget extends StatelessWidget {
   final int purposeId;
-  final ImageAlbumThumb thumb; // Nullable
+  final ImageAlbumThumb? thumb;
   final ProductSubject productSubject;
   final VoidCallback onTap;
 
   ImageAlbumThumbWidget({
-    @required this.purposeId,
-    @required this.thumb,
-    @required this.productSubject,
-    @required this.onTap,
+    required this.purposeId,
+    required this.thumb,
+    required this.productSubject,
+    required this.onTap,
   });
 
   @override
@@ -81,7 +81,9 @@ class ImageAlbumThumbWidget extends StatelessWidget {
   }
 
   Widget _getImageWidget() {
-    if (thumb?.lastPublishedImageThumbUrl == null) {
+    final lastPublishedImageThumbUrl = thumb?.lastPublishedImageThumbUrl;
+
+    if (lastPublishedImageThumbUrl == null) {
       return Container(
         color: Color(0x40808080),
         child: FittedBox(
@@ -97,15 +99,17 @@ class ImageAlbumThumbWidget extends StatelessWidget {
     }
 
     return CachedNetworkImage(
-      imageUrl: 'https://courseplease.com' + thumb.lastPublishedImageThumbUrl,
-      errorWidget: (context, url, error) => Icon(Icons.error),//Row(mainAxisSize: MainAxisSize.min,children:[Icon(Icons.error)]),
+      imageUrl: 'https://courseplease.com' + lastPublishedImageThumbUrl,
+      errorWidget: (context, url, error) => Icon(Icons.error),
       fadeInDuration: Duration(),
       fit: BoxFit.cover,
     );
   }
 
   Widget _getCountOverlay() {
-    if (thumb == null || thumb.publishedImageCount == 0) {
+    final count = thumb?.publishedImageCount ?? 0;
+
+    if (count == 0) {
       return Container();
     }
 
@@ -114,7 +118,7 @@ class ImageAlbumThumbWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            thumb.publishedImageCount.toString(),
+            count.toString(),
             style: TextStyle(
               color: Color(0x80FFFFFF),
               shadows: [
@@ -131,16 +135,9 @@ class ImageAlbumThumbWidget extends StatelessWidget {
   }
 
   Widget _getTitleOverlay(BuildContext context) {
-    String dateString = null;
-
     final nameKey = ImageAlbumPurpose.getTitleKeyIfNotTheOnly(purposeId, productSubject);
     final name = nameKey == null ? null : tr('models.Image.purposes.' + nameKey);
-
-    if (thumb?.dateTimeLastPublish != null) {
-      dateString = formatShortRoughDuration(
-        DateTime.now().difference(thumb.dateTimeLastPublish),
-      );
-    }
+    final dateString = _getDateString();
 
     if (name == null && dateString == null) return Container();
 
@@ -157,6 +154,15 @@ class ImageAlbumThumbWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  String? _getDateString() {
+    final dt = thumb?.dateTimeLastPublish;
+    if (dt == null) return null;
+
+    return formatShortRoughDuration(
+      DateTime.now().difference(dt),
     );
   }
 }

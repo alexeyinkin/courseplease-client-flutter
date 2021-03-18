@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class ReadonlyTagsWidget extends StatelessWidget {
   final List<String> tags;
-  final int selectedIndex;
+  final int? selectedIndex;
 
   ReadonlyTagsWidget({
-    @required this.tags,
+    required this.tags,
     this.selectedIndex,
   });
 
@@ -34,8 +34,8 @@ class _ReadonlyTagWidget extends StatelessWidget {
   final bool selected;
 
   _ReadonlyTagWidget({
-    @required this.tag,
-    @required this.selected,
+    required this.tag,
+    required this.selected,
   });
 
   @override

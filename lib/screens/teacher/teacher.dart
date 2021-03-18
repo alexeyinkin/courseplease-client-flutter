@@ -12,6 +12,7 @@ import 'package:courseplease/widgets/profile.dart';
 import 'package:courseplease/widgets/rating_and_vote_count.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:courseplease/widgets/teacher_subject_product_variants.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -27,9 +28,34 @@ import '../../models/teacher_subject.dart';
 class TeacherScreen extends StatefulWidget {
   static const routeName = '/teacherById';
 
+  final int teacherId;
+  final int? initialSubjectId;
+
+  TeacherScreen({
+    required this.teacherId,
+    required this.initialSubjectId,
+  });
+
   @override
-  State<TeacherScreen> createState() {
-    return _TeacherScreenState();
+  _TeacherScreenState createState() => _TeacherScreenState(
+    teacherId: teacherId,
+    subjectId: initialSubjectId,
+  );
+
+  static Future<void> show({
+    required BuildContext context,
+    required int teacherId,
+    required int? initialSubjectId,
+  }) {
+    return Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TeacherScreen(
+          teacherId: teacherId,
+          initialSubjectId: initialSubjectId,
+        ),
+      ),
+    );
   }
 }
 
@@ -41,30 +67,36 @@ class _TeacherScreenState extends State<TeacherScreen> {
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
   );
 
-  int _teacherId;
-  int _subjectId;
+  int? _subjectId;
+
+  _TeacherScreenState({
+    required int teacherId,
+    required int? subjectId,
+  }) :
+      _subjectId = subjectId
+  {
+    _teacherByIdBloc.setCurrentId(teacherId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<ModelByIdState<int, Teacher>>(
       stream: _teacherByIdBloc.outState,
-      initialData: _teacherByIdBloc.initialState,
-      builder: (context, snapshot) =>
-          _buildWithTeacherState(context, snapshot.data),
+      builder: (context, snapshot) => _buildWithTeacherState(
+        snapshot.data ?? _teacherByIdBloc.initialState,
+      ),
     );
   }
 
-  Widget _buildWithTeacherState(BuildContext context, ModelByIdState<int, Teacher> teacherByIdState) {
-    _startLoadingIfNot(context);
-
+  Widget _buildWithTeacherState(ModelByIdState<int, Teacher> teacherByIdState) {
     final teacher = teacherByIdState.object;
 
     return teacher == null
-        ? _buildWithoutTeacher(context, teacherByIdState)
-        : _buildWithTeacher(context, teacher);
+        ? _buildWithoutTeacher(teacherByIdState)
+        : _buildWithTeacher(teacher);
   }
 
-  Widget _buildWithoutTeacher(BuildContext context, ModelByIdState<int, Teacher> teacherByIdState) {
+  Widget _buildWithoutTeacher(ModelByIdState<int, Teacher> teacherByIdState) {
     switch (teacherByIdState.requestStatus) {
       case RequestStatus.notTried:
       case RequestStatus.loading:
@@ -74,7 +106,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
     }
   }
 
-  Widget _buildWithTeacher(BuildContext context, Teacher teacher) {
+  Widget _buildWithTeacher(Teacher teacher) {
     return Material(
       type: MaterialType.transparency,
       child: SafeArea(
@@ -106,10 +138,11 @@ class _TeacherScreenState extends State<TeacherScreen> {
 
   Widget _getSubjectsLine(Teacher teacher) {
     _productSubjectsByIdsBloc.setCurrentIds(teacher.subjectIds);
-    return StreamBuilder(
+    return StreamBuilder<ModelListByIdsState<ProductSubject>>(
       stream: _productSubjectsByIdsBloc.outState,
-      initialData: _productSubjectsByIdsBloc.initialState,
-      builder: (context, snapshot) => _buildSubjectLineWithState(snapshot.data),
+      builder: (context, snapshot) => _buildSubjectLineWithState(
+        snapshot.data ?? _productSubjectsByIdsBloc.initialState,
+      ),
     );
   }
 
@@ -127,14 +160,14 @@ class _TeacherScreenState extends State<TeacherScreen> {
           Text('Teaches'),
           Container(
             padding: EdgeInsets.only(left: 10, right: 10),
-            child: CapsulesWidget(objects: subjects, selectedId: _subjectId, onTap: _setCategory),
+            child: CapsulesWidget(objects: subjects, selectedId: _subjectId, onTap: _setSubject),
           ),
         ],
       ),
     );
   }
 
-  void _setCategory(ProductSubject subject) {
+  void _setSubject(ProductSubject subject) {
     setState(() {
       _subjectId = subject.id;
     });
@@ -148,7 +181,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
   }
 
   Widget _getBio(Teacher teacher) {
-    TeacherSubject tc = _getSelectedTeacherSubject(teacher);
+    TeacherSubject? tc = _getSelectedTeacherSubject(teacher);
     String markdown = (tc != null && tc.body != '') ? tc.body : teacher.bio;
 
     return Container(
@@ -159,8 +192,12 @@ class _TeacherScreenState extends State<TeacherScreen> {
 
   Widget _getFormatList(Teacher teacher) {
     final ts = _getSelectedTeacherSubject(teacher);
-    if (ts == null) return _getFormatListPlaceholder('Not currently teaching.');
-    if (ts.productVariantFormats.isEmpty) return _getFormatListPlaceholder('Not currently teaching this subject. Try other categories or teachers.');
+    if (ts == null) {
+      return _getFormatListPlaceholder(tr('TeacherScreen.notCurrentlyTeaching'));
+    }
+    if (ts.productVariantFormats.isEmpty) {
+      return _getFormatListPlaceholder(tr('TeacherScreen.notCurrentlyTeachingThis'));
+    }
 
     return TeacherSubjectProductVariantsWidget(
       teacherSubject: ts,
@@ -182,7 +219,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
         maxHeight: 300,
       ),
       child: LessonGrid(
-        filter: LessonFilter(subjectId: _subjectId, teacherId: _teacherId),
+        filter: LessonFilter(subjectId: _subjectId, teacherId: widget.teacherId),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
           child: Text('My Lessons', style: AppStyle.h2),
@@ -197,7 +234,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
     return Container(
       height: 200,
       child: ViewImageGrid(
-        filter: ViewImageFilter(subjectId: _subjectId, teacherId: _teacherId),
+        filter: ViewImageFilter(subjectId: _subjectId, teacherId: widget.teacherId),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
           child: Text('My Works', style: AppStyle.h2),
@@ -212,8 +249,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
     );
   }
 
-  // Nullable
-  TeacherSubject _getSelectedTeacherSubject(Teacher teacher) {
+  TeacherSubject? _getSelectedTeacherSubject(Teacher teacher) {
     if (_subjectId == null) return null;
 
     for (final teacherSubject in teacher.categories) {
@@ -222,28 +258,10 @@ class _TeacherScreenState extends State<TeacherScreen> {
     return null;
   }
 
-  void _startLoadingIfNot(BuildContext context) {
-    if (_teacherId == null) {
-      final arguments = ModalRoute.of(context).settings.arguments as TeacherScreenArguments;
-      _teacherId = arguments.id;
-      _subjectId = arguments.subjectId;
-      _loadTeacher();
-    }
-  }
-
-  void _loadTeacher() async {
-    _teacherByIdBloc.setCurrentId(_teacherId);
-  }
-
   @override
   void dispose() {
     super.dispose();
+    _productSubjectsByIdsBloc.dispose();
     _teacherByIdBloc.dispose();
   }
-}
-
-class TeacherScreenArguments {
-  final int id;
-  final int subjectId;
-  TeacherScreenArguments({this.id, this.subjectId});
 }

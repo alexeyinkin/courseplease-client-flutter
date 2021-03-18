@@ -13,8 +13,8 @@ class LinkedProfileWidget extends StatefulWidget {
   final EditableContact contact;
 
   LinkedProfileWidget({
-    @required this.meResponseData,
-    @required this.contact,
+    required this.meResponseData,
+    required this.contact,
   });
 
   @override
@@ -39,10 +39,10 @@ class LinkedProfileWidget extends StatefulWidget {
 }
 
 class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
-  final ContactStatusCubit contactStatusCubit; // Nullable
+  final ContactStatusCubit? contactStatusCubit;
 
   _LinkedProfileWidgetState({
-    @required this.contactStatusCubit,
+    required this.contactStatusCubit,
   });
 
   @override
@@ -51,25 +51,25 @@ class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
       return _buildWithStatus(null);
     }
 
-    contactStatusCubit.setContact(widget.contact);
+    contactStatusCubit!.setContact(widget.contact);
 
-    return StreamBuilder(
-      stream: contactStatusCubit.outStatus,
+    return StreamBuilder<ReadableProfileSyncStatus>(
+      stream: contactStatusCubit!.outStatus,
       builder: (context, snapshot) => _buildWithStatus(snapshot.data),
     );
   }
 
-  Widget _buildWithStatus(ReadableProfileSyncStatus status) { // Nullable.
+  Widget _buildWithStatus(ReadableProfileSyncStatus? status) {
     return ListTile(
       leading: AuthProviderIcon(name: widget.contact.className),
       title: Text(widget.contact.getTitle()),
-      subtitle: _buildSubtitle(status),
+      subtitle: _getSubtitle(status),
       trailing: Icon(Icons.chevron_right),
       onTap: _handleTap,
     );
   }
 
-  Widget _buildSubtitle(ReadableProfileSyncStatus status) {
+  Widget? _getSubtitle(ReadableProfileSyncStatus? status) {
     if (status == null || status.description == '') {
       return null;
     }
@@ -85,11 +85,9 @@ class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
   }
 
   void _handleTap() {
-    Navigator.of(context).pushNamed(
-      EditIntegrationScreen.routeName,
-      arguments: EditIntegrationScreenArguments(
-        contactClone: EditableContact.from(widget.contact),
-      ),
+    EditIntegrationScreen.show(
+      context: context,
+      contactClone: EditableContact.from(widget.contact),
     );
   }
 }

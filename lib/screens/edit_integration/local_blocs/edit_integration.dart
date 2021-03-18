@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../../blocs/authentication.dart';
 import '../../../blocs/bloc.dart';
@@ -14,16 +13,17 @@ class EditIntegrationCubit extends Bloc {
   Stream<EditIntegrationState> get outState => _outStateController.stream;
 
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
-  StreamSubscription _authenticationCubitSubscription;
+  late StreamSubscription _authenticationCubitSubscription;
 
   EditIntegrationCurrentAction _currentAction = EditIntegrationCurrentAction.none;
-  AuthenticationState _authenticationState;
+  late AuthenticationState _authenticationState;
 
   EditIntegrationCubit({
-    @required int contactId,
+    required int contactId,
   }) :
-        _contactId = contactId
+      _contactId = contactId
   {
+    _authenticationState = _authenticationCubit.initialState;
     _authenticationCubitSubscription = _authenticationCubit.outState.listen(_onAuthenticationChange);
   }
 
@@ -33,17 +33,24 @@ class EditIntegrationCubit extends Bloc {
   }
 
   void _pushOutput() {
+    final contact = _getContact();
+
+    if (contact == null) {
+      _outStateController.sink.addError('Contact not found: ' + _contactId.toString());
+      return;
+    }
+
     _outStateController.sink.add(
       EditIntegrationState(
-        contact: _getContact(),
-        meResponseData: _authenticationState.data,
+        contact: contact,
+        meResponseData: _authenticationState.data!,
         currentAction: _currentAction,
       ),
     );
   }
 
-  EditableContact _getContact() { // Return Nullable.
-    for (final contact in _authenticationState.data.contacts) {
+  EditableContact? _getContact() {
+    for (final contact in _authenticationState.data?.contacts ?? []) {
       if (contact.id == _contactId) return contact;
     }
     return null;
@@ -79,14 +86,14 @@ class EditIntegrationCubit extends Bloc {
 }
 
 class EditIntegrationState {
-  final EditableContact contact; // Nullable
+  final EditableContact contact;
   final MeResponseData meResponseData;
   final EditIntegrationCurrentAction currentAction;
 
   EditIntegrationState({
-    @required this.contact,
-    @required this.meResponseData,
-    @required this.currentAction,
+    required this.contact,
+    required this.meResponseData,
+    required this.currentAction,
   });
 }
 
