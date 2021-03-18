@@ -7,7 +7,6 @@ import 'package:courseplease/widgets/error/id.dart';
 import 'package:flutter/rendering.dart';
 import '../screens/lesson/lesson.dart';
 import '../models/filters/lesson.dart';
-import '../models/interfaces.dart';
 import '../models/lesson.dart';
 import 'object_grid.dart';
 import 'package:flutter/material.dart';
@@ -53,20 +52,7 @@ class LessonGridState extends State<LessonGrid> {
         filter: widget.filter,
         tileFactory: _createTile,
         titleIfNotEmpty: widget.titleIfNotEmpty,
-
-        // When using Lesson as argument type, for some reason an exception is thrown
-        // at tile construction in ObjectGird in GridView.builder:
-        //
-        // type '(Lesson, int) => Null' is not a subtype of type '(WithId<dynamic>, int) => void'
-        // TODO: Find the reason for the exception, change the argument type to Lesson.
-        onTap: (WithId lesson, int index) {
-          if (lesson is Lesson) {
-            _handleTap(lesson, index);
-          } else {
-            throw Exception('A lesson is not Lesson');
-          }
-        },
-
+        onTap: _handleTap,
         scrollDirection: widget.scrollDirection,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: widget.crossAxisCount,
@@ -104,7 +90,7 @@ class LessonTile extends AbstractObjectTile<int, Lesson, LessonFilter> {
   State<AbstractObjectTile> createState() => LessonTileState();
 }
 
-class LessonTileState extends AbstractObjectTileState<int, Lesson, LessonFilter> {
+class LessonTileState extends AbstractObjectTileState<int, Lesson, LessonFilter, LessonTile> {
   @override
   Widget build(BuildContext context) {
     return Container(

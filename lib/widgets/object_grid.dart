@@ -21,6 +21,7 @@ class ObjectGrid<
     required TileFactory<I, O, F, T> tileFactory,
     TileCallback<I, O>? onTap,
     required Axis scrollDirection,
+    bool reverse = false,
     required this.gridDelegate,
     Widget? titleIfNotEmpty,
     SelectableListCubit<I, F>? listStateCubit,
@@ -29,6 +30,7 @@ class ObjectGrid<
     tileFactory: tileFactory,
     onTap: onTap,
     scrollDirection: scrollDirection,
+    reverse: reverse,
     titleIfNotEmpty: titleIfNotEmpty,
     listStateCubit: listStateCubit,
   );
@@ -56,6 +58,7 @@ class ObjectGridState<
       controller:       _scrollController,
       key:              PageStorageKey('ObjectGrid_' + T.runtimeType.toString() + '_' + widget.filter.toString()),
       scrollDirection:  widget.scrollDirection,
+      reverse:          widget.reverse,
       gridDelegate:     widget.gridDelegate,
       itemCount:        modelListState.hasMore ? null : modelListState.objects.length,
       itemBuilder:      (context, index) => buildTile(index, modelListState, listBloc, selectableListState),

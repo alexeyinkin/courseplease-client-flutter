@@ -18,6 +18,7 @@ abstract class ObjectAbstractListView<
   final TileFactory<I, O, F, T> tileFactory;
   final TileCallback<I, O>? onTap;
   final Axis scrollDirection;
+  final bool reverse;
   final Widget? titleIfNotEmpty;
   final SelectableListCubit<I, F>? listStateCubit;
   final F filter;
@@ -27,6 +28,7 @@ abstract class ObjectAbstractListView<
     required this.tileFactory,
     this.onTap,
     required this.scrollDirection,
+    required this.reverse,
     this.titleIfNotEmpty,
     this.listStateCubit,
   });

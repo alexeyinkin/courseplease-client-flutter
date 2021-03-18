@@ -1,6 +1,5 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/chat_message.dart';
@@ -41,6 +40,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
 
     return Container(
       child: ObjectLinearListView<int, ChatMessage, ChatMessageFilter, ChatMessageRepository, ChatMessageTile>(
+        reverse: true,
         filter: widget.filter,
         tileFactory: (TileCreationRequest<int, ChatMessage, ChatMessageFilter> request) {
           return _createTile(
@@ -48,20 +48,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
             currentUser: user,
           );
         },
-
-        // When using ChatMessage as argument type, for some reason an exception is thrown
-        // at tile construction in ObjectGird in GridView.builder:
-        //
-        // type '(ChatMessage, int) => Null' is not a subtype of type '(WithId<dynamic>, int) => void'
-        // TODO: Find the reason for the exception, change the argument type to ChatMessage.
-        onTap: (WithId chatMessage, int index) {
-          if (chatMessage is ChatMessage) {
-            _handleTap(chatMessage, index);
-          } else {
-            throw Exception('A chatMessage is not ChatMessage');
-          }
-        },
-
+        onTap: _handleTap,
         scrollDirection: Axis.vertical,
       ),
     );

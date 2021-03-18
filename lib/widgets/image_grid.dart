@@ -12,7 +12,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../models/filters/image.dart';
-import '../models/interfaces.dart';
 import '../models/image.dart';
 import 'object_grid.dart';
 import '../screens/image/image.dart';
@@ -55,19 +54,7 @@ class AbstractImageGridState<F extends AbstractFilter, R extends AbstractImageRe
       filter: widget.filter,
       tileFactory: createTile,
       titleIfNotEmpty: widget.titleIfNotEmpty,
-
-      // When using ImageEntity as argument type, for some reason an exception is thrown
-      // at tile construction in ObjectGird in GridView.builder:
-      //
-      // type '(ImageEntity, int) => Null' is not a subtype of type '(WithId<dynamic>, int) => void'
-      // TODO: Find the reason for the exception, change the argument type to the actual model.
-      onTap: (WithId image, int index) {
-        if (image is ImageEntity) {
-          handleTap(image, index);
-        } else {
-          throw Exception('An image is not ImageEntity');
-        }
-      },
+      onTap: handleTap,
       scrollDirection: widget.scrollDirection,
       gridDelegate: widget.gridDelegate,
       listStateCubit: widget.listStateCubit,
@@ -112,7 +99,7 @@ class ImageTile<F extends AbstractFilter> extends AbstractObjectTile<int, ImageE
   State<AbstractObjectTile> createState() => ImageTileState<F>();
 }
 
-class ImageTileState<F extends AbstractFilter> extends AbstractObjectTileState<int, ImageEntity, F> {
+class ImageTileState<F extends AbstractFilter> extends AbstractObjectTileState<int, ImageEntity, F, ImageTile<F>> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

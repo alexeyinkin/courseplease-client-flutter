@@ -47,20 +47,7 @@ class TeacherGridState extends State<TeacherGrid> {
       child: ObjectGrid<int, Teacher, TeacherFilter, TeacherRepository, TeacherTile>(
         filter: widget.filter,
         tileFactory: _createTile,
-
-        // When using Teacher as argument type, for some reason an exception is thrown
-        // at tile construction in ObjectGird in GridView.builder:
-        //
-        // type '(Teacher, int) => Null' is not a subtype of type '(WithId<dynamic>, int) => void'
-        // TODO: Find the reason for the exception, change the argument type to Teacher.
-        onTap: (WithId teacher, int index) {
-          if (teacher is Teacher) {
-            _handleTap(teacher, index);
-          } else {
-            throw Exception('A teacher is not Teacher');
-          }
-        },
-
+        onTap: _handleTap,
         scrollDirection: Axis.vertical,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -98,7 +85,7 @@ class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
   State<AbstractObjectTile> createState() => TeacherTileState();
 }
 
-class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilter> {
+class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilter, TeacherTile> {
   @override
   Widget build(BuildContext context) {
     final relativeUrl = widget.object.userpicUrls['300x300'] ?? null;

@@ -4,7 +4,6 @@ import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 
 import '../abstract_object_tile.dart';
@@ -26,7 +25,7 @@ class ChatTile extends AbstractObjectTile<int, Chat, ChatFilter> {
   State<AbstractObjectTile> createState() => ChatTileState();
 }
 
-class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter> {
+class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter, ChatTile> {
   @override
   Widget build(BuildContext context) {
     final chat = widget.object;

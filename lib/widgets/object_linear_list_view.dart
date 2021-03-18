@@ -19,6 +19,7 @@ class ObjectLinearListView<
     required TileFactory<I, O, F, T> tileFactory,
     TileCallback<I, O>? onTap,
     required Axis scrollDirection,
+    bool reverse = false,
     Widget? titleIfNotEmpty,
     SelectableListCubit<I, F>? listStateCubit,
   }) : super(
@@ -26,6 +27,7 @@ class ObjectLinearListView<
     tileFactory: tileFactory,
     onTap: onTap,
     scrollDirection: scrollDirection,
+    reverse: reverse,
     titleIfNotEmpty: titleIfNotEmpty,
     listStateCubit: listStateCubit,
   );
@@ -53,6 +55,7 @@ class ObjectLinearListViewState<
       controller:       _scrollController,
       key:              PageStorageKey('ObjectLinearListViewState_' + T.runtimeType.toString() + '_' + widget.filter.toString()),
       scrollDirection:  widget.scrollDirection,
+      reverse:          widget.reverse,
       itemCount:        modelListState.hasMore ? null : modelListState.objects.length,
       itemBuilder:      (context, index) => buildTile(index, modelListState, listBloc, selectableListState),
     );

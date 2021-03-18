@@ -62,10 +62,15 @@ class AbstractObjectTile<I, O extends WithId<I>, F extends AbstractFilter> exten
   ;
 
   @override
-  State<AbstractObjectTile> createState() => AbstractObjectTileState<I, O, F>();
+  State<AbstractObjectTile> createState() => AbstractObjectTileState<I, O, F, AbstractObjectTile<I, O, F>>();
 }
 
-class AbstractObjectTileState<I, O extends WithId<I>, F extends AbstractFilter> extends State<AbstractObjectTile<I, O, F>> {
+class AbstractObjectTileState<
+  I,
+  O extends WithId<I>,
+  F extends AbstractFilter,
+  W extends AbstractObjectTile<I, O, F>
+> extends State<W> {
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -1,7 +1,6 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/models/filters/chat.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/chat.dart';
@@ -55,20 +54,7 @@ class ChatListWidgetState extends State<ChatListWidget> {
             currentUser: user,
           );
         },
-
-        // When using Chat as argument type, for some reason an exception is thrown
-        // at tile construction in ObjectGird in GridView.builder:
-        //
-        // type '(Chat, int) => Null' is not a subtype of type '(WithId<dynamic>, int) => void'
-        // TODO: Find the reason for the exception, change the argument type to Chat.
-        onTap: (WithId chat, int index) {
-          if (chat is Chat) {
-            _handleTap(chat, index);
-          } else {
-            throw Exception('A chat is not Chat');
-          }
-        },
-
+        onTap: _handleTap,
         scrollDirection: Axis.vertical,
       ),
     );
