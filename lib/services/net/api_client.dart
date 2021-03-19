@@ -9,7 +9,6 @@ import 'package:courseplease/utils/auth/app_info.dart';
 import 'package:courseplease/utils/auth/device_info_for_server.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 
 class ApiClient {
   final String host = 'courseplease.com';

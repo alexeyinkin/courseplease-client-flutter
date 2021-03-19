@@ -3,11 +3,11 @@ import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:rxdart/rxdart.dart';
 
-class ChatsCubit extends Bloc {
-  final _outStateController = BehaviorSubject<ChatsCubitState>();
-  Stream<ChatsCubitState> get outState => _outStateController.stream;
+class ChatListCubit extends Bloc {
+  final _outStateController = BehaviorSubject<ChatListCubitState>();
+  Stream<ChatListCubitState> get outState => _outStateController.stream;
 
-  final initialState = ChatsCubitState(
+  final initialState = ChatListCubitState(
     currentChat: null,
     chatMessageFilter: null,
   );
@@ -27,8 +27,8 @@ class ChatsCubit extends Bloc {
     _outStateController.sink.add(state);
   }
 
-  ChatsCubitState _createState() {
-    return ChatsCubitState(
+  ChatListCubitState _createState() {
+    return ChatListCubitState(
       currentChat: _currentChat,
       chatMessageFilter: _chatMessageFilter,
     );
@@ -40,11 +40,11 @@ class ChatsCubit extends Bloc {
   }
 }
 
-class ChatsCubitState {
+class ChatListCubitState {
   final Chat? currentChat;
   final ChatMessageFilter? chatMessageFilter;
 
-  ChatsCubitState({
+  ChatListCubitState({
     required this.currentChat,
     required this.chatMessageFilter,
   });

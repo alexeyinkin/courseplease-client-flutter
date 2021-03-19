@@ -1,4 +1,4 @@
-import 'package:courseplease/blocs/chats.dart';
+import 'package:courseplease/blocs/chat_list.dart';
 import 'package:courseplease/models/filters/chat.dart';
 import 'package:courseplease/widgets/messaging/chat_list.dart';
 import 'package:courseplease/widgets/messaging/select_chat_placeholder.dart';
@@ -17,35 +17,35 @@ class ChatsWidget extends StatefulWidget {
 }
 
 class _ChatsWidgetState extends State<ChatsWidget> {
-  final _chatsCubit = ChatsCubit();
+  final _chatListCubit = ChatListCubit();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ChatsCubitState>(
-      stream: _chatsCubit.outState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _chatsCubit.initialState),
+    return StreamBuilder<ChatListCubitState>(
+      stream: _chatListCubit.outState,
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _chatListCubit.initialState),
     );
   }
 
-  Widget _buildWithState(ChatsCubitState state) {
+  Widget _buildWithState(ChatListCubitState state) {
     final screenSize = MediaQuery.of(context).size;
     return screenSize.width < ChatsWidget.minSplitWidth
         ? _buildListOnly(state)
         : _buildSplitView(state);
   }
 
-  Widget _buildListOnly(ChatsCubitState state) {
+  Widget _buildListOnly(ChatListCubitState state) {
     return _getChatListWidget(state);
   }
 
-  Widget _getChatListWidget(ChatsCubitState state) {
+  Widget _getChatListWidget(ChatListCubitState state) {
     return ChatListWidget(
-      chatsCubit: _chatsCubit,
+      chatListCubit: _chatListCubit,
       filter: widget.filter,
     );
   }
 
-  Widget _buildSplitView(ChatsCubitState state) {
+  Widget _buildSplitView(ChatListCubitState state) {
     return Row(
       children: [
         Expanded(child: _getChatListWidget(state)),
@@ -55,7 +55,7 @@ class _ChatsWidgetState extends State<ChatsWidget> {
     );
   }
 
-  Widget _getMessageListWidget(ChatsCubitState state) {
+  Widget _getMessageListWidget(ChatListCubitState state) {
     final chat = state.currentChat;
 
     if (chat == null) {

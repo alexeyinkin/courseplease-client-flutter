@@ -1,5 +1,5 @@
 import 'package:courseplease/blocs/authentication.dart';
-import 'package:courseplease/blocs/chats.dart';
+import 'package:courseplease/blocs/chat_list.dart';
 import 'package:courseplease/models/filters/chat.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/user.dart';
@@ -14,11 +14,11 @@ import 'package:get_it/get_it.dart';
 import 'chat_tile.dart';
 
 class ChatListWidget extends StatefulWidget {
-  final ChatsCubit chatsCubit;
+  final ChatListCubit chatListCubit;
   final ChatFilter filter;
 
   ChatListWidget({
-    required this.chatsCubit,
+    required this.chatListCubit,
     required this.filter,
   });
 
@@ -46,17 +46,17 @@ class ChatListWidgetState extends State<ChatListWidget> {
       throw Exception('Should only get here if authenticated');
     }
 
-    return StreamBuilder<ChatsCubitState>(
-      stream: widget.chatsCubit.outState,
+    return StreamBuilder<ChatListCubitState>(
+      stream: widget.chatListCubit.outState,
       builder: (context, snapshot) => _buildWithStates(
-        user, snapshot.data ?? widget.chatsCubit.initialState,
+        user, snapshot.data ?? widget.chatListCubit.initialState,
       ),
     );
   }
 
   Widget _buildWithStates(
     User user,
-    ChatsCubitState chatsCubitState,
+    ChatListCubitState chatListCubitState,
   ) {
     return Container(
       child: ObjectLinearListView<int, Chat, ChatFilter, ChatRepository, ChatTile>(
@@ -65,7 +65,7 @@ class ChatListWidgetState extends State<ChatListWidget> {
           return _createTile(
             request: request,
             currentUser: user,
-            chatsCubitState: chatsCubitState,
+            chatListCubitState: chatListCubitState,
           );
         },
         onTap: _handleTap,
@@ -77,9 +77,9 @@ class ChatListWidgetState extends State<ChatListWidget> {
   ChatTile _createTile({
     required TileCreationRequest<int, Chat, ChatFilter> request,
     required User currentUser,
-    required ChatsCubitState chatsCubitState,
+    required ChatListCubitState chatListCubitState,
   }) {
-    final isCurrent = (chatsCubitState.currentChat?.id == request.object.id);
+    final isCurrent = (chatListCubitState.currentChat?.id == request.object.id);
     return ChatTile(
       request: request,
       currentUser: currentUser,
@@ -88,6 +88,6 @@ class ChatListWidgetState extends State<ChatListWidget> {
   }
 
   void _handleTap(Chat chat, int index) {
-    widget.chatsCubit.setCurrentChat(chat);
+    widget.chatListCubit.setCurrentChat(chat);
   }
 }
