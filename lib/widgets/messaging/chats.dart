@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:courseplease/blocs/chat_list.dart';
 import 'package:courseplease/models/filters/chat.dart';
 import 'package:courseplease/widgets/messaging/chat_list.dart';
@@ -18,6 +20,9 @@ class ChatsWidget extends StatefulWidget {
 
 class _ChatsWidgetState extends State<ChatsWidget> {
   final _chatListCubit = ChatListCubit();
+  final _messageListWidgets = LinkedHashMap<String, Widget>();
+
+  static const _keepAliveChatCount = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -56,14 +61,31 @@ class _ChatsWidgetState extends State<ChatsWidget> {
   }
 
   Widget _getMessageListWidget(ChatListCubitState state) {
-    final chat = state.currentChat;
-
-    if (chat == null) {
+    final filter = state.chatMessageFilter;
+    if (filter == null) {
       return SelectChatPlaceholderWidget();
     }
 
+    final key = filter.toString();
+    if (!_messageListWidgets.containsKey(key)) {
+      _messageListWidgets[key] = _createMessageListWidget(state);
+    }
+
+    if (_messageListWidgets.length > _keepAliveChatCount) {
+      _messageListWidgets.remove(_messageListWidgets.keys.first);
+    }
+
+    return IndexedStack(
+      index: _messageListWidgets.keys.toList().indexOf(key),
+      children: _messageListWidgets.values.toList(),
+    );
+  }
+
+  Widget _createMessageListWidget(ChatListCubitState state) {
+    final chat = state.currentChat;
     final filter = state.chatMessageFilter;
-    if (filter == null) {
+
+    if (chat == null || filter == null) {
       throw Exception('Filter must be not null if the chat is not null.');
     }
 

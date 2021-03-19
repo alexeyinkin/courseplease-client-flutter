@@ -35,8 +35,7 @@ class _ChatMessageTileState extends AbstractObjectTileState<int, ChatMessage, Ch
         padding: EdgeInsets.only(
           left: 10,
           right: 10,
-          top: 5,
-          bottom: 5,
+          bottom: 2,
         ),
         child: _getChatMessageBubble(),
       ),

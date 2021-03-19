@@ -3,7 +3,6 @@ import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/utils/utils.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
 
@@ -135,6 +134,16 @@ class NetworkFilteredModelListBloc<
     }
   }
 
+  void clear() {
+    _objects.clear();
+    _objectsByIds.clear();
+    _status = RequestStatus.notTried;
+    _hasMore = true;
+    _currentLoadingFuture = null;
+    _nextPageToken = null;
+    _pushOutput();
+  }
+
   void clearAndLoadFirstPage() {
     _objects.clear();
     _objectsByIds.clear();
@@ -142,7 +151,6 @@ class NetworkFilteredModelListBloc<
     _hasMore = true;
     _currentLoadingFuture = null;
     _nextPageToken = null;
-    //_pushOutput();
     _loadMore();
   }
 }

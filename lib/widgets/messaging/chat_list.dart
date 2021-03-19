@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/chat_list.dart';
+import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/models/filters/chat.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/user.dart';
@@ -28,6 +29,7 @@ class ChatListWidget extends StatefulWidget {
 
 class ChatListWidgetState extends State<ChatListWidget> {
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  final _chatsCubit = GetIt.instance.get<ChatsCubit>();
   final padding = 10.0;
 
   @override
@@ -58,19 +60,29 @@ class ChatListWidgetState extends State<ChatListWidget> {
     User user,
     ChatListCubitState chatListCubitState,
   ) {
-    return Container(
-      child: ObjectLinearListView<int, Chat, ChatFilter, ChatRepository, ChatTile>(
-        filter: widget.filter,
-        tileFactory: (TileCreationRequest<int, Chat, ChatFilter> request) {
-          return _createTile(
-            request: request,
-            currentUser: user,
-            chatListCubitState: chatListCubitState,
-          );
-        },
-        onTap: _handleTap,
-        scrollDirection: Axis.vertical,
-      ),
+    return Column(
+      children: [
+        _getDebugPanel(chatListCubitState),
+        Expanded(child: _getListView(user, chatListCubitState)),
+      ],
+    );
+  }
+
+  Widget _getListView(
+    User user,
+    ChatListCubitState chatListCubitState,
+  ) {
+    return ObjectLinearListView<int, Chat, ChatFilter, ChatRepository, ChatTile>(
+      filter: widget.filter,
+      tileFactory: (TileCreationRequest<int, Chat, ChatFilter> request) {
+        return _createTile(
+          request: request,
+          currentUser: user,
+          chatListCubitState: chatListCubitState,
+        );
+      },
+      onTap: _handleTap,
+      scrollDirection: Axis.vertical,
     );
   }
 
@@ -89,5 +101,24 @@ class ChatListWidgetState extends State<ChatListWidget> {
 
   void _handleTap(Chat chat, int index) {
     widget.chatListCubit.setCurrentChat(chat);
+  }
+
+  Widget _getDebugPanel(ChatListCubitState state) {
+    return Row(
+      children: [
+        ElevatedButton(
+          child: Icon(Icons.sync),
+          onPressed: () => _onRefreshPressed(state),
+        ),
+      ],
+    );
+  }
+
+  void _onRefreshPressed(ChatListCubitState state) {
+    _chatsCubit.refreshChats();
+
+    if (state.currentChat != null) {
+      _chatsCubit.refreshChatMessages(state.currentChat!.id);
+    }
   }
 }

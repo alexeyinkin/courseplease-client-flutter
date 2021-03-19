@@ -16,6 +16,7 @@ class MyChatMessageBubble extends StatelessWidget {
       padding: EdgeInsets.only(left: 20),
       child: Bubble(
         nip: BubbleNip.rightBottom,
+        padding: BubbleEdges.symmetric(horizontal: 7, vertical: 5),
         color: const Color(0x60808080),
         child: ChatMessageBody(message: message),
       ),
@@ -36,6 +37,7 @@ class OthersChatMessageBubble extends StatelessWidget {
       padding: EdgeInsets.only(right: 20),
       child: Bubble(
         nip: BubbleNip.leftBottom,
+        padding: BubbleEdges.symmetric(horizontal: 7, vertical: 5),
         color: Colors.transparent,
         child: ChatMessageBody(message: message),
       ),

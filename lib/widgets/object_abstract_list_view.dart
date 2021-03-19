@@ -56,7 +56,7 @@ abstract class ObjectAbstractListViewState<
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    super.build(context); // For AutomaticKeepAliveClientMixin.
 
     final listBloc = _filteredModelListCache.getOrCreate<I, O, F, R>(widget.filter);
     listBloc.loadInitialIfNot();

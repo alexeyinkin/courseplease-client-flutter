@@ -26,7 +26,9 @@ class ChatMessageListWidget extends StatefulWidget {
   ChatMessageListWidget({
     required this.chat,
     required this.filter,
-  });
+  }) : super(
+    key: Key('ChatMessageListWidget_' + chat.id.toString()),
+  );
 
   @override
   _ChatMessageListState createState() => _ChatMessageListState();
@@ -151,7 +153,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
             CircleOrCapsuleWidget(
               color: const Color(0x60000000),
               child: Text(
-                formatTimeOrDate(
+                formatDate(
                   _earliestVisibleMessage!.dateTimeInsert,
                   requireLocale(context),
                 ),
@@ -166,8 +168,8 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
 
   Widget _getScrollToBottomButton() {
     return Positioned(
-      bottom: 20,
-      right: 20,
+      bottom: 10,
+      right: 10,
       child: AnimatedOpacity(
         opacity: _showScrollToBottom ? 1 : 0,
         duration: Duration(microseconds: 250),
@@ -196,25 +198,31 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
     }
 
     if (areSameDay(previous.dateTimeInsert, next.dateTimeInsert)) {
-      return Container();
+      return _buildSameDaySeparator(previous, next);
     }
 
     return _buildMessageDate(previous);
   }
 
+  Widget _buildSameDaySeparator(ChatMessage previous, ChatMessage next) {
+    if (previous.senderUserId == next.senderUserId) return Container();
+    return SmallPadding();
+  }
+
   Widget _buildBeforeFirstMessage(ChatMessage message) {
-    return Column(
-      children: [
-        SmallPadding(),
-        _buildMessageDate(message),
-      ]
+    // A spacing behind the date overlay when scrolled to the top.
+    return Container(
+      height: 32,
     );
   }
 
   Widget _buildMessageDate(ChatMessage message) {
-    return Text(
-      formatTimeOrDate(message.dateTimeInsert, requireLocale(context)),
-      textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: Text(
+        formatDate(message.dateTimeInsert, requireLocale(context)),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/repositories/chat.dart';
@@ -51,6 +52,7 @@ void _initializeCaches() {
 void _initializeBlocs() {
   GetIt.instance
       ..registerSingleton<AuthenticationBloc>(AuthenticationBloc())
+      ..registerSingleton<ChatsCubit>(ChatsCubit())
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
   ;
 }
