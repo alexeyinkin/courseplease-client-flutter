@@ -1,9 +1,30 @@
+import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/widgets.dart';
 
 class SmallPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(width: 10, height: 10);
+  }
+}
+
+class HorizontalLine extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 1,
+      color: AppStyle.borderColor,
+    );
+  }
+}
+
+class VerticalLine extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      color: AppStyle.borderColor,
+    );
   }
 }
 

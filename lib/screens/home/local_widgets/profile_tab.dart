@@ -14,11 +14,9 @@ class ProfileTabState extends State<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: StreamBuilder<AuthenticationState>(
-        stream: _authenticationCubit.outState,
-        builder: (context, snapshot) => buildWithState(snapshot.data ?? _authenticationCubit.initialState),
-      ),
+    return StreamBuilder<AuthenticationState>(
+      stream: _authenticationCubit.outState,
+      builder: (context, snapshot) => buildWithState(snapshot.data ?? _authenticationCubit.initialState),
     );
   }
 

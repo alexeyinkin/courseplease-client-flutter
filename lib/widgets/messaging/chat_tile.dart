@@ -4,19 +4,22 @@ import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:courseplease/widgets/messaging/chat_avatar.dart';
+import 'package:courseplease/widgets/messaging/chat_name.dart';
 import 'package:flutter/widgets.dart';
 
 import '../abstract_object_tile.dart';
 import '../pad.dart';
-import '../user.dart';
 import 'chat_message_preview.dart';
 
 class ChatTile extends AbstractObjectTile<int, Chat, ChatFilter> {
   final User currentUser;
+  final bool isCurrent;
 
   ChatTile({
     required TileCreationRequest<int, Chat, ChatFilter> request,
     required this.currentUser,
+    required this.isCurrent,
   }) : super(
     request: request,
   );
@@ -29,6 +32,15 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter, ChatT
   @override
   Widget build(BuildContext context) {
     final chat = widget.object;
+    late final Color? color;
+
+    if (widget.isCurrent) {
+      color = const Color(0x60808080);
+    } else if (chat.unreadByMeCount > 0) {
+      color = AppStyle.unreadColor;
+    } else {
+      color = null;
+    }
 
     return GestureDetector(
       onTap: widget.onTap,
@@ -37,12 +49,11 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter, ChatT
           Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: chat.unreadByMeCount > 0 ? AppStyle.unreadColor : null,
+              color: color,
             ),
             child: Row(
               children: [
-                _getChatAvatarWidget(chat),
+                ChatAvatarWidget(chat: chat, size: 50),
                 SmallPadding(),
                 Expanded(
                   child: _getNameAndPreviewWidgetIfCan(chat),
@@ -50,23 +61,10 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter, ChatT
               ],
             ),
           ),
-          Container(
-            height: 1,
-            color: Color(0x60808080),
-          ),
+          HorizontalLine(),
         ],
       ),
     );
-  }
-
-  Widget _getChatAvatarWidget(Chat chat) {
-    switch (chat.otherUsers.length) {
-      case 0:
-        throw Exception('No other users in this chat.');
-      case 1:
-        return UserpicWidget(user: chat.otherUsers[0], size: 50);
-    }
-    throw Exception('Group chats are not supported. This chat has ' + chat.otherUsers.length.toString() + ' other users.');
   }
 
   Widget _getNameAndPreviewWidgetIfCan(Chat chat) {
@@ -80,7 +78,7 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter, ChatT
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _getChatNameWidget(chat),
+        ChatNameWidget(chat: chat),
         SmallPadding(),
         Text(''),
       ],
@@ -93,7 +91,7 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter, ChatT
       children: [
         Row(
           children: [
-            _getChatNameWidget(chat),
+            ChatNameWidget(chat: chat),
             Spacer(),
             Text(formatTimeOrDate(lastMessage.dateTimeInsert, requireLocale(context))),
           ],
@@ -102,19 +100,9 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter, ChatT
         ChatMessagePreviewWidget(
           chat: chat,
           message: lastMessage,
-          currentUser: (widget as ChatTile).currentUser,
+          currentUser: widget.currentUser,
         ),
       ],
     );
-  }
-
-  Widget _getChatNameWidget(Chat chat) {
-    switch (chat.otherUsers.length) {
-      case 0:
-        throw Exception('No other users in this chat.');
-      case 1:
-        return UserNameWidget(user: chat.otherUsers[0], style: AppStyle.bold);
-    }
-    throw Exception('Group chats are not supported. This chat has ' + chat.otherUsers.length.toString() + ' other users.');
   }
 }

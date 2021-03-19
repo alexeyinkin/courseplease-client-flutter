@@ -1,4 +1,3 @@
-import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/screens/home/local_widgets/images_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/product_subjects_breadcrumbs.dart';
 import 'package:courseplease/screens/home/local_widgets/teachers_tab.dart';
@@ -6,7 +5,6 @@ import 'package:courseplease/widgets/capsules.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import '../../../blocs/current_product_subject.dart';
 import 'lessons_tab.dart';
@@ -22,33 +20,31 @@ class ExploreTabState extends State<ExploreTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Provider.value(
-        value: _bloc,
-        child: DefaultTabController(
-          length: 3,
-          child: Column(
-            children: [
-              ProductSubjectsBreadcrumbs(),
-              _getChildrenSubjectsLine(context),
-              TabBar(
-                tabs: [
-                  Tab(text: tr('ImagesTabWidget.title')),
-                  Tab(text: tr('TeachersTabWidget.title')),
-                  Tab(text: tr('LessonsTabWidget.title')),
+    return Provider.value(
+      value: _bloc,
+      child: DefaultTabController(
+        length: 3,
+        child: Column(
+          children: [
+            ProductSubjectsBreadcrumbs(),
+            _getChildrenSubjectsLine(context),
+            TabBar(
+              tabs: [
+                Tab(text: tr('ImagesTabWidget.title')),
+                Tab(text: tr('TeachersTabWidget.title')),
+                Tab(text: tr('LessonsTabWidget.title')),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  ImagesTab(),
+                  TeachersTab(),
+                  LessonsTab(),
                 ],
               ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    ImagesTab(),
-                    TeachersTab(),
-                    LessonsTab(),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

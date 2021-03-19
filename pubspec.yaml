@@ -48,6 +48,7 @@ dependencies:
   package_info: ^2.0.0
   provider: ^5.0.0
   rxdart: ^0.26.0
+  visibility_detector: ^0.2.0-nullsafety.1      # Unstable
   yaml: ^3.1.0
   #youtube_player_flutter: ^7.0.0+7
   #youtube_player_iframe: ^1.2.0+2               # No null-safety

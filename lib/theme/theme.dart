@@ -45,6 +45,7 @@ class AppStyle {
     fontSize: 10,
   );
 
-  static const unreadColor = Color(0x80DF4040);
+  static const unreadColor = Color(0x30808080);
   static const errorColor = Color(0xFFFF0000);
+  static const borderColor = Color(0x60808080);
 }

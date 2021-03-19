@@ -5,6 +5,8 @@ common:
         save:           'Save'
     more:               'More...'
     sentenceSeparator:  '. '
+    tomorrow:           'Tomorrow'
+    today:              'Today'
     yesterday:          'Yesterday'
 
 ContactStatusCubit:

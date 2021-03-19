@@ -15,19 +15,21 @@ abstract class ObjectAbstractListView<
   R extends AbstractFilteredRepository<I, O, F>,
   T extends AbstractObjectTile<I, O, F>
 > extends StatefulWidget {
+  final F filter;
   final TileFactory<I, O, F, T> tileFactory;
   final TileCallback<I, O>? onTap;
   final Axis scrollDirection;
+  final ScrollController? scrollController;
   final bool reverse;
   final Widget? titleIfNotEmpty;
   final SelectableListCubit<I, F>? listStateCubit;
-  final F filter;
 
   ObjectAbstractListView({
     required this.filter,
     required this.tileFactory,
     this.onTap,
     required this.scrollDirection,
+    this.scrollController,
     required this.reverse,
     this.titleIfNotEmpty,
     this.listStateCubit,

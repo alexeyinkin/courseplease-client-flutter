@@ -16,42 +16,44 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageStorage(
-        bucket: _pageStorageBucket,
-        child: IndexedStack(
-          children: [
-            ExploreTab(),
-            PickedTab(),
-            MessagesTab(),
-            ProfileTab(),
-          ],
-          index: _currentTab,
+    return SafeArea(
+      child: Scaffold(
+        body: PageStorage(
+          bucket: _pageStorageBucket,
+          child: IndexedStack(
+            children: [
+              ExploreTab(),
+              PickedTab(),
+              MessagesTab(),
+              ProfileTab(),
+            ],
+            index: _currentTab,
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentTab,
-        type: BottomNavigationBarType.fixed,
-        onTap: _onTabTap,
-        unselectedItemColor: Theme.of(context).textTheme.caption!.color,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: tr('ExploreTabWidget.iconTitle'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: tr('PickedTabWidget.iconTitle'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: tr('MessagesTabWidget.iconTitle'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: tr('MyProfileTabWidget.iconTitle'),
-          ),
-        ],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentTab,
+          type: BottomNavigationBarType.fixed,
+          onTap: _onTabTap,
+          unselectedItemColor: Theme.of(context).textTheme.caption!.color,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: tr('ExploreTabWidget.iconTitle'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: tr('PickedTabWidget.iconTitle'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: tr('MessagesTabWidget.iconTitle'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: tr('MyProfileTabWidget.iconTitle'),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -4,16 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:flutter/widgets.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../abstract_object_tile.dart';
 import 'chat_message_body.dart';
 
 class ChatMessageTile extends AbstractObjectTile<int, ChatMessage, ChatMessageFilter> {
   final User currentUser;
+  final VisibilityChangedCallback? onVisibilityChanged;
 
   ChatMessageTile({
     required TileCreationRequest<int, ChatMessage, ChatMessageFilter> request,
     required this.currentUser,
+    this.onVisibilityChanged,
   }) : super(
     request: request,
   );
@@ -25,13 +28,18 @@ class ChatMessageTile extends AbstractObjectTile<int, ChatMessage, ChatMessageFi
 class _ChatMessageTileState extends AbstractObjectTileState<int, ChatMessage, ChatMessageFilter, ChatMessageTile> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        left: 10,
-        right: 10,
-        top: 10,
+    return VisibilityDetector(
+      key: Key('ChatMessageTile_' + widget.object.id.toString()),
+      onVisibilityChanged: widget.onVisibilityChanged,
+      child: Container(
+        padding: EdgeInsets.only(
+          left: 10,
+          right: 10,
+          top: 5,
+          bottom: 5,
+        ),
+        child: _getChatMessageBubble(),
       ),
-      child: _getChatMessageBubble(),
     );
   }
 

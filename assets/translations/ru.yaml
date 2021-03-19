@@ -5,6 +5,8 @@ common:
         save:           'Сохранить'
     more:               'Ещё...'
     sentenceSeparator:  '. '
+    tomorrow:           'Завтра'
+    today:              'Сегодня'
     yesterday:          'Вчера'
 
 ContactStatusCubit:

@@ -4,6 +4,7 @@ import 'package:courseplease/widgets/messaging/chat_list.dart';
 import 'package:courseplease/widgets/messaging/select_chat_placeholder.dart';
 import 'package:flutter/widgets.dart';
 
+import '../pad.dart';
 import 'chat_message_list.dart';
 
 class ChatsWidget extends StatefulWidget {
@@ -48,10 +49,7 @@ class _ChatsWidgetState extends State<ChatsWidget> {
     return Row(
       children: [
         Expanded(child: _getChatListWidget(state)),
-        Container(
-          width: 1,
-          color: Color(0x60808080),
-        ),
+        VerticalLine(),
         Expanded(child: _getMessageListWidget(state)),
       ],
     );
@@ -66,10 +64,11 @@ class _ChatsWidgetState extends State<ChatsWidget> {
 
     final filter = state.chatMessageFilter;
     if (filter == null) {
-      throw Exception('Filter must be not null if the chat is.');
+      throw Exception('Filter must be not null if the chat is not null.');
     }
 
     return ChatMessageListWidget(
+      chat: chat,
       filter: filter,
     );
   }

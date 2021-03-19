@@ -2,6 +2,8 @@ import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/theme/theme.dart';
+import 'package:courseplease/widgets/circle_or_capsule.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../pad.dart';
@@ -24,6 +26,7 @@ class ChatMessagePreviewWidget extends StatelessWidget {
     final senderUser = _getSenderUser();
 
     return _getPreview(
+      context: context,
       senderUser: senderUser,
       mineAndUnread: message.senderUserId == currentUser.id && message.dateTimeRead == null,
     );
@@ -43,6 +46,7 @@ class ChatMessagePreviewWidget extends StatelessWidget {
   }
 
   Widget _getPreview({
+    required BuildContext context,
     required User? senderUser,
     required bool mineAndUnread,
   }) {
@@ -57,7 +61,7 @@ class ChatMessagePreviewWidget extends StatelessWidget {
       ),
     );
     if (chat.unreadByMeCount > 0) {
-      children.add(_getUnreadCountWidget());
+      children.add(_getUnreadCountWidget(context));
     }
 
     return Row(
@@ -80,25 +84,17 @@ class ChatMessagePreviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _getUnreadCountWidget() {
-    // https://stackoverflow.com/a/48676681/11382675
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minWidth: 25,
-        minHeight: 25,
-        maxHeight: 25,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: AppStyle.unreadColor,
-        ),
-        child: Center(
-          child: Text(
-            chat.unreadByMeCount.toString(),
-          ),
+  Widget _getUnreadCountWidget(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return CircleOrCapsuleWidget(
+      child: Text(
+        chat.unreadByMeCount.toString(),
+        style: TextStyle(
+          color: colorScheme.onPrimary,
         ),
       ),
+      color: colorScheme.primary,
     );
   }
 }

@@ -91,26 +91,43 @@ String generatePassword(int length) {
 
 String formatTimeOrDate(DateTime dt, Locale locale) {
   final now = DateTime.now();
-  final localeString = locale.toString();
-  DateFormat format;
-
-  if (now.day == dt.day && now.month == dt.month && now.year == dt.year) {
-    format = DateFormat.Hm(localeString);
-  } else if (false) { // TODO: Calculate if yesterday.
-    return tr('common.yesterday');
-  } else if (now.year == dt.year) {
-    format = DateFormat.MMMd(localeString);
-  } else {
-    format = DateFormat.yMMMd(localeString);
-  }
-
-  return format.format(dt);
+  return (now.day == dt.day && now.month == dt.month && now.year == dt.year)
+      ? formatTime(dt, locale)
+      : formatDate(dt, locale);
 }
 
 String formatTime(DateTime dt, Locale locale) {
   final localeString = locale.toString();
   final format = DateFormat.Hm(localeString);
   return format.format(dt);
+}
+
+String formatDate(DateTime dt, Locale locale) {
+  switch (getDaysAfterNow(dt)) {
+    case 1:  return tr('common.tomorrow');
+    case 0:  return tr('common.today');
+    case -1: return tr('common.yesterday');
+  }
+
+  final now = DateTime.now();
+  final localeString = locale.toString();
+  late final DateFormat format;
+
+  if (now.year == dt.year) {
+    format = DateFormat.MMMd(localeString);
+  } else {
+    format = DateFormat.yMMMd(localeString);
+  }
+  return format.format(dt);
+}
+
+int getDaysAfterNow(DateTime dt) {
+  DateTime now = DateTime.now();
+  return DateTime(dt.year, dt.month, dt.day).difference(DateTime(now.year, now.month, now.day)).inDays;
+}
+
+bool areSameDay(DateTime one, DateTime two) {
+  return one.day == two.day && one.month == two.month && one.year == two.year;
 }
 
 String formatShortRoughDuration(Duration duration) {
