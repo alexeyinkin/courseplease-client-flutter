@@ -22,10 +22,12 @@ import 'chat_name.dart';
 class ChatMessageListWidget extends StatefulWidget {
   final Chat chat;
   final ChatMessageFilter filter;
+  final bool showTitle;
 
   ChatMessageListWidget({
     required this.chat,
     required this.filter,
+    required this.showTitle,
   }) : super(
     key: Key('ChatMessageListWidget_' + chat.id.toString()),
   );
@@ -66,7 +68,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
 
     return Column(
       children: [
-        _getTitleWidget(),
+        if (widget.showTitle) _getTitleWidget(),
         HorizontalLine(),
         Expanded(child: _getListWithOverlays(user)),
         HorizontalLine(),
@@ -244,7 +246,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
       break;
     }
 
-    if (earliestVisibleMessage != _earliestVisibleMessage) {
+    if (earliestVisibleMessage != _earliestVisibleMessage && mounted) {
       setState(() {
         _earliestVisibleMessage = earliestVisibleMessage;
       });

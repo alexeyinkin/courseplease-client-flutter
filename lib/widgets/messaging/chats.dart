@@ -2,8 +2,12 @@ import 'dart:collection';
 
 import 'package:courseplease/blocs/chat_list.dart';
 import 'package:courseplease/models/filters/chat.dart';
+import 'package:courseplease/models/filters/chat_message.dart';
+import 'package:courseplease/models/messaging/chat.dart';
+import 'package:courseplease/screens/chat_message_list/chat_message_list.dart';
 import 'package:courseplease/widgets/messaging/chat_list.dart';
 import 'package:courseplease/widgets/messaging/select_chat_placeholder.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../pad.dart';
@@ -21,8 +25,13 @@ class ChatsWidget extends StatefulWidget {
 class _ChatsWidgetState extends State<ChatsWidget> {
   final _chatListCubit = ChatListCubit();
   final _messageListWidgets = LinkedHashMap<String, Widget>();
+  final _chatStack = <Chat>[];
 
   static const _keepAliveChatCount = 2;
+
+  _ChatsWidgetState() {
+    _chatListCubit.outCurrentChat.listen(_onCurrentChatChange);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +42,21 @@ class _ChatsWidgetState extends State<ChatsWidget> {
   }
 
   Widget _buildWithState(ChatListCubitState state) {
+    final mode = _getMessageListMode();
+    switch (mode) {
+      case _MessageListMode.separateScreen:
+        return _buildListOnly(state);
+      case _MessageListMode.splitView:
+        return _buildSplitView(state);
+    }
+    throw Exception('Unknown _MessageListMode: ' + mode.toString());
+  }
+
+  _MessageListMode _getMessageListMode() {
     final screenSize = MediaQuery.of(context).size;
     return screenSize.width < ChatsWidget.minSplitWidth
-        ? _buildListOnly(state)
-        : _buildSplitView(state);
+        ? _MessageListMode.separateScreen
+        : _MessageListMode.splitView;
   }
 
   Widget _buildListOnly(ChatListCubitState state) {
@@ -59,6 +79,43 @@ class _ChatsWidgetState extends State<ChatsWidget> {
       ],
     );
   }
+
+  // A keep-alive test
+  // Widget _getMessageListsTab(ChatListCubitState state) {
+  //   final filter = state.chatMessageFilter;
+  //   if (filter == null) {
+  //     return SelectChatPlaceholderWidget();
+  //   }
+  //
+  //   final key = filter.toString();
+  //   if (!_messageListWidgets.containsKey(key)) {
+  //     _messageListWidgets[key] = _createMessageListWidget(state);
+  //   }
+  //
+  //   if (_messageListWidgets.length > _keepAliveChatCount) {
+  //     _messageListWidgets.remove(_messageListWidgets.keys.first);
+  //   }
+  //
+  //   return DefaultTabController(
+  //     length: _messageListWidgets.length,
+  //     child: Column(
+  //       children: [
+  //         TabBar(
+  //           tabs: _messageListWidgets.keys.map<Widget>(
+  //             (str) {
+  //               return Tab(child: Text(str));
+  //             },
+  //           ).toList(),
+  //         ),
+  //         Expanded(
+  //           child: TabBarView(
+  //             children: _messageListWidgets.values.toList(),
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _getMessageListWidget(ChatListCubitState state) {
     final filter = state.chatMessageFilter;
@@ -92,6 +149,45 @@ class _ChatsWidgetState extends State<ChatsWidget> {
     return ChatMessageListWidget(
       chat: chat,
       filter: filter,
+      showTitle: true,
     );
   }
+
+  void _onCurrentChatChange(Chat? chat) {
+    if (chat == null) return;
+
+    switch (_getMessageListMode()) {
+      case _MessageListMode.separateScreen:
+        _showMessageListScreen(chat);
+        break;
+    }
+  }
+
+  void _showMessageListScreen(Chat chat) async {
+    if (_chatStack.isNotEmpty && _chatStack.last.id == chat.id) {
+      // Either we attempted to open a chat when it is currently active
+      // (not impossible now), or we popped the top chat and the one
+      // underneath it is showing. Either way, do nothing.
+      return;
+    }
+
+    _chatStack.add(chat);
+    await ChatMessageListScreen.show(
+      context: context,
+      chat: chat,
+      chatMessageFilter: ChatMessageFilter(chatId: chat.id),
+    );
+
+    _chatStack.removeLast();
+
+    final newTopChat = _chatStack.isEmpty ? null : _chatStack.last;
+    // This will fire the event, but it will be silenced by the check
+    // in the beginning of this method.
+    _chatListCubit.setCurrentChat(newTopChat);
+  }
+}
+
+enum _MessageListMode {
+  separateScreen,
+  splitView,
 }

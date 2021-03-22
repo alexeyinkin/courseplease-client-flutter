@@ -4,6 +4,14 @@ import 'package:courseplease/models/messaging/chat.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ChatListCubit extends Bloc {
+  /// This event is triggered when the current chat is changed.
+  /// Listen to it to pop chat message lists up.
+  final _outCurrentChatController = BehaviorSubject<Chat?>();
+  Stream<Chat?> get outCurrentChat => _outCurrentChatController.stream;
+
+  /// In the future this event will additionally be triggered
+  /// when anything less important changes, like selection.
+  /// For now it is doubles [outCurrentChat].
   final _outStateController = BehaviorSubject<ChatListCubitState>();
   Stream<ChatListCubitState> get outState => _outStateController.stream;
 
@@ -15,14 +23,19 @@ class ChatListCubit extends Bloc {
   Chat? _currentChat;
   ChatMessageFilter? _chatMessageFilter;
 
-  void setCurrentChat(Chat chat) {
+  void setCurrentChat(Chat? chat) {
     if (_currentChat == chat) return;
     _currentChat = chat;
-    _chatMessageFilter = ChatMessageFilter(chatId: chat.id);
-    _pushOutput();
+    _chatMessageFilter = chat == null ? null : ChatMessageFilter(chatId: chat.id);
+    _pushCurrentChatOutput();
+    _pushStateOutput();
   }
 
-  void _pushOutput() {
+  void _pushCurrentChatOutput() {
+    _outCurrentChatController.sink.add(_currentChat);
+  }
+
+  void _pushStateOutput() {
     final state = _createState();
     _outStateController.sink.add(state);
   }
@@ -37,6 +50,7 @@ class ChatListCubit extends Bloc {
   @override
   void dispose() {
     _outStateController.close();
+    _outCurrentChatController.close();
   }
 }
 
