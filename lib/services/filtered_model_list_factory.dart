@@ -79,13 +79,16 @@ class FilteredModelListCache {
     );
   }
 
-  Map<String, NetworkFilteredModelListBloc> getModelListsByObjectAndFilterTypes<O, F>() {
+  Map<String, NetworkFilteredModelListBloc<I, O, F>> getModelListsByObjectAndFilterTypes<I, O extends WithId<I>, F extends AbstractFilter>() {
     final objectType = typeOf<O>();
     final filterType = typeOf<F>();
+    final map = (
+          _networkLists[objectType]?[filterType]
+          as Map<String, NetworkFilteredModelListBloc<I, O, F>>?
+        )
+        ?? <String, NetworkFilteredModelListBloc<I, O, F>>{};
 
-    return UnmodifiableMapView<String, NetworkFilteredModelListBloc>(
-      _networkLists[objectType]![filterType] ?? {},
-    );
+    return UnmodifiableMapView<String, NetworkFilteredModelListBloc<I, O, F>>(map);
   }
 }
 

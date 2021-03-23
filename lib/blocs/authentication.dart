@@ -167,7 +167,7 @@ class AuthenticationBloc extends Bloc{
     }
   }
 
-  void reloadCurrentActor() {
+  Future<void> reloadCurrentActor() async {
     final deviceKey = _authenticationState.deviceKey;
     if (deviceKey == null) throw Exception('deviceKey is required for this');
 

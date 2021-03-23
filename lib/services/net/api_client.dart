@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/abstract.dart';
+import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/abstract.dart';
@@ -107,6 +108,16 @@ class ApiClient {
       body: request,
     );
     return MeResponseData.fromMap(mapResponse.data);
+  }
+
+  Future<GetServerSentEventsResponse> getServerSentEvents(int lastSseId) async {
+    final request = {'lastEventId': lastSseId};
+    final mapResponse = await sendRequest(
+      method: HttpMethod.get,
+      path: '/api1/{@lang}/me/sse',
+      queryParameters: {'request': jsonEncode(request)},
+    );
+    return GetServerSentEventsResponse.fromMap(mapResponse.data);
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
@@ -338,6 +349,7 @@ class MeResponseData {
   final List<TeacherSubject> teacherSubjects;
   final List<EditableContact> contacts;
   final List<String> allowedCurs;
+  final int? lastSseId;
   final bool hasUnsortedMedia;
 
   MeResponseData._({
@@ -346,6 +358,7 @@ class MeResponseData {
     required this.teacherSubjects,
     required this.contacts,
     required this.allowedCurs,
+    required this.lastSseId,
     required this.hasUnsortedMedia,
   });
 
@@ -358,6 +371,7 @@ class MeResponseData {
       teacherSubjects:  TeacherSubject.fromMaps(map['teacherSubjects']),
       contacts:         EditableContact.fromMaps(map['contacts']),
       allowedCurs:      map['allowedCurs'].cast<String>(),
+      lastSseId:        map['lastSseId'],
       hasUnsortedMedia: map['hasUnsortedMedia'],
     );
   }
@@ -521,5 +535,20 @@ class MediaSortCommand<F extends AbstractFilter> extends JsonSerializable {
       'fetchFilter':  fetchFilter?.toJson() ?? {},
       'setFilter':    setFilter?.toJson() ?? {},
     };
+  }
+}
+
+class GetServerSentEventsResponse {
+  final List<ServerSentEvent>? items;
+
+  GetServerSentEventsResponse({
+    required this.items,
+  });
+
+  factory GetServerSentEventsResponse.fromMap(Map<String, dynamic> map) {
+    final itemMaps = map['items'];
+    return GetServerSentEventsResponse(
+      items: itemMaps == null ? null : ServerSentEvent.fromMaps(itemMaps),
+    );
   }
 }

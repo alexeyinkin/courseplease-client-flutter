@@ -120,7 +120,13 @@ class NetworkFilteredModelListBloc<
     _pushOutput();
   }
 
+  O? getObject(I id) {
+    return _objectsByIds[id];
+  }
+
   void removeObjectIds(List<I> ids) {
+    if (ids.isEmpty) return;
+
     final idsMap = Map<I, I>.fromIterable(ids, key: (id) => id, value: (id) => id);
     final lengthWas = _objects.length;
 
@@ -132,6 +138,17 @@ class NetworkFilteredModelListBloc<
     if (_objects.length < lengthWas) {
       _pushOutput();
     }
+  }
+
+  void addToBeginning(List<O> objects) {
+    if (objects.isEmpty) return;
+
+    _objects.insertAll(0, objects);
+    for (final object in objects) {
+      _objectsByIds[object.id] = object;
+    }
+
+    _pushOutput();
   }
 
   void clear() {

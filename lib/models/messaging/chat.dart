@@ -23,4 +23,13 @@ class Chat implements WithId<int> {
       otherUsers:       User.fromMaps(map['otherUsers']),
     );
   }
+
+  Chat withLastIncomingMessage(ChatMessage newMessage) {
+    return Chat(
+      id:               id,
+      lastMessage:      newMessage,
+      unreadByMeCount:  unreadByMeCount + 1,
+      otherUsers:       otherUsers,
+    );
+  }
 }

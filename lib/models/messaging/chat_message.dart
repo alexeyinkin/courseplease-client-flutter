@@ -3,6 +3,7 @@ import 'message_body.dart';
 
 class ChatMessage extends WithId<int> {
   final int id;
+  final chatId;
   final int? senderUserId;
   final DateTime dateTimeInsert;
   final DateTime? dateTimeEdit;
@@ -11,6 +12,7 @@ class ChatMessage extends WithId<int> {
 
   ChatMessage({
     required this.id,
+    required this.chatId,
     required this.senderUserId,
     required this.dateTimeInsert,
     required this.dateTimeEdit,
@@ -24,6 +26,7 @@ class ChatMessage extends WithId<int> {
 
     return ChatMessage(
       id:             map['id'],
+      chatId:         map['chatId'],
       senderUserId:   map['senderUserId'],
       dateTimeInsert: DateTime.parse(map['dateTimeInsert']),
       dateTimeEdit:   dateTimeEditString == null ? null : DateTime.parse(dateTimeEditString),

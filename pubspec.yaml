@@ -33,7 +33,7 @@ dependencies:
   device_info: ^2.0.0
   easy_localization: ^3.0.0
   flag: ^5.0.0-nullsafety                       # Unstable
-  flutter_breadcrumb: ^1.0.0
+  flutter_breadcrumb: ^1.0.1
   flutter_icons: ^1.1.0                         # No null-safety
   flutter_markdown: ^0.6.0
   flutter_secure_storage: ^4.1.0

@@ -25,4 +25,16 @@ class ChatRepository extends AbstractFilteredRepository<int, Chat, ChatFilter> {
 
     return ListLoadResult<Chat>(objects, mapResult.nextPageToken);
   }
+
+  @override
+  Future<Chat?> loadById(int id) {
+    return _client
+        .getEntity(_entitiesName, id)
+        .then((response) => _denormalizeOneOrNull(response.data));
+  }
+
+  Chat? _denormalizeOneOrNull(Map<String, dynamic>? mapResult) {
+    if (mapResult == null) return null;
+    return Chat.fromMap(mapResult);
+  }
 }
