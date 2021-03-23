@@ -45,6 +45,11 @@ class ChatsCubit extends Bloc {
     _prependMessageToLists(message);
   }
 
+  void onOutgoingMessage(ChatMessage message) async {
+    _prependMessageToChats(message, _MessageDirection.outgoing);
+    _prependMessageToLists(message);
+  }
+
   void _prependMessageToChats(ChatMessage message, _MessageDirection direction) async {
     final chat =
         _getChatFromAnyListAndPrependMessage(message, direction)
@@ -69,7 +74,7 @@ class ChatsCubit extends Bloc {
       case _MessageDirection.incoming:
         return chat.withLastIncomingMessage(message);
       case _MessageDirection.outgoing:
-        // TODO: chat.withLastOutgoingMessage(message);
+        return chat.withLastOutgoingMessage(message);
     }
     throw Exception('Unknown message direction: ' + direction.toString());
   }

@@ -13,6 +13,7 @@ import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/services/sse/abstract.dart';
 import 'package:courseplease/services/sse/chat_sse_reloader.dart';
 import 'package:courseplease/services/sse/incoming_chat_message_sse_listener.dart';
+import 'package:courseplease/services/sse/outgoing_chat_message_sse_listener.dart';
 import 'package:courseplease/services/sse/sse_listener_locator.dart';
 import 'package:courseplease/services/sse/sse_reloader_locator.dart';
 import 'package:get_it/get_it.dart';
@@ -82,6 +83,7 @@ SseListenerLocator _createSseListenerLocator() {
   sseListenerLocator
       ..add(SseTypeEnum.empty, EmptySseListener())
       ..add(SseTypeEnum.incomingChatMessage, IncomingChatMessageSseListener())
+      ..add(SseTypeEnum.outgoingChatMessage, OutgoingChatMessageSseListener())
   ;
 
   return sseListenerLocator;

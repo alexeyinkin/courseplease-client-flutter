@@ -32,4 +32,13 @@ class Chat implements WithId<int> {
       otherUsers:       otherUsers,
     );
   }
+
+  Chat withLastOutgoingMessage(ChatMessage newMessage) {
+    return Chat(
+      id:               id,
+      lastMessage:      newMessage,
+      unreadByMeCount:  unreadByMeCount,
+      otherUsers:       otherUsers,
+    );
+  }
 }
