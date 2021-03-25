@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
+import '../pad.dart';
 import 'chat_tile.dart';
 
 class ChatListWidget extends StatefulWidget {
@@ -64,6 +65,7 @@ class ChatListWidgetState extends State<ChatListWidget> {
       children: [
         _getDebugPanel(chatListCubitState),
         Expanded(child: _getListView(user, chatListCubitState)),
+        HorizontalLine(),
       ],
     );
   }

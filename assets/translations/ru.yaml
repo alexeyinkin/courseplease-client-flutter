@@ -8,6 +8,7 @@ common:
     tomorrow:           'Завтра'
     today:              'Сегодня'
     yesterday:          'Вчера'
+    typeHere:           'Введите сообщение...'
 
 ChatMessageBodyWidget:
     edited:             'отредактировано {when}'

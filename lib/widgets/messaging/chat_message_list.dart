@@ -89,6 +89,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
           chatId: widget.chat.id,
           senderUserId: user.id,
         ),
+        HorizontalLine(),
       ],
     );
   }

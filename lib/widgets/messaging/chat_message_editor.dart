@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/chat_message_editor.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../small_circular_progress_indicator.dart';
 
@@ -22,6 +23,8 @@ class ChatMessageEditorWidget extends StatefulWidget {
 
 class _ChatMessageEditorState extends State<ChatMessageEditorWidget> {
   final ChatMessageEditorCubit _chatMessageEditorCubit;
+  final _focusNode = FocusNode();
+  bool _showHint = true;
 
   _ChatMessageEditorState({
     required int chatId,
@@ -31,7 +34,15 @@ class _ChatMessageEditorState extends State<ChatMessageEditorWidget> {
         chatId: chatId,
         senderUserId: senderUserId,
       )
-  ;
+  {
+    _focusNode.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      _showHint = !_focusNode.hasFocus;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +59,21 @@ class _ChatMessageEditorState extends State<ChatMessageEditorWidget> {
       children: [
         Expanded(
           child: TextFormField(
+            decoration: new InputDecoration(
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              contentPadding: EdgeInsets.all(10),
+              hintText: _showHint ? tr('common.typeHere') : null,
+            ),
             controller: state.textEditingController,
-            maxLines: null,
+            focusNode: _focusNode,
+            maxLines: 7,
+            minLines: 1,
             keyboardType: TextInputType.multiline,
+            cursorColor: Theme.of(context).textTheme.bodyText1?.color,
           ),
         ),
         TextButton(
@@ -66,6 +89,7 @@ class _ChatMessageEditorState extends State<ChatMessageEditorWidget> {
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _chatMessageEditorCubit.dispose();
     super.dispose();
   }
