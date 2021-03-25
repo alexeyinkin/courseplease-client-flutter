@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/blocs/chat_message_send_queue.dart';
+import 'package:courseplease/blocs/chat_message_send_queue_view.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
@@ -9,6 +11,8 @@ import 'package:courseplease/repositories/chat_message.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/circle_or_capsule.dart';
+import 'package:courseplease/widgets/messaging/chat_message_editor.dart';
+import 'package:courseplease/widgets/messaging/sending_chat_message.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -33,11 +37,14 @@ class ChatMessageListWidget extends StatefulWidget {
   );
 
   @override
-  _ChatMessageListState createState() => _ChatMessageListState();
+  _ChatMessageListState createState() => _ChatMessageListState(
+    chat: chat,
+  );
 }
 
 class _ChatMessageListState extends State<ChatMessageListWidget> {
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  final ChatMessageSendQueueViewCubit _sendQueueCubit;
   final _scrollController = ScrollController(
     keepScrollOffset: true,
   );
@@ -45,6 +52,12 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
   final _visibleMessages = SplayTreeMap<int, ChatMessage>();
   ChatMessage? _earliestVisibleMessage;
   bool _showScrollToBottom = false;
+
+  _ChatMessageListState({
+    required Chat chat,
+  }) :
+    _sendQueueCubit = ChatMessageSendQueueViewCubit.fromChat(chat)
+  ;
 
   @override
   void initState() {
@@ -72,9 +85,9 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
         HorizontalLine(),
         Expanded(child: _getListWithOverlays(user)),
         HorizontalLine(),
-        TextFormField(
-          maxLines: null,
-          keyboardType: TextInputType.multiline,
+        ChatMessageEditorWidget(
+          chatId: widget.chat.id,
+          senderUserId: user.id,
         ),
       ],
     );
@@ -107,7 +120,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
     );
   }
 
-  Widget _getListView(User user) {
+  Widget _getListView(User currentUser) {
     return Positioned.fill(
       child: ObjectLinearListView<int, ChatMessage, ChatMessageFilter, ChatMessageRepository, ChatMessageTile>(
         reverse: true,
@@ -115,13 +128,13 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
         tileFactory: (TileCreationRequest<int, ChatMessage, ChatMessageFilter> request) {
           return _createTile(
             request: request,
-            currentUser: user,
+            currentUser: currentUser,
           );
         },
         onTap: _handleTap,
         scrollDirection: Axis.vertical,
         scrollController: _scrollController,
-        separatorBuilder: _buildSeparator,
+        separatorBuilder: (request) => _buildSeparator(currentUser, request),
       ),
     );
   }
@@ -185,37 +198,92 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
     );
   }
 
-  Widget _buildSeparator({
-    required BuildContext context,
-    required ChatMessage? previous,
-    required ChatMessage? next,
-    required int nextIndex,
-  }) {
-    if (previous == null) {
-      return Container();
+  Widget _buildSeparator(
+    User currentUser,
+    SeparatorCreationRequest<int, ChatMessage> request,
+  ) {
+    final under = request.previous;
+    final above = request.next;
+
+    if (under == null) {
+      return (above == null)
+        ? Container() // Above the above the oldest message.
+        : _buildUnderNewestMessage(currentUser, above);
     }
 
-    if (next == null) {
-      return _buildBeforeFirstMessage(previous);
+    if (above == null) {
+      return _buildAboveOldestMessage(under);
     }
 
-    if (areSameDay(previous.dateTimeInsert, next.dateTimeInsert)) {
-      return _buildSameDaySeparator(previous, next);
+    if (areSameDay(under.dateTimeInsert, above.dateTimeInsert)) {
+      return _buildSameDaySeparator(under, above);
     }
 
-    return _buildMessageDate(previous);
+    return _buildMessageDate(under);
   }
 
-  Widget _buildSameDaySeparator(ChatMessage previous, ChatMessage next) {
-    if (previous.senderUserId == next.senderUserId) return Container();
+  Widget _buildSameDaySeparator(ChatMessage under, ChatMessage above) {
+    if (under.senderUserId == above.senderUserId) return Container();
+    return _buildSameDaySpeakersSeparator();
+  }
+
+  Widget _buildSameDaySpeakersSeparator() {
     return SmallPadding();
   }
 
-  Widget _buildBeforeFirstMessage(ChatMessage message) {
+  Widget _buildAboveOldestMessage(ChatMessage message) {
     // A spacing behind the date overlay when scrolled to the top.
     return Container(
       height: 32,
     );
+  }
+
+  Widget _buildUnderNewestMessage(User currentUser, ChatMessage newestMessage) {
+    return StreamBuilder<ChatMessageSendQueueState>(
+      stream: _sendQueueCubit.outState,
+      builder: (context, snapshot) => _buildUnderNewestMessageWithQueue(
+        snapshot.data ?? _sendQueueCubit.initialState,
+        currentUser,
+        newestMessage,
+      ),
+    );
+  }
+
+  Widget _buildUnderNewestMessageWithQueue(
+    ChatMessageSendQueueState state,
+    User currentUser,
+    ChatMessage newestMessage,
+  ) {
+    if (state.queue.isEmpty) return Container();
+
+    return Opacity(
+      opacity: .5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (currentUser.id != newestMessage.senderUserId) _buildSameDaySpeakersSeparator(),
+          ..._getSendingMessageWidgets(state, currentUser),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _getSendingMessageWidgets(
+    ChatMessageSendQueueState state,
+    User currentUser,
+  ) {
+    final result = <Widget>[];
+
+    for (final message in state.queue) {
+      result.add(
+        SendingChatMessageWidget(
+          message: message,
+          currentUser: currentUser,
+        ),
+      );
+    }
+
+    return result;
   }
 
   Widget _buildMessageDate(ChatMessage message) {

@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/blocs/chat_message_send_queue.dart';
 import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
@@ -10,6 +11,7 @@ import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
+import 'package:courseplease/services/prepared_message.dart';
 import 'package:courseplease/services/sse/abstract.dart';
 import 'package:courseplease/services/sse/chat_sse_reloader.dart';
 import 'package:courseplease/services/sse/incoming_chat_message_sse_listener.dart';
@@ -61,8 +63,10 @@ void _initializeCaches() {
 void _initializeBlocs() {
   GetIt.instance
       ..registerSingleton<AuthenticationBloc>(AuthenticationBloc())
+      ..registerSingleton<ChatMessageSendQueueCubit>(ChatMessageSendQueueCubit())
       ..registerSingleton<ChatsCubit>(ChatsCubit())
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
+      ..registerSingleton<PreparedMessageService>(PreparedMessageService())
   ;
 }
 

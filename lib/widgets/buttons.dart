@@ -1,3 +1,4 @@
+import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 
@@ -66,24 +67,9 @@ class ElevatedButtonWithDropdownMenu<T> extends StatelessWidget {
   }
 
   void _onPressed(BuildContext context) {
-    final renderObject = context.findRenderObject();
-
-    if (renderObject == null) {
-      throw Exception('context.findRenderObject() returned null');
-    }
-
-    final translation = renderObject.getTransformTo(null).getTranslation();
-    final rect = renderObject.paintBounds.shift(Offset(translation.x, translation.y));
-    final screenSize = MediaQuery.of(context).size;
-
     showMenu<T>(
       context: context,
-      position: RelativeRect.fromLTRB(
-        rect.left,
-        rect.top,
-        screenSize.width - rect.left - rect.width,
-        screenSize.height - rect.top,
-      ),
+      position: getContextRelativeRect(context),
       items: items,
     ).then(_onSelected);
   }

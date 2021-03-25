@@ -9,6 +9,9 @@ common:
     today:              'Today'
     yesterday:          'Yesterday'
 
+ChatMessageBodyWidget:
+    edited:             'edited {when}'
+
 ContactStatusCubit:
     downloadEnabledFalse:   'Not downloading anything'
     errorLastTried:         'Error, last tried {durationAgo}'
@@ -169,6 +172,10 @@ SelectChatPlaceholderWidget:
 
 SelectProductSubjectScreen:
     title:          'Select Subject'
+
+SendingChatMessageWidget:
+    retry:          'Retry'
+    delete:         'Delete'
 
 SignInWidget:
     #Title is replaced manually in AuthProviderWidget

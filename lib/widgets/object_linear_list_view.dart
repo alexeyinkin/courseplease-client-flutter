@@ -7,12 +7,21 @@ import '../models/filters/abstract.dart';
 import '../models/interfaces.dart';
 import 'object_abstract_list_view.dart';
 
-typedef Widget ObjectListSeparatorBuilder<I, O extends WithId<I>>({
-  required BuildContext context,
-  required O? previous,
-  required O? next,
-  required int nextIndex,
-});
+class SeparatorCreationRequest<I, O extends WithId<I>> {
+  final BuildContext context;
+  final O? previous;
+  final O? next;
+  final int nextIndex;
+
+  SeparatorCreationRequest({
+    required this.context,
+    required this.previous,
+    required this.next,
+    required this.nextIndex,
+  });
+}
+
+typedef Widget ObjectListSeparatorBuilder<I, O extends WithId<I>>(SeparatorCreationRequest<I, O> request);
 
 class ObjectLinearListView<
   I,
@@ -106,10 +115,12 @@ class ObjectLinearListViewState<
         : modelListState.objects[nextIndex - 1];
 
     return widget.separatorBuilder!(
-      context: context,
-      previous: previous,
-      next: next,
-      nextIndex: nextIndex,
+      SeparatorCreationRequest<I, O>(
+        context: context,
+        previous: previous,
+        next: next,
+        nextIndex: nextIndex,
+      ),
     );
   }
 

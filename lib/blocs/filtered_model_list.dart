@@ -140,6 +140,10 @@ class NetworkFilteredModelListBloc<
     }
   }
 
+  bool containsId(I id) {
+    return _objectsByIds.containsKey(id);
+  }
+
   void addToBeginning(List<O> objects) {
     if (objects.isEmpty) return;
 

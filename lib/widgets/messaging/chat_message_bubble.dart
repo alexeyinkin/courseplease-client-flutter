@@ -1,10 +1,10 @@
 import 'package:bubble/bubble.dart';
-import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/widgets/messaging/chat_message_body.dart';
 import 'package:flutter/material.dart';
+import 'chat_message_interface.dart';
 
 class MyChatMessageBubble extends StatelessWidget {
-  final ChatMessage message;
+  final ChatMessageInterface message;
 
   MyChatMessageBubble({
     required this.message,
@@ -12,20 +12,23 @@ class MyChatMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(left: 20),
-      child: Bubble(
-        nip: BubbleNip.rightBottom,
-        padding: BubbleEdges.symmetric(horizontal: 7, vertical: 5),
-        color: const Color(0x60808080),
-        child: ChatMessageBody(message: message),
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        padding: EdgeInsets.only(left: 20),
+        child: Bubble(
+          nip: BubbleNip.rightBottom,
+          padding: BubbleEdges.symmetric(horizontal: 7, vertical: 5),
+          color: const Color(0x60808080),
+          child: ChatMessageBodyWidget(message: message),
+        ),
       ),
     );
   }
 }
 
 class OthersChatMessageBubble extends StatelessWidget {
-  final ChatMessage message;
+  final ChatMessageInterface message;
 
   OthersChatMessageBubble({
     required this.message,
@@ -33,13 +36,16 @@ class OthersChatMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(right: 20),
-      child: Bubble(
-        nip: BubbleNip.leftBottom,
-        padding: BubbleEdges.symmetric(horizontal: 7, vertical: 5),
-        color: Colors.transparent,
-        child: ChatMessageBody(message: message),
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        padding: EdgeInsets.only(right: 20),
+        child: Bubble(
+          nip: BubbleNip.leftBottom,
+          padding: BubbleEdges.symmetric(horizontal: 7, vertical: 5),
+          color: Colors.transparent,
+          child: ChatMessageBodyWidget(message: message),
+        ),
       ),
     );
   }

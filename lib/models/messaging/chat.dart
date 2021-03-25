@@ -25,6 +25,8 @@ class Chat implements WithId<int> {
   }
 
   Chat withLastIncomingMessage(ChatMessage newMessage) {
+    if ((lastMessage?.id ?? 0) >= newMessage.id) return this;
+
     return Chat(
       id:               id,
       lastMessage:      newMessage,
@@ -34,6 +36,8 @@ class Chat implements WithId<int> {
   }
 
   Chat withLastOutgoingMessage(ChatMessage newMessage) {
+    if ((lastMessage?.id ?? 0) >= newMessage.id) return this;
+
     return Chat(
       id:               id,
       lastMessage:      newMessage,

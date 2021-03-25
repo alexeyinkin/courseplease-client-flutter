@@ -100,6 +100,7 @@ class ChatListWidgetState extends State<ChatListWidget> {
   }
 
   void _handleTap(Chat chat, int index) {
+    FocusScope.of(context).unfocus();
     widget.chatListCubit.setCurrentChat(chat);
   }
 

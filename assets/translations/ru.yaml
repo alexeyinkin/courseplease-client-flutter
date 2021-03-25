@@ -9,6 +9,9 @@ common:
     today:              'Сегодня'
     yesterday:          'Вчера'
 
+ChatMessageBodyWidget:
+    edited:             'отредактировано {when}'
+
 ContactStatusCubit:
     downloadEnabledFalse:   'Ничего не выгружать'
     errorLastTried:         'Ошибка, последняя попытка {durationAgo}'
@@ -172,6 +175,10 @@ SelectChatPlaceholderWidget:
 
 SelectProductSubjectScreen:
     title:          'Выберите предмет'
+
+SendingChatMessageWidget:
+    retry:          'Повторить'
+    delete:         'Удалить'
 
 SignInWidget:
     #Title is replaced manually in AuthProviderWidget

@@ -8,6 +8,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../abstract_object_tile.dart';
 import 'chat_message_body.dart';
+import 'chat_message_interface.dart';
 
 class ChatMessageTile extends AbstractObjectTile<int, ChatMessage, ChatMessageFilter> {
   final User currentUser;
@@ -31,21 +32,37 @@ class _ChatMessageTileState extends AbstractObjectTileState<int, ChatMessage, Ch
     return VisibilityDetector(
       key: Key('ChatMessageTile_' + widget.object.id.toString()),
       onVisibilityChanged: widget.onVisibilityChanged,
-      child: Container(
-        padding: EdgeInsets.only(
-          left: 10,
-          right: 10,
-          bottom: 2,
-        ),
-        child: _getChatMessageBubble(),
+      child: ChatMessageTileContent(
+        message: widget.object,
+        currentUser: widget.currentUser,
       ),
+    );
+  }
+}
+
+class ChatMessageTileContent extends StatelessWidget {
+  final ChatMessageInterface message;
+  final User currentUser;
+
+  ChatMessageTileContent({
+    required this.message,
+    required this.currentUser,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 10,
+        bottom: 2,
+      ),
+      child: _getChatMessageBubble(),
     );
   }
 
   Widget _getChatMessageBubble() {
-    final message = widget.object;
-
-    if (message.senderUserId == widget.currentUser.id) {
+    if (message.senderUserId == currentUser.id) {
       return MyChatMessageBubble(message: message);
     }
 
@@ -53,6 +70,6 @@ class _ChatMessageTileState extends AbstractObjectTileState<int, ChatMessage, Ch
       return OthersChatMessageBubble(message: message);
     }
 
-    return ChatMessageBody(message: message); // TODO: Fancy system messages as well.
+    return ChatMessageBodyWidget(message: message); // TODO: Fancy system messages as well.
   }
 }

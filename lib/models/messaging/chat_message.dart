@@ -1,7 +1,8 @@
+import 'package:courseplease/widgets/messaging/chat_message_interface.dart';
 import '../interfaces.dart';
 import 'message_body.dart';
 
-class ChatMessage extends WithId<int> {
+class ChatMessage implements WithId<int>, ChatMessageInterface {
   final int id;
   final chatId;
   final int? senderUserId;

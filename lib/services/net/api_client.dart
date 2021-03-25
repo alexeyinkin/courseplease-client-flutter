@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/abstract.dart';
+import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/models/user.dart';
@@ -118,6 +119,15 @@ class ApiClient {
       queryParameters: {'request': jsonEncode(request)},
     );
     return GetServerSentEventsResponse.fromMap(mapResponse.data);
+  }
+
+  Future<SendChatMessageResponse> sendChatMessage(SendChatMessageRequest request) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/chats/send',
+      body: request,
+    );
+    return SendChatMessageResponse.fromMap(mapResponse.data);
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
@@ -549,6 +559,50 @@ class GetServerSentEventsResponse {
     final itemMaps = map['items'];
     return GetServerSentEventsResponse(
       items: itemMaps == null ? null : ServerSentEvent.fromMaps(itemMaps),
+    );
+  }
+}
+
+class SendChatMessageRequest extends RequestBody {
+  final int? recipientChatId;
+  final int? recipientUserId;
+  final String uuid;
+  final MessageBody body;
+
+  SendChatMessageRequest({
+    required this.recipientChatId,
+    required this.recipientUserId,
+    required this.uuid,
+    required this.body,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'recipientChatId': recipientChatId,
+      'recipientUserId': recipientUserId,
+      'uuid': uuid,
+      'body': body,
+    };
+  }
+}
+
+class SendChatMessageResponse {
+  final int? messageId;
+  final DateTime? dateTimeInsert;
+  final int recipientChatId;
+
+  SendChatMessageResponse({
+    required this.messageId,
+    required this.dateTimeInsert,
+    required this.recipientChatId,
+  });
+
+  factory SendChatMessageResponse.fromMap(Map<String, dynamic> map) {
+    return SendChatMessageResponse(
+      messageId: map['messageId'],
+      dateTimeInsert: DateTime.tryParse(map['dateTimeInsert'] ?? ''),
+      recipientChatId: map['recipientChatId'],
     );
   }
 }

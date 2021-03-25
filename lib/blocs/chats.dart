@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:courseplease/blocs/chat_message_send_queue.dart';
 import 'package:courseplease/models/filters/chat.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
+import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:get_it/get_it.dart';
@@ -11,6 +15,14 @@ import 'bloc.dart';
 class ChatsCubit extends Bloc {
   final _cache = GetIt.instance.get<FilteredModelListCache>();
   final _chatRepository = GetIt.instance.get<ChatRepository>();
+  final _sendQueueCubit = GetIt.instance.get<ChatMessageSendQueueCubit>();
+  late final StreamSubscription _queuedMessageSentSubscription;
+
+  ChatsCubit() {
+    _queuedMessageSentSubscription = _sendQueueCubit.outMessageSent.listen(
+      _onQueuedMessageSent,
+    );
+  }
 
   void refreshChats() {
     final chatLists = _cache.getModelListsByObjectAndFilterTypes<int, Chat, ChatFilter>();
@@ -45,6 +57,34 @@ class ChatsCubit extends Bloc {
     _prependMessageToLists(message);
   }
 
+  void _onQueuedMessageSent(ChatMessageSentEvent event) {
+    final messageId = event.response.messageId;
+
+    if (messageId != null) {
+      _addSentMessageFromQueue(event);
+    } else {
+      // Server debounced the duplicate request, the message is sent already.
+      refreshChats();
+      refreshChatMessages(event.response.recipientChatId);
+    }
+  }
+
+  void _addSentMessageFromQueue(ChatMessageSentEvent event) {
+    final message = ChatMessage(
+      id:             event.response.messageId!,
+      chatId:         event.response.recipientChatId,
+      senderUserId:   event.request.senderUserId,
+      dateTimeInsert: event.response.dateTimeInsert!,
+      dateTimeEdit:   null,
+      dateTimeRead:   null,
+      body:           event.request.body,
+    );
+
+    onOutgoingMessage(message);
+  }
+
+  /// For queued messages constructed locally
+  /// and for SSE notifications on messages from the other user's devices.
   void onOutgoingMessage(ChatMessage message) async {
     _prependMessageToChats(message, _MessageDirection.outgoing);
     _prependMessageToLists(message);
@@ -61,6 +101,7 @@ class ChatsCubit extends Bloc {
 
     for (final list in chatLists.values) {
       // TODO: Check if chat matches the filter. Not an issue so far as ChatFilter has no fields.
+      // TODO: Remove and add in one operation to not emit two states.
       list.removeObjectIds([chat.id]); // TODO: Speed up. Make 'removeObject'.
       list.addToBeginning([chat]);
     }
@@ -97,12 +138,18 @@ class ChatsCubit extends Bloc {
 
     for (final list in messageLists.values) {
       if (list.filter.chatId != message.chatId) continue;
+      if (list.containsId(message.id)) continue;
       list.addToBeginning([message]);
     }
   }
 
+  void send(SendingChatMessage message) {
+    _sendQueueCubit.enqueue(message);
+  }
+
   @override
   void dispose() {
+    _queuedMessageSentSubscription.cancel();
   }
 }
 

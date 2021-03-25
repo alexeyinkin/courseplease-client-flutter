@@ -1,9 +1,11 @@
+import 'package:courseplease/blocs/server_sent_events.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/screens/home/local_widgets/explore_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/messages_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/picked_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/profile_tab.dart';
+import 'package:get_it/get_it.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var _currentTab = 0;
+  final _pollEventsButtonIndex = 4;
   final _pageStorageBucket = PageStorageBucket();
 
   @override
@@ -52,6 +55,11 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.person),
               label: tr('MyProfileTabWidget.iconTitle'),
             ),
+            // TODO: Remove this debugging button:
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sync),
+              label: "Poll Events",
+            ),
           ],
         ),
       ),
@@ -59,8 +67,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onTabTap(int index) {
+    if (index == _pollEventsButtonIndex) {
+      _pollEvents();
+      return;
+    }
+
     setState(() {
       _currentTab = index;
     });
+  }
+
+  void _pollEvents() {
+    final cubit = GetIt.instance.get<ServerSentEventsCubit>();
+    cubit.poll();
   }
 }

@@ -98,7 +98,12 @@ String formatTimeOrDate(DateTime dt, Locale locale) {
 
 String formatTime(DateTime dt, Locale locale) {
   final localeString = locale.toString();
-  final format = DateFormat.Hm(localeString);
+
+  // Would be better to use DateFormat.Hm as it is supposed to take care of RTL.
+  // But it keeps a leading zero. TODO: Allow RTL without the leading zero.
+  //final format = DateFormat.Hm(localeString);
+
+  final format = DateFormat("H:mm");
   return format.format(dt);
 }
 
@@ -194,6 +199,27 @@ Locale requireLocale(BuildContext context) {
   final localization = EasyLocalization.of(context);
   if (localization == null) throw Exception('No locale');
   return localization.locale;
+}
+
+RelativeRect getContextRelativeRect(BuildContext context) {
+  final renderObject = context.findRenderObject();
+
+  if (renderObject == null) {
+    throw Exception('context.findRenderObject() returned null');
+  }
+
+  final translation = renderObject.getTransformTo(null).getTranslation();
+  final rect = renderObject.paintBounds.shift(Offset(translation.x, translation.y));
+  final screenSize = MediaQuery
+      .of(context)
+      .size;
+
+  return RelativeRect.fromLTRB(
+    rect.left,
+    rect.top,
+    screenSize.width - rect.left - rect.width,
+    screenSize.height - rect.top - rect.height,
+  );
 }
 
 Type typeOf<T>() => T;
