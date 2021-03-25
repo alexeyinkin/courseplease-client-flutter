@@ -19,6 +19,7 @@ import 'package:courseplease/services/sse/sse_listener_locator.dart';
 import 'package:courseplease/services/sse/sse_reloader_locator.dart';
 import 'package:get_it/get_it.dart';
 import 'chat_message_draft_persister.dart';
+import 'chat_message_queue_persister.dart';
 import 'filtered_model_list_factory.dart';
 import 'model_cache_factory.dart';
 import 'net/api_client.dart';
@@ -64,6 +65,7 @@ void _initializeBlocs() {
   GetIt.instance
       ..registerSingleton<AuthenticationBloc>(AuthenticationBloc())
       ..registerSingleton<ChatMessageDraftPersisterService>(ChatMessageDraftPersisterService())
+      ..registerSingleton<ChatMessageQueuePersisterService>(ChatMessageQueuePersisterService())
       ..registerSingleton<ChatMessageSendQueueCubit>(ChatMessageSendQueueCubit())
       ..registerSingleton<ChatsCubit>(ChatsCubit())
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())

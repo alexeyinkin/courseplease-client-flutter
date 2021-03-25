@@ -4,15 +4,7 @@ import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:hive/hive.dart';
 
 class ChatMessageDraftPersisterService {
-  late final Future<Box> _boxFuture;
-
-  ChatMessageDraftPersisterService() {
-    _init();
-  }
-
-  void _init() async {
-    _boxFuture = Hive.openBox<String>('chat-message-drafts-by-chat-ids');
-  }
+  final Future<Box<String>> _boxFuture = Hive.openBox<String>('chat-message-drafts-by-chat-ids');
 
   Future<SendingChatMessage?> getDraftByChatId(int chatId) async {
     final box = await _boxFuture;

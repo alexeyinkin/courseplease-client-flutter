@@ -2,12 +2,14 @@ import 'dart:collection';
 
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
+import 'package:courseplease/services/chat_message_queue_persister.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ChatMessageSendQueueCubit extends Bloc {
   final _apiClient = GetIt.instance.get<ApiClient>();
+  final _persister = GetIt.instance.get<ChatMessageQueuePersisterService>();
   final _queue = <SendingChatMessage>[];
   _Status _status = _Status.idle;
 
@@ -17,9 +19,18 @@ class ChatMessageSendQueueCubit extends Bloc {
   final _outMessageSentController = BehaviorSubject<ChatMessageSentEvent>();
   Stream<ChatMessageSentEvent> get outMessageSent => _outMessageSentController.stream;
 
-  void enqueue(SendingChatMessage message) {
+  ChatMessageSendQueueCubit() {
+    _init();
+  }
+
+  void _init() async {
+    _queue.addAll(await _persister.loadAll());
+    _pushOutput();
+  }
+
+  void enqueue(SendingChatMessage message) async {
+    await _persister.add(message);
     _queue.add(message);
-    _persist();
     _pushOutput();
     _sendNext();
   }
@@ -42,22 +53,23 @@ class ChatMessageSendQueueCubit extends Bloc {
     _sendNext();
   }
 
-  void delete(SendingChatMessage message) {
+  Future<void> delete(SendingChatMessage message) async {
     if (!_queue.contains(message)) return;
 
     switch (message.status) {
       case SendingChatMessageStatus.readyToSend:
       case SendingChatMessageStatus.failed:
-        _delete(message);
-        return;
+        return _delete(message);
       default:
         return;
     }
   }
 
-  void _delete(SendingChatMessage message) {
-    _queue.remove(message);
-    _persist();
+  // For both manual deletion and successful sending.
+  Future<void> _delete(SendingChatMessage message) async {
+    final index = _queue.indexOf(message);
+    await _persister.deleteAt(index);
+    _queue.removeAt(index);
     _pushOutput();
   }
 
@@ -88,10 +100,7 @@ class ChatMessageSendQueueCubit extends Bloc {
       _status = _Status.idle;
       _pushMessageSent(message, response);
 
-      if (_queue.remove(message)) {
-        _persist();
-        _pushOutput();
-      }
+      await _delete(message);
     } catch (_) {
       _status = _Status.idle;
       _failAllToSameRecipient(message); // To avoid sending out of order.
@@ -139,10 +148,6 @@ class ChatMessageSendQueueCubit extends Bloc {
       }
       message.status = SendingChatMessageStatus.failed;
     }
-  }
-
-  void _persist() {
-    // TODO
   }
 
   @override
