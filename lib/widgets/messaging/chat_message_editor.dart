@@ -1,10 +1,6 @@
-import 'package:courseplease/blocs/chats.dart';
-import 'package:courseplease/models/messaging/message_body.dart';
-import 'package:courseplease/models/messaging/sending_chat_message.dart';
-import 'package:courseplease/services/prepared_message.dart';
+import 'package:courseplease/blocs/chat_message_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:uuid/uuid.dart';
+import '../small_circular_progress_indicator.dart';
 
 class ChatMessageEditorWidget extends StatefulWidget {
   final int chatId;
@@ -13,32 +9,46 @@ class ChatMessageEditorWidget extends StatefulWidget {
   ChatMessageEditorWidget({
     required this.chatId,
     required this.senderUserId,
-  });
+  }) : super(
+    key: Key('chat-' + chatId.toString())
+  );
 
   @override
   _ChatMessageEditorState createState() => _ChatMessageEditorState(
     chatId: chatId,
+    senderUserId: senderUserId,
   );
 }
 
 class _ChatMessageEditorState extends State<ChatMessageEditorWidget> {
-  final _chatsCubit = GetIt.instance.get<ChatsCubit>();
-  final TextEditingController _textEditingController;
-  final _uuidGenerator = Uuid();
+  final ChatMessageEditorCubit _chatMessageEditorCubit;
 
   _ChatMessageEditorState({
     required int chatId,
+    required int senderUserId,
   }) :
-      _textEditingController = GetIt.instance.get<PreparedMessageService>().getTextEditingController(chatId)
+      _chatMessageEditorCubit = ChatMessageEditorCubit(
+        chatId: chatId,
+        senderUserId: senderUserId,
+      )
   ;
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<ChatMessageEditorState>(
+      stream: _chatMessageEditorCubit.outState,
+      builder: (context, snapshot) => _buildWithState(snapshot.data),
+    );
+  }
+
+  Widget _buildWithState(ChatMessageEditorState? state) {
+    if (state == null) return SmallCircularProgressIndicator();
+
     return Row(
       children: [
         Expanded(
           child: TextFormField(
-            controller: _textEditingController,
+            controller: state.textEditingController,
             maxLines: null,
             keyboardType: TextInputType.multiline,
           ),
@@ -48,37 +58,15 @@ class _ChatMessageEditorState extends State<ChatMessageEditorWidget> {
             Icons.send,
             color: Theme.of(context).textTheme.bodyText1!.color,
           ),
-          onPressed: _onSendPressed,
+          onPressed: _chatMessageEditorCubit.onSendPressed,
         ),
       ],
     );
   }
 
-  void _onSendPressed() {
-    final message = _createMessage();
-    if (message == null) return;
-
-    _chatsCubit.send(message);
-    _clear();
-  }
-
-  SendingChatMessage? _createMessage() {
-    final text = _textEditingController.text.trim();
-    if (text == '') return null;
-
-    return SendingChatMessage(
-      senderUserId: widget.senderUserId,
-      recipientChatId: widget.chatId,
-      recipientUserId: null,
-      body: MessageBody(
-        text: text,
-      ),
-      uuid: _uuidGenerator.v4(),
-      status: SendingChatMessageStatus.fresh,
-    );
-  }
-
-  void _clear() {
-    _textEditingController.text = '';
+  @override
+  void dispose() {
+    _chatMessageEditorCubit.dispose();
+    super.dispose();
   }
 }

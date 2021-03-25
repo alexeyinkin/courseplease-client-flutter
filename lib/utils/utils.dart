@@ -76,6 +76,13 @@ String enumValueAfterDot(value) {
   return value.toString().split('.').last;
 }
 
+T enumValueByString<T>(List<T> values, String str, T defaultValue) {
+  for (final value in values) {
+    if (enumValueAfterDot(value) == str) return value;
+  }
+  return defaultValue;
+}
+
 String generatePassword(int length) {
   final generator = Random.secure();
   final chars = '23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ~!@#\$%^&*()-_=+';

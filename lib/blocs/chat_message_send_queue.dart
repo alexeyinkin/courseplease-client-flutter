@@ -37,7 +37,7 @@ class ChatMessageSendQueueCubit extends Bloc {
   }
 
   void _retry(SendingChatMessage message) {
-    message.status = SendingChatMessageStatus.fresh;
+    message.status = SendingChatMessageStatus.readyToSend;
     _pushOutput();
     _sendNext();
   }
@@ -46,7 +46,7 @@ class ChatMessageSendQueueCubit extends Bloc {
     if (!_queue.contains(message)) return;
 
     switch (message.status) {
-      case SendingChatMessageStatus.fresh:
+      case SendingChatMessageStatus.readyToSend:
       case SendingChatMessageStatus.failed:
         _delete(message);
         return;
@@ -105,7 +105,7 @@ class ChatMessageSendQueueCubit extends Bloc {
     if (_status != _Status.idle) return null;
 
     try {
-      return _queue.firstWhere((message) => message.status == SendingChatMessageStatus.fresh);
+      return _queue.firstWhere((message) => message.status == SendingChatMessageStatus.readyToSend);
     } catch (_) {
       return null;
     }
@@ -133,10 +133,11 @@ class ChatMessageSendQueueCubit extends Bloc {
 
   void _failAllToSameRecipient(SendingChatMessage targetMessage) {
     for (final message in _queue) {
-      if (message.recipientUserId == targetMessage.recipientUserId
-          || message.recipientChatId == targetMessage.recipientChatId) {
-        message.status = SendingChatMessageStatus.failed;
+      if (message.recipientUserId != targetMessage.recipientUserId
+          || message.recipientChatId != targetMessage.recipientChatId) {
+        continue;
       }
+      message.status = SendingChatMessageStatus.failed;
     }
   }
 
