@@ -170,7 +170,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
               color: const Color(0x60000000),
               child: Text(
                 formatDate(
-                  _earliestVisibleMessage!.dateTimeInsert,
+                  _earliestVisibleMessage!.dateTimeInsert.toLocal(),
                   requireLocale(context),
                 ),
                 style: TextStyle(color: Colors.white),
@@ -291,7 +291,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
     return Padding(
       padding: const EdgeInsets.all(4),
       child: Text(
-        formatDate(message.dateTimeInsert, requireLocale(context)),
+        formatDate(message.dateTimeInsert.toLocal(), requireLocale(context)),
         textAlign: TextAlign.center,
       ),
     );

@@ -93,7 +93,12 @@ class ChatTileState extends AbstractObjectTileState<int, Chat, ChatFilter, ChatT
           children: [
             ChatNameWidget(chat: chat),
             Spacer(),
-            Text(formatTimeOrDate(lastMessage.dateTimeInsert, requireLocale(context))),
+            Text(
+              formatTimeOrDate(
+                lastMessage.dateTimeInsert.toLocal(),
+                requireLocale(context),
+              ),
+            ),
           ],
         ),
         SmallPadding(),

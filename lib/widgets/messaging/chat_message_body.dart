@@ -101,10 +101,11 @@ class _SentChatMessageBodyDateWidget extends StatelessWidget {
   }
 
   Widget _getEditDateWidget(BuildContext context) {
+    final edit = message.dateTimeEdit!.toLocal();
+    final insert = message.dateTimeInsert.toLocal();
     final whenParts = <String>[
-      if (!areSameDay(message.dateTimeEdit!, message.dateTimeInsert))
-        formatDate(message.dateTimeEdit!, requireLocale(context)),
-      formatTime(message.dateTimeEdit!, requireLocale(context)),
+      if (!areSameDay(edit, insert)) formatDate(edit, requireLocale(context)),
+      formatTime(edit, requireLocale(context)),
     ];
 
     final when = whenParts.join(' ');
@@ -117,7 +118,7 @@ class _SentChatMessageBodyDateWidget extends StatelessWidget {
 
   Widget _getInsertDateWidget(BuildContext context) {
     return Text(
-      formatTime(message.dateTimeInsert, requireLocale(context)),
+      formatTime(message.dateTimeInsert.toLocal(), requireLocale(context)),
       style: AppStyle.minor,
       textAlign: TextAlign.end,
     );
