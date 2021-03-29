@@ -143,7 +143,7 @@ class AuthenticationBloc extends Bloc{
   void _testDeviceKey(String deviceKey) async {
     // TODO: Add a state when this check is in progress.
 
-    final me = await _apiClient.getMe(deviceKey);
+    final me = await _apiClient.getMeByDeviceKey(deviceKey);
     _setMe(me, deviceKey);
   }
 

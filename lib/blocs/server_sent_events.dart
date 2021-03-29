@@ -46,14 +46,14 @@ class ServerSentEventsCubit extends Bloc {
         break;
 
       case _CubitStatus.acceptingEvents:
-        _reload();
+        reload();
         break;
 
       case _CubitStatus.signedOut:
         if (lastSseId == null) {
           return; // Still not signed in.
         }
-        _reload();
+        reload();
         _setAcceptingEvents(lastSseId);
         break;
     }
@@ -64,7 +64,7 @@ class ServerSentEventsCubit extends Bloc {
     _status = _CubitStatus.acceptingEvents;
   }
 
-  void _reload() async {
+  void reload() async {
     _lastSseId = null;
     _status = _CubitStatus.reloading;
 
@@ -88,7 +88,7 @@ class ServerSentEventsCubit extends Bloc {
     final response = await _apiClient.getServerSentEvents(_lastSseId!);
 
     if (response.items == null) {
-      _reload();
+      reload();
       return;
     }
     applyEvents(response.items!);
@@ -96,11 +96,11 @@ class ServerSentEventsCubit extends Bloc {
 
   void applyEvents(List<ServerSentEvent> events) {
     for (final sse in events) {
-      applyEvent(sse);
+      _applyEvent(sse);
     }
   }
 
-  void applyEvent(ServerSentEvent sse) {
+  void _applyEvent(ServerSentEvent sse) {
     _lastSseId = sse.id;
     final listener = _listenerLocator.get(sse.type);
 

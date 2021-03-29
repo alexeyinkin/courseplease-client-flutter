@@ -42,7 +42,15 @@ class ApiClient {
     return RegisterDeviceResponseData.fromMap(mapResponse.data);
   }
 
-  Future<MeResponseData> getMe(String overrideDeviceKey) async {
+  Future<MeResponseData> getMe() async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.get,
+      path: '/api1/me',
+    );
+    return MeResponseData.fromMap(mapResponse.data);
+  }
+
+  Future<MeResponseData> getMeByDeviceKey(String overrideDeviceKey) async {
     final mapResponse = await sendRequest(
       method: HttpMethod.get,
       path: '/api1/me',
@@ -360,6 +368,7 @@ class MeResponseData {
   final List<EditableContact> contacts;
   final List<String> allowedCurs;
   final int? lastSseId;
+  final RealtimeCredentials? realtimeCredentials;
   final bool hasUnsortedMedia;
 
   MeResponseData._({
@@ -369,6 +378,7 @@ class MeResponseData {
     required this.contacts,
     required this.allowedCurs,
     required this.lastSseId,
+    required this.realtimeCredentials,
     required this.hasUnsortedMedia,
   });
 
@@ -376,14 +386,49 @@ class MeResponseData {
     final userMap = map['user'];
 
     return MeResponseData._(
-      deviceStatus:     map['deviceStatus'],
-      user:             userMap == null ? null : User.fromMap(userMap),
-      teacherSubjects:  TeacherSubject.fromMaps(map['teacherSubjects']),
-      contacts:         EditableContact.fromMaps(map['contacts']),
-      allowedCurs:      map['allowedCurs'].cast<String>(),
-      lastSseId:        map['lastSseId'],
-      hasUnsortedMedia: map['hasUnsortedMedia'],
+      deviceStatus:         map['deviceStatus'],
+      user:                 userMap == null ? null : User.fromMap(userMap),
+      teacherSubjects:      TeacherSubject.fromMaps(map['teacherSubjects']),
+      contacts:             EditableContact.fromMaps(map['contacts']),
+      allowedCurs:          map['allowedCurs'].cast<String>(),
+      lastSseId:            map['lastSseId'],
+      realtimeCredentials:  RealtimeCredentials.fromMapOrNull(map['realtimeCredentials']),
+      hasUnsortedMedia:     map['hasUnsortedMedia'],
     );
+  }
+}
+
+class RealtimeCredentials {
+  /// One of predefined constants.
+  final String providerName;
+
+  /// To authenticate when connecting to the provider.
+  final String providerToken;
+
+  /// When authenticated with a provider, this used to access
+  /// the user's private channel.
+  final String crossDeviceToken;
+
+  RealtimeCredentials({
+    required this.providerName,
+    required this.providerToken,
+    required this.crossDeviceToken,
+  });
+
+  factory RealtimeCredentials.fromMap(Map<String, dynamic> map) {
+    return RealtimeCredentials(
+      providerName:     map['providerName'],
+      providerToken:    map['providerToken'],
+      crossDeviceToken: map['crossDeviceToken'],
+    );
+  }
+
+  static RealtimeCredentials? fromMapOrNull(Map<String, dynamic>? map) {
+    return map == null ? null : RealtimeCredentials.fromMap(map);
+  }
+
+  String getChecksum() {
+    return providerName + '_' + providerToken + '_' + crossDeviceToken;
   }
 }
 

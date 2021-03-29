@@ -1,8 +1,10 @@
+import 'package:courseplease/blocs/ably.dart';
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/chat_message_send_queue.dart';
 import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
+import 'package:courseplease/blocs/realtime_factory.dart';
 import 'package:courseplease/blocs/server_sent_events.dart';
 import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/repositories/chat.dart';
@@ -75,11 +77,15 @@ void _initializeBlocs() {
 void _initializeSse() {
   final sseListenerLocator = _createSseListenerLocator();
   final sseReloaderLocator = _createSseReloaderLocator();
+  final realtimeFactories = {
+    'ably': AblySseCubitFactory(),
+  };
 
   GetIt.instance
       ..registerSingleton<SseListenerLocator>(sseListenerLocator)
       ..registerSingleton<SseReloaderLocator>(sseReloaderLocator)
       ..registerSingleton<ServerSentEventsCubit>(ServerSentEventsCubit())
+      ..registerSingleton<RealtimeFactoryCubit>(RealtimeFactoryCubit(factories: realtimeFactories))
   ;
 }
 
