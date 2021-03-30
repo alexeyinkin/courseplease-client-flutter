@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/chat_message_send_queue.dart';
 import 'package:courseplease/blocs/chat_message_send_queue_view.dart';
+import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
@@ -44,6 +45,7 @@ class ChatMessageListWidget extends StatefulWidget {
 
 class _ChatMessageListState extends State<ChatMessageListWidget> {
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  final _chatsCubit = GetIt.instance.get<ChatsCubit>();
   final ChatMessageSendQueueViewCubit _sendQueueCubit;
   final _scrollController = ScrollController(
     keepScrollOffset: true,
@@ -150,6 +152,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
       onVisibilityChanged: (info) => _onMessageVisibilityChanged(
         request.object,
         info,
+        currentUser,
       ),
     );
   }
@@ -297,7 +300,13 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
     );
   }
 
-  void _onMessageVisibilityChanged(ChatMessage message, VisibilityInfo info) {
+  void _onMessageVisibilityChanged(
+    ChatMessage message,
+    VisibilityInfo info,
+    User currentUser,
+  ) {
+    _markReadIfNeed(message, info, currentUser);
+
     if (info.visibleFraction > 0 && !_visibleMessages.containsKey(message.id)) {
       _visibleMessages[message.id] = message;
       _onVisibleMessagesChanged();
@@ -305,6 +314,15 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
       _visibleMessages.remove(message.id);
       _onVisibleMessagesChanged();
     }
+  }
+
+  void _markReadIfNeed(ChatMessage message, VisibilityInfo info, User currentUser) {
+    if (info.visibleFraction < 0.1) return;
+    if (message.dateTimeRead != null) return;
+    if (message.senderUserId == currentUser.id) return;
+
+    // TODO: Batch.
+    _chatsCubit.markIncomingMessagesRead([message]);
   }
 
   void _onVisibleMessagesChanged() {

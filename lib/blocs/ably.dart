@@ -109,7 +109,7 @@ class AblySseCubit extends AbstractRealtimeCubit {
   }
 
   void _onMessage(ably.Message message) async {
-    print("New Ably message arrived ${message.data}");
+    print("New Ably message arrived ${message.name}");
 
     try {
       final decryptedBytes = decryptAes256Cbc(
@@ -118,6 +118,8 @@ class AblySseCubit extends AbstractRealtimeCubit {
         Uint8List.fromList('CoursePlease.com'.codeUnits),
       );
       final decryptedString = String.fromCharCodes(decryptedBytes);
+      print("Decrypted $decryptedString");
+
       final sse = ServerSentEvent.fromMap(jsonDecode(decryptedString));
       _serverSentEventsCubit.applyEvents([sse]);
     } catch (_) {

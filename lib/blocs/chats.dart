@@ -8,11 +8,13 @@ import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
+import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
 
 import 'bloc.dart';
 
 class ChatsCubit extends Bloc {
+  final _apiClient = GetIt.instance.get<ApiClient>();
   final _cache = GetIt.instance.get<FilteredModelListCache>();
   final _chatRepository = GetIt.instance.get<ChatRepository>();
   final _sendQueueCubit = GetIt.instance.get<ChatMessageSendQueueCubit>();
@@ -145,6 +147,65 @@ class ChatsCubit extends Bloc {
 
   void send(SendingChatMessage message) {
     _sendQueueCubit.enqueue(message);
+  }
+
+  void markIncomingMessagesRead(List<ChatMessage> messages) async {
+    // TODO: Send in chunks to not hit the limit.
+    _apiClient.markChatMessagesRead(
+      MarkChatMessagesReadRequest(
+        messageIds: messages.map((message) => message.id).toList(),
+      ),
+    );
+
+    for (final message in messages) {
+      onIncomingMessageRead(message.chatId, message.id);
+    }
+  }
+
+  /// For local read events
+  /// and for SSE notifications on messages read on the other user's devices.
+  void onIncomingMessageRead(int chatId, int messageId) {
+    _markReadInMessageLists(chatId, messageId);
+    _markReadInChatLists(chatId, messageId, true);
+  }
+
+  void onOutgoingMessageRead(int chatId, int messageId) {
+    _markReadInMessageLists(chatId, messageId);
+    _markReadInChatLists(chatId, messageId, false);
+  }
+
+  void _markReadInMessageLists(int chatId, int messageId) {
+    final messageLists = _cache.getModelListsByObjectAndFilterTypes<int, ChatMessage, ChatMessageFilter>();
+
+    for (final list in messageLists.values) {
+      if (list.filter.chatId != chatId) continue;
+
+      final listMessage = list.getObject(messageId);
+      if (listMessage == null) continue;
+
+      listMessage.dateTimeRead = DateTime.now().toUtc();
+      list.onExternalObjectChange();
+    }
+  }
+
+  void _markReadInChatLists(int chatId, int messageId, bool byMe) {
+    final chatLists = _cache.getModelListsByObjectAndFilterTypes<int, Chat, ChatFilter>();
+
+    for (final list in chatLists.values) {
+      final chat = list.getObject(chatId);
+      if (chat == null) continue;
+
+      if (chat.lastMessage?.id == messageId) {
+        chat.lastMessage!.dateTimeRead = DateTime.now().toUtc();
+      }
+
+      if (byMe && !chat.messageIdsMarkedAsRead.containsKey(messageId)) {
+        chat.unreadByMeCount--;
+        chat.messageIdsMarkedAsRead[messageId] = 1;
+      }
+
+      list.onExternalObjectChange();
+    }
   }
 
   @override

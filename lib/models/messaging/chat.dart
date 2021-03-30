@@ -5,8 +5,9 @@ import 'chat_message.dart';
 class Chat implements WithId<int> {
   final int id;
   final ChatMessage? lastMessage;
-  final int unreadByMeCount;
+  int unreadByMeCount;
   final List<User> otherUsers;
+  final messageIdsMarkedAsRead = <int, void>{};
 
   Chat({
     required this.id,

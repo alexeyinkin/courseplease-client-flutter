@@ -8,7 +8,7 @@ class ChatMessage implements WithId<int>, ChatMessageInterface {
   final int? senderUserId;
   final DateTime dateTimeInsert;
   final DateTime? dateTimeEdit;
-  final DateTime? dateTimeRead;
+  DateTime? dateTimeRead;
   final MessageBody body;
 
   ChatMessage({
@@ -23,7 +23,7 @@ class ChatMessage implements WithId<int>, ChatMessageInterface {
 
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     final dateTimeEditString = map['dateTimeEdit'];
-    final dateTimeReadString = map['dateTimeEdit'];
+    final dateTimeReadString = map['dateTimeRead'];
 
     return ChatMessage(
       id:             map['id'],

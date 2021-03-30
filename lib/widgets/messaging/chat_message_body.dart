@@ -5,38 +5,43 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 import 'chat_message_interface.dart';
 
 class ChatMessageBodyWidget extends StatelessWidget {
   final ChatMessageInterface message;
+  final ChatMessageShowReadStatus showReadStatus;
 
   static const _insertDateWidth = 35.0;
+  static const _readIconWidth = 17.0;
 
   ChatMessageBodyWidget({
     required this.message,
+    required this.showReadStatus,
   });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: message.body.text,
-              ),
-              _getDateSpan(context),
-            ],
-          ),
-        ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: _ChatMessageBodyDateWidget(message: message),
-        ),
+        _getContentWidget(context),
+        _getDateWidget(),
+        _getReadStatusWidget(),
       ],
+    );
+  }
+
+  Widget _getContentWidget(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: message.body.text,
+          ),
+          _getDateSpan(context),
+        ],
+      ),
     );
   }
 
@@ -50,15 +55,63 @@ class ChatMessageBodyWidget extends StatelessWidget {
   }
 
   InlineSpan _getInlineDateSpace() {
+    var width = _insertDateWidth;
+    if (showReadStatus != ChatMessageShowReadStatus.noPlaceholder) {
+      width += _readIconWidth;
+    }
+
     return WidgetSpan(
       child: Container(
-        width: _insertDateWidth,
+        width: width,
       ),
     );
   }
 
   InlineSpan _getNewLineDateSpace() {
     return TextSpan(text: '\n');
+  }
+
+  Widget _getDateWidget() {
+    return Positioned(
+      right: showReadStatus == ChatMessageShowReadStatus.noPlaceholder ? 0 : _readIconWidth,
+      bottom: 0,
+      child: _ChatMessageBodyDateWidget(message: message),
+    );
+  }
+
+  Widget _getReadStatusWidget() {
+    switch (showReadStatus) {
+      case ChatMessageShowReadStatus.noPlaceholder:
+      case ChatMessageShowReadStatus.placeholder:
+        return Container(width: 0, height: 0);
+
+      case ChatMessageShowReadStatus.read:
+      case ChatMessageShowReadStatus.unread:
+        return Positioned(
+          right: 0,
+          bottom: 0,
+          child: Opacity(
+            opacity: .2,
+            child: Icon(
+              _getReadStatusIcon(),
+              size: 13,
+            ),
+          )
+        );
+    }
+    throw Exception('Unknown ShowChatMessageReadStatus: ' + showReadStatus.toString());
+  }
+
+  IconData _getReadStatusIcon() {
+    switch (showReadStatus) {
+      case ChatMessageShowReadStatus.read:
+        return FlutterIcons.check_all_mco;
+      case ChatMessageShowReadStatus.unread:
+        return FlutterIcons.check_mco;
+      case ChatMessageShowReadStatus.noPlaceholder:
+      case ChatMessageShowReadStatus.placeholder:
+        throw Exception('Should not get here.');
+    }
   }
 }
 
@@ -145,4 +198,11 @@ class _SendingChatMessageBodyDateWidget extends StatelessWidget {
         return InlineSmallCircularProgressIndicator(scale: .3);
     }
   }
+}
+
+enum ChatMessageShowReadStatus {
+  noPlaceholder,
+  placeholder,
+  unread,
+  read,
 }

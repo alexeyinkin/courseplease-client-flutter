@@ -70,6 +70,10 @@ class ChatMessageTileContent extends StatelessWidget {
       return OthersChatMessageBubble(message: message);
     }
 
-    return ChatMessageBodyWidget(message: message); // TODO: Fancy system messages as well.
+    // TODO: Fancy system messages as well.
+    return ChatMessageBodyWidget(
+      message: message,
+      showReadStatus: ChatMessageShowReadStatus.noPlaceholder,
+    );
   }
 }

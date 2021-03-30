@@ -155,6 +155,10 @@ class NetworkFilteredModelListBloc<
     _pushOutput();
   }
 
+  void onExternalObjectChange() {
+    _pushOutput();
+  }
+
   void clear() {
     _objects.clear();
     _objectsByIds.clear();

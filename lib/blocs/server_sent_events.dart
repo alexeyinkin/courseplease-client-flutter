@@ -105,6 +105,7 @@ class ServerSentEventsCubit extends Bloc {
     final listener = _listenerLocator.get(sse.type);
 
     if (listener == null) {
+      print('Listener not found for SSE type: ' + sse.type.toString());
       // TODO: Suggest app update.
       return;
     }

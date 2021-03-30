@@ -139,6 +139,14 @@ class ApiClient {
     return SendChatMessageResponse.fromMap(mapResponse.data);
   }
 
+  Future<void> markChatMessagesRead(MarkChatMessagesReadRequest request) async {
+    await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/chats/read',
+      body: request,
+    );
+  }
+
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
       await sendRequest(
@@ -655,5 +663,20 @@ class SendChatMessageResponse {
       dateTimeInsert: DateTime.tryParse(map['dateTimeInsert'] ?? ''),
       recipientChatId: map['recipientChatId'],
     );
+  }
+}
+
+class MarkChatMessagesReadRequest extends RequestBody {
+  final List<int> messageIds;
+
+  MarkChatMessagesReadRequest({
+    required this.messageIds,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'messageIds': messageIds,
+    };
   }
 }
