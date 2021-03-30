@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:courseplease/blocs/bloc.dart';
+import 'package:courseplease/blocs/realtime.dart';
 import 'package:courseplease/blocs/realtime_factory.dart';
 import 'package:courseplease/blocs/server_sent_events.dart';
 import 'package:courseplease/models/sse/server_sent_event.dart';
@@ -12,7 +12,7 @@ import 'package:get_it/get_it.dart';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
 import 'authentication.dart';
 
-class AblySseCubit extends Bloc {
+class AblySseCubit extends AbstractRealtimeCubit {
   final RealtimeCredentials credentials;
   final _apiClient = GetIt.instance.get<ApiClient>();
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
@@ -63,6 +63,27 @@ class AblySseCubit extends Bloc {
 
   void _onStateChange(ably.ConnectionStateChange stateChange) {
     print('Ably realtime connection state changed: ${stateChange.event}');
+
+    final status = _connectionStateToRealtimeStatus(stateChange.current);
+    final state = RealtimeState(status: status);
+    pushState(state);
+  }
+
+  RealtimeStatus _connectionStateToRealtimeStatus(ably.ConnectionState state) {
+    switch (state) {
+      case ably.ConnectionState.initialized:
+      case ably.ConnectionState.closing:
+      case ably.ConnectionState.closed:
+        return RealtimeStatus.notAttempted;
+      case ably.ConnectionState.connecting:
+      case ably.ConnectionState.suspended:
+        return RealtimeStatus.connecting;
+      case ably.ConnectionState.connected:
+        return RealtimeStatus.connected;
+      case ably.ConnectionState.disconnected:
+      case ably.ConnectionState.failed:
+        return RealtimeStatus.failed;
+    }
   }
 
   String _getChannelName() {
@@ -112,12 +133,13 @@ class AblySseCubit extends Bloc {
     await _channelMessageSubscription?.cancel();
     await _channel?.detach();
     await _realtime?.connection.close();
+    super.dispose();
   }
 }
 
 class AblySseCubitFactory extends RealtimeFactoryInterface {
   @override
-  Bloc? createIfValid(RealtimeCredentials credentials) {
+  AbstractRealtimeCubit? createIfValid(RealtimeCredentials credentials) {
     return AblySseCubit(credentials: credentials);
   }
 }

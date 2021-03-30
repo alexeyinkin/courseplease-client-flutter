@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/server_sent_events.dart';
+import 'package:courseplease/widgets/messages_icon.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/screens/home/local_widgets/explore_tab.dart';
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
               label: tr('PickedTabWidget.iconTitle'),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
+              icon: MessagesIconWidget(),
               label: tr('MessagesTabWidget.iconTitle'),
             ),
             BottomNavigationBarItem(

@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/bloc.dart';
+import 'package:courseplease/blocs/realtime.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'authentication.dart';
 
@@ -11,8 +13,16 @@ class RealtimeFactoryCubit extends Bloc {
   late final StreamSubscription _authenticationStreamSubscription;
   final Map<String, RealtimeFactoryInterface> factories;
 
+  final _outStateController = BehaviorSubject<RealtimeState>();
+  Stream<RealtimeState> get outState => _outStateController.stream;
+
+  final initialState = RealtimeState(
+    status: RealtimeStatus.notAttempted,
+  );
+
   RealtimeCredentials? _credentials;
-  Bloc? _realtime;
+  AbstractRealtimeCubit? _realtime;
+  StreamSubscription? _realtimeSubscription;
 
   RealtimeFactoryCubit({
     required this.factories,
@@ -33,6 +43,7 @@ class RealtimeFactoryCubit extends Bloc {
   }
 
   void _destroyRealtime() {
+    _realtimeSubscription?.cancel();
     _realtime?.dispose();
     _realtime = null;
     _credentials = null;
@@ -43,23 +54,33 @@ class RealtimeFactoryCubit extends Bloc {
       return;
     }
 
-    _realtime?.dispose();
-    _realtime = _createRealtime(credentials);
+    _destroyRealtime();
+    _createRealtime(credentials);
 
     _credentials = credentials;
   }
 
-  Bloc? _createRealtime(RealtimeCredentials credentials) {
+  void _createRealtime(RealtimeCredentials credentials) {
     final factory = factories[credentials.providerName];
-    return factory?.createIfValid(credentials);
+    _realtime = factory?.createIfValid(credentials);
+
+    if (_realtime == null) return;
+
+    _realtimeSubscription = _realtime!.outState.listen(_onRealtimeStateChanged);
+  }
+
+  void _onRealtimeStateChanged(RealtimeState state) {
+    _outStateController.sink.add(state);
   }
 
   @override
   void dispose() {
+    _destroyRealtime();
+    _outStateController.close();
     _authenticationStreamSubscription.cancel();
   }
 }
 
 abstract class RealtimeFactoryInterface {
-  Bloc? createIfValid(RealtimeCredentials credentials);
+  AbstractRealtimeCubit? createIfValid(RealtimeCredentials credentials);
 }
