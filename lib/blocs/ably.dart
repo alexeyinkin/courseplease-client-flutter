@@ -1,17 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/blocs/realtime_factory.dart';
 import 'package:courseplease/blocs/server_sent_events.dart';
 import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/services/net/api_client.dart';
+import 'package:courseplease/utils/encrypt.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
+import 'authentication.dart';
 
 class AblySseCubit extends Bloc {
   final RealtimeCredentials credentials;
   final _apiClient = GetIt.instance.get<ApiClient>();
+  final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   final _serverSentEventsCubit = GetIt.instance.get<ServerSentEventsCubit>();
 
   ably.Realtime? _realtime;
@@ -83,11 +87,24 @@ class AblySseCubit extends Bloc {
     }
   }
 
-  void _onMessage(ably.Message message) {
+  void _onMessage(ably.Message message) async {
     print("New Ably message arrived ${message.data}");
-    final sse = ServerSentEvent.fromMap(jsonDecode(message.data.toString()));
 
-    _serverSentEventsCubit.applyEvents([sse]);
+    try {
+      final decryptedBytes = decryptAes256Cbc(
+        message.data as Uint8List,
+        credentials.encryptionKey,
+        Uint8List.fromList('CoursePlease.com'.codeUnits),
+      );
+      final decryptedString = String.fromCharCodes(decryptedBytes);
+      final sse = ServerSentEvent.fromMap(jsonDecode(decryptedString));
+      _serverSentEventsCubit.applyEvents([sse]);
+    } catch (_) {
+      // TODO: Log the error.
+      print("Cannot decrypt the message! Reloading the actor the state.");
+      await _authenticationCubit.reloadCurrentActor();
+      _serverSentEventsCubit.reload();
+    }
   }
 
   @override

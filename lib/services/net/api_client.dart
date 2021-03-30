@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
@@ -409,10 +410,14 @@ class RealtimeCredentials {
   /// the user's private channel.
   final String crossDeviceToken;
 
+  /// Must be secret to the provider so that messages are opaque to them.
+  final Uint8List encryptionKey;
+
   RealtimeCredentials({
     required this.providerName,
     required this.providerToken,
     required this.crossDeviceToken,
+    required this.encryptionKey,
   });
 
   factory RealtimeCredentials.fromMap(Map<String, dynamic> map) {
@@ -420,6 +425,7 @@ class RealtimeCredentials {
       providerName:     map['providerName'],
       providerToken:    map['providerToken'],
       crossDeviceToken: map['crossDeviceToken'],
+      encryptionKey:    base64Decode(map['encryptionKey']),
     );
   }
 
