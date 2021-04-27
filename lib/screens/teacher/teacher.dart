@@ -2,7 +2,9 @@ import 'package:courseplease/blocs/model_by_id.dart';
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
+import 'package:courseplease/models/shop/line_item.dart';
 import 'package:courseplease/repositories/teacher.dart';
+import 'package:courseplease/screens/order/order.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -201,7 +203,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
 
     return TeacherSubjectProductVariantsWidget(
       teacherSubject: ts,
-      onPressed: _onFormatPressed,
+      onPressed: (format) => _onFormatPressed(ts.subjectId, format, teacher),
     );
   }
 
@@ -209,8 +211,23 @@ class _TeacherScreenState extends State<TeacherScreen> {
     return Text(text);
   }
 
-  void _onFormatPressed(ProductVariantFormatWithPrice format) {
-
+  void _onFormatPressed(
+    int productSubjectId,
+    ProductVariantFormatWithPrice format,
+    Teacher teacher,
+  ) {
+    OrderScreen.show(
+      context: context,
+      lineItems: [
+        LineItem(
+          productVariantId: format.productVariantId!,
+          productSubjectId: productSubjectId,
+          format: format,
+          user: teacher,
+          quantity: 1,
+        ),
+      ],
+    );
   }
 
   Widget _getLessonsBlock() {

@@ -2,11 +2,13 @@ import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
+import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import '../models/filters/abstract.dart';
 import '../models/interfaces.dart';
+import 'error/error_loading_more.dart';
 
 abstract class ObjectAbstractListView<
   I,
@@ -22,6 +24,8 @@ abstract class ObjectAbstractListView<
   final ScrollController? scrollController;
   final bool reverse;
   final Widget? titleIfNotEmpty;
+  final WidgetBuilder? errorLoadingMoreBuilder;
+  final bool shrinkWrap;
   final SelectableListCubit<I, F>? listStateCubit;
 
   ObjectAbstractListView({
@@ -32,6 +36,8 @@ abstract class ObjectAbstractListView<
     this.scrollController,
     required this.reverse,
     this.titleIfNotEmpty,
+    this.errorLoadingMoreBuilder,
+    this.shrinkWrap = false,
     this.listStateCubit,
   });
 }
@@ -106,14 +112,16 @@ abstract class ObjectAbstractListViewState<
       children.add(widget.titleIfNotEmpty!);
     }
 
+    final listViewWidget = getListViewWidget(
+      modelListState,
+      listBloc,
+      selectableListState,
+    );
+
     children.add(
-      Expanded(
-        child: getListViewWidget(
-          modelListState,
-          listBloc,
-          selectableListState,
-        ),
-      ),
+      widget.shrinkWrap
+          ? listViewWidget
+          : Expanded(child: listViewWidget),
     );
 
     return Container(
@@ -160,6 +168,10 @@ abstract class ObjectAbstractListViewState<
       return widget.tileFactory(request);
     }
 
+    if (index == length) {
+      return _buildTrailing(modelListState);
+    }
+
     listBloc.loadMoreIfCan();
     return Text(index.toString());
   }
@@ -172,5 +184,21 @@ abstract class ObjectAbstractListViewState<
 
   void _onSelected(O object, bool selected) {
     widget.listStateCubit?.setSelected(object.id, selected);
+  }
+
+  Widget _buildTrailing(ModelListState<I, O> modelListState) {
+    if (modelListState.status == RequestStatus.error) {
+      return _buildErrorLoadingMoreWidget();
+    }
+
+    return Container();
+  }
+
+  Widget _buildErrorLoadingMoreWidget() {
+    if (widget.errorLoadingMoreBuilder == null) {
+      return ErrorLoadingMoreWidget();
+    }
+
+    return widget.errorLoadingMoreBuilder!(context);
   }
 }

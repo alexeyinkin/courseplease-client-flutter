@@ -1,5 +1,27 @@
 import 'package:courseplease/models/user.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:flutter/material.dart';
+
+class UserpicAndNameWidget extends StatelessWidget{
+  final User user;
+
+  static const _picSize = 30.0;
+
+  UserpicAndNameWidget({
+    required this.user,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        UserpicWidget(user: user, size: _picSize),
+        SmallPadding(),
+        UserNameWidget(user: user),
+      ],
+    );
+  }
+}
 
 class UserpicWidget extends StatelessWidget {
   final User user;

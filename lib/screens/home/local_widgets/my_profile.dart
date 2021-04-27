@@ -9,7 +9,9 @@ import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/auth/sign_out_button.dart';
 import 'package:courseplease/widgets/linked_profiles.dart';
 import 'package:courseplease/widgets/location_line.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/profile.dart';
+import 'package:courseplease/widgets/shop/money_accounts.dart';
 import 'package:courseplease/widgets/unsorted_media_preview.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +45,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     //       and where everything is not null?
     return Column(
       children: [
-        _getProfileWidget(state.data!.user!),
+        _getProfileWidget(state.data!),
         _getEditMenu(state.data!),
         _getExistingIntegrationsMenu(state.data!),
         _getAddIntegrationsMenu(state.data!.user!),
@@ -51,14 +53,16 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     );
   }
 
-  Widget _getProfileWidget(User user) {
+  Widget _getProfileWidget(MeResponseData meResponseData) {
     return ProfileWidget(
-      user: user,
+      user: meResponseData.user!,
       childrenUnderUserpic: [
         SignOutButton(),
       ],
       childrenUnderName: [
-        _getLocationLine(user),
+        MoneyAccountsWidget(accounts: meResponseData.moneyAccounts),
+        SmallPadding(),
+        _getLocationLine(meResponseData.user!),
       ],
     );
   }

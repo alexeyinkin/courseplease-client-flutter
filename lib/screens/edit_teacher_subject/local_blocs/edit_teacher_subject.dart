@@ -71,11 +71,12 @@ class EditTeacherSubjectCubit extends Bloc {
     for (final formatIntName in formatIntNames) {
       if (!formats.containsKey(formatIntName)) {
         final format = ProductVariantFormatWithPrice(
-          intName: formatIntName,
-          title: tr('models.ProductVariantFormat.' + formatIntName),
-          enabled: false,
-          minPrice: Money.zero(),
-          maxPrice: Money.zero(),
+          productVariantId: null,
+          intName:          formatIntName,
+          title:            tr('models.ProductVariantFormat.' + formatIntName),
+          enabled:          false,
+          minPrice:         Money.zero(),
+          maxPrice:         Money.zero(),
         );
         _teacherSubjectClone.productVariantFormats.add(format);
       }

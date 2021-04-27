@@ -9,6 +9,7 @@ import 'package:courseplease/blocs/server_sent_events.dart';
 import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/repositories/chat_message.dart';
+import 'package:courseplease/repositories/delivery.dart';
 import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/product_subject.dart';
@@ -47,8 +48,9 @@ void _initializeNetwork() {
 
 void _initializeRepositories() {
   GetIt.instance
-      ..registerSingleton<ChatRepository>(ChatRepository())
       ..registerSingleton<ChatMessageRepository>(ChatMessageRepository())
+      ..registerSingleton<ChatRepository>(ChatRepository())
+      ..registerSingleton<DeliveryRepository>(DeliveryRepository())
       ..registerSingleton<EditorImageRepository>(EditorImageRepository())
       ..registerSingleton<GalleryImageRepository>(GalleryImageRepository())
       ..registerSingleton<LessonRepository>(LessonRepository())

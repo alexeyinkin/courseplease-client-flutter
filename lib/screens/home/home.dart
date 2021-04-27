@@ -4,9 +4,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/screens/home/local_widgets/explore_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/messages_tab.dart';
-import 'package:courseplease/screens/home/local_widgets/picked_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/profile_tab.dart';
 import 'package:get_it/get_it.dart';
+import 'local_widgets/learning_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: IndexedStack(
             children: [
               ExploreTab(),
-              PickedTab(),
+              LearningTabWidget(),
               MessagesTab(),
               ProfileTab(),
             ],
@@ -45,8 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
               label: tr('ExploreTabWidget.iconTitle'),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: tr('PickedTabWidget.iconTitle'),
+              icon: Icon(Icons.school),
+              label: tr('LearningTabWidget.iconTitle'),
             ),
             BottomNavigationBarItem(
               icon: MessagesIconWidget(),

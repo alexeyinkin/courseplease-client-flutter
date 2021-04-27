@@ -82,6 +82,7 @@ EditTeachingScreen:
     title:          'Subjects that I Teach'
 
 errors:
+    cannotLoadMore: 'Error loading more'
     noInternet:     'Could not load the info'
     notAuthorized:  'Access denied'
 
@@ -104,6 +105,16 @@ InstagramContactParamsWidget:
 InstagramStatusCubit:
     addNewImagesToUnsorted:     'Place new images to Unsorted'
     addNewImagesToPortfolio:    'Place new images to My Portfolio as a teacher of {subjectTitle}'
+
+LearningLessonsTabWidget:
+    title:          'Lessons'
+    toSchedule:     'To Schedule'
+    upcoming:       'Upcoming'
+    toApprove:      'To Approve'
+    resolved:       'Past and Cancelled'
+
+LearningTabWidget:
+    iconTitle:      'Learn'
 
 LessonsTabWidget:
     title:          'Lessons'
@@ -164,6 +175,17 @@ MyProfileWidget:
     myProfile:          'My Profile'
     myTeaching:         'My Teaching'
     sortImportedMedia:  'Sort Imported Media'
+
+OrderScreen:
+    action:
+        pay:            'Pay {amount}'
+        hold:           'Use {amount}'
+    title:              'Your Order'
+    useBalance:         'Use balance:'
+    payable:            'Payable:'
+    balanceAfter:       'Will have {amount} left'
+    oneHourLessonIn:    '1 hour lesson in {subject}'
+    lessonTerms:        'You will agree on time in chat. Get full refund if you do not agree or if you cancel the lesson 24 hours in advance.'
 
 PickedTabWidget:
     iconTitle:      'Picked'

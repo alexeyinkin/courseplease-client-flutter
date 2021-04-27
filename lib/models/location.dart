@@ -43,4 +43,10 @@ class Location {
       subwayStations: subwayStations,
     );
   }
+
+  static Location? fromMapOrNull(Map<String, dynamic>? map) {
+    return map == null
+        ? null
+        : Location.fromMap(map);
+  }
 }

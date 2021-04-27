@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
+import 'package:courseplease/models/shop/money_account.dart';
 import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/models/user.dart';
@@ -376,6 +377,7 @@ class MeResponseData {
   final List<TeacherSubject> teacherSubjects;
   final List<EditableContact> contacts;
   final List<String> allowedCurs;
+  final List<MoneyAccount> moneyAccounts;
   final int? lastSseId;
   final RealtimeCredentials? realtimeCredentials;
   final bool hasUnsortedMedia;
@@ -386,6 +388,7 @@ class MeResponseData {
     required this.teacherSubjects,
     required this.contacts,
     required this.allowedCurs,
+    required this.moneyAccounts,
     required this.lastSseId,
     required this.realtimeCredentials,
     required this.hasUnsortedMedia,
@@ -400,6 +403,7 @@ class MeResponseData {
       teacherSubjects:      TeacherSubject.fromMaps(map['teacherSubjects']),
       contacts:             EditableContact.fromMaps(map['contacts']),
       allowedCurs:          map['allowedCurs'].cast<String>(),
+      moneyAccounts:        MoneyAccount.fromMaps(map['moneyAccounts']),
       lastSseId:            map['lastSseId'],
       realtimeCredentials:  RealtimeCredentials.fromMapOrNull(map['realtimeCredentials']),
       hasUnsortedMedia:     map['hasUnsortedMedia'],

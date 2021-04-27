@@ -1,6 +1,9 @@
 import 'money.dart';
 
 class ProductVariantFormatWithPrice {
+  /// Null when creating a format. Always non-null when shopping.
+  final int? productVariantId;
+
   final String intName;
   final String title;
   bool enabled;
@@ -8,6 +11,7 @@ class ProductVariantFormatWithPrice {
   final Money? maxPrice;
 
   ProductVariantFormatWithPrice({
+    required this.productVariantId,
     required this.intName,
     required this.title,
     required this.enabled,
@@ -17,21 +21,23 @@ class ProductVariantFormatWithPrice {
 
   factory ProductVariantFormatWithPrice.fromMap(Map<String, dynamic> map) {
     return ProductVariantFormatWithPrice(
-      intName:  map['intName'],
-      title:    map['title'],
-      enabled:  map['enabled'],
-      minPrice: map['minPrice'] == null ? null : Money.fromMapOrList(map['minPrice']),
-      maxPrice: map['maxPrice'] == null ? null : Money.fromMapOrList(map['maxPrice']),
+      productVariantId: map['productVariantId'],
+      intName:          map['intName'],
+      title:            map['title'],
+      enabled:          map['enabled'],
+      minPrice:         Money.fromMapOrListOrNull(map['minPrice']),
+      maxPrice:         Money.fromMapOrListOrNull(map['maxPrice']),
     );
   }
 
   factory ProductVariantFormatWithPrice.from(ProductVariantFormatWithPrice obj) {
     return ProductVariantFormatWithPrice(
-      intName:  obj.intName,
-      title:    obj.title,
-      enabled:  obj.enabled,
-      minPrice: obj.minPrice,
-      maxPrice: obj.maxPrice,
+      productVariantId: obj.productVariantId,
+      intName:          obj.intName,
+      title:            obj.title,
+      enabled:          obj.enabled,
+      minPrice:         obj.minPrice,
+      maxPrice:         obj.maxPrice,
     );
   }
 }

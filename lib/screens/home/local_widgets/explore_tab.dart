@@ -12,10 +12,10 @@ import '../../../models/product_subject.dart';
 
 class ExploreTab extends StatefulWidget {
   @override
-  State<ExploreTab> createState() => ExploreTabState();
+  _ExploreTabState createState() => _ExploreTabState();
 }
 
-class ExploreTabState extends State<ExploreTab> {
+class _ExploreTabState extends State<ExploreTab> {
   final CurrentProductSubjectBloc _bloc = CurrentProductSubjectBloc();
 
   @override

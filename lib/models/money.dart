@@ -18,6 +18,17 @@ class Money {
     return Money(map);
   }
 
+  static Money? fromMapOrListOrNull(dynamic? mapOrEmptyList) {
+    if (mapOrEmptyList == null) return null;
+    return Money.fromMapOrList(mapOrEmptyList);
+  }
+
+  factory Money.from(Money another) {
+    return Money(
+      Map<String, double>.from(another.map),
+    );
+  }
+
   factory Money.zero() {
     return Money(Map<String, double>());
   }
@@ -60,8 +71,20 @@ class Money {
 
   bool isPositive() {
     // TODO: Convert. Now following the backend incomplete method.
+    if (map.length > 1) throw Exception('Cannot convert currencies.');
+
     for (final value in map.values) {
       return value > 0;
+    }
+    return false;
+  }
+
+  bool isNegative() {
+    // TODO: Convert. Now following the backend incomplete method.
+    if (map.length > 1) throw Exception('Cannot convert currencies.');
+
+    for (final value in map.values) {
+      return value < 0;
     }
     return false;
   }
@@ -86,5 +109,104 @@ class Money {
   void replaceFrom(Money money) {
     map.clear();
     map.addAll(money.map);
+  }
+
+  void addMoney(Money money) {
+    for (final entry in money.map.entries) {
+      map[entry.key] = (map[entry.key] ?? 0) + entry.value;
+    }
+  }
+
+  Money plus(Money money) {
+    final result = Money.from(this);
+    result.addMoney(money);
+    return result;
+  }
+
+  void subtractMoney(Money money) {
+    addMoney(money.times(-1));
+  }
+
+  Money minus(Money money) {
+    return plus(money.times(-1));
+  }
+
+  Money times(double multiplier) {
+    final result = Money.zero();
+
+    for (final entry in map.entries) {
+      result.map[entry.key] = entry.value * multiplier;
+    }
+
+    return result;
+  }
+
+  static Money? pickByCur(List<Money> list, String cur) {
+    for (final money in list) {
+      if (money.map.containsKey(cur)) {
+        return money;
+      }
+    }
+    return null;
+  }
+
+  int getCurCount() {
+    return map.length;
+  }
+
+  static Money? min(List<Money> list) {
+    Money? result;
+
+    for (final money in list) {
+      if (result == null || money.lt(result)) {
+        result = money;
+      }
+    }
+
+    return result == null ? null : Money.from(result);
+  }
+
+  bool gt(Money money) {
+    if (money.isZero()) return isPositive();
+    if (isZero()) return money.isNegative();
+
+    for (final entry in map.entries) {
+      final otherValue = money.map[entry.key];
+
+      if (otherValue == null) {
+        throw Exception('Cannot convert currencies comparing ' + toString() + ' and ' + money.toString());
+      }
+
+      return entry.value > otherValue;
+    }
+
+    throw Exception('Never get here.');
+  }
+
+  bool lt(Money money) {
+    if (money.isZero()) return isPositive();
+    if (isZero()) return money.isNegative();
+
+    for (final entry in map.entries) {
+      final otherValue = money.map[entry.key];
+
+      if (otherValue == null) {
+        throw Exception('Cannot convert currencies comparing ' + toString() + ' and ' + money.toString());
+      }
+
+      return entry.value < otherValue;
+    }
+
+    throw Exception('Never get here.');
+  }
+
+  Map<String, Money> splitByCurs() {
+    final result = <String, Money>{};
+
+    for (final entry in map.entries) {
+      result[entry.key] = Money(Map.fromEntries([entry]));
+    }
+
+    return result;
   }
 }

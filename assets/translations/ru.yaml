@@ -84,6 +84,7 @@ EditTeachingScreen:
     title:          'Предметы, которые я преподаю'
 
 errors:
+    cannotLoadMore: 'Ошибка загрузки списка'
     noInternet:     'Не удалось получить информацию'
     notAuthorized:  'Доступ закрыт'
 
@@ -106,6 +107,16 @@ InstagramContactParamsWidget:
 InstagramStatusCubit:
     addNewImagesToUnsorted:     'Сохранять новые изображения в Неразобранные'
     addNewImagesToPortfolio:    'Сохранять новые изображения в Моё портфолио в качестве преподавателя по {subjectTitle}'
+
+LearningLessonsTabWidget:
+    title:          'Уроки'
+
+LearningTabWidget:
+    iconTitle:      'Обучение'
+    toSchedule:     'Назначьте время'
+    upcoming:       'Запланированы'
+    toApprove:      'Утвердите'
+    past:           'Прошедшие'
 
 LessonsTabWidget:
     title:          'Уроки'
@@ -167,6 +178,17 @@ MyProfileWidget:
     myProfile:          'Мой профиль'
     myTeaching:         'Мои предметы'
     sortImportedMedia:  'Разобрать импортированное'
+
+OrderScreen:
+    action:
+        pay:            'Заплатить {amount}'
+        hold:           'Списать {amount}'
+    title:              'Ваш заказ'
+    useBalance:         'Списать с баланса:'
+    payable:            'К оплате:'
+    balanceAfter:       'Останется {amount}'
+    oneHourLessonIn:    '{subject}, урок 1 час'
+    lessonTerms:        'Вы договоритесь о времени в чате. Полный возврат — если не договоритесь или отмените урок за 24 часа.'
 
 PickedTabWidget:
     iconTitle:      'Избранное'

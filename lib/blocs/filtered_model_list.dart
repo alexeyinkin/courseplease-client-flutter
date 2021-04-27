@@ -30,6 +30,7 @@ abstract class AbstractFilteredModelListBloc<
 
   void loadInitialIfNot();
   void loadMoreIfCan();
+  void loadAll();
 
   @override
   void dispose() {
@@ -79,6 +80,11 @@ class NetworkFilteredModelListBloc<
   }
 
   void _loadMore() {
+    if (_status == RequestStatus.error) {
+      print('Cannot load more, last status was error.');
+      return;
+    }
+
     _currentLoadingFuture = repository
         .loadWithFilter(filter, _nextPageToken)
         .then(
@@ -103,19 +109,29 @@ class NetworkFilteredModelListBloc<
     _pushOutput();
   }
 
+  @override
+  void loadAll() async {
+    if (!_hasMore || _status == RequestStatus.loading) return;
+
+    _loadMore();
+    await _currentLoadingFuture;
+    loadAll();
+  }
+
   void _pushOutput() {
     _outStateController.sink.add(
       ModelListState<I, O>(
         objects:      _objects,
         objectIds:    _objectsByIds.keys.toList(growable: false),
         objectsByIds: _objectsByIds,
-        status:       RequestStatus.ok,
+        status:       _status,
         hasMore:      _hasMore,
       ),
     );
   }
 
   void _handleError(_, StackTrace trace) {
+    _hasMore = false;
     _status = RequestStatus.error;
     _pushOutput();
   }
@@ -243,6 +259,11 @@ class SubsetFilteredModelListBloc<
 
   @override
   void loadMoreIfCan() {
+    // Nothing we can do about loading as the content is pushed from the nested bloc.
+  }
+
+  @override
+  void loadAll() {
     // Nothing we can do about loading as the content is pushed from the nested bloc.
   }
 

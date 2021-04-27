@@ -40,6 +40,7 @@ class ObjectLinearListView<
     ScrollController? scrollController,
     bool reverse = false,
     Widget? titleIfNotEmpty,
+    bool shrinkWrap = false,
     this.separatorBuilder,
     SelectableListCubit<I, F>? listStateCubit,
   }) : super(
@@ -50,14 +51,15 @@ class ObjectLinearListView<
     scrollController: scrollController,
     reverse: reverse,
     titleIfNotEmpty: titleIfNotEmpty,
+    shrinkWrap: shrinkWrap,
     listStateCubit: listStateCubit,
   );
 
   @override
-  State<ObjectLinearListView> createState() => ObjectLinearListViewState<I, O, F, R, T>();
+  State<ObjectLinearListView> createState() => _ObjectLinearListViewState<I, O, F, R, T>();
 }
 
-class ObjectLinearListViewState<
+class _ObjectLinearListViewState<
   I,
   O extends WithId<I>,
   F extends AbstractFilter,
@@ -76,10 +78,10 @@ class ObjectLinearListViewState<
     late final itemBuilder;
 
     if (widget.separatorBuilder == null) {
-      itemCount = modelListState.hasMore ? null : modelListState.objects.length;
+      itemCount = modelListState.hasMore ? null : modelListState.objects.length + 1;
       itemBuilder = (context, index) => buildTile(index, modelListState, listBloc, selectableListState);
     } else {
-      itemCount = modelListState.hasMore ? null : modelListState.objects.length * 2 + 1;
+      itemCount = modelListState.hasMore ? null : modelListState.objects.length * 2 + 2;
       itemBuilder = (context, index) => _buildTileOrSeparator(index, modelListState, listBloc, selectableListState);
     }
 
@@ -90,6 +92,7 @@ class ObjectLinearListViewState<
       reverse:          widget.reverse,
       itemCount:        itemCount,
       itemBuilder:      itemBuilder,
+      shrinkWrap:       widget.shrinkWrap,
     );
   }
 
