@@ -8,6 +8,17 @@ class SmallPadding extends StatelessWidget {
   }
 }
 
+class DotPadding extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      width: 15,
+      child: Text('·'),
+    );
+  }
+}
+
 class HorizontalLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

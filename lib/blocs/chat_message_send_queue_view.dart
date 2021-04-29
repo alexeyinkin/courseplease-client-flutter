@@ -12,7 +12,6 @@ class ChatMessageSendQueueViewCubit extends Bloc {
   final _queueCubit = GetIt.instance.get<ChatMessageSendQueueCubit>();
   late final StreamSubscription _subscription;
   final int chatId;
-  final int? userId;
 
   String? _checksum;
 
@@ -22,7 +21,6 @@ class ChatMessageSendQueueViewCubit extends Bloc {
 
   ChatMessageSendQueueViewCubit({
     required this.chatId,
-    required this.userId,
   }) {
     _subscription = _queueCubit.outState.listen(_onQueueStateChange);
   }
@@ -30,7 +28,6 @@ class ChatMessageSendQueueViewCubit extends Bloc {
   factory ChatMessageSendQueueViewCubit.fromChat(Chat chat) {
     return ChatMessageSendQueueViewCubit(
       chatId: chat.id,
-      userId: (chat.otherUsers.length == 1) ? chat.otherUsers[0].id : null,
     );
   }
 
@@ -48,7 +45,7 @@ class ChatMessageSendQueueViewCubit extends Bloc {
     final result = <SendingChatMessage>[];
 
     for (final message in state.queue) {
-      if (message.recipientChatId != chatId && message.recipientUserId != userId) {
+      if (message.recipientChatId != chatId) {
         continue;
       }
       result.add(message);

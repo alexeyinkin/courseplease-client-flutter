@@ -6,18 +6,24 @@ import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
+import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/chat.dart';
+import 'package:courseplease/screens/home/local_blocs/home.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
 
+import 'authentication.dart';
 import 'bloc.dart';
+import 'chat_list.dart';
 
 class ChatsCubit extends Bloc {
   final _apiClient = GetIt.instance.get<ApiClient>();
+  final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   final _cache = GetIt.instance.get<FilteredModelListCache>();
   final _chatRepository = GetIt.instance.get<ChatRepository>();
   final _sendQueueCubit = GetIt.instance.get<ChatMessageSendQueueCubit>();
+  final ChatListCubit chatListCubit = ChatListCubit();
   late final StreamSubscription _queuedMessageSentSubscription;
 
   ChatsCubit() {
@@ -205,6 +211,47 @@ class ChatsCubit extends Bloc {
       }
 
       list.onExternalObjectChange();
+    }
+  }
+
+  // TODO: Extract to some chat navigation service.
+  //       This cubit should be dedicated to background services
+  //       and not chat navigation.
+  void showChatWithUser(User user) async {
+    final authenticationState = _authenticationCubit.currentState;
+    if (user.id == authenticationState.data?.user?.id) {
+      return; // Cannot chat with oneself.
+    }
+
+    final homeScreenCubit = GetIt.instance.get<HomeScreenCubit>();
+    homeScreenCubit.setCurrentTab(HomeScreenTab.messages);
+
+    final chat = await _getChatByUser(user);
+    chatListCubit.setCurrentChat(chat);
+  }
+
+  Future<Chat> _getChatByUser(User user) async {
+    final chatRepository = GetIt.instance.get<ChatRepository>();
+    final chat = await chatRepository.loadByUserId(user.id);
+
+    if (chat != null) return chat;
+
+    return Chat(
+      id: 0,
+      lastMessage: null,
+      unreadByMeCount: 0,
+      otherUsers: [user],
+    );
+  }
+
+  /// Called when an empty chat is created to queue messages.
+  /// At this point, it should be above other chats but has no message ID
+  /// to sort it naturally above others.
+  void onChatStarted(Chat chat) {
+    final chatLists = _cache.getModelListsByObjectAndFilterTypes<int, Chat, ChatFilter>();
+
+    for (final list in chatLists.values) {
+      list.addToBeginning([chat]);
     }
   }
 

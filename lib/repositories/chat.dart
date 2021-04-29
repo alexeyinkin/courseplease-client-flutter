@@ -33,6 +33,18 @@ class ChatRepository extends AbstractFilteredRepository<int, Chat, ChatFilter> {
         .then((response) => _denormalizeOneOrNull(response.data));
   }
 
+  Future<Chat?> loadByUserId(int userId) {
+    return _client
+        .getEntity('chat-by-user-id', userId)
+        .then((response) => _denormalizeOneOrNull(response.data));
+  }
+
+  Future<Chat> getOrCreateByUserId(int userId) {
+    return _client
+        .getEntity('chats/start-with-user-id', userId)
+        .then((response) => Chat.fromMap(response.data));
+  }
+
   Chat? _denormalizeOneOrNull(Map<String, dynamic>? mapResult) {
     if (mapResult == null) return null;
     return Chat.fromMap(mapResult);

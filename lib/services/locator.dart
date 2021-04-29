@@ -14,6 +14,7 @@ import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
+import 'package:courseplease/screens/home/local_blocs/home.dart';
 import 'package:courseplease/services/sse/abstract.dart';
 import 'package:courseplease/services/sse/chat_sse_reloader.dart';
 import 'package:courseplease/services/sse/incoming_chat_message_read_sse_listener.dart';
@@ -75,6 +76,7 @@ void _initializeBlocs() {
       ..registerSingleton<ChatMessageSendQueueCubit>(ChatMessageSendQueueCubit())
       ..registerSingleton<ChatsCubit>(ChatsCubit())
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
+      ..registerSingleton<HomeScreenCubit>(HomeScreenCubit())
   ;
 }
 

@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/bloc.dart';
+import 'package:courseplease/models/messaging/chat_message_draft.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
+import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/services/chat_message_draft_persister.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
@@ -12,7 +14,8 @@ import 'package:uuid/uuid.dart';
 import 'chats.dart';
 
 class ChatMessageEditorCubit extends Bloc {
-  final int chatId;
+  final int? chatId;
+  final int? userId;
   final int senderUserId;
 
   final _textEditingController = TextEditingController();
@@ -29,21 +32,38 @@ class ChatMessageEditorCubit extends Bloc {
 
   ChatMessageEditorCubit({
     required this.chatId,
+    required this.userId,
     required this.senderUserId,
-  }) {
+  }) :
+      assert(
+        (chatId != null && userId == null) ||
+        (chatId == null && userId != null)
+      )
+  {
     _init();
   }
 
   void _init() async {
-    final draft = await _persister.getDraftByChatId(chatId);
+    final draft = await _getDraft();
     if (draft != null) {
       _fillWithDraft(draft);
     }
+
     _textEditingController.addListener(_onTextChanged);
     _pushOutput();
   }
 
-  void _fillWithDraft(SendingChatMessage draft) {
+  Future<ChatMessageDraft?> _getDraft() {
+    if (chatId != null) {
+      return _persister.getDraftByChatId(chatId!);
+    }
+    if (userId != null) {
+      return _persister.getDraftByChatId(userId!);
+    }
+    throw Exception('chatId and userId are both null. Should never get here.');
+  }
+
+  void _fillWithDraft(ChatMessageDraft draft) {
     _textEditingController.text = draft.body.text;
   }
 
@@ -60,16 +80,21 @@ class ChatMessageEditorCubit extends Bloc {
   }
 
   void _deleteDraft() {
-    _persister.deleteDraftByChatId(chatId);
+    if (chatId != null) {
+      _persister.deleteDraftByChatId(chatId!);
+    }
+    if (userId != null) {
+      _persister.deleteDraftByUserId(userId!);
+    }
   }
 
   void _saveDraft() {
-    final message = _createMessage();
+    final draft = _createDraft();
 
-    if (message == null) {
+    if (draft == null) {
       _deleteDraft();
     } else {
-      _persister.saveDraft(message);
+      _persister.saveDraft(draft);
     }
   }
 
@@ -84,10 +109,11 @@ class ChatMessageEditorCubit extends Bloc {
     );
   }
 
-  void onSendPressed() {
-    final message = _createMessage();
-    if (message == null) return;
+  void onSendPressed() async {
+    final draft = _createDraft();
+    if (draft == null) return;
 
+    final message = await _draftToSendingMessage(draft);
     _chatsCubit.send(message);
     _clear();
   }
@@ -96,20 +122,44 @@ class ChatMessageEditorCubit extends Bloc {
     return _textEditingController.text.trim() == '';
   }
 
-  SendingChatMessage? _createMessage() {
+  ChatMessageDraft? _createDraft() {
     final text = _textEditingController.text.trim();
     if (text == '') return null;
 
-    return SendingChatMessage(
-      senderUserId:     senderUserId,
+    return ChatMessageDraft(
       recipientChatId:  chatId,
-      recipientUserId:  null,
+      recipientUserId:  userId,
       body: MessageBody(
         text: text,
       ),
+    );
+  }
+
+  Future<SendingChatMessage> _draftToSendingMessage(
+    ChatMessageDraft draft,
+  ) async {
+    final chatId = (draft.recipientChatId == null)
+      ? await _getChatId()
+      : draft.recipientChatId!;
+
+    return SendingChatMessage(
+      senderUserId: senderUserId,
+      recipientChatId: chatId,
+      body: draft.body,
       uuid: _uuidGenerator.v4(),
       status: SendingChatMessageStatus.readyToSend,
     );
+  }
+
+  Future<int> _getChatId() async {
+    if (chatId != null) return chatId!;
+
+    final chatRepository = GetIt.instance.get<ChatRepository>();
+    final chat = await chatRepository.getOrCreateByUserId(userId!);
+
+    _chatsCubit.onChatStarted(chat);
+    _chatsCubit.chatListCubit.setCurrentChat(chat);
+    return chat.id;
   }
 
   void _clear() {

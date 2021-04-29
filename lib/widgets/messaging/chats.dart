@@ -1,14 +1,17 @@
 import 'dart:collection';
 
 import 'package:courseplease/blocs/chat_list.dart';
+import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/models/filters/chat.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/screens/chat_message_list/chat_message_list.dart';
+import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/messaging/chat_list.dart';
 import 'package:courseplease/widgets/messaging/select_chat_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 
 import '../pad.dart';
 import 'chat_message_list.dart';
@@ -23,7 +26,7 @@ class ChatsWidget extends StatefulWidget {
 }
 
 class _ChatsWidgetState extends State<ChatsWidget> {
-  final _chatListCubit = ChatListCubit();
+  final _chatListCubit = GetIt.instance.get<ChatsCubit>().chatListCubit;
   final _messageListWidgets = LinkedHashMap<String, Widget>();
   final _chatStack = <Chat>[];
 
@@ -123,7 +126,9 @@ class _ChatsWidgetState extends State<ChatsWidget> {
       return SelectChatPlaceholderWidget();
     }
 
-    final key = filter.toString();
+    final ids = idsList(state.currentChat!.otherUsers);
+    final key = filter.toString() + '_' + ids.join('_');
+
     if (!_messageListWidgets.containsKey(key)) {
       _messageListWidgets[key] = _createMessageListWidget(state);
     }
@@ -161,6 +166,8 @@ class _ChatsWidgetState extends State<ChatsWidget> {
         _showMessageListScreen(chat);
         break;
     }
+
+    _removeUserChatFromStack(chat);
   }
 
   void _showMessageListScreen(Chat chat) async {
@@ -184,6 +191,18 @@ class _ChatsWidgetState extends State<ChatsWidget> {
     // This will fire the event, but it will be silenced by the check
     // in the beginning of this method.
     _chatListCubit.setCurrentChat(newTopChat);
+  }
+
+  void _removeUserChatFromStack(Chat chat) {
+    if (chat.otherUsers.length != 1) {
+      return; // Multi-user chat (in future).
+    }
+
+    final userId = chat.otherUsers[0].id;
+
+    // TODO: Loop through route stack and remove this user's chat, if any.
+    //       Otherwise it would be visible on all phones behind
+    //       the the chat screen that uses chatId.
   }
 }
 

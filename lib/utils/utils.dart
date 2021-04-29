@@ -229,4 +229,14 @@ RelativeRect getContextRelativeRect(BuildContext context) {
   );
 }
 
+List<I> idsList<I>(List<WithId<I>> objects) {
+  final result = <I>[];
+
+  for (final object in objects) {
+    result.add(object.id);
+  }
+
+  return result;
+}
+
 Type typeOf<T>() => T;

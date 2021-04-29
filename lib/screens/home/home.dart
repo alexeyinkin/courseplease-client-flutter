@@ -6,6 +6,7 @@ import 'package:courseplease/screens/home/local_widgets/explore_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/messages_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/profile_tab.dart';
 import 'package:get_it/get_it.dart';
+import 'local_blocs/home.dart';
 import 'local_widgets/learning_tab.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,55 +15,64 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var _currentTab = 0;
+  final _homeScreenCubit = GetIt.instance.get<HomeScreenCubit>();
   final _pollEventsButtonIndex = 4;
   final _pageStorageBucket = PageStorageBucket();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: PageStorage(
-          bucket: _pageStorageBucket,
-          child: IndexedStack(
-            children: [
-              ExploreTab(),
-              LearningTabWidget(),
-              MessagesTab(),
-              ProfileTab(),
-            ],
-            index: _currentTab,
-          ),
+      child: StreamBuilder<HomeScreenCubitState>(
+        stream: _homeScreenCubit.outState,
+        builder: (context, snapshot) => _buildWithState(
+          snapshot.data ?? _homeScreenCubit.initialState
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentTab,
-          type: BottomNavigationBarType.fixed,
-          onTap: _onTabTap,
-          unselectedItemColor: Theme.of(context).textTheme.caption!.color,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: tr('ExploreTabWidget.iconTitle'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-              label: tr('LearningTabWidget.iconTitle'),
-            ),
-            BottomNavigationBarItem(
-              icon: MessagesIconWidget(),
-              label: tr('MessagesTabWidget.iconTitle'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: tr('MyProfileTabWidget.iconTitle'),
-            ),
-            // TODO: Remove this debugging button:
-            BottomNavigationBarItem(
-              icon: Icon(Icons.sync),
-              label: "Poll Events",
-            ),
+      ),
+    );
+  }
+
+  Widget _buildWithState(HomeScreenCubitState state) {
+    return Scaffold(
+      body: PageStorage(
+        bucket: _pageStorageBucket,
+        child: IndexedStack(
+          children: [
+            ExploreTab(),
+            LearningTabWidget(),
+            MessagesTab(),
+            ProfileTab(),
           ],
+          index: state.currentTabIndex,
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: state.currentTabIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: _onTabTap,
+        unselectedItemColor: Theme.of(context).textTheme.caption!.color,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: tr('ExploreTabWidget.iconTitle'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: tr('LearningTabWidget.iconTitle'),
+          ),
+          BottomNavigationBarItem(
+            icon: MessagesIconWidget(),
+            label: tr('MessagesTabWidget.iconTitle'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: tr('MyProfileTabWidget.iconTitle'),
+          ),
+          // TODO: Remove this debugging button:
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sync),
+            label: "Poll Events",
+          ),
+        ],
       ),
     );
   }
@@ -73,9 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    setState(() {
-      _currentTab = index;
-    });
+    _homeScreenCubit.setCurrentTabIndex(index);
   }
 
   void _pollEvents() {

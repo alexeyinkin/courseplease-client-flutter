@@ -34,6 +34,7 @@ class AuthenticationBloc extends Bloc{
   final initialState = AuthenticationState.notLoadedFromStorage();
 
   var _authenticationState = AuthenticationState.notLoadedFromStorage();
+  AuthenticationState get currentState => _authenticationState;
 
   final _outProvidersController = BehaviorSubject<List<AuthProvider>>();
   Stream<List<AuthProvider>> get outProviders => _outProvidersController.stream;

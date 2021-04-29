@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import '../small_circular_progress_indicator.dart';
 
 class ChatMessageEditorWidget extends StatefulWidget {
-  final int chatId;
+  final int? chatId;
+  final int? userId;
   final int senderUserId;
 
   ChatMessageEditorWidget({
     required this.chatId,
+    required this.userId,
     required this.senderUserId,
   }) : super(
     key: Key('chat-' + chatId.toString())
@@ -17,6 +19,7 @@ class ChatMessageEditorWidget extends StatefulWidget {
   @override
   _ChatMessageEditorState createState() => _ChatMessageEditorState(
     chatId: chatId,
+    userId: userId,
     senderUserId: senderUserId,
   );
 }
@@ -27,11 +30,13 @@ class _ChatMessageEditorState extends State<ChatMessageEditorWidget> {
   bool _showHint = true;
 
   _ChatMessageEditorState({
-    required int chatId,
+    required int? chatId,
+    required int? userId,
     required int senderUserId,
   }) :
       _chatMessageEditorCubit = ChatMessageEditorCubit(
         chatId: chatId,
+        userId: userId,
         senderUserId: senderUserId,
       )
   {

@@ -76,8 +76,8 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
   }
 
   Widget _buildWithState(AuthenticationState state) {
-    final user = state.data?.user;
-    if (user == null) {
+    final currentUser = state.data?.user;
+    if (currentUser == null) {
       throw Exception('Should only get here if authenticated');
     }
 
@@ -85,12 +85,9 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
       children: [
         if (widget.showTitle) _getTitleWidget(),
         HorizontalLine(),
-        Expanded(child: _getListWithOverlays(user)),
+        Expanded(child: _getListWithOverlays(currentUser)),
         HorizontalLine(),
-        ChatMessageEditorWidget(
-          chatId: widget.chat.id,
-          senderUserId: user.id,
-        ),
+        _getChatMessageEditorWidget(currentUser),
         HorizontalLine(),
       ],
     );
@@ -111,11 +108,11 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
     );
   }
 
-  Widget _getListWithOverlays(User user) {
+  Widget _getListWithOverlays(User currentUser) {
     return Container(
       child: Stack(
         children: [
-          _getListView(user),
+          _getListView(currentUser),
           _getEarliestVisibleDateWidget(),
           _getScrollToBottomButton(),
         ],
@@ -297,6 +294,17 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
         formatDate(message.dateTimeInsert.toLocal(), requireLocale(context)),
         textAlign: TextAlign.center,
       ),
+    );
+  }
+
+  Widget _getChatMessageEditorWidget(User currentUser) {
+    final chatId = widget.chat.id == 0 ? null : widget.chat.id;
+    final userId = chatId == null ? widget.chat.otherUsers[0].id : null;
+
+    return ChatMessageEditorWidget(
+      chatId: chatId,
+      userId: userId,
+      senderUserId: currentUser.id,
     );
   }
 
