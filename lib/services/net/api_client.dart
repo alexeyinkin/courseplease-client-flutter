@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
+import 'package:courseplease/models/network_request_info.dart';
+import 'package:courseplease/models/shop/line_item.dart';
 import 'package:courseplease/models/shop/money_account.dart';
 import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/models/teacher_subject.dart';
@@ -146,6 +148,17 @@ class ApiClient {
       path: '/api1/{@lang}/chats/read',
       body: request,
     );
+  }
+
+  Future<CreateCartAndOrderResponse> getOrCreateOrderAndPay(
+    CreateCartAndOrderRequest request,
+  ) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/shop/get-or-create-order-and-pay',
+      body: request,
+    );
+    return CreateCartAndOrderResponse.fromMap(mapResponse.data);
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
@@ -679,5 +692,40 @@ class MarkChatMessagesReadRequest extends RequestBody {
     return {
       'messageIds': messageIds,
     };
+  }
+}
+
+class CreateCartAndOrderRequest extends RequestBody {
+  final List<LineItem> lineItems;
+
+  CreateCartAndOrderRequest({
+    required this.lineItems,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'lineItems': lineItems,
+    };
+  }
+}
+
+class CreateCartAndOrderResponse {
+  final int orderId;
+  final int paymentStatus;
+  final NetworkRequestInfo? payRequest;
+
+  CreateCartAndOrderResponse({
+    required this.orderId,
+    required this.paymentStatus,
+    required this.payRequest,
+  });
+
+  factory CreateCartAndOrderResponse.fromMap(Map<String, dynamic> map) {
+    return CreateCartAndOrderResponse(
+      orderId: map['orderId'],
+      paymentStatus: map['paymentStatus'],
+      payRequest: NetworkRequestInfo.fromMapOrNull(map['payRequest']),
+    );
   }
 }

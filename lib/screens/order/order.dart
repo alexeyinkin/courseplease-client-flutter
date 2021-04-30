@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:courseplease/models/money.dart';
 import 'package:courseplease/models/shop/line_item.dart';
+import 'package:courseplease/screens/home/local_blocs/home.dart';
 import 'package:courseplease/screens/order/local_blocs/order.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/buttons.dart';
@@ -10,6 +12,7 @@ import 'package:courseplease/widgets/shop/line_item.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class OrderScreen extends StatefulWidget {
   final Money? initialTopUpMoney;
@@ -43,6 +46,8 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   final OrderScreenCubit _orderScreenCubit;
+  final _homeScreenCubit = GetIt.instance.get<HomeScreenCubit>();
+  late final StreamSubscription _orderScreenCubitSubscription;
 
   _OrderScreenState({
     Money? initialTopUpMoney,
@@ -52,7 +57,19 @@ class _OrderScreenState extends State<OrderScreen> {
         topUpMoney: initialTopUpMoney,
         lineItems: initialLineItems,
       )
-  ;
+  {
+    _orderScreenCubitSubscription = _orderScreenCubit.outState.listen(
+      _onStateChange
+    );
+  }
+
+  void _onStateChange(OrderScreenCubitState state) {
+    _homeScreenCubit.setCurrentTab(HomeScreenTab.messages);
+
+    if (state.status == OrderScreenCubitStatus.complete) {
+      Navigator.of(context).pop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +182,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget _getProceedButton(OrderScreenCubitState state) {
     return ElevatedButtonWithProgress(
-      onPressed: _onProceedPressed,
+      onPressed: _orderScreenCubit.process,
       enabled: state.canProceed,
       isLoading: state.inProgress,
       child: Text(
@@ -177,7 +194,10 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  void _onProceedPressed() {
-    // TODO
+  @override
+  void dispose() {
+    _orderScreenCubitSubscription.cancel();
+    _orderScreenCubit.dispose();
+    super.dispose();
   }
 }

@@ -5,10 +5,12 @@ import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/models/money.dart';
 import 'package:courseplease/models/shop/line_item.dart';
 import 'package:courseplease/models/shop/money_account.dart';
+import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 
 class OrderScreenCubit extends Bloc {
+  final _apiClient = GetIt.instance.get<ApiClient>();
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   late final StreamSubscription _authenticationSubscription;
 
@@ -20,7 +22,7 @@ class OrderScreenCubit extends Bloc {
 
   Money _topUpMoney;
   List<LineItem> _lineItems;
-  bool _inProgress = false;
+  OrderScreenCubitStatus _status = OrderScreenCubitStatus.waitingToProceed;
 
   OrderScreenCubit({
     Money? topUpMoney,
@@ -54,17 +56,18 @@ class OrderScreenCubit extends Bloc {
     final accountsAfter = _getAccountsAfter(holdMoney);
 
     return OrderScreenCubitState(
-      topUpMoney: _topUpMoney,
-      holdMoney: holdMoney,
-      accountsBefore: _accountsBefore,
-      accountsAfter: accountsAfter,
+      topUpMoney:       _topUpMoney,
+      holdMoney:        holdMoney,
+      accountsBefore:   _accountsBefore,
+      accountsAfter:    accountsAfter,
       accountsSumAfter: MoneyAccount.getSum(accountsAfter),
-      lineItems: _lineItems,
-      payMoney: payMoney,
-      proceedAction: proceedAction,
-      proceedMoney: _getProceedMoney(action: proceedAction, holdMoney: holdMoney, payMoney: payMoney),
-      canProceed: _getCanProceed(holdMoney, payMoney),
-      inProgress: _inProgress,
+      lineItems:        _lineItems,
+      payMoney:         payMoney,
+      proceedAction:    proceedAction,
+      proceedMoney:     _getProceedMoney(action: proceedAction, holdMoney: holdMoney, payMoney: payMoney),
+      canProceed:       _getCanProceed(holdMoney, payMoney),
+      inProgress:       _status != OrderScreenCubitStatus.waitingToProceed,
+      status:           _status,
     );
   }
 
@@ -142,9 +145,36 @@ class OrderScreenCubit extends Bloc {
   }
 
   bool _getCanProceed(Money holdMoney, Money payMoney) {
-    if (_inProgress) return false;
+    if (_status != OrderScreenCubitStatus.waitingToProceed) return false;
     if (holdMoney.isZero() && payMoney.isZero()) return false;
     return true;
+  }
+
+  void process() async {
+    final request = CreateCartAndOrderRequest(lineItems: _lineItems);
+
+    _status = OrderScreenCubitStatus.creatingOrder;
+    _pushOutput();
+
+    final response = await _apiClient.getOrCreateOrderAndPay(request);
+    _onOrderCreated(response);
+  }
+
+  void _onOrderCreated(CreateCartAndOrderResponse response) {
+    if (response.payRequest == null) {
+      _onOrderComplete(); // Paid off the balance.
+    } else {
+      _navigateToPaymentGateway();
+    }
+  }
+
+  void _onOrderComplete() {
+    _status = OrderScreenCubitStatus.complete;
+    _pushOutput();
+  }
+
+  void _navigateToPaymentGateway() {
+    // TODO
   }
 
   @override
@@ -178,6 +208,7 @@ class OrderScreenCubitState {
 
   final bool canProceed;
   final bool inProgress;
+  final OrderScreenCubitStatus status;
 
   OrderScreenCubitState({
     required this.topUpMoney,
@@ -191,7 +222,15 @@ class OrderScreenCubitState {
     required this.proceedMoney,
     required this.canProceed,
     required this.inProgress,
+    required this.status,
   });
+}
+
+enum OrderScreenCubitStatus {
+  waitingToProceed,
+  creatingOrder,
+  // TODO: Payment statuses here.
+  complete,
 }
 
 enum OrderAction {

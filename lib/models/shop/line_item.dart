@@ -16,4 +16,11 @@ class LineItem {
     required this.user,
     required this.quantity,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productVariantId': productVariantId,
+      'quantity':         quantity,
+    };
+  }
 }
