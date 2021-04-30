@@ -33,6 +33,12 @@ Map<String, String> toStringStringMap(mapOrEmptyList) {
       : mapOrEmptyList.cast<String, String>();
 }
 
+Map<K, V> mapOrEmptyListToMap<K, V>(mapOrEmptyList) {
+  return (mapOrEmptyList is List)
+      ? Map<K, V>()  // Empty PHP array converted to array instead of map.
+      : mapOrEmptyList.cast<K, V>();
+}
+
 O? whereId<I, O extends WithId<I>>(List<O> objects, I id) {
   for (final object in objects) {
     if (object.id == id) {

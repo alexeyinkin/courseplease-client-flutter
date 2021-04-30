@@ -60,7 +60,7 @@ class Teacher extends User {
       middleName:             map['middleName'],
       lastName:               map['lastName'],
       sex:                    map['sex'],
-      langs:                  map['langs'],
+      langs:                  map['langs'].cast<String>(),
       userpicUrls:            toStringStringMap(map['userpicUrls']),
       location:               Location.fromMap(map['location']),
       bio:                    map['bio'] ?? '',

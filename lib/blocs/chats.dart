@@ -82,10 +82,12 @@ class ChatsCubit extends Bloc {
       id:             event.response.messageId!,
       chatId:         event.response.recipientChatId,
       senderUserId:   event.request.senderUserId,
+      type:           ChatMessageTypeEnum.content,
       dateTimeInsert: event.response.dateTimeInsert!,
       dateTimeEdit:   null,
       dateTimeRead:   null,
       body:           event.request.body,
+      params:         {},
     );
 
     onOutgoingMessage(message);
