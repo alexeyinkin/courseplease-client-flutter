@@ -122,9 +122,10 @@ class ChatMessageSendQueueCubit extends Bloc {
 
   SendChatMessageRequest _messageToSendRequest(SendingChatMessage message) {
     return SendChatMessageRequest(
-      recipientChatId: message.recipientChatId,
-      uuid: message.uuid,
-      body: message.body,
+      recipientChatId:  message.recipientChatId,
+      type:             message.type,
+      uuid:             message.uuid,
+      body:             message.body,
     );
   }
 

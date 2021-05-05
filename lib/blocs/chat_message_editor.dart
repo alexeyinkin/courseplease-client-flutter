@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/bloc.dart';
+import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/messaging/chat_message_draft.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
@@ -64,7 +65,11 @@ class ChatMessageEditorCubit extends Bloc {
   }
 
   void _fillWithDraft(ChatMessageDraft draft) {
-    _textEditingController.text = draft.body.text;
+    final body = draft.body;
+
+    if (body is ContentMessageBody) {
+      _textEditingController.text = body.text;
+    }
   }
 
   void _onTextChanged() {
@@ -129,7 +134,7 @@ class ChatMessageEditorCubit extends Bloc {
     return ChatMessageDraft(
       recipientChatId:  chatId,
       recipientUserId:  userId,
-      body: MessageBody(
+      body: ContentMessageBody(
         text: text,
       ),
     );
@@ -143,11 +148,12 @@ class ChatMessageEditorCubit extends Bloc {
       : draft.recipientChatId!;
 
     return SendingChatMessage(
-      senderUserId: senderUserId,
-      recipientChatId: chatId,
-      body: draft.body,
-      uuid: _uuidGenerator.v4(),
-      status: SendingChatMessageStatus.readyToSend,
+      senderUserId:     senderUserId,
+      recipientChatId:  chatId,
+      type:             ChatMessageTypeEnum.content,
+      body:             draft.body,
+      uuid:             _uuidGenerator.v4(),
+      status:           SendingChatMessageStatus.readyToSend,
     );
   }
 

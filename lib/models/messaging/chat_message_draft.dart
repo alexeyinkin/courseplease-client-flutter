@@ -15,7 +15,7 @@ class ChatMessageDraft {
     return ChatMessageDraft(
       recipientChatId:  map['recipientChatId'],
       recipientUserId:  map['recipientUserId'],
-      body:             MessageBody.fromMap(map['body']),
+      body:             ContentMessageBody.fromMap(map['body']),
     );
   }
 

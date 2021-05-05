@@ -1,13 +1,16 @@
 import 'package:courseplease/models/messaging/chat_message.dart';
+import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:courseplease/widgets/messaging/unknown_message_body.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 import 'chat_message_interface.dart';
+import 'content_message_body.dart';
 
 class ChatMessageBodyWidget extends StatelessWidget {
   final ChatMessageInterface message;
@@ -33,42 +36,26 @@ class ChatMessageBodyWidget extends StatelessWidget {
   }
 
   Widget _getContentWidget(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: message.body.text,
-          ),
-          _getDateSpan(context),
-        ],
-      ),
-    );
-  }
+    final body = message.body;
+    final inlineDateWidth = _getInlineDateWidth();
 
-  InlineSpan _getDateSpan(BuildContext context) {
-    final message = this.message;
-    if (message is ChatMessage && message.dateTimeEdit != null) {
-      return _getNewLineDateSpace();
+    if (body is ContentMessageBody) {
+      return ContentMessageBodyWidget(
+        message: message,
+        body: body,
+        inlineDateWidth: inlineDateWidth,
+      );
     }
 
-    return _getInlineDateSpace();
+    return UnknownMessageBodyWidget(body: body);
   }
 
-  InlineSpan _getInlineDateSpace() {
+  double _getInlineDateWidth() {
     var width = _insertDateWidth;
     if (showReadStatus != ChatMessageShowReadStatus.noPlaceholder) {
       width += _readIconWidth;
     }
-
-    return WidgetSpan(
-      child: Container(
-        width: width,
-      ),
-    );
-  }
-
-  InlineSpan _getNewLineDateSpace() {
-    return TextSpan(text: '\n');
+    return width;
   }
 
   Widget _getDateWidget() {

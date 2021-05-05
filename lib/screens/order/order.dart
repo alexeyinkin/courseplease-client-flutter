@@ -67,7 +67,7 @@ class _OrderScreenState extends State<OrderScreen> {
     _homeScreenCubit.setCurrentTab(HomeScreenTab.messages);
 
     if (state.status == OrderScreenCubitStatus.complete) {
-      Navigator.of(context).pop();
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
 

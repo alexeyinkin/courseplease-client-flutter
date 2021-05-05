@@ -1,8 +1,11 @@
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
+import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/circle_or_capsule.dart';
+import 'package:courseplease/widgets/messaging/content_message_body_preview.dart';
+import 'package:courseplease/widgets/messaging/unknown_message_body_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -77,11 +80,13 @@ class ChatMessagePreviewWidget extends StatelessWidget {
   }
 
   Widget _getContentPreview() {
-    return Text(
-      message.body.text,
-      overflow: TextOverflow.ellipsis,
-      maxLines: 2,
-    );
+    final body = message.body;
+
+    if (body is ContentMessageBody) {
+      return ContentMessageBodyPreviewWidget(body: body);
+    }
+
+    return UnknownMessageBodyPreviewWidget(body: body);
   }
 
   Widget _getUnreadCountWidget(BuildContext context) {

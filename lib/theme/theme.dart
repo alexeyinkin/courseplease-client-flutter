@@ -45,6 +45,10 @@ class AppStyle {
     fontSize: 10,
   );
 
+  static const italic = TextStyle(
+    fontStyle: FontStyle.italic,
+  );
+
   static const unreadColor = Color(0x30808080);
   static const errorColor = Color(0xFFFF0000);
   static const borderColor = Color(0x60808080);

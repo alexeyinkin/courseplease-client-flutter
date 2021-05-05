@@ -641,11 +641,13 @@ class GetServerSentEventsResponse {
 
 class SendChatMessageRequest extends RequestBody {
   final int recipientChatId;
+  final int type;
   final String uuid;
   final MessageBody body;
 
   SendChatMessageRequest({
     required this.recipientChatId,
+    required this.type,
     required this.uuid,
     required this.body,
   });
@@ -653,9 +655,10 @@ class SendChatMessageRequest extends RequestBody {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'recipientChatId': recipientChatId,
-      'uuid': uuid,
-      'body': body,
+      'recipientChatId':  recipientChatId,
+      'type':             type,
+      'uuid':             uuid,
+      'body':             body,
     };
   }
 }

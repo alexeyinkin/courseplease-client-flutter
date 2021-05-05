@@ -1,4 +1,6 @@
 import 'package:courseplease/models/user.dart';
+import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
+import 'package:get_it/get_it.dart';
 import '../interfaces.dart';
 import 'chat_message.dart';
 
@@ -17,9 +19,11 @@ class Chat implements WithId<int> {
   });
 
   factory Chat.fromMap(Map<String, dynamic> map) {
+    final denormalizer = GetIt.instance.get<ChatMessageDenormalizer>();
+
     return Chat(
       id:               map['id'],
-      lastMessage:      ChatMessage.fromMapOrNull(map['lastMessage']),
+      lastMessage:      denormalizer.denormalizeMapOrNull(map['lastMessage']),
       unreadByMeCount:  map['unreadByMeCount'],
       otherUsers:       User.fromMaps(map['otherUsers']),
     );

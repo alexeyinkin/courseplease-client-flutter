@@ -6,6 +6,7 @@ import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/blocs/realtime_factory.dart';
 import 'package:courseplease/blocs/server_sent_events.dart';
+import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/repositories/chat_message.dart';
@@ -15,6 +16,8 @@ import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/screens/home/local_blocs/home.dart';
+import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
+import 'package:courseplease/services/messaging/message_body_denormalizer_locator.dart';
 import 'package:courseplease/services/sse/abstract.dart';
 import 'package:courseplease/services/sse/chat_sse_reloader.dart';
 import 'package:courseplease/services/sse/incoming_chat_message_read_sse_listener.dart';
@@ -27,12 +30,15 @@ import 'package:get_it/get_it.dart';
 import 'chat_message_draft_persister.dart';
 import 'chat_message_queue_persister.dart';
 import 'filtered_model_list_factory.dart';
+import 'messaging/content_denormalizer.dart';
+import 'messaging/purchase_denormalizer.dart';
 import 'model_cache_factory.dart';
 import 'net/api_client.dart';
 
 void initializeServiceLocator() {
   // Keep this order. Higher level services may use lower-level services.
   _initializeNetwork();
+  _initializeChatMessageDenormalizers();
   _initializeRepositories();
   _initializeCaches();
   _initializeBlocs();
@@ -78,6 +84,26 @@ void _initializeBlocs() {
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
       ..registerSingleton<HomeScreenCubit>(HomeScreenCubit())
   ;
+}
+
+void _initializeChatMessageDenormalizers() {
+  final locator = _createMessageBodyDenormalizerLocator();
+
+  GetIt.instance
+      ..registerSingleton<MessageBodyDenormalizerLocator>(locator)
+      ..registerSingleton<ChatMessageDenormalizer>(ChatMessageDenormalizer())
+  ;
+}
+
+MessageBodyDenormalizerLocator _createMessageBodyDenormalizerLocator() {
+  final chatMessageDenormalizerLocator = MessageBodyDenormalizerLocator();
+
+  chatMessageDenormalizerLocator
+      ..add(ChatMessageTypeEnum.content, ContentMessageBodyDenormalizer())
+      ..add(ChatMessageTypeEnum.purchase, PurchaseMessageBodyDenormalizer())
+  ;
+
+  return chatMessageDenormalizerLocator;
 }
 
 void _initializeSse() {

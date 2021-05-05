@@ -87,7 +87,6 @@ class ChatsCubit extends Bloc {
       dateTimeEdit:   null,
       dateTimeRead:   null,
       body:           event.request.body,
-      params:         {},
     );
 
     onOutgoingMessage(message);

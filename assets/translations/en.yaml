@@ -211,6 +211,12 @@ TeacherScreen:
 TeachersTabWidget:
     title:          'Teachers'
 
+UnknownMessageBodyPreviewWidget:
+    text:           'Can''t show this message. Please update the app.'
+
+UnknownMessageBodyWidget:
+    text:           'This message is not supported in the current app version. Please update the app.'
+
 util:
     amountPerUnit:  '{amount} / {unit}'
 

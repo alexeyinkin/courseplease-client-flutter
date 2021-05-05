@@ -214,6 +214,12 @@ TeacherScreen:
 TeachersTabWidget:
     title:          'Преподаватели'
 
+UnknownMessageBodyPreviewWidget:
+    text:           'Обновите приложение, чтобы просмотреть это сообщение'
+
+UnknownMessageBodyWidget:
+    text:           'Это сообщение не поддерживается в текущей версии приложения. Пожалуйста, обновите приложение.'
+
 util:
     amountPerUnit:  '{amount} / {unit}'
 

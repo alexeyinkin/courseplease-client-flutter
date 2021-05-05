@@ -5,6 +5,7 @@ import 'package:courseplease/widgets/messaging/chat_message_interface.dart';
 class SendingChatMessage implements ChatMessageInterface {
   final int senderUserId;
   final int recipientChatId;
+  final int type;
   final MessageBody body;
   final String uuid;
   SendingChatMessageStatus status;
@@ -12,6 +13,7 @@ class SendingChatMessage implements ChatMessageInterface {
   SendingChatMessage({
     required this.senderUserId,
     required this.recipientChatId,
+    required this.type,
     required this.body,
     required this.uuid,
     required this.status,
@@ -31,7 +33,8 @@ class SendingChatMessage implements ChatMessageInterface {
     return SendingChatMessage(
       senderUserId:     map['senderUserId'],
       recipientChatId:  map['recipientChatId'],
-      body:             MessageBody.fromMap(map['body']),
+      type:             map['type'] ?? 1,
+      body:             ContentMessageBody.fromMap(map['body']),
       uuid:             map['uuid'],
       status:           status,
     );

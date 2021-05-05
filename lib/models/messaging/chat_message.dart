@@ -1,4 +1,4 @@
-import 'package:courseplease/utils/utils.dart';
+import 'package:courseplease/models/shop/delivery.dart';
 import 'package:courseplease/widgets/messaging/chat_message_interface.dart';
 import '../interfaces.dart';
 import 'message_body.dart';
@@ -12,7 +12,6 @@ class ChatMessage implements WithId<int>, ChatMessageInterface {
   final DateTime? dateTimeEdit;
   DateTime? dateTimeRead;
   final MessageBody body;
-  final Map<String, dynamic> params;
 
   ChatMessage({
     required this.id,
@@ -23,10 +22,12 @@ class ChatMessage implements WithId<int>, ChatMessageInterface {
     required this.dateTimeEdit,
     required this.dateTimeRead,
     required this.body,
-    required this.params,
   });
 
-  factory ChatMessage.fromMap(Map<String, dynamic> map) {
+  factory ChatMessage.fromMap(
+    Map<String, dynamic> map,
+    MessageBody body,
+  ) {
     final dateTimeEditString = map['dateTimeEdit'];
     final dateTimeReadString = map['dateTimeRead'];
 
@@ -38,13 +39,8 @@ class ChatMessage implements WithId<int>, ChatMessageInterface {
       dateTimeInsert: DateTime.parse(map['dateTimeInsert']),
       dateTimeEdit:   dateTimeEditString == null ? null : DateTime.parse(dateTimeEditString),
       dateTimeRead:   dateTimeReadString == null ? null : DateTime.parse(dateTimeReadString),
-      body:           MessageBody.fromMap(map['body']),
-      params:         mapOrEmptyListToMap<String, dynamic>(map['params']),
+      body:           body,
     );
-  }
-
-  static ChatMessage? fromMapOrNull(Map<String, dynamic>? map) {
-    return map == null ? null : ChatMessage.fromMap(map);
   }
 }
 
