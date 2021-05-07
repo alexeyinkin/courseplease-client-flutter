@@ -3,6 +3,7 @@ import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:courseplease/widgets/messaging/purchase_message_body.dart';
 import 'package:courseplease/widgets/messaging/unknown_message_body.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -44,6 +45,13 @@ class ChatMessageBodyWidget extends StatelessWidget {
         message: message,
         body: body,
         inlineDateWidth: inlineDateWidth,
+      );
+    }
+
+    if (body is PurchaseMessageBody) {
+      return PurchaseMessageBodyWidget(
+        message: message as ChatMessage,
+        body: body,
       );
     }
 

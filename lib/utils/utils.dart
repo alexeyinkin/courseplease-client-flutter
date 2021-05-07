@@ -144,6 +144,40 @@ int getDaysAfterNow(DateTime dt) {
   return DateTime(dt.year, dt.month, dt.day).difference(DateTime(now.year, now.month, now.day)).inDays;
 }
 
+String formatDetailedDate(DateTime dt, Locale locale) {
+  final parts = <String>[];
+
+  switch (getDaysAfterNow(dt)) {
+    case 1:  parts.add(tr('common.tomorrow'));  break;
+    case 0:  parts.add(tr('common.today'));     break;
+    case -1: parts.add(tr('common.yesterday')); break;
+  }
+
+  final now = DateTime.now();
+  final localeString = locale.toString();
+
+  // TODO: Localize, https://api.flutter.dev/flutter/intl/DateFormat-class.html
+  parts.add(DateFormat(DateFormat.ABBR_WEEKDAY).format(dt));
+
+  late final DateFormat format;
+
+  if (now.year == dt.year) {
+    format = DateFormat.MMMd(localeString);
+  } else {
+    format = DateFormat.yMMMd(localeString);
+  }
+  parts.add(format.format(dt));
+
+  return parts.join(', ');
+}
+
+String getTimeZoneString(DateTime dt) {
+  final offset = dt.timeZoneOffset;
+  final sign = offset.isNegative ? '−' : '+'; // Unicode minus.
+
+  return dt.timeZoneName + ', GMT' + sign + offset.inHours.toString().padLeft(2, '0') + ':' + (offset.inMinutes % 60).toString().padLeft(2, '0');
+}
+
 bool areSameDay(DateTime one, DateTime two) {
   return one.day == two.day && one.month == two.month && one.year == two.year;
 }

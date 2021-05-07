@@ -2,14 +2,19 @@ import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class ProductSubjectWidget extends StatefulWidget {
   final int id;
+  final String? translationKey;
+  final String? translationPlaceholder;
 
   ProductSubjectWidget({
     required this.id,
+    this.translationKey,
+    this.translationPlaceholder,
   });
 
   @override
@@ -39,6 +44,18 @@ class _ProductSubjectWidgetState extends State<ProductSubjectWidget> {
     if (state == null || state.objects.isEmpty) {
       return SmallCircularProgressIndicator(scale: .5);
     }
-    return Text(state.objects.first.title);
+
+    return Text(_getText(state));
+  }
+
+  String _getText(ModelListByIdsState<ProductSubject> state) {
+    if (widget.translationKey == null || widget.translationPlaceholder == null) {
+      return state.objects.first.title;
+    }
+
+    return tr(
+      widget.translationKey!,
+      namedArgs: {widget.translationPlaceholder!: state.objects.first.title},
+    );
   }
 }

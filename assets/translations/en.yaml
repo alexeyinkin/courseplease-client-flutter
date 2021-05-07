@@ -190,6 +190,26 @@ OrderScreen:
 PickedTabWidget:
     iconTitle:      'Picked'
 
+PurchaseMessageBodyWidget:
+    purchased:          'Purchased'
+    oneHourLessonIn:    '1 hour lesson in {subject}'
+    schedule:           'Schedule'
+    reschedule:         'Reschedule'
+    refund:             'Refund'
+
+ScheduleScreen:
+    title:
+        schedule:       'Offer Your Time Slots'
+        reschedule:     'Offer Your New Time Slots'
+    buttons:
+        offer:
+            schedule:   'Offer'
+            reschedule: 'Offer Change'
+    willConfirm:        '{name} will confirm.'
+    earliestToStart:    'Earliest to start:'
+    latestToFinish:     'Latest to finish:'
+    timeIsLocal:        'Time is local to you: {timezone}'
+
 SelectChatPlaceholderWidget:
     text:           'Select a Chat'
 

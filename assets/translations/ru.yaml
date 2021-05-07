@@ -110,13 +110,13 @@ InstagramStatusCubit:
 
 LearningLessonsTabWidget:
     title:          'Уроки'
-
-LearningTabWidget:
-    iconTitle:      'Обучение'
     toSchedule:     'Назначьте время'
     upcoming:       'Запланированы'
     toApprove:      'Утвердите'
-    past:           'Прошедшие'
+    resolved:       'Прошедшие и отменённые'
+
+LearningTabWidget:
+    iconTitle:      'Обучение'
 
 LessonsTabWidget:
     title:          'Уроки'
@@ -192,6 +192,26 @@ OrderScreen:
 
 PickedTabWidget:
     iconTitle:      'Избранное'
+
+PurchaseMessageBodyWidget:
+    purchased:          'Покупка'
+    oneHourLessonIn:    '{subject}, урок 1 час'
+    schedule:           'Назначить время'
+    reschedule:         'Изменить время'
+    refund:             'Возврат'
+
+ScheduleScreen:
+    title:
+        schedule:       'Предложите время'
+        reschedule:     'Предложите новое время'
+    buttons:
+        offer:
+            schedule:   'Предложить'
+            reschedule: 'Предложить изменение'
+    willConfirm:        '{name} подтвердит.'
+    earliestToStart:    'Самое раннее начало:'
+    latestToFinish:     'Самый поздний конец:'
+    timeIsLocal:        'Время в вашем часовом поясе: {timezone}'
 
 SelectChatPlaceholderWidget:
     text:           'Выберите чат'
