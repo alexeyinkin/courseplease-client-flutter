@@ -5,6 +5,7 @@ import 'package:courseplease/models/user.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/circle_or_capsule.dart';
 import 'package:courseplease/widgets/messaging/content_message_body_preview.dart';
+import 'package:courseplease/widgets/messaging/purchase_message_body_preview.dart';
 import 'package:courseplease/widgets/messaging/unknown_message_body_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -84,6 +85,10 @@ class ChatMessagePreviewWidget extends StatelessWidget {
 
     if (body is ContentMessageBody) {
       return ContentMessageBodyPreviewWidget(body: body);
+    }
+
+    if (body is PurchaseMessageBody) {
+      return PurchaseMessageBodyPreviewWidget(body: body);
     }
 
     return UnknownMessageBodyPreviewWidget(body: body);

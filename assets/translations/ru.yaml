@@ -193,6 +193,9 @@ OrderScreen:
 PickedTabWidget:
     iconTitle:      'Избранное'
 
+PurchaseMessageBodyPreviewWidget:
+    text:               'Покупка, {subject}, урок 1 час, {format}.'
+
 PurchaseMessageBodyWidget:
     purchased:          'Покупка'
     oneHourLessonIn:    '{subject}, урок 1 час'

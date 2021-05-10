@@ -1,12 +1,11 @@
 import 'package:courseplease/blocs/models_by_ids.dart';
-import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/widgets/product_subjects_by_ids_builder.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
-class ProductSubjectWidget extends StatefulWidget {
+class ProductSubjectWidget extends StatelessWidget {
   final int id;
   final String? translationKey;
   final String? translationPlaceholder;
@@ -18,29 +17,14 @@ class ProductSubjectWidget extends StatefulWidget {
   });
 
   @override
-  _ProductSubjectWidgetState createState() => _ProductSubjectWidgetState();
-}
-
-class _ProductSubjectWidgetState extends State<ProductSubjectWidget> {
-  final _productSubjectsByIdsBloc = ModelListByIdsBloc<int, ProductSubject>(
-    modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    _productSubjectsByIdsBloc.setCurrentIds([widget.id]);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ModelListByIdsState<ProductSubject>>(
-      stream: _productSubjectsByIdsBloc.outState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data),
+    return ProductSubjectsByIdsBuilder(
+      ids: [id],
+      builder: _buildWithState,
     );
   }
 
-  Widget _buildWithState(ModelListByIdsState<ProductSubject>? state) {
+  Widget _buildWithState(BuildContext context, ModelListByIdsState<ProductSubject>? state) {
     if (state == null || state.objects.isEmpty) {
       return SmallCircularProgressIndicator(scale: .5);
     }
@@ -49,13 +33,13 @@ class _ProductSubjectWidgetState extends State<ProductSubjectWidget> {
   }
 
   String _getText(ModelListByIdsState<ProductSubject> state) {
-    if (widget.translationKey == null || widget.translationPlaceholder == null) {
+    if (translationKey == null || translationPlaceholder == null) {
       return state.objects.first.title;
     }
 
     return tr(
-      widget.translationKey!,
-      namedArgs: {widget.translationPlaceholder!: state.objects.first.title},
+      translationKey!,
+      namedArgs: {translationPlaceholder!: state.objects.first.title},
     );
   }
 }

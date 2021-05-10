@@ -190,6 +190,9 @@ OrderScreen:
 PickedTabWidget:
     iconTitle:      'Picked'
 
+PurchaseMessageBodyPreviewWidget:
+    text:               'Purchased 1 hour lesson in {subject}, {format}.'
+
 PurchaseMessageBodyWidget:
     purchased:          'Purchased'
     oneHourLessonIn:    '1 hour lesson in {subject}'
