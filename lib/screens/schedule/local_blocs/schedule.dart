@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/models/shop/delivery.dart';
+import 'package:courseplease/models/user.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
@@ -10,6 +11,8 @@ class ScheduleScreenCubit extends Bloc {
   Stream<ScheduleScreenCubitState> get outState => _outStateController.stream;
 
   final Delivery delivery;
+  final User? anotherUser;
+
   late DateTime _earliestToStart;
   late DateTime _latestToFinish;
   final _earliestToStartHourController = TextEditingController();
@@ -18,6 +21,7 @@ class ScheduleScreenCubit extends Bloc {
 
   ScheduleScreenCubit({
     required this.delivery,
+    required this.anotherUser,
   }) {
     _earliestToStart = _getInitialEarliestToStart();
     _latestToFinish = _getInitialLatestToFinish(_earliestToStart);
@@ -199,10 +203,23 @@ class ScheduleScreenCubit extends Bloc {
   }
 
   String _getDialogTitle() {
+    return (anotherUser == null)
+        ? _getDialogTitleWithoutName()
+        : _getDialogTitleWithName();
+  }
+
+  String _getDialogTitleWithoutName() {
     final key = (delivery.dateTimeStart == null)
         ? 'ScheduleScreen.title.schedule'
         : 'ScheduleScreen.title.reschedule';
     return tr(key);
+  }
+
+  String _getDialogTitleWithName() {
+    final key = (delivery.dateTimeStart == null)
+        ? 'ScheduleScreen.titleWithName.schedule'
+        : 'ScheduleScreen.titleWithName.reschedule';
+    return tr(key, namedArgs: {'name': anotherUser!.firstName});
   }
 
   String _getButtonTitle() {

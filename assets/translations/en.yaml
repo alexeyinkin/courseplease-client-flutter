@@ -201,11 +201,13 @@ ScheduleScreen:
     title:
         schedule:       'Offer Your Time Slots'
         reschedule:     'Offer Your New Time Slots'
+    titleWithName:
+        schedule:       'Offer time slots, {name} will confirm'
+        reschedule:     'Offer new time, {name} will confirm'
     buttons:
         offer:
             schedule:   'Offer'
             reschedule: 'Offer Change'
-    willConfirm:        '{name} will confirm.'
     earliestToStart:    'Earliest to start:'
     latestToFinish:     'Latest to finish:'
     timeIsLocal:        'Time is local to you: {timezone}'

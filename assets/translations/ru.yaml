@@ -204,11 +204,13 @@ ScheduleScreen:
     title:
         schedule:       'Предложите время'
         reschedule:     'Предложите новое время'
+    titleWithName:
+        schedule:       'Предложите время, {name} подтвердит'
+        reschedule:     'Предложите новое время, {name} подтвердит'
     buttons:
         offer:
             schedule:   'Предложить'
             reschedule: 'Предложить изменение'
-    willConfirm:        '{name} подтвердит.'
     earliestToStart:    'Самое раннее начало:'
     latestToFinish:     'Самый поздний конец:'
     timeIsLocal:        'Время в вашем часовом поясе: {timezone}'

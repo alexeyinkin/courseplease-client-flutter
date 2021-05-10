@@ -37,6 +37,7 @@ class ScheduleScreen extends StatefulWidget {
   @override
   _ScheduleScreenState createState() => _ScheduleScreenState(
     delivery: delivery,
+    anotherUser: anotherUser,
   );
 }
 
@@ -45,9 +46,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   _ScheduleScreenState({
     required Delivery delivery,
+    required User? anotherUser,
   }) :
       _scheduleScreenCubit = ScheduleScreenCubit(
         delivery: delivery,
+        anotherUser: anotherUser,
       )
   ;
 
@@ -86,7 +89,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ..._getWillConfirmText(),
         SmallPadding(),
         _getDateRow(state),
         SmallPadding(),
@@ -103,19 +105,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ),
       ],
     );
-  }
-
-  List<Widget> _getWillConfirmText() {
-    if (widget.anotherUser == null) return [];
-
-    return [
-      Text(
-        tr(
-          'ScheduleScreen.willConfirm',
-          namedArgs: {'name': widget.anotherUser!.firstName},
-        ),
-      ),
-    ];
   }
 
   Widget _getDateRow(ScheduleScreenCubitState state) {
