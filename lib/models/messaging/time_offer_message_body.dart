@@ -1,9 +1,11 @@
 import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/utils/utils.dart';
 
+import 'time_slot.dart';
+
 class TimeOfferMessageBody extends MessageBody {
   final int deliveryId;
-  final List<DateTime> slots;
+  final List<TimeSlot> slots;
 
   TimeOfferMessageBody({
     required this.deliveryId,
@@ -11,22 +13,16 @@ class TimeOfferMessageBody extends MessageBody {
   });
 
   factory TimeOfferMessageBody.fromMap(Map<String, dynamic> map) {
-    final slots = dateTimesToLocal(
-      stringsToDateTimes(
-        map['slots'].cast<String>(),
-      ),
-    );
-
     return TimeOfferMessageBody(
       deliveryId: map['deliveryId'],
-      slots:      slots,
+      slots:      TimeSlot.fromMaps(map['slots']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'deliveryId': deliveryId,
-      'slots':      dateTimesToStrings(slots),
+      'slots':      TimeSlot.toMaps(slots),
     };
   }
 }

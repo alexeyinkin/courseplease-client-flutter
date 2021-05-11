@@ -4,6 +4,7 @@ import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
+import 'package:courseplease/models/messaging/time_slot.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/models/shop/delivery.dart';
@@ -309,13 +310,18 @@ class ScheduleScreenCubit extends Bloc {
     );
   }
 
-  List<DateTime> _getSlots() {
-    final slots = <DateTime>[];
+  List<TimeSlot> _getSlots() {
+    final slots = <TimeSlot>[];
     final latestToStart = _latestToFinish.subtract(slotDuration);
     var dt = _earliestToStart;
 
     while (!dt.isAfter(latestToStart)) {
-      slots.add(dt);
+      slots.add(
+        TimeSlot(
+          dateTime: dt,
+          enabled: true,
+        ),
+      );
       dt = dt.add(slotDuration);
     }
 

@@ -1,3 +1,4 @@
+import 'package:courseplease/models/messaging/time_slot.dart';
 import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/pad.dart';
@@ -18,7 +19,7 @@ class TimeOfferMessageBodyWidget extends StatefulWidget {
 class _TimeOfferMessageBodyWidgetState extends State<TimeOfferMessageBodyWidget> {
   @override
   Widget build(BuildContext context) {
-    final groupedSlots = groupByDates(widget.body.slots);
+    final groupedSlots = TimeSlot.groupByDates(widget.body.slots);
     final children = <Widget>[];
 
     for (final dateTimes in groupedSlots) {
@@ -35,7 +36,7 @@ class _TimeOfferMessageBodyWidgetState extends State<TimeOfferMessageBodyWidget>
 }
 
 class _DateSlotsWidget extends StatefulWidget {
-  final List<DateTime> slots;
+  final List<TimeSlot> slots;
 
   _DateSlotsWidget({
     required this.slots,
@@ -50,9 +51,9 @@ class _DateSlotsWidgetState extends State<_DateSlotsWidget> {
   Widget build(BuildContext context) {
     final children = <Widget>[];
 
-    for (final dt in widget.slots) {
+    for (final slot in widget.slots) {
       children.add(
-        _DateSlotWidget(slot: dt),
+        _DateSlotWidget(slot: slot),
       );
     }
 
@@ -63,7 +64,7 @@ class _DateSlotsWidgetState extends State<_DateSlotsWidget> {
           tr(
             'DateSlotsWidget.title',
             namedArgs: {
-              'date': formatDetailedDate(widget.slots[0], requireLocale(context)),
+              'date': formatDetailedDate(widget.slots[0].dateTime, requireLocale(context)),
             },
           ),
         ),
@@ -77,7 +78,7 @@ class _DateSlotsWidgetState extends State<_DateSlotsWidget> {
 }
 
 class _DateSlotWidget extends StatefulWidget {
-  final DateTime slot;
+  final TimeSlot slot;
 
   _DateSlotWidget({
     required this.slot,
@@ -93,13 +94,14 @@ class _DateSlotWidgetState extends State<_DateSlotWidget> {
     return ElevatedButton(
       onPressed: _isEnabled() ? _onPressed : null,
       child: Text(
-        formatTime(widget.slot, requireLocale(context)),
+        formatTime(widget.slot.dateTime, requireLocale(context)),
       ),
     );
   }
 
   bool _isEnabled() {
-    return widget.slot.isAfter(DateTime.now());
+    if (!widget.slot.enabled) return false;
+    return widget.slot.dateTime.isAfter(DateTime.now());
   }
 
   void _onPressed() {
