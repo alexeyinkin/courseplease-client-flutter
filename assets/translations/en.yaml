@@ -19,6 +19,9 @@ ContactStatusCubit:
     lastSynchronized:       'Last synchronized {durationAgo}'
     synchronizingNow:       'Synchronizing now'
 
+DateSlotsWidget:
+    title:              'How about {date}?'
+
 EditImageListScreen:
 
     actions:
@@ -235,6 +238,12 @@ TeacherScreen:
 
 TeachersTabWidget:
     title:          'Teachers'
+
+TimeOfferMessageBodyPreviewWidget:
+    text:
+        single:     'How about {date} at {time}?'
+        multiple:   'How about {date} at {time}? +{nMore} more.'
+    expired:        'Offered time, but it expired. Offer yours?'
 
 UnknownMessageBodyPreviewWidget:
     text:           'Can''t show this message. Please update the app.'

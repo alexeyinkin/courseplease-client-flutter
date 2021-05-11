@@ -32,6 +32,7 @@ import 'chat_message_queue_persister.dart';
 import 'filtered_model_list_factory.dart';
 import 'messaging/content_denormalizer.dart';
 import 'messaging/purchase_denormalizer.dart';
+import 'messaging/time_offer_denormalizer.dart';
 import 'model_cache_factory.dart';
 import 'net/api_client.dart';
 
@@ -101,6 +102,7 @@ MessageBodyDenormalizerLocator _createMessageBodyDenormalizerLocator() {
   chatMessageDenormalizerLocator
       ..add(ChatMessageTypeEnum.content, ContentMessageBodyDenormalizer())
       ..add(ChatMessageTypeEnum.purchase, PurchaseMessageBodyDenormalizer())
+      ..add(ChatMessageTypeEnum.offerLessonStaticTime, TimeOfferMessageBodyDenormalizer())
   ;
 
   return chatMessageDenormalizerLocator;

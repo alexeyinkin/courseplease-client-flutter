@@ -1,26 +1,45 @@
+import 'dart:async';
 import 'dart:math';
+import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/bloc.dart';
+import 'package:courseplease/blocs/chats.dart';
+import 'package:courseplease/models/messaging/chat_message.dart';
+import 'package:courseplease/models/messaging/sending_chat_message.dart';
+import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/models/shop/delivery.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:uuid/uuid.dart';
 
 class ScheduleScreenCubit extends Bloc {
+  final _chatsCubit = GetIt.instance.get<ChatsCubit>();
+  final _uuidGenerator = Uuid();
+  final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  late StreamSubscription _authenticationCubitSubscription;
+
   final _outStateController = BehaviorSubject<ScheduleScreenCubitState>();
   Stream<ScheduleScreenCubitState> get outState => _outStateController.stream;
 
   final Delivery delivery;
+  final int chatId;
   final User? anotherUser;
 
+  User? _senderUser;
   late DateTime _earliestToStart;
   late DateTime _latestToFinish;
   final _earliestToStartHourController = TextEditingController();
   final _minuteController = TextEditingController();
   final _latestToFinishHourController = TextEditingController();
+  var _status = ScheduleScreenCubitStatus.waitingToProceed;
+
+  static const slotDuration = Duration(hours: 1);
 
   ScheduleScreenCubit({
     required this.delivery,
+    required this.chatId,
     required this.anotherUser,
   }) {
     _earliestToStart = _getInitialEarliestToStart();
@@ -33,6 +52,10 @@ class ScheduleScreenCubit extends Bloc {
     _earliestToStartHourController.addListener(_onEarliestToStartHourChange);
     _minuteController.addListener(_onMinuteChange);
     _latestToFinishHourController.addListener(_onLatestToFinishHourChange);
+
+    _authenticationCubitSubscription = _authenticationCubit.outState.listen(
+      _onAuthenticationChange,
+    );
 
     _pushOutput();
   }
@@ -183,6 +206,11 @@ class ScheduleScreenCubit extends Bloc {
     return sameDay.add(Duration(days: 1));
   }
 
+  void _onAuthenticationChange(AuthenticationState state) {
+    _senderUser = state.data?.user;
+    _pushOutput();
+  }
+
   void _pushOutput() {
     final state = _createState();
     _outStateController.sink.add(state);
@@ -199,6 +227,7 @@ class ScheduleScreenCubit extends Bloc {
       latestToFinishHourController:     _latestToFinishHourController,
       canProceed:                       _canProceed(),
       inProgress:                       false,
+      status:                           _status,
     );
   }
 
@@ -230,6 +259,7 @@ class ScheduleScreenCubit extends Bloc {
   }
 
   bool _canProceed() {
+    if (_senderUser == null) return false;
     return _earliestToStart.isAfter(DateTime.now());
   }
 
@@ -256,11 +286,50 @@ class ScheduleScreenCubit extends Bloc {
   }
 
   void proceed() {
-    // TODO
+    if (!_canProceed()) return;
+
+    final message = _createMessage();
+    _chatsCubit.send(message);
+    _closeDialog();
+  }
+
+  SendingChatMessage _createMessage() {
+    final body = TimeOfferMessageBody(
+      deliveryId: delivery.id,
+      slots: _getSlots(),
+    );
+
+    return SendingChatMessage(
+      senderUserId:     _senderUser!.id,
+      recipientChatId:  chatId,
+      type:             ChatMessageTypeEnum.offerLessonStaticTime,
+      body:             body,
+      uuid:             _uuidGenerator.v4(),
+      status:           SendingChatMessageStatus.readyToSend,
+    );
+  }
+
+  List<DateTime> _getSlots() {
+    final slots = <DateTime>[];
+    final latestToStart = _latestToFinish.subtract(slotDuration);
+    var dt = _earliestToStart;
+
+    while (!dt.isAfter(latestToStart)) {
+      slots.add(dt);
+      dt = dt.add(slotDuration);
+    }
+
+    return slots;
+  }
+
+  void _closeDialog() {
+    _status = ScheduleScreenCubitStatus.complete;
+    _pushOutput();
   }
 
   @override
   void dispose() {
+    _authenticationCubitSubscription.cancel();
     _latestToFinishHourController.dispose();
     _minuteController.dispose();
     _earliestToStartHourController.dispose();
@@ -278,6 +347,7 @@ class ScheduleScreenCubitState {
   final TextEditingController latestToFinishHourController;
   final bool canProceed;
   final bool inProgress;
+  final ScheduleScreenCubitStatus status;
 
   ScheduleScreenCubitState({
     required this.dialogTitle,
@@ -289,5 +359,11 @@ class ScheduleScreenCubitState {
     required this.latestToFinishHourController,
     required this.canProceed,
     required this.inProgress,
+    required this.status,
   });
+}
+
+enum ScheduleScreenCubitStatus{
+  waitingToProceed,
+  complete,
 }

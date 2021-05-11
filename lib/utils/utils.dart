@@ -279,4 +279,64 @@ List<I> idsList<I>(List<WithId<I>> objects) {
   return result;
 }
 
+List<String> dateTimesToStrings(List<DateTime> dateTimes) {
+  final result = <String>[];
+
+  for (final dt in dateTimes) {
+    result.add(dt.toUtc().toIso8601String());
+  }
+
+  return result;
+}
+
+List<DateTime> stringsToDateTimes(List<String> strings) {
+  final result = <DateTime>[];
+
+  for (final str in strings) {
+    final parsed = DateTime.tryParse(str);
+
+    if (parsed == null) {
+      print('Failed to parse DateTime: ' + str);
+      continue;
+    }
+
+    result.add(parsed);
+  }
+
+  return result;
+}
+
+List<List<DateTime>> groupByDates(List<DateTime> dateTimes) {
+  final result = <List<DateTime>>[];
+  var year = 0;
+  var month = 0;
+  var day = 0;
+  List<DateTime> currentGroup = <DateTime>[];
+
+  for (final dt in dateTimes) {
+    if (dt.year == year && dt.month == month && dt.day == day) {
+      currentGroup.add(dt);
+      continue;
+    }
+
+    currentGroup = [dt];
+    result.add(currentGroup);
+    year = dt.year;
+    month = dt.month;
+    day = dt.day;
+  }
+
+  return result;
+}
+
+List<DateTime> dateTimesToLocal(List<DateTime> dateTimes) {
+  final result = <DateTime>[];
+
+  for (final dt in dateTimes) {
+    result.add(dt.toLocal());
+  }
+
+  return result;
+}
+
 Type typeOf<T>() => T;

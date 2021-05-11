@@ -79,7 +79,7 @@ class AuthenticationBloc extends Bloc{
     final state = jsonEncode(stateAssoc);
     final uri = provider.getOauthUrl(state);
 
-    final signInResult = SignInWebviewScreen.show(
+    await SignInWebviewScreen.show(
       context: context,
       uri: uri,
     );

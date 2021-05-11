@@ -79,7 +79,8 @@ class _PurchaseMessageBodyWidgetState extends State<PurchaseMessageBodyWidget> {
   }
 
   void _onSchedulePressed() {
-    final chat = _chatList.getObject(widget.message.chatId);
+    final chatId = widget.message.chatId;
+    final chat = _chatList.getObject(chatId);
     final anotherUser = (chat != null && chat.otherUsers.length == 1)
         ? chat.otherUsers[0]
         : null;
@@ -87,6 +88,7 @@ class _PurchaseMessageBodyWidgetState extends State<PurchaseMessageBodyWidget> {
     ScheduleScreen.show(
       context:      context,
       delivery:     widget.body.delivery,
+      chatId:       chatId,
       anotherUser:  anotherUser,
     );
   }

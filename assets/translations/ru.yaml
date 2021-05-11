@@ -19,6 +19,9 @@ ContactStatusCubit:
     lastSynchronized:       'Последняя выгрузка {durationAgo}'
     synchronizingNow:       'Идёт выгрузка'
 
+DateSlotsWidget:
+    title:              'Как насчёт {date}?'
+
 EditImageListScreen:
 
     actions:
@@ -238,6 +241,12 @@ TeacherScreen:
 
 TeachersTabWidget:
     title:          'Преподаватели'
+
+TimeOfferMessageBodyPreviewWidget:
+    text:
+        single:     'Как насчёт {date} в {time}?'
+        multiple:   'Как насчёт {date} в {time}? +{nMore} ещё.'
+    expired:        'Предложил время, но оно прошло. Предложите новое?'
 
 UnknownMessageBodyPreviewWidget:
     text:           'Обновите приложение, чтобы просмотреть это сообщение'

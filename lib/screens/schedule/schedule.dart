@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:courseplease/models/shop/delivery.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/screens/schedule/local_blocs/schedule.dart';
@@ -12,47 +14,69 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class ScheduleScreen extends StatefulWidget {
-  final Delivery delivery;
-  final User? anotherUser;
+  final Delivery  delivery;
+  final int       chatId;
+  final User?     anotherUser;
 
   ScheduleScreen({
     required this.delivery,
+    required this.chatId,
     required this.anotherUser,
   });
 
   static void show({
     required BuildContext context,
     required Delivery delivery,
+    required int chatId,
     required User? anotherUser,
   }) {
     showDialog(
       context: context,
       builder: (context) => ScheduleScreen(
-        delivery: delivery,
-        anotherUser: anotherUser,
+        delivery:     delivery,
+        chatId:       chatId,
+        anotherUser:  anotherUser,
       ),
     );
   }
 
   @override
   _ScheduleScreenState createState() => _ScheduleScreenState(
-    delivery: delivery,
-    anotherUser: anotherUser,
+    delivery:     delivery,
+    chatId:       chatId,
+    anotherUser:  anotherUser,
   );
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   final ScheduleScreenCubit _scheduleScreenCubit;
+  late final StreamSubscription _scheduleScreenCubitSubscription;
 
   _ScheduleScreenState({
     required Delivery delivery,
+    required int chatId,
     required User? anotherUser,
   }) :
       _scheduleScreenCubit = ScheduleScreenCubit(
-        delivery: delivery,
-        anotherUser: anotherUser,
+        delivery:     delivery,
+        chatId:       chatId,
+        anotherUser:  anotherUser,
       )
-  ;
+  {
+    _scheduleScreenCubitSubscription = _scheduleScreenCubit.outState.listen(
+      _onCubitStateChange,
+    );
+  }
+
+  void _onCubitStateChange(ScheduleScreenCubitState state) {
+    if (state.status == ScheduleScreenCubitStatus.complete) {
+      _close();
+    }
+  }
+
+  void _close() {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,6 +233,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   void dispose() {
+    _scheduleScreenCubitSubscription.cancel();
     _scheduleScreenCubit.dispose();
     super.dispose();
   }
