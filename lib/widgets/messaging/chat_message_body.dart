@@ -1,10 +1,12 @@
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
+import 'package:courseplease/models/messaging/time_approve_message_body.dart';
 import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/messaging/purchase_message_body.dart';
+import 'package:courseplease/widgets/messaging/time_approve_message_body.dart';
 import 'package:courseplease/widgets/messaging/time_offer_message_body.dart';
 import 'package:courseplease/widgets/messaging/unknown_message_body.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
@@ -12,7 +14,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
-import 'chat_message_interface.dart';
+import '../../models/messaging/chat_message_interface.dart';
 import 'content_message_body.dart';
 
 class ChatMessageBodyWidget extends StatelessWidget {
@@ -59,6 +61,13 @@ class ChatMessageBodyWidget extends StatelessWidget {
 
     if (body is TimeOfferMessageBody) {
       return TimeOfferMessageBodyWidget(
+        message: message,
+        body: body,
+      );
+    }
+
+    if (body is TimeApproveMessageBody) {
+      return TimeApproveMessageBodyWidget(
         body: body,
       );
     }

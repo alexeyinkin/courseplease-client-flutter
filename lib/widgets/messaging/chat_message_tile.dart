@@ -8,7 +8,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../abstract_object_tile.dart';
 import 'chat_message_body.dart';
-import 'chat_message_interface.dart';
+import '../../models/messaging/chat_message_interface.dart';
 
 class ChatMessageTile extends AbstractObjectTile<int, ChatMessage, ChatMessageFilter> {
   final User currentUser;

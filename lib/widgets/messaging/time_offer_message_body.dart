@@ -1,14 +1,22 @@
+import 'package:courseplease/blocs/chat_message_factory.dart';
+import 'package:courseplease/models/messaging/chat_message.dart';
+import 'package:courseplease/models/messaging/time_approve_message_body.dart';
 import 'package:courseplease/models/messaging/time_slot.dart';
 import 'package:courseplease/models/messaging/time_offer_message_body.dart';
+import 'package:courseplease/screens/message/message.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:courseplease/models/messaging/chat_message_interface.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class TimeOfferMessageBodyWidget extends StatefulWidget {
+  final ChatMessageInterface message;
   final TimeOfferMessageBody body;
 
   TimeOfferMessageBodyWidget({
+    required this.message,
     required this.body,
   });
 
@@ -19,12 +27,15 @@ class TimeOfferMessageBodyWidget extends StatefulWidget {
 class _TimeOfferMessageBodyWidgetState extends State<TimeOfferMessageBodyWidget> {
   @override
   Widget build(BuildContext context) {
-    final groupedSlots = TimeSlot.groupByDates(widget.body.slots);
+    final groupedSlots = TimeSlot.groupByLocalDates(widget.body.slots);
     final children = <Widget>[];
 
     for (final dateTimes in groupedSlots) {
       children.add(
-        _DateSlotsWidget(slots: dateTimes),
+        _DateSlotsWidget(
+          message: widget.message,
+          slots: dateTimes,
+        ),
       );
     }
 
@@ -36,24 +47,29 @@ class _TimeOfferMessageBodyWidgetState extends State<TimeOfferMessageBodyWidget>
 }
 
 class _DateSlotsWidget extends StatefulWidget {
+  final ChatMessageInterface message;
   final List<TimeSlot> slots;
 
   _DateSlotsWidget({
+    required this.message,
     required this.slots,
   });
 
   @override
-  _DateSlotsWidgetState createState() => _DateSlotsWidgetState();
+  _TimeSlotsWidgetState createState() => _TimeSlotsWidgetState();
 }
 
-class _DateSlotsWidgetState extends State<_DateSlotsWidget> {
+class _TimeSlotsWidgetState extends State<_DateSlotsWidget> {
   @override
   Widget build(BuildContext context) {
     final children = <Widget>[];
 
     for (final slot in widget.slots) {
       children.add(
-        _DateSlotWidget(slot: slot),
+        _TimeSlotWidget(
+          message: widget.message,
+          slot: slot,
+        ),
       );
     }
 
@@ -62,7 +78,7 @@ class _DateSlotsWidgetState extends State<_DateSlotsWidget> {
       children: [
         Text(
           tr(
-            'DateSlotsWidget.title',
+            'TimeSlotsWidget.title',
             namedArgs: {
               'date': formatDetailedDate(widget.slots[0].dateTime, requireLocale(context)),
             },
@@ -77,24 +93,26 @@ class _DateSlotsWidgetState extends State<_DateSlotsWidget> {
   }
 }
 
-class _DateSlotWidget extends StatefulWidget {
+class _TimeSlotWidget extends StatefulWidget {
+  final ChatMessageInterface message;
   final TimeSlot slot;
 
-  _DateSlotWidget({
+  _TimeSlotWidget({
+    required this.message,
     required this.slot,
   });
 
   @override
-  _DateSlotWidgetState createState() => _DateSlotWidgetState();
+  _TimeSlotWidgetState createState() => _TimeSlotWidgetState();
 }
 
-class _DateSlotWidgetState extends State<_DateSlotWidget> {
+class _TimeSlotWidgetState extends State<_TimeSlotWidget> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: _isEnabled() ? _onPressed : null,
       child: Text(
-        formatTime(widget.slot.dateTime, requireLocale(context)),
+        formatTime(widget.slot.dateTime.toLocal(), requireLocale(context)),
       ),
     );
   }
@@ -104,7 +122,51 @@ class _DateSlotWidgetState extends State<_DateSlotWidget> {
     return widget.slot.dateTime.isAfter(DateTime.now());
   }
 
-  void _onPressed() {
-    // TODO
+  void _onPressed() async {
+    final dt = widget.slot.dateTime.toLocal();
+    final locale = requireLocale(context);
+    final result = await showMessageScreen<ReserveResult>(
+      context: context,
+      title: Text(
+        tr(
+          'TimeSlotWidget.message',
+          namedArgs: {
+            'date': formatDetailedDate(dt, locale),
+            'time': formatTime(dt, locale),
+          }
+        ),
+      ),
+      buttons: [
+        MessageScreenButton<ReserveResult>(
+          text: tr('TimeSlotWidget.buttons.cancel'),
+          value: ReserveResult.cancel,
+        ),
+        MessageScreenButton<ReserveResult>(
+          text: tr('TimeSlotWidget.buttons.reserve'),
+          value: ReserveResult.reserve,
+        ),
+      ],
+    );
+
+    if (result == ReserveResult.reserve) _reserve();
   }
+
+  void _reserve() {
+    final factory = GetIt.instance.get<ChatMessageFactory>();
+    final body = TimeApproveMessageBody(
+      deliveryId: (widget.message.body as TimeOfferMessageBody).deliveryId,
+      dateTime: widget.slot.dateTime,
+    );
+
+    factory.send(
+      chatId: widget.message.chatId,
+      type: ChatMessageTypeEnum.timeApprove,
+      body: body,
+    );
+  }
+}
+
+enum ReserveResult {
+  cancel,
+  reserve,
 }

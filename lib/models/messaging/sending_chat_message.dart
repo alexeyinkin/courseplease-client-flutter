@@ -1,18 +1,18 @@
 import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/utils/utils.dart';
-import 'package:courseplease/widgets/messaging/chat_message_interface.dart';
+import 'package:courseplease/models/messaging/chat_message_interface.dart';
 
 class SendingChatMessage implements ChatMessageInterface {
+  final int chatId;
   final int senderUserId;
-  final int recipientChatId;
   final int type;
   final MessageBody body;
   final String uuid;
   SendingChatMessageStatus status;
 
   SendingChatMessage({
+    required this.chatId,
     required this.senderUserId,
-    required this.recipientChatId,
     required this.type,
     required this.body,
     required this.uuid,
@@ -31,8 +31,8 @@ class SendingChatMessage implements ChatMessageInterface {
     }
 
     return SendingChatMessage(
+      chatId:           map['chatId'],
       senderUserId:     map['senderUserId'],
-      recipientChatId:  map['recipientChatId'],
       type:             map['type'] ?? 1,
       body:             ContentMessageBody.fromMap(map['body']),
       uuid:             map['uuid'],
@@ -42,11 +42,11 @@ class SendingChatMessage implements ChatMessageInterface {
 
   Map<String, dynamic> toJson() {
     return {
-      'senderUserId':     senderUserId,
-      'recipientChatId':  recipientChatId,
-      'body':             body,
-      'uuid':             uuid,
-      'status':           enumValueAfterDot(status),
+      'chatId':       chatId,
+      'senderUserId': senderUserId,
+      'body':         body,
+      'uuid':         uuid,
+      'status':       enumValueAfterDot(status),
     };
   }
 }

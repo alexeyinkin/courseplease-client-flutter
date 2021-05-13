@@ -73,14 +73,14 @@ class ChatsCubit extends Bloc {
     } else {
       // Server debounced the duplicate request, the message is sent already.
       refreshChats();
-      refreshChatMessages(event.response.recipientChatId);
+      refreshChatMessages(event.response.chatId);
     }
   }
 
   void _addSentMessageFromQueue(ChatMessageSentEvent event) {
     final message = ChatMessage(
       id:             event.response.messageId!,
-      chatId:         event.response.recipientChatId,
+      chatId:         event.response.chatId,
       senderUserId:   event.request.senderUserId,
       type:           ChatMessageTypeEnum.content,
       dateTimeInsert: event.response.dateTimeInsert!,
@@ -143,6 +143,11 @@ class ChatsCubit extends Bloc {
   }
 
   void _prependMessageToLists(ChatMessage message) {
+    if (_shouldRefreshOnPrepend(message)) {
+      refreshChatMessages(message.chatId);
+      return;
+    }
+
     final messageLists = _cache.getModelListsByObjectAndFilterTypes<int, ChatMessage, ChatMessageFilter>();
 
     for (final list in messageLists.values) {
@@ -150,6 +155,15 @@ class ChatsCubit extends Bloc {
       if (list.containsId(message.id)) continue;
       list.addToBeginning([message]);
     }
+  }
+
+  bool _shouldRefreshOnPrepend(ChatMessage message) {
+    switch (message.type) {
+      case ChatMessageTypeEnum.timeApprove:
+        return true;
+    }
+
+    return false;
   }
 
   void send(SendingChatMessage message) {

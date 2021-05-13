@@ -9,6 +9,7 @@ common:
     today:              'Сегодня'
     yesterday:          'Вчера'
     typeHere:           'Введите сообщение...'
+    dateTime:           '{date} в {time}'
 
 ChatMessageBodyWidget:
     edited:             'отредактировано {when}'
@@ -18,9 +19,6 @@ ContactStatusCubit:
     errorLastTried:         'Ошибка, последняя попытка {durationAgo}'
     lastSynchronized:       'Последняя выгрузка {durationAgo}'
     synchronizingNow:       'Идёт выгрузка'
-
-DateSlotsWidget:
-    title:              'Как насчёт {date}?'
 
 EditImageListScreen:
 
@@ -242,11 +240,26 @@ TeacherScreen:
 TeachersTabWidget:
     title:          'Преподаватели'
 
+TimeApproveMessageBodyPreviewWidget:
+    text:           'Подтверждаю {date} в {time}.'
+
+TimeApproveMessageBodyWidget:
+    text:           'Подтверждаю {date} в {time}. Время в вашем часовом поясе: {timezone}.'
+
 TimeOfferMessageBodyPreviewWidget:
     text:
         single:     'Как насчёт {date} в {time}?'
         multiple:   'Как насчёт {date} в {time}? +{nMore} ещё.'
     expired:        'Предложил время, но оно прошло. Предложите новое?'
+
+TimeSlotsWidget:
+    title:              'Как насчёт {date}?'
+
+TimeSlotWidget:
+    message:            'Забронировать {date} в {time}?'
+    buttons:
+        reserve:        'Забронировать'
+        cancel:         'Отмена'
 
 UnknownMessageBodyPreviewWidget:
     text:           'Обновите приложение, чтобы просмотреть это сообщение'

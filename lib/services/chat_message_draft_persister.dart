@@ -34,7 +34,7 @@ class ChatMessageDraftPersisterService {
   }
 
   Future<void> saveDraft(ChatMessageDraft draft) {
-    final chatId = draft.recipientChatId;
+    final chatId = draft.chatId;
     final userId = draft.recipientUserId;
 
     if (chatId != null && userId == null) {

@@ -5,6 +5,7 @@ import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/screens/schedule/schedule.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
+import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/product_subject.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -54,8 +55,21 @@ class _PurchaseMessageBodyWidgetState extends State<PurchaseMessageBodyWidget> {
   }
 
   List<Widget> _getDateWidgets() {
-    if (widget.body.delivery.dateTimeStart == null) return [];
-    return [Text('...')]; // TODO
+    final dateTimeStart = widget.body.delivery.dateTimeStart?.toLocal();
+    if (dateTimeStart == null) return [];
+
+    final locale = requireLocale(context);
+    return [
+      Text(
+        tr(
+          'common.dateTime',
+          namedArgs: {
+            'date': formatDetailedDate(dateTimeStart, locale),
+            'time': formatTime(dateTimeStart, locale),
+          },
+        ),
+      ),
+    ];
   }
 
   List<Widget> _getScheduleButtons() {

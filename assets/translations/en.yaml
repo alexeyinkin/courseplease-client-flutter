@@ -9,6 +9,7 @@ common:
     today:              'Today'
     yesterday:          'Yesterday'
     typeHere:           'Type here...'
+    dateTime:           '{date} at {time}'
 
 ChatMessageBodyWidget:
     edited:             'edited {when}'
@@ -18,9 +19,6 @@ ContactStatusCubit:
     errorLastTried:         'Error, last tried {durationAgo}'
     lastSynchronized:       'Last synchronized {durationAgo}'
     synchronizingNow:       'Synchronizing now'
-
-DateSlotsWidget:
-    title:              'How about {date}?'
 
 EditImageListScreen:
 
@@ -239,11 +237,26 @@ TeacherScreen:
 TeachersTabWidget:
     title:          'Teachers'
 
+TimeApproveMessageBodyPreviewWidget:
+    text:           'Confirmed {date} at {time}.'
+
+TimeApproveMessageBodyWidget:
+    text:           'Confirmed {date} at {time}. Time is local to you: {timezone}.'
+
 TimeOfferMessageBodyPreviewWidget:
     text:
         single:     'How about {date} at {time}?'
         multiple:   'How about {date} at {time}? +{nMore} more.'
     expired:        'Offered time, but it expired. Offer yours?'
+
+TimeSlotsWidget:
+    title:              'How about {date}?'
+
+TimeSlotWidget:
+    message:            'Reserve {date} at {time}?'
+    buttons:
+        reserve:        'Reserve'
+        cancel:         'Cancel'
 
 UnknownMessageBodyPreviewWidget:
     text:           'Can''t show this message. Please update the app.'

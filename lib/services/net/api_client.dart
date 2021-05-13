@@ -640,13 +640,13 @@ class GetServerSentEventsResponse {
 }
 
 class SendChatMessageRequest extends RequestBody {
-  final int recipientChatId;
+  final int chatId;
   final int type;
   final String uuid;
   final MessageBody body;
 
   SendChatMessageRequest({
-    required this.recipientChatId,
+    required this.chatId,
     required this.type,
     required this.uuid,
     required this.body,
@@ -655,30 +655,30 @@ class SendChatMessageRequest extends RequestBody {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'recipientChatId':  recipientChatId,
-      'type':             type,
-      'uuid':             uuid,
-      'body':             body,
+      'chatId': chatId,
+      'type':   type,
+      'uuid':   uuid,
+      'body':   body,
     };
   }
 }
 
 class SendChatMessageResponse {
-  final int? messageId;
+  final int?      messageId;
   final DateTime? dateTimeInsert;
-  final int recipientChatId;
+  final int       chatId;
 
   SendChatMessageResponse({
     required this.messageId,
     required this.dateTimeInsert,
-    required this.recipientChatId,
+    required this.chatId,
   });
 
   factory SendChatMessageResponse.fromMap(Map<String, dynamic> map) {
     return SendChatMessageResponse(
-      messageId: map['messageId'],
+      messageId:      map['messageId'],
       dateTimeInsert: DateTime.tryParse(map['dateTimeInsert'] ?? ''),
-      recipientChatId: map['recipientChatId'],
+      chatId:         map['chatId'],
     );
   }
 }

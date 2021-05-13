@@ -122,10 +122,10 @@ class ChatMessageSendQueueCubit extends Bloc {
 
   SendChatMessageRequest _messageToSendRequest(SendingChatMessage message) {
     return SendChatMessageRequest(
-      recipientChatId:  message.recipientChatId,
-      type:             message.type,
-      uuid:             message.uuid,
-      body:             message.body,
+      chatId: message.chatId,
+      type:   message.type,
+      uuid:   message.uuid,
+      body:   message.body,
     );
   }
 
@@ -142,7 +142,7 @@ class ChatMessageSendQueueCubit extends Bloc {
 
   void _failAllToSameRecipient(SendingChatMessage targetMessage) {
     for (final message in _queue) {
-      if (message.recipientChatId != targetMessage.recipientChatId) continue;
+      if (message.chatId != targetMessage.chatId) continue;
       message.status = SendingChatMessageStatus.failed;
     }
   }

@@ -45,7 +45,7 @@ class ChatMessageSendQueueViewCubit extends Bloc {
     final result = <SendingChatMessage>[];
 
     for (final message in state.queue) {
-      if (message.recipientChatId != chatId) {
+      if (message.chatId != chatId) {
         continue;
       }
       result.add(message);

@@ -2,7 +2,7 @@ import 'package:bubble/bubble.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/widgets/messaging/chat_message_body.dart';
 import 'package:flutter/material.dart';
-import 'chat_message_interface.dart';
+import '../../models/messaging/chat_message_interface.dart';
 
 class MyChatMessageBubble extends StatelessWidget {
   final ChatMessageInterface message;

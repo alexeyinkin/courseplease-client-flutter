@@ -1,12 +1,14 @@
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
+import 'package:courseplease/models/messaging/time_approve_message_body.dart';
 import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/circle_or_capsule.dart';
 import 'package:courseplease/widgets/messaging/content_message_body_preview.dart';
 import 'package:courseplease/widgets/messaging/purchase_message_body_preview.dart';
+import 'package:courseplease/widgets/messaging/time_approve_message_body_preview.dart';
 import 'package:courseplease/widgets/messaging/time_offer_message_body_preview.dart';
 import 'package:courseplease/widgets/messaging/unknown_message_body_preview.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +97,10 @@ class ChatMessagePreviewWidget extends StatelessWidget {
 
     if (body is TimeOfferMessageBody) {
       return TimeOfferMessageBodyPreviewWidget(body: body);
+    }
+
+    if (body is TimeApproveMessageBody) {
+      return TimeApproveMessageBodyPreviewWidget(body: body);
     }
 
     return UnknownMessageBodyPreviewWidget(body: body);

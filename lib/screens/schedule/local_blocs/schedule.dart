@@ -301,12 +301,12 @@ class ScheduleScreenCubit extends Bloc {
     );
 
     return SendingChatMessage(
-      senderUserId:     _senderUser!.id,
-      recipientChatId:  chatId,
-      type:             ChatMessageTypeEnum.offerLessonStaticTime,
-      body:             body,
-      uuid:             _uuidGenerator.v4(),
-      status:           SendingChatMessageStatus.readyToSend,
+      senderUserId: _senderUser!.id,
+      chatId:       chatId,
+      type:         ChatMessageTypeEnum.timeOffer,
+      body:         body,
+      uuid:         _uuidGenerator.v4(),
+      status:       SendingChatMessageStatus.readyToSend,
     );
   }
 

@@ -132,7 +132,7 @@ class ChatMessageEditorCubit extends Bloc {
     if (text == '') return null;
 
     return ChatMessageDraft(
-      recipientChatId:  chatId,
+      chatId:           chatId,
       recipientUserId:  userId,
       body: ContentMessageBody(
         text: text,
@@ -143,17 +143,17 @@ class ChatMessageEditorCubit extends Bloc {
   Future<SendingChatMessage> _draftToSendingMessage(
     ChatMessageDraft draft,
   ) async {
-    final chatId = (draft.recipientChatId == null)
+    final chatId = (draft.chatId == null)
       ? await _getChatId()
-      : draft.recipientChatId!;
+      : draft.chatId!;
 
     return SendingChatMessage(
-      senderUserId:     senderUserId,
-      recipientChatId:  chatId,
-      type:             ChatMessageTypeEnum.content,
-      body:             draft.body,
-      uuid:             _uuidGenerator.v4(),
-      status:           SendingChatMessageStatus.readyToSend,
+      senderUserId: senderUserId,
+      chatId:       chatId,
+      type:         ChatMessageTypeEnum.content,
+      body:         draft.body,
+      uuid:         _uuidGenerator.v4(),
+      status:       SendingChatMessageStatus.readyToSend,
     );
   }
 

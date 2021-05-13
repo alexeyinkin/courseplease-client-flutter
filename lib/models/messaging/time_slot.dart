@@ -36,7 +36,7 @@ class TimeSlot {
         .cast<Map<String, dynamic>>();
   }
 
-  static List<List<TimeSlot>> groupByDates(List<TimeSlot> slots) {
+  static List<List<TimeSlot>> groupByLocalDates(List<TimeSlot> slots) {
     final result = <List<TimeSlot>>[];
     var year = 0;
     var month = 0;
@@ -44,7 +44,7 @@ class TimeSlot {
     List<TimeSlot> currentGroup = <TimeSlot>[];
 
     for (final slot in slots) {
-      final dt = slot.dateTime;
+      final dt = slot.dateTime.toLocal();
       if (dt.year == year && dt.month == month && dt.day == day) {
         currentGroup.add(slot);
         continue;

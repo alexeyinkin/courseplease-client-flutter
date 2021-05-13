@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/ably.dart';
 import 'package:courseplease/blocs/authentication.dart';
+import 'package:courseplease/blocs/chat_message_factory.dart';
 import 'package:courseplease/blocs/chat_message_send_queue.dart';
 import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/blocs/contact_status.dart';
@@ -32,6 +33,7 @@ import 'chat_message_queue_persister.dart';
 import 'filtered_model_list_factory.dart';
 import 'messaging/content_denormalizer.dart';
 import 'messaging/purchase_denormalizer.dart';
+import 'messaging/time_approve_denormalizer.dart';
 import 'messaging/time_offer_denormalizer.dart';
 import 'model_cache_factory.dart';
 import 'net/api_client.dart';
@@ -82,6 +84,7 @@ void _initializeBlocs() {
       ..registerSingleton<ChatMessageQueuePersisterService>(ChatMessageQueuePersisterService())
       ..registerSingleton<ChatMessageSendQueueCubit>(ChatMessageSendQueueCubit())
       ..registerSingleton<ChatsCubit>(ChatsCubit())
+      ..registerSingleton<ChatMessageFactory>(ChatMessageFactory())
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
       ..registerSingleton<HomeScreenCubit>(HomeScreenCubit())
   ;
@@ -102,7 +105,8 @@ MessageBodyDenormalizerLocator _createMessageBodyDenormalizerLocator() {
   chatMessageDenormalizerLocator
       ..add(ChatMessageTypeEnum.content, ContentMessageBodyDenormalizer())
       ..add(ChatMessageTypeEnum.purchase, PurchaseMessageBodyDenormalizer())
-      ..add(ChatMessageTypeEnum.offerLessonStaticTime, TimeOfferMessageBodyDenormalizer())
+      ..add(ChatMessageTypeEnum.timeOffer, TimeOfferMessageBodyDenormalizer())
+      ..add(ChatMessageTypeEnum.timeApprove, TimeApproveMessageBodyDenormalizer())
   ;
 
   return chatMessageDenormalizerLocator;
