@@ -39,7 +39,9 @@ Map<K, V> mapOrEmptyListToMap<K, V>(mapOrEmptyList) {
       : mapOrEmptyList.cast<K, V>();
 }
 
-O? whereId<I, O extends WithId<I>>(List<O> objects, I id) {
+O? whereId<I, O extends WithId<I>>(List<O> objects, I? id) {
+  if (id == null) return null;
+
   for (final object in objects) {
     if (object.id == id) {
       return object;
