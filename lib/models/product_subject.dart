@@ -1,6 +1,9 @@
 import 'interfaces.dart';
 
-class ProductSubject implements WithIdTitle<int>, WithIdChildrenParent<int, ProductSubject, ProductSubject> {
+class ProductSubject implements
+    WithIdTitle<int>,
+    WithIdTitleChildrenParent<int, ProductSubject, ProductSubject>
+{
   final int id;
   final String title;
   final bool allowsImagePortfolio;
