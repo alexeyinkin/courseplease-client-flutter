@@ -259,6 +259,9 @@ TimeOfferMessageBodyPreviewWidget:
         multiple:   'How about {date} at {time}? +{nMore} more.'
     expired:        'Offered time, but it expired. Offer yours?'
 
+TimeOfferMessageBodyWidget:
+    tapToRecall:    'Tap a slot to recall.'
+
 TimeSlotsWidget:
     title:              'How about {date}?'
 

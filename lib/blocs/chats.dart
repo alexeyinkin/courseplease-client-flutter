@@ -166,6 +166,34 @@ class ChatsCubit extends Bloc {
     return false;
   }
 
+  void onMessageEdit(ChatMessage message) async {
+    _replaceMessageInChats(message);
+    _replaceMessageInLists(message);
+  }
+
+  void _replaceMessageInChats(ChatMessage message) async {
+    final chat = _getChatFromAnyList(message.chatId);
+    if (chat == null) return;
+    if (chat.lastMessage?.id != message.id) return;
+
+    final updatedChat = chat.withLastMessage(message);
+    final chatLists = _cache.getModelListsByObjectAndFilterTypes<int, Chat, ChatFilter>();
+
+    for (final list in chatLists.values) {
+      // TODO: Check if chat matches the filter. Not an issue so far as ChatFilter has no fields.
+      list.replaceIfExist([updatedChat]);
+    }
+  }
+
+  void _replaceMessageInLists(ChatMessage message) async {
+    final messageLists = _cache.getModelListsByObjectAndFilterTypes<int, ChatMessage, ChatMessageFilter>();
+
+    for (final list in messageLists.values) {
+      if (list.filter.chatId != message.chatId) continue;
+      list.replaceIfExist([message]);
+    }
+  }
+
   void send(SendingChatMessage message) {
     _sendQueueCubit.enqueue(message);
   }

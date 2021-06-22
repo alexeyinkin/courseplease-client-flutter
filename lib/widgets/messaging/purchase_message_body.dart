@@ -76,8 +76,8 @@ class _PurchaseMessageBodyWidgetState extends State<PurchaseMessageBodyWidget> {
     final dateTimeStart = widget.body.delivery.dateTimeStart;
 
     if (dateTimeStart != null) {
-      final diff = DateTime.now().difference(dateTimeStart);
-      if (diff.inSeconds < 0) return [];
+      final timeLeft = dateTimeStart.difference(DateTime.now());
+      if (timeLeft.inSeconds < 0) return [];
     }
 
     final key = (dateTimeStart == null)

@@ -171,6 +171,21 @@ class NetworkFilteredModelListBloc<
     _pushOutput();
   }
 
+  void replaceIfExist(List<O> objects) {
+    bool changed = false;
+
+    for (final obj in objects) {
+      if (!_objectsByIds.containsKey(obj.id)) continue;
+
+      final index = _objects.indexWhere((old) => old.id == obj.id);
+      _objects[index] = obj;
+      _objectsByIds[obj.id] = obj;
+      changed = true;
+    }
+
+    if (changed) _pushOutput();
+  }
+
   void onExternalObjectChange() {
     _pushOutput();
   }

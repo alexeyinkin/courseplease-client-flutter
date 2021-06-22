@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
+import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/models/network_request_info.dart';
 import 'package:courseplease/models/shop/line_item.dart';
 import 'package:courseplease/models/shop/money_account.dart';
@@ -159,6 +160,16 @@ class ApiClient {
       body: request,
     );
     return CreateCartAndOrderResponse.fromMap(mapResponse.data);
+  }
+
+  Future<void> updateTimeSlots(
+    TimeOfferMessageBody request,
+  ) async {
+    await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/lms/update-slots',
+      body: request,
+    );
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {

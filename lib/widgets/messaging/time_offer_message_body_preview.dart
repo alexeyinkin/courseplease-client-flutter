@@ -31,20 +31,18 @@ class TimeOfferMessageBodyPreviewWidget extends StatelessWidget {
   }
 
   TimeSlot? _getFirstEnabledSlot() {
-    final now = DateTime.now();
-
     for (final slot in body.slots) {
-      if (!slot.enabled) continue;
-      if (!slot.dateTime.isAfter(now)) continue;
-      return slot;
+      if (slot.isEnabled()) return slot;
     }
 
     return null;
   }
 
   String _getUnexpiredText(BuildContext context, TimeSlot slot) {
+    final enabledSlots = body.getEnabledSlots();
+
     final locale = requireLocale(context);
-    final keyTail = (body.slots.length > 1)
+    final keyTail = (enabledSlots.length > 1)
         ? 'multiple'
         : 'single';
 
@@ -53,7 +51,7 @@ class TimeOfferMessageBodyPreviewWidget extends StatelessWidget {
       namedArgs: {
         'date': formatDetailedDate(slot.dateTime, locale),
         'time': formatTime(slot.dateTime, locale),
-        'nMore': (body.slots.length - 1).toString(),
+        'nMore': (enabledSlots.length - 1).toString(),
       },
     );
   }

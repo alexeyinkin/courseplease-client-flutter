@@ -8,7 +8,6 @@ import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/blocs/realtime_factory.dart';
 import 'package:courseplease/blocs/server_sent_events.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
-import 'package:courseplease/models/sse/server_sent_event.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/repositories/chat_message.dart';
 import 'package:courseplease/repositories/delivery.dart';
@@ -20,6 +19,7 @@ import 'package:courseplease/screens/home/local_blocs/home.dart';
 import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
 import 'package:courseplease/services/messaging/message_body_denormalizer_locator.dart';
 import 'package:courseplease/services/sse/abstract.dart';
+import 'package:courseplease/services/sse/chat_message_edit_sse_listener.dart';
 import 'package:courseplease/services/sse/chat_sse_reloader.dart';
 import 'package:courseplease/services/sse/incoming_chat_message_read_sse_listener.dart';
 import 'package:courseplease/services/sse/incoming_chat_message_sse_listener.dart';
@@ -27,6 +27,7 @@ import 'package:courseplease/services/sse/outgoing_chat_message_read_sse_listene
 import 'package:courseplease/services/sse/outgoing_chat_message_sse_listener.dart';
 import 'package:courseplease/services/sse/sse_listener_locator.dart';
 import 'package:courseplease/services/sse/sse_reloader_locator.dart';
+import 'package:courseplease/widgets/messaging/enum/sse_type.dart';
 import 'package:get_it/get_it.dart';
 import 'chat_message_draft_persister.dart';
 import 'chat_message_queue_persister.dart';
@@ -136,6 +137,7 @@ SseListenerLocator _createSseListenerLocator() {
       ..add(SseTypeEnum.outgoingChatMessage, OutgoingChatMessageSseListener())
       ..add(SseTypeEnum.incomingChatMessageRead, IncomingChatMessageReadSseListener())
       ..add(SseTypeEnum.outgoingChatMessageRead, OutgoingChatMessageReadSseListener())
+      ..add(SseTypeEnum.chatMessageEdit, ChatMessageEditSseListener())
   ;
 
   return sseListenerLocator;

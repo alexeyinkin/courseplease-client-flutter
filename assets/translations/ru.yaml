@@ -262,6 +262,9 @@ TimeOfferMessageBodyPreviewWidget:
         multiple:   'Как насчёт {date} в {time}? +{nMore} ещё.'
     expired:        'Предложил время, но оно прошло. Предложите новое?'
 
+TimeOfferMessageBodyWidget:
+    tapToRecall:    'Нажмите время, чтобы отменить предложение.'
+
 TimeSlotsWidget:
     title:              'Как насчёт {date}?'
 

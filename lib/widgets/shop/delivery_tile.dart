@@ -1,5 +1,6 @@
 import 'package:courseplease/models/filters/delivery.dart';
 import 'package:courseplease/models/shop/delivery.dart';
+import 'package:courseplease/models/user.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/chat_button.dart';
 import 'package:courseplease/widgets/user.dart';
@@ -21,11 +22,13 @@ class DeliveryTile extends AbstractObjectTile<int, Delivery, DeliveryFilter> {
 class _DeliveryTileState extends AbstractObjectTileState<int, Delivery, DeliveryFilter, DeliveryTile> {
   @override
   Widget build(BuildContext context) {
+    final user = _getUser();
+
     return ListTile(
       title: Flex(
         direction: Axis.horizontal,
         children: [
-          UserpicAndNameWidget(user: widget.object.author),
+          UserpicAndNameWidget(user: user),
           Opacity(
             opacity: .5,
             child: DotPadding(),
@@ -54,9 +57,19 @@ class _DeliveryTileState extends AbstractObjectTileState<int, Delivery, Delivery
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ChatButton(user: widget.object.author),
+          ChatButton(user: user),
         ],
       ),
     );
+  }
+
+  User _getUser() {
+    switch (widget.filter.viewAs) {
+      case DeliveryViewAs.customer:
+        return widget.object.author;
+      case DeliveryViewAs.author:
+        return widget.object.customer;
+    }
+    throw Exception('Unknown viewAs: ' + widget.filter.viewAs.toString());
   }
 }

@@ -29,6 +29,15 @@ class Chat implements WithId<int> {
     );
   }
 
+  Chat withLastMessage(ChatMessage editedMessage) {
+    return Chat(
+      id:               id,
+      lastMessage:      editedMessage,
+      unreadByMeCount:  unreadByMeCount,
+      otherUsers:       otherUsers,
+    );
+  }
+
   Chat withLastIncomingMessage(ChatMessage newMessage) {
     if ((lastMessage?.id ?? 0) >= newMessage.id) return this;
 

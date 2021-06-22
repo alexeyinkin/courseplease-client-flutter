@@ -341,4 +341,7 @@ List<DateTime> dateTimesToLocal(List<DateTime> dateTimes) {
   return result;
 }
 
+bool isInPast(DateTime dt) => dt.isBefore(DateTime.now());
+bool isInFuture(DateTime dt) => dt.isAfter(DateTime.now());
+
 Type typeOf<T>() => T;

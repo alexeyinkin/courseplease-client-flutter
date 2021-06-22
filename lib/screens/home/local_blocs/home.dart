@@ -10,6 +10,7 @@ class HomeScreenCubit extends Bloc {
   static const _tabsInOrder = [
     HomeScreenTab.explore,
     HomeScreenTab.learn,
+    HomeScreenTab.teach,
     HomeScreenTab.messages,
     HomeScreenTab.profile,
   ];
@@ -53,6 +54,7 @@ class HomeScreenCubitState {
 enum HomeScreenTab {
   explore,
   learn,
+  teach,
   messages,
   profile,
 }

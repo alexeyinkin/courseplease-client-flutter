@@ -319,7 +319,7 @@ class ScheduleScreenCubit extends Bloc {
       slots.add(
         TimeSlot(
           dateTime: dt,
-          enabled: true,
+          status: TimeSlotStatus.availableUntilExpire,
         ),
       );
       dt = dt.add(slotDuration);
