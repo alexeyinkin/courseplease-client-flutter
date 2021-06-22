@@ -1,15 +1,14 @@
+import 'package:courseplease/screens/home/local_widgets/teaching_lessons_tab.dart';
 import 'package:courseplease/widgets/auth/authenticated_or_not.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'learning_lessons_tab.dart';
-
-class LearningTabWidget extends StatefulWidget {
+class TeachingTabWidget extends StatefulWidget {
   @override
-  _LearningTabWidgetState createState() => _LearningTabWidgetState();
+  _TeachingTabWidgetState createState() => _TeachingTabWidgetState();
 }
 
-class _LearningTabWidgetState extends State<LearningTabWidget> {
+class _TeachingTabWidgetState extends State<TeachingTabWidget> {
   @override
   Widget build(BuildContext context) {
     return AuthenticatedOrNotWidget(
@@ -26,13 +25,13 @@ class _LearningTabWidgetState extends State<LearningTabWidget> {
           // Uncomment this when courses are introduced.
           // TabBar(
           //   tabs: [
-          //     Tab(text: tr('LearningLessonsTabWidget.title')),
+          //     Tab(text: tr('TeachingLessonsTabWidget.title')),
           //   ],
           // ),
           Expanded(
             child: TabBarView(
               children: [
-                LearningLessonsTabWidget(),
+                TeachingLessonsTabWidget(),
               ],
             ),
           ),

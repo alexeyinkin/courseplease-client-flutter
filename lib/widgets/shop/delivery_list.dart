@@ -4,21 +4,21 @@ import 'package:courseplease/repositories/delivery.dart';
 import 'package:flutter/material.dart';
 
 import '../abstract_object_tile.dart';
-import '../object_linear_list_full_view.dart';
+import '../object_linear_list_view.dart';
 import 'delivery_tile.dart';
 
 class DeliveryListWidget extends StatelessWidget {
   final DeliveryFilter filter;
-  final Widget titleIfNotEmpty;
+  final Widget? titleIfNotEmpty;
 
   DeliveryListWidget({
     required this.filter,
-    required this.titleIfNotEmpty,
+    this.titleIfNotEmpty,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ObjectLinearListFullView<int, Delivery, DeliveryFilter, DeliveryRepository, DeliveryTile>(
+    return ObjectLinearListView<int, Delivery, DeliveryFilter, DeliveryRepository, DeliveryTile>(
       filter: filter,
       tileFactory: _createTile,
       scrollDirection: Axis.vertical,

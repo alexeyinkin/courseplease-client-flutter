@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'abstract.dart';
 
 class DeliveryRepository extends AbstractFilteredRepository<int, Delivery, DeliveryFilter> {
-  static const _entitiesName = 'shop/deliveries-as-customer';
+  static const _entitiesName = 'shop/deliveries';
   final _client = GetIt.instance.get<ApiClient>();
 
   @override

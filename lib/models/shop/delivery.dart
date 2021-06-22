@@ -13,6 +13,7 @@ class Delivery extends WithId<int> {
   final int productSubjectId;
   final ProductVariantFormatWithPrice productVariantFormatWithPrice;
   final User author;
+  final User customer;
 
   Delivery({
     required this.id,
@@ -23,6 +24,7 @@ class Delivery extends WithId<int> {
     required this.productSubjectId,
     required this.productVariantFormatWithPrice,
     required this.author,
+    required this.customer,
   });
 
   factory Delivery.fromMap(Map<String, dynamic> map) {
@@ -35,6 +37,7 @@ class Delivery extends WithId<int> {
       productSubjectId:               map['productSubjectId'],
       productVariantFormatWithPrice:  ProductVariantFormatWithPrice.fromMap(map['productVariantFormatWithPrice']),
       author:                         User.fromMap(map['author']),
+      customer:                       User.fromMap(map['customer']),
     );
   }
 }

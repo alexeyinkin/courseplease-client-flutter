@@ -1,10 +1,12 @@
 import 'package:courseplease/blocs/server_sent_events.dart';
+import 'package:courseplease/screens/home/local_widgets/teaching_tab.dart';
 import 'package:courseplease/widgets/messages_icon.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/screens/home/local_widgets/explore_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/messages_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/profile_tab.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get_it/get_it.dart';
 import 'local_blocs/home.dart';
 import 'local_widgets/learning_tab.dart';
@@ -16,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _homeScreenCubit = GetIt.instance.get<HomeScreenCubit>();
-  final _pollEventsButtonIndex = 4;
+  final _pollEventsButtonIndex = 5;
   final _pageStorageBucket = PageStorageBucket();
 
   @override
@@ -39,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             ExploreTab(),
             LearningTabWidget(),
+            TeachingTabWidget(),
             MessagesTab(),
             ProfileTab(),
           ],
@@ -58,6 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: tr('LearningTabWidget.iconTitle'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FlutterIcons.teach_mco),
+            label: tr('TeachingTabWidget.iconTitle'),
           ),
           BottomNavigationBarItem(
             icon: MessagesIconWidget(),

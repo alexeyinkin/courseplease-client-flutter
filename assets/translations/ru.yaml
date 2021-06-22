@@ -240,6 +240,16 @@ TeacherScreen:
 TeachersTabWidget:
     title:          'Преподаватели'
 
+TeachingLessonsTabWidget:
+    title:              'Уроки'
+    toSchedule:         'Назначьте время'
+    upcoming:           'Запланированы'
+    awaitingApproval:   'Клиент утвердит'
+    resolved:           'Прошедшие и отменённые'
+
+TeachingTabWidget:
+    iconTitle:          'Teach'
+
 TimeApproveMessageBodyPreviewWidget:
     text:           'Подтверждаю {date} в {time}.'
 

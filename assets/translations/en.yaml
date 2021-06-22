@@ -237,6 +237,16 @@ TeacherScreen:
 TeachersTabWidget:
     title:          'Teachers'
 
+TeachingLessonsTabWidget:
+    title:              'Lessons'
+    toSchedule:         'To Schedule'
+    upcoming:           'Upcoming'
+    awaitingApproval:   'Awaiting Approval'
+    resolved:           'Past and Cancelled'
+
+TeachingTabWidget:
+    iconTitle:          'Teach'
+
 TimeApproveMessageBodyPreviewWidget:
     text:           'Confirmed {date} at {time}.'
 
