@@ -27,6 +27,11 @@ enum DeliveryViewAs {
   customer,
 }
 
+class DeliveryStatus {
+  static const choosing = 100;
+  static const agreed = 200;
+}
+
 enum DeliveryStatusAlias {
   toSchedule,
   upcoming,

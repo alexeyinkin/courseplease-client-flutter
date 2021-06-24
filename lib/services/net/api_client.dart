@@ -172,6 +172,16 @@ class ApiClient {
     );
   }
 
+  Future<void> reviewDelivery(
+    ReviewDeliveryRequest request,
+  ) async {
+    await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/shop/review-delivery',
+      body: request,
+    );
+  }
+
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
       await sendRequest(
@@ -741,5 +751,49 @@ class CreateCartAndOrderResponse {
       paymentStatus: map['paymentStatus'],
       payRequest: NetworkRequestInfo.fromMapOrNull(map['payRequest']),
     );
+  }
+}
+
+class ReviewDeliveryRequest extends RequestBody {
+  final int deliveryId;
+  final String action;
+  final ReviewBodyRequest? body;
+
+  ReviewDeliveryRequest({
+    required this.deliveryId,
+    required this.action,
+    this.body,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'deliveryId': deliveryId,
+      'action': action,
+      'body': body,
+    };
+  }
+}
+
+enum ReviewDeliveryAction {
+  approve,
+  dispute,
+}
+
+class ReviewBodyRequest extends RequestBody {
+  final double rating;
+  final String text;
+
+  ReviewBodyRequest({
+    required this.rating,
+    required this.text,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'rating': rating,
+      'text': text,
+    };
   }
 }

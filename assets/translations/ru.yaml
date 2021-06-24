@@ -20,6 +20,9 @@ ContactStatusCubit:
     lastSynchronized:       'Последняя выгрузка {durationAgo}'
     synchronizingNow:       'Идёт выгрузка'
 
+DeliveryProblemButton:
+    text:               'Проблемы?'
+
 EditImageListScreen:
 
     actions:
@@ -203,6 +206,22 @@ PurchaseMessageBodyWidget:
     schedule:           'Назначить время'
     reschedule:         'Изменить время'
     refund:             'Возврат'
+
+RateDeliveryButton:
+    rate:               'Оценить'
+
+ReviewDeliveryAsCustomerScreen:
+    title:              'Оценить урок: {teacherFirstName}'
+    reviewHint:         'Напишите что-нибудь полезное для тех, кто принимает решение'
+    submit:             'Отправить'
+    rating0:            'Нажмите на звезду'
+    rating1:            'Ужасно'
+    rating2:            'Плохо'
+    rating3:            'Ожидал большего'
+    rating4:            'Хорошо'
+    rating5:            'Великолепно!'
+    reportTitle:        'Скажите нам по секрету:'
+    reportHint:         'Что именно было не так?'
 
 ScheduleScreen:
     title:

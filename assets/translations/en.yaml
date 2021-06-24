@@ -20,6 +20,9 @@ ContactStatusCubit:
     lastSynchronized:       'Last synchronized {durationAgo}'
     synchronizingNow:       'Synchronizing now'
 
+DeliveryProblemButton:
+    text:               'Problem?'
+
 EditImageListScreen:
 
     actions:
@@ -200,6 +203,22 @@ PurchaseMessageBodyWidget:
     schedule:           'Schedule'
     reschedule:         'Reschedule'
     refund:             'Refund'
+
+RateDeliveryButton:
+    rate:               'Rate'
+
+ReviewDeliveryAsCustomerScreen:
+    title:              'Review the Lesson by {teacherFirstName}'
+    reviewHint:         'Type something helpful to the public'
+    submit:             'Submit'
+    rating0:            'Tap a star'
+    rating1:            'Terrible'
+    rating2:            'Bad'
+    rating3:            'Expected more'
+    rating4:            'Good'
+    rating5:            'Excellent!'
+    reportTitle:        'Tell us privately:'
+    reportHint:         'What exactly went wrong?'
 
 ScheduleScreen:
     title:
