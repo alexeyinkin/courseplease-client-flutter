@@ -211,17 +211,21 @@ RateDeliveryButton:
     rate:               'Оценить'
 
 ReviewDeliveryAsCustomerScreen:
-    title:              'Оценить урок: {teacherFirstName}'
-    reviewHint:         'Напишите что-нибудь полезное для тех, кто принимает решение'
-    submit:             'Отправить'
-    rating0:            'Нажмите на звезду'
-    rating1:            'Ужасно'
-    rating2:            'Плохо'
-    rating3:            'Ожидал большего'
-    rating4:            'Хорошо'
-    rating5:            'Великолепно!'
-    reportTitle:        'Скажите нам по секрету:'
-    reportHint:         'Что именно было не так?'
+    reviewTitle:            'Оценить урок: {teacherFirstName}'
+    problemTitle:           'Сообщить о проблеме на уроке: {teacherFirstName}'
+    reviewHint:             'Напишите что-нибудь полезное для тех, кто принимает решение'
+    submit:                 'Отправить'
+    rating0:                'Нажмите на звезду'
+    rating1:                'Ужасно'
+    rating2:                'Плохо'
+    rating3:                'Ожидал большего'
+    rating4:                'Хорошо'
+    rating5:                'Великолепно!'
+    complaintLabel:         'Скажите нам по секрету:'
+    complaintHint:          'Что именно было не так?'
+    contactMe:              'Свяжитесь со мной'
+    refund:                 'Хочу возврат денег'
+    refundComplaintLabel:   'Скажите нам по секрету ({teacherFirstName} тоже увидит):'
 
 ScheduleScreen:
     title:

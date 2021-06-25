@@ -757,12 +757,14 @@ class CreateCartAndOrderResponse {
 class ReviewDeliveryRequest extends RequestBody {
   final int deliveryId;
   final String action;
-  final ReviewBodyRequest? body;
+  final DeliveryReviewBodyRequest? reviewBody;
+  final DeliveryComplaintBodyRequest? complaintBody;
 
   ReviewDeliveryRequest({
     required this.deliveryId,
     required this.action,
-    this.body,
+    this.reviewBody,
+    this.complaintBody,
   });
 
   @override
@@ -770,7 +772,8 @@ class ReviewDeliveryRequest extends RequestBody {
     return {
       'deliveryId': deliveryId,
       'action': action,
-      'body': body,
+      'reviewBody': reviewBody,
+      'complaintBody': complaintBody,
     };
   }
 }
@@ -778,13 +781,14 @@ class ReviewDeliveryRequest extends RequestBody {
 enum ReviewDeliveryAction {
   approve,
   dispute,
+  feedback,
 }
 
-class ReviewBodyRequest extends RequestBody {
+class DeliveryReviewBodyRequest extends RequestBody {
   final double rating;
   final String text;
 
-  ReviewBodyRequest({
+  DeliveryReviewBodyRequest({
     required this.rating,
     required this.text,
   });
@@ -794,6 +798,24 @@ class ReviewBodyRequest extends RequestBody {
     return {
       'rating': rating,
       'text': text,
+    };
+  }
+}
+
+class DeliveryComplaintBodyRequest extends RequestBody {
+  final String text;
+  final bool contactMe;
+
+  DeliveryComplaintBodyRequest({
+    required this.text,
+    required this.contactMe,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'text': text,
+      'contactMe': contactMe,
     };
   }
 }

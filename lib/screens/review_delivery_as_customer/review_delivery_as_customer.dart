@@ -11,19 +11,23 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ReviewDeliveryAsCustomerScreen extends StatefulWidget {
   final Delivery delivery;
+  final bool showRate;
 
   ReviewDeliveryAsCustomerScreen({
     required this.delivery,
+    required this.showRate,
   });
 
   static Future<DialogResult?> show({
     required BuildContext context,
     required Delivery delivery,
+    required bool showRate,
   }) async {
     return showDialog<DialogResult>(
       context: context,
       builder: (context) => ReviewDeliveryAsCustomerScreen(
         delivery: delivery,
+        showRate: showRate,
       ),
     );
   }
@@ -31,6 +35,7 @@ class ReviewDeliveryAsCustomerScreen extends StatefulWidget {
   @override
   _ReviewDeliveryAsCustomerScreenState createState() => _ReviewDeliveryAsCustomerScreenState(
     deliveryId: delivery.id,
+    showRate: showRate,
   );
 }
 
@@ -39,8 +44,12 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
 
   _ReviewDeliveryAsCustomerScreenState({
     required int deliveryId,
+    required bool showRate,
   }) :
-      _cubit = ReviewDeliveryAsCustomerScreenCubit(deliveryId: deliveryId)
+      _cubit = ReviewDeliveryAsCustomerScreenCubit(
+        deliveryId: deliveryId,
+        showRate: showRate,
+      )
   {
     _cubit.outResult.listen(_onCubitResult);
   }
@@ -65,12 +74,8 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _getRatingBarWidget(state),
-          Container(height: 5),
-          Text(state.ratingTip, style: AppStyle.minor),
-          Container(height: 15),
-          _getReviewField(state),
-          _showReportIfNeed(state),
+          _getReviewSectionIfNeed(state),
+          _getComplaintSectionIfNeed(state),
         ],
       ),
       actions: _getButtons(state),
@@ -78,11 +83,26 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
   }
 
   Widget _getTitleWidget() {
+    final keyTail = widget.showRate ? 'reviewTitle' : 'problemTitle';
     return Text(
       tr(
-        'ReviewDeliveryAsCustomerScreen.title',
+        'ReviewDeliveryAsCustomerScreen.' + keyTail,
         namedArgs: {'teacherFirstName': widget.delivery.author.firstName},
       ),
+    );
+  }
+
+  Widget _getReviewSectionIfNeed(ReviewDeliveryAsCustomerScreenCubitState state) {
+    if (!state.showRate) return Container();
+
+    return Column(
+      children: [
+        _getRatingBarWidget(state),
+        Container(height: 5),
+        Text(state.ratingTip, style: AppStyle.minor),
+        Container(height: 15),
+        _getReviewField(state),
+      ],
     );
   }
 
@@ -99,24 +119,47 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
   Widget _getReviewField(ReviewDeliveryAsCustomerScreenCubitState state) {
     return AppTextField(
       controller: state.reviewController,
-      hintText: tr('ReviewDeliveryAsCustomerScreen.reviewHint'),
+      hintText: tr(
+        'ReviewDeliveryAsCustomerScreen.reviewHint',
+        namedArgs: {'teacherFirstName': widget.delivery.author.firstName},
+      ),
       maxLines: 3,
     );
   }
 
-  Widget _showReportIfNeed(ReviewDeliveryAsCustomerScreenCubitState state) {
-    if (!state.canReport) return Container();
+  Widget _getComplaintSectionIfNeed(ReviewDeliveryAsCustomerScreenCubitState state) {
+    if (!state.showComplaint) return Container();
+
+    final reportTitleTailKey = state.refund
+        ? 'refundComplaintLabel'
+        : 'complaintLabel';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SmallPadding(),
         SmallPadding(),
-        Text(tr('ReviewDeliveryAsCustomerScreen.reportTitle')),
+        Text(
+          tr(
+            'ReviewDeliveryAsCustomerScreen.' + reportTitleTailKey,
+            namedArgs: {'teacherFirstName': widget.delivery.author.firstName},
+          ),
+        ),
+        SmallPadding(),
         AppTextField(
-          controller: state.reportController,
-          hintText: tr('ReviewDeliveryAsCustomerScreen.reportHint'),
+          controller: state.complaintController,
+          hintText: tr('ReviewDeliveryAsCustomerScreen.complaintHint'),
           maxLines: 3,
+        ),
+        CheckboxListTile(
+          value: state.contactMe,
+          title: Text(tr('ReviewDeliveryAsCustomerScreen.contactMe')),
+          onChanged: _cubit.setContactMe,
+        ),
+        CheckboxListTile(
+          value: state.refund,
+          title: Text(tr('ReviewDeliveryAsCustomerScreen.refund')),
+          onChanged: _cubit.setRefund,
         ),
       ],
     );
@@ -131,5 +174,11 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
         enabled: state.canSubmit,
       ),
     ];
+  }
+
+  @override
+  void dispose() {
+    _cubit.dispose();
+    super.dispose();
   }
 }

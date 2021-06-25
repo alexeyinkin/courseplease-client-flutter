@@ -208,17 +208,21 @@ RateDeliveryButton:
     rate:               'Rate'
 
 ReviewDeliveryAsCustomerScreen:
-    title:              'Review the Lesson by {teacherFirstName}'
-    reviewHint:         'Type something helpful to the public'
-    submit:             'Submit'
-    rating0:            'Tap a star'
-    rating1:            'Terrible'
-    rating2:            'Bad'
-    rating3:            'Expected more'
-    rating4:            'Good'
-    rating5:            'Excellent!'
-    reportTitle:        'Tell us privately:'
-    reportHint:         'What exactly went wrong?'
+    reviewTitle:            'Review the Lesson by {teacherFirstName}'
+    problemTitle:           'Report a Problem in the Lesson by {teacherFirstName}'
+    reviewHint:             'Type something helpful to those considering {teacherFirstName}'
+    submit:                 'Submit'
+    rating0:                'Tap a star'
+    rating1:                'Terrible'
+    rating2:                'Bad'
+    rating3:                'Expected more'
+    rating4:                'Good'
+    rating5:                'Excellent!'
+    complaintLabel:         'Tell us privately:'
+    complaintHint:          'What exactly went wrong?'
+    contactMe:              'Please contact me'
+    refund:                 'I want my money back'
+    refundComplaintLabel:   'Tell us privately (also visible to {teacherFirstName}):'
 
 ScheduleScreen:
     title:

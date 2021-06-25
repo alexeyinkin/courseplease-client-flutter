@@ -32,6 +32,7 @@ class RateDeliveryButton extends StatelessWidget {
     ReviewDeliveryAsCustomerScreen.show(
       context: context,
       delivery: delivery,
+      showRate: true,
     );
   }
 }
