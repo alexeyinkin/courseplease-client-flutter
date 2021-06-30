@@ -1,11 +1,17 @@
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
+import 'package:courseplease/models/messaging/refund_agree_message_body.dart';
+import 'package:courseplease/models/messaging/refund_disagree_message_body.dart';
+import 'package:courseplease/models/messaging/refund_request_message_body.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/models/messaging/time_approve_message_body.dart';
 import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/messaging/purchase_message_body.dart';
+import 'package:courseplease/widgets/messaging/refund_agree_message_body.dart';
+import 'package:courseplease/widgets/messaging/refund_disagree_message_body.dart';
+import 'package:courseplease/widgets/messaging/refund_request_message_body.dart';
 import 'package:courseplease/widgets/messaging/time_approve_message_body.dart';
 import 'package:courseplease/widgets/messaging/time_offer_message_body.dart';
 import 'package:courseplease/widgets/messaging/unknown_message_body.dart';
@@ -70,6 +76,23 @@ class ChatMessageBodyWidget extends StatelessWidget {
       return TimeApproveMessageBodyWidget(
         body: body,
       );
+    }
+
+    if (body is RefundRequestMessageBody) {
+      return RefundRequestMessageBodyWidget(
+        message: message,
+        body: body,
+      );
+    }
+
+    if (body is RefundAgreeMessageBody) {
+      return RefundAgreeMessageBodyWidget(
+        message: message,
+      );
+    }
+
+    if (body is RefundDisagreeMessageBody) {
+      return RefundDisagreeMessageBodyWidget();
     }
 
     return UnknownMessageBodyWidget(body: body);

@@ -182,6 +182,26 @@ class ApiClient {
     );
   }
 
+  Future<void> agreeToRefund(
+    DeliveryRequest request,
+  ) async {
+    await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/shop/agree-to-refund',
+      body: request,
+    );
+  }
+
+  Future<void> insistToGetMoney(
+    DeliveryRequest request,
+  ) async {
+    await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/shop/insist-to-get-money',
+      body: request,
+    );
+  }
+
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
       await sendRequest(
@@ -816,6 +836,21 @@ class DeliveryComplaintBodyRequest extends RequestBody {
     return {
       'text': text,
       'contactMe': contactMe,
+    };
+  }
+}
+
+class DeliveryRequest extends RequestBody {
+  final int deliveryId;
+
+  DeliveryRequest({
+    required this.deliveryId,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'deliveryId': deliveryId,
     };
   }
 }

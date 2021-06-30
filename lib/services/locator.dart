@@ -7,7 +7,7 @@ import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/blocs/realtime_factory.dart';
 import 'package:courseplease/blocs/server_sent_events.dart';
-import 'package:courseplease/models/messaging/chat_message.dart';
+import 'package:courseplease/models/messaging/enum/chat_message_type.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/repositories/chat_message.dart';
 import 'package:courseplease/repositories/delivery.dart';
@@ -34,6 +34,9 @@ import 'chat_message_queue_persister.dart';
 import 'filtered_model_list_factory.dart';
 import 'messaging/content_denormalizer.dart';
 import 'messaging/purchase_denormalizer.dart';
+import 'messaging/refund_agree_denormalizer.dart';
+import 'messaging/refund_disagree_denormalizer.dart';
+import 'messaging/refund_request_denormalizer.dart';
 import 'messaging/time_approve_denormalizer.dart';
 import 'messaging/time_offer_denormalizer.dart';
 import 'model_cache_factory.dart';
@@ -108,6 +111,9 @@ MessageBodyDenormalizerLocator _createMessageBodyDenormalizerLocator() {
       ..add(ChatMessageTypeEnum.purchase, PurchaseMessageBodyDenormalizer())
       ..add(ChatMessageTypeEnum.timeOffer, TimeOfferMessageBodyDenormalizer())
       ..add(ChatMessageTypeEnum.timeApprove, TimeApproveMessageBodyDenormalizer())
+      ..add(ChatMessageTypeEnum.refundRequest, RefundRequestMessageBodyDenormalizer())
+      ..add(ChatMessageTypeEnum.refundAgree, RefundAgreeMessageBodyDenormalizer())
+      ..add(ChatMessageTypeEnum.refundDisagree, RefundDisagreeMessageBodyDenormalizer())
   ;
 
   return chatMessageDenormalizerLocator;

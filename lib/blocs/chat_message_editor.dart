@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/bloc.dart';
-import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/messaging/chat_message_draft.dart';
+import 'package:courseplease/models/messaging/enum/chat_message_type.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/repositories/chat.dart';

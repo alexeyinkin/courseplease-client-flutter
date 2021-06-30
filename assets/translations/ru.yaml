@@ -14,6 +14,10 @@ common:
 ChatMessageBodyWidget:
     edited:             'отредактировано {when}'
 
+ConfirmScreen:
+    ok:                 'OK'
+    cancel:             'Отмена'
+
 ContactStatusCubit:
     downloadEnabledFalse:   'Ничего не выгружать'
     errorLastTried:         'Ошибка, последняя попытка {durationAgo}'
@@ -183,6 +187,10 @@ MyProfileWidget:
     myTeaching:         'Мои предметы'
     sortImportedMedia:  'Разобрать импортированное'
 
+MyRefundRequestMessageBodyWidget:
+    beforeComplaint:    'Запрошен возврат денег:'
+    afterComplaint:     'У учителя есть время до {date}, {time}, чтобы пояснить ситуацию со своей стороны. Если он не согласится, мы рассудим.'
+
 OrderScreen:
     action:
         pay:            'Заплатить {amount}'
@@ -193,6 +201,14 @@ OrderScreen:
     balanceAfter:       'Останется {amount}'
     oneHourLessonIn:    '{subject}, урок 1 час'
     lessonTerms:        'Вы договоритесь о времени в чате. Полный возврат — если не договоритесь или отмените урок за 24 часа.'
+
+OthersRefundRequestMessageBodyWidget:
+    beforeComplaint:    'Запрошен возврат денег:'
+    afterComplaint:     'Если вы согласны, нажмите "Согласен на возврат". Иначе опишите своё видение ситуации в этом чате до {date}, {time}. После этого нажмите "Требую деньги". Мы рассудим.'
+    agree:              'Согласен на возврат'
+    agreePrompt:        'Вы уверены, что согласны на возврат по этому уроку?'
+    insist:             'Требую деньги'
+    insistPrompt:       'Вы уверены, что хотите оспорить результат этого урока?'
 
 PickedTabWidget:
     iconTitle:      'Избранное'
@@ -209,6 +225,20 @@ PurchaseMessageBodyWidget:
 
 RateDeliveryButton:
     rate:               'Оценить'
+
+RefundAgreeMessageBodyPreviewWidget:
+    text:               'Согласился на возврат.'
+
+RefundAgreeMessageBodyWidget:
+    myText:             'Согласился на возврат. Возврат выполнен. Больше ничего не нужно делать.'
+    othersText:         'Согласился на возврат. Деньги вернулись на ваш баланс в CoursePlease. Используйте их для других уроков или выведите на вкладке "Профиль".'
+
+RefundDisagreeMessageBodyPreviewWidget:
+    text:               'Не согласился на возврат. Ожидайте нашего решения.'
+
+RefundRequestMessageBodyPreviewWidget:
+    myText:             'Запрошен возврат денег.'
+    notMyText:          'Запрошен возврат денег. Опишите ваше видение ситуации до {date}, {time}.'
 
 ReviewDeliveryAsCustomerScreen:
     reviewTitle:            'Оценить урок: {teacherFirstName}'

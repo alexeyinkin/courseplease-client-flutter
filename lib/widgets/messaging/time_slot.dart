@@ -1,6 +1,6 @@
 import 'package:courseplease/blocs/chat_message_factory.dart';
-import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/messaging/chat_message_interface.dart';
+import 'package:courseplease/models/messaging/enum/chat_message_type.dart';
 import 'package:courseplease/models/messaging/time_approve_message_body.dart';
 import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/models/messaging/time_slot.dart';

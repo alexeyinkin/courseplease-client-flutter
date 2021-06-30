@@ -106,7 +106,7 @@ String generatePassword(int length) {
 
 String formatTimeOrDate(DateTime dt, Locale locale) {
   final now = DateTime.now();
-  return (now.day == dt.day && now.month == dt.month && now.year == dt.year)
+  return areSameDay(now, dt)
       ? formatTime(dt, locale)
       : formatDate(dt, locale);
 }

@@ -14,6 +14,10 @@ common:
 ChatMessageBodyWidget:
     edited:             'edited {when}'
 
+ConfirmScreen:
+    ok:                 'OK'
+    cancel:             'Cancel'
+
 ContactStatusCubit:
     downloadEnabledFalse:   'Not downloading anything'
     errorLastTried:         'Error, last tried {durationAgo}'
@@ -180,6 +184,10 @@ MyProfileWidget:
     myTeaching:         'My Teaching'
     sortImportedMedia:  'Sort Imported Media'
 
+MyRefundRequestMessageBodyWidget:
+    beforeComplaint:    'Requested refund:'
+    afterComplaint:     'The teacher has time until {date}, {time} to provide their view of the situation. If they disagree, we will judge.'
+
 OrderScreen:
     action:
         pay:            'Pay {amount}'
@@ -190,6 +198,14 @@ OrderScreen:
     balanceAfter:       'Will have {amount} left'
     oneHourLessonIn:    '1 hour lesson in {subject}'
     lessonTerms:        'You will agree on time in chat. Get full refund if you do not agree or if you cancel the lesson 24 hours in advance.'
+
+OthersRefundRequestMessageBodyWidget:
+    beforeComplaint:    'Requested refund:'
+    afterComplaint:     'If you agree, tap "Agree to Refund". Otherwise please provide your view on this situation in this chat by {date}, {time}. When done, tap "Insist to Get the Money". We will then judge.'
+    agree:              'Agree to Refund'
+    agreePrompt:        'Are you sure you want to let this one go?'
+    insist:             'Insist to Get the Money'
+    insistPrompt:       'Are you sure you want to dispute this lesson result?'
 
 PickedTabWidget:
     iconTitle:      'Picked'
@@ -206,6 +222,20 @@ PurchaseMessageBodyWidget:
 
 RateDeliveryButton:
     rate:               'Rate'
+
+RefundAgreeMessageBodyPreviewWidget:
+    text:               'Agreed to refund.'
+
+RefundAgreeMessageBodyWidget:
+    myText:             'Agreed to refund. Refund is handled. Nothing more needs to be done.'
+    othersText:         'Agreed to refund. Your money is back to your CoursePlease account. Use them towards another lesson or withdraw at "Profile" tab.'
+
+RefundDisagreeMessageBodyPreviewWidget:
+    text:               'Did not agreed to refund. Wait for us to judge.'
+
+RefundRequestMessageBodyPreviewWidget:
+    myText:             'Requested refund.'
+    notMyText:          'Requested refund. Provide your view of the situation by {date}, {time}.'
 
 ReviewDeliveryAsCustomerScreen:
     reviewTitle:            'Review the Lesson by {teacherFirstName}'

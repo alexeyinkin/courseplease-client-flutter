@@ -5,6 +5,7 @@ import 'package:courseplease/models/filters/chat.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
+import 'package:courseplease/models/messaging/enum/chat_message_type.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/chat.dart';

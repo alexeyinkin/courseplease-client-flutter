@@ -1,4 +1,3 @@
-import 'package:courseplease/models/shop/delivery.dart';
 import 'package:courseplease/models/messaging/chat_message_interface.dart';
 import '../interfaces.dart';
 import 'message_body.dart';
@@ -42,11 +41,4 @@ class ChatMessage implements WithId<int>, ChatMessageInterface {
       body:           body,
     );
   }
-}
-
-class ChatMessageTypeEnum {
-  static const content = 1;
-  static const purchase = 2;
-  static const timeOffer = 3;
-  static const timeApprove = 4;
 }
