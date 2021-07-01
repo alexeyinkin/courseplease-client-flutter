@@ -23,7 +23,7 @@ class DeliveryFilter extends AbstractFilter {
 }
 
 enum DeliveryViewAs {
-  author,
+  seller,
   customer,
 }
 

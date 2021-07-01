@@ -1,17 +1,17 @@
 import 'package:courseplease/models/shop/delivery.dart';
+import 'package:courseplease/screens/review_delivery/local_blocs/review_delivery.dart';
 import 'package:courseplease/screens/review_delivery/review_delivery.dart';
-import 'package:courseplease/screens/review_delivery_as_customer/local_blocs/review_delivery_as_customer.dart';
+import 'package:courseplease/screens/review_delivery_as_seller/local_blocs/review_delivery_as_seller.dart';
+import 'package:courseplease/screens/review_delivery_as_seller/local_widgets/complaint_form.dart';
 import 'package:courseplease/widgets/dialog_result.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'local_widgets/complaint_form.dart';
-
-class ReviewDeliveryAsCustomerScreen extends StatefulWidget {
+class ReviewDeliveryAsSellerScreen extends StatefulWidget {
   final Delivery delivery;
   final bool showRate;
 
-  ReviewDeliveryAsCustomerScreen({
+  ReviewDeliveryAsSellerScreen({
     required this.delivery,
     required this.showRate,
   });
@@ -23,7 +23,7 @@ class ReviewDeliveryAsCustomerScreen extends StatefulWidget {
   }) async {
     return showDialog<DialogResult>(
       context: context,
-      builder: (context) => ReviewDeliveryAsCustomerScreen(
+      builder: (context) => ReviewDeliveryAsSellerScreen(
         delivery: delivery,
         showRate: showRate,
       ),
@@ -31,20 +31,20 @@ class ReviewDeliveryAsCustomerScreen extends StatefulWidget {
   }
 
   @override
-  _ReviewDeliveryAsCustomerScreenState createState() => _ReviewDeliveryAsCustomerScreenState(
+  _ReviewDeliveryAsSellerScreenState createState() => _ReviewDeliveryAsSellerScreenState(
     delivery: delivery,
     showRate: showRate,
   );
 }
 
-class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustomerScreen> {
-  final ReviewDeliveryAsCustomerScreenCubit _cubit;
+class _ReviewDeliveryAsSellerScreenState extends State<ReviewDeliveryAsSellerScreen> {
+  final ReviewDeliveryAsSellerScreenCubit _cubit;
 
-  _ReviewDeliveryAsCustomerScreenState({
+  _ReviewDeliveryAsSellerScreenState({
     required Delivery delivery,
     required bool showRate,
   }) :
-      _cubit = ReviewDeliveryAsCustomerScreenCubit(
+      _cubit = ReviewDeliveryAsSellerScreenCubit(
         deliveryId: delivery.id,
         showRate: showRate,
       )
@@ -58,7 +58,7 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ReviewDeliveryAsCustomerScreenCubitState>(
+    return StreamBuilder<ReviewDeliveryScreenCubitState>(
       stream: _cubit.outState,
       builder: (context, snapshot) => _buildWithState(
         snapshot.data ?? _cubit.initialState,
@@ -66,13 +66,13 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
     );
   }
 
-  Widget _buildWithState(ReviewDeliveryAsCustomerScreenCubitState state) {
+  Widget _buildWithState(ReviewDeliveryScreenCubitState state) {
     return ReviewDeliveryScreen(
       cubit: _cubit,
       delivery: widget.delivery,
       showRate: widget.showRate,
       title: _buildTitle(),
-      complaintForm: ComplaintFormAsCustomerWidget(
+      complaintForm: ComplaintFormAsSellerWidget(
         cubit: _cubit,
         delivery: widget.delivery,
         state: state,
@@ -85,8 +85,8 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
     final keyTail = widget.showRate ? 'reviewTitle' : 'problemTitle';
     return Text(
       tr(
-        'ReviewDeliveryAsCustomerScreen.' + keyTail,
-        namedArgs: {'teacherFirstName': widget.delivery.seller.firstName},
+        'ReviewDeliveryAsSellerScreen.' + keyTail,
+        namedArgs: {'customerFirstName': widget.delivery.customer.firstName},
       ),
     );
   }

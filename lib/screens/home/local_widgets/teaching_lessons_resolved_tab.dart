@@ -8,7 +8,7 @@ class TeachingLessonsResolvedTabWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DeliveryListWidget(
       filter: DeliveryFilter(
-        viewAs: DeliveryViewAs.author,
+        viewAs: DeliveryViewAs.seller,
         statusAlias: DeliveryStatusAlias.resolved,
         productVariantFormatIntName: ProductVariantFormatIntNameEnum.consulting,
       ),

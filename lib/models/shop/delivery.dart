@@ -1,5 +1,6 @@
 import 'package:courseplease/models/location.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
+import 'package:courseplease/models/shop/review.dart';
 
 import '../interfaces.dart';
 import '../user.dart';
@@ -12,7 +13,13 @@ class Delivery extends WithId<int> {
   final Location? location;
   final int productSubjectId;
   final ProductVariantFormatWithPrice productVariantFormatWithPrice;
-  final User author;
+  final bool reviewedBySeller;
+  final bool reviewedByCustomer;
+  final Review? reviewBySeller;
+  final Review? reviewByCustomer;
+  final bool sellerCanReview;
+  final bool customerCanReview;
+  final User seller;
   final User customer;
 
   Delivery({
@@ -23,7 +30,13 @@ class Delivery extends WithId<int> {
     required this.location,
     required this.productSubjectId,
     required this.productVariantFormatWithPrice,
-    required this.author,
+    required this.reviewedBySeller,
+    required this.reviewedByCustomer,
+    required this.reviewBySeller,
+    required this.reviewByCustomer,
+    required this.sellerCanReview,
+    required this.customerCanReview,
+    required this.seller,
     required this.customer,
   });
 
@@ -36,7 +49,13 @@ class Delivery extends WithId<int> {
       location:                       Location.fromMapOrNull(map['location']),
       productSubjectId:               map['productSubjectId'],
       productVariantFormatWithPrice:  ProductVariantFormatWithPrice.fromMap(map['productVariantFormatWithPrice']),
-      author:                         User.fromMap(map['author']),
+      reviewedBySeller:               map['reviewedBySeller'],
+      reviewedByCustomer:             map['reviewedByCustomer'],
+      reviewBySeller:                 Review.fromMapOrNull(map['reviewBySeller']),
+      reviewByCustomer:               Review.fromMapOrNull(map['reviewByCustomer']),
+      sellerCanReview:                map['sellerCanReview'],
+      customerCanReview:              map['customerCanReview'],
+      seller:                         User.fromMap(map['seller']),
       customer:                       User.fromMap(map['customer']),
     );
   }

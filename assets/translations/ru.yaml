@@ -243,7 +243,21 @@ RefundRequestMessageBodyPreviewWidget:
 ReviewDeliveryAsCustomerScreen:
     reviewTitle:            'Оценить урок: {teacherFirstName}'
     problemTitle:           'Сообщить о проблеме на уроке: {teacherFirstName}'
-    reviewHint:             'Напишите что-нибудь полезное для тех, кто принимает решение'
+    complaintLabel:         'Скажите нам по секрету:'
+    complaintHint:          'Что именно было не так?'
+    contactMe:              'Свяжитесь со мной'
+    refund:                 'Требую возврат денег'
+    refundComplaintLabel:   'Скажите нам по секрету ({teacherFirstName} тоже увидит):'
+
+ReviewDeliveryAsSellerScreen:
+    reviewTitle:            'Оцените работу с {customerFirstName}'
+    problemTitle:           'Сообщить о проблеме на уроке: {customerFirstName}'
+    complaintLabel:         'Скажите нам по секрету:'
+    complaintHint:          'Что именно было не так?'
+    contactMe:              'Свяжитесь со мной'
+
+ReviewDeliveryScreen:
+    reviewHint:             'Напишите что-нибудь полезное для тех, кто принимает решение работать с {firstName}'
     submit:                 'Отправить'
     rating0:                'Нажмите на звезду'
     rating1:                'Ужасно'
@@ -251,11 +265,6 @@ ReviewDeliveryAsCustomerScreen:
     rating3:                'Ожидал большего'
     rating4:                'Хорошо'
     rating5:                'Великолепно!'
-    complaintLabel:         'Скажите нам по секрету:'
-    complaintHint:          'Что именно было не так?'
-    contactMe:              'Свяжитесь со мной'
-    refund:                 'Хочу возврат денег'
-    refundComplaintLabel:   'Скажите нам по секрету ({teacherFirstName} тоже увидит):'
 
 ScheduleScreen:
     title:

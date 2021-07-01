@@ -104,6 +104,16 @@ String generatePassword(int length) {
   return result;
 }
 
+String formatDateTime(DateTime dt, Locale locale) {
+  return tr(
+    'common.dateTime',
+    namedArgs: {
+      'date': formatDate(dt, locale),
+      'time': formatTime(dt, locale),
+    },
+  );
+}
+
 String formatTimeOrDate(DateTime dt, Locale locale) {
   final now = DateTime.now();
   return areSameDay(now, dt)

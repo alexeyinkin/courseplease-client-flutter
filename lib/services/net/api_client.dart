@@ -172,12 +172,22 @@ class ApiClient {
     );
   }
 
-  Future<void> reviewDelivery(
+  Future<void> reviewDeliveryAsCustomer(
     ReviewDeliveryRequest request,
   ) async {
     await sendRequest(
       method: HttpMethod.post,
-      path: '/api1/{@lang}/shop/review-delivery',
+      path: '/api1/{@lang}/shop/review-delivery-as-customer',
+      body: request,
+    );
+  }
+
+  Future<void> reviewDeliveryAsSeller(
+    ReviewDeliveryRequest request,
+  ) async {
+    await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/shop/review-delivery-as-seller',
       body: request,
     );
   }
@@ -796,12 +806,6 @@ class ReviewDeliveryRequest extends RequestBody {
       'complaintBody': complaintBody,
     };
   }
-}
-
-enum ReviewDeliveryAction {
-  approve,
-  dispute,
-  feedback,
 }
 
 class DeliveryReviewBodyRequest extends RequestBody {

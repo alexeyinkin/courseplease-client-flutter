@@ -1,6 +1,6 @@
 import 'package:courseplease/models/rating.dart';
 import 'package:flutter/material.dart';
-import 'rating.dart';
+import 'single_star_rating.dart';
 import 'user_count.dart';
 
 class RatingAndVoteCountWidget extends StatelessWidget {
@@ -20,7 +20,10 @@ class RatingAndVoteCountWidget extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.only(right: 10),
-          child: RatingWidget(rating: rating),
+          child: SingleStarRatingWidget(
+            rating: rating,
+            precision: 2,
+          ),
         ),
         UserCountWidget(rating.voteCount),
       ],

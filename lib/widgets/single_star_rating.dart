@@ -2,14 +2,18 @@ import 'package:charcode/html_entity.dart';
 import 'package:courseplease/models/rating.dart';
 import 'package:flutter/material.dart';
 
-class RatingWidget extends StatelessWidget {
+class SingleStarRatingWidget extends StatelessWidget {
   final Rating rating;
   final int scale;
+  final int precision;
 
-  RatingWidget({
+  SingleStarRatingWidget({
     required this.rating,
-    this.scale = 5,
+    this.scale = defaultScale,
+    this.precision = 0,
   });
+
+  static const defaultScale = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class RatingWidget extends StatelessWidget {
           ),
         ),
         Text(
-          rating.voteCount > 0 ? (rating.rating * scale).toStringAsFixed(2) : String.fromCharCode($mdash),
+          rating.voteCount > 0 ? (rating.rating * scale).toStringAsFixed(precision) : String.fromCharCode($mdash),
         ),
       ],
     );
