@@ -1,3 +1,4 @@
+import 'package:courseplease/models/shop/delivery.dart';
 import 'package:courseplease/screens/review_delivery/local_blocs/review_delivery.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -5,10 +6,10 @@ import 'package:get_it/get_it.dart';
 
 class ReviewDeliveryAsSellerScreenCubit extends AbstractReviewDeliveryScreenCubit<ReviewDeliveryScreenCubitState> {
   ReviewDeliveryAsSellerScreenCubit({
-    required int deliveryId,
+    required Delivery delivery,
     required bool showRate,
   }) : super(
-    deliveryId: deliveryId,
+    delivery: delivery,
     showRate: showRate,
   );
 
@@ -19,7 +20,7 @@ class ReviewDeliveryAsSellerScreenCubit extends AbstractReviewDeliveryScreenCubi
   @override
   Future<void> submitRequest(ReviewDeliveryScreenCubitState state) async {
     final request = ReviewDeliveryRequest(
-      deliveryId: deliveryId,
+      deliveryId: delivery.id,
       action: enumValueAfterDot(_getAction()),
       reviewBody: getReviewBody(),
       complaintBody: getComplaintBody(),

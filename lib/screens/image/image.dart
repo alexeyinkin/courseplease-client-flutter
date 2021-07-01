@@ -11,8 +11,8 @@ import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/error/id.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/overlay.dart';
-import 'package:courseplease/widgets/rating_and_vote_count.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
+import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import '../../models/filters/image.dart';
@@ -476,7 +476,7 @@ class ImageTeacherTile extends StatelessWidget {
                     backgroundImage: url == null ? null : NetworkImage(url),
                   ),
                 ),
-                RatingAndVoteCountWidget(rating: teacher.rating, hideIfEmpty: true),
+                TeacherRatingAndCustomerCountWidget(teacher: teacher),
               ],
             ),
           ),

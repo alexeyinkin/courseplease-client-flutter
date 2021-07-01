@@ -7,8 +7,8 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/capsules.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/profile.dart';
-import 'package:courseplease/widgets/rating_and_vote_count.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
+import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
 import 'package:courseplease/widgets/teacher_subject_product_variants.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +105,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
               ProfileWidget(
                 user: teacher,
                 childrenUnderUserpic: [
-                  RatingAndVoteCountWidget(rating: teacher.rating, hideIfEmpty: true),
+                  TeacherRatingAndCustomerCountWidget(teacher: teacher),
                 ],
                 childrenUnderName: [
                   _getSubjectsLine(state),

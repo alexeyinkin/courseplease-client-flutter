@@ -45,7 +45,7 @@ class _ReviewDeliveryAsCustomerScreenState extends State<ReviewDeliveryAsCustome
     required bool showRate,
   }) :
       _cubit = ReviewDeliveryAsCustomerScreenCubit(
-        deliveryId: delivery.id,
+        delivery: delivery,
         showRate: showRate,
       )
   {

@@ -116,6 +116,13 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     return result;
   }
 
+  void removeId(I id) {
+    _objectsByIds.remove(id);
+    _triedIds.remove(id);
+    _failedIds.remove(id);
+    pushOutput();
+  }
+
   @protected
   void pushOutput() {
     _outObjectsByIdsController.sink.add(UnmodifiableMapView<I, O>(_objectsByIds));

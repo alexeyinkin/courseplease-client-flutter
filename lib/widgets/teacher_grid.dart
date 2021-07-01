@@ -5,13 +5,12 @@ import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/price_button.dart';
 import 'package:courseplease/widgets/product_variants_line.dart';
-import 'package:courseplease/widgets/rating_and_vote_count.dart';
+import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'image_grid.dart';
 import '../models/filters/image.dart';
 import '../models/filters/teacher.dart';
-import '../models/interfaces.dart';
 import '../models/teacher.dart';
 
 class TeacherGrid extends StatefulWidget {
@@ -112,7 +111,7 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
                       backgroundImage: url == null ? null : NetworkImage(url),
                     ),
                   ),
-                  RatingAndVoteCountWidget(rating: widget.object.rating, hideIfEmpty: true),
+                  TeacherRatingAndCustomerCountWidget(teacher: widget.object),
                 ],
               ),
             ),

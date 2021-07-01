@@ -1,4 +1,10 @@
+import 'package:courseplease/models/filters/teacher.dart';
+import 'package:courseplease/models/shop/delivery.dart';
+import 'package:courseplease/models/teacher.dart';
+import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/screens/review_delivery/local_blocs/review_delivery.dart';
+import 'package:courseplease/services/filtered_model_list_factory.dart';
+import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:flutter/widgets.dart';
@@ -8,10 +14,10 @@ class ReviewDeliveryAsCustomerScreenCubit extends AbstractReviewDeliveryScreenCu
   bool _refund = false;
 
   ReviewDeliveryAsCustomerScreenCubit({
-    required int deliveryId,
+    required Delivery delivery,
     required bool showRate,
   }) : super(
-    deliveryId: deliveryId,
+    delivery: delivery,
     showRate: showRate,
   );
 
@@ -41,14 +47,18 @@ class ReviewDeliveryAsCustomerScreenCubit extends AbstractReviewDeliveryScreenCu
   @override
   Future<void> submitRequest(ReviewDeliveryAsCustomerScreenCubitState state) async {
     final request = ReviewDeliveryRequest(
-      deliveryId: deliveryId,
+      deliveryId: delivery.id,
       action: enumValueAfterDot(_getAction(state)),
       reviewBody: getReviewBody(),
       complaintBody: getComplaintBody(),
     );
 
-    final _apiClient = GetIt.instance.get<ApiClient>();
-    return _apiClient.reviewDeliveryAsCustomer(request);
+    final apiClient = GetIt.instance.get<ApiClient>();
+    final result = await apiClient.reviewDeliveryAsCustomer(request);
+
+    _reloadTeacherAndAllTeacherLists();
+
+    return result;
   }
 
   ReviewDeliveryActionAsCustomer _getAction(ReviewDeliveryAsCustomerScreenCubitState state) {
@@ -61,6 +71,18 @@ class ReviewDeliveryAsCustomerScreenCubit extends AbstractReviewDeliveryScreenCu
     }
 
     return ReviewDeliveryActionAsCustomer.feedback;
+  }
+
+  void _reloadTeacherAndAllTeacherLists() {
+    final cache = GetIt.instance.get<FilteredModelListCache>();
+    final lists = cache.getModelListsByObjectAndFilterTypes<int, Teacher, TeacherFilter>();
+
+    for (final list in lists.values) {
+      list.clear();
+    }
+
+    final modelCacheBloc = GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Teacher, TeacherRepository>();
+    modelCacheBloc.removeId(delivery.seller.id);
   }
 }
 

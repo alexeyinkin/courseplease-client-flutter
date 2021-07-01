@@ -10,6 +10,7 @@ class Teacher extends User {
   final List<ProductVariantFormat> productVariantFormats;
   final Money minPrice;
   final Money maxPrice;
+  final int customerCount;
   final Rating rating;
   final List<TeacherSubject> subjects;
   final subjectIds = <int>[];
@@ -27,6 +28,7 @@ class Teacher extends User {
     required this.productVariantFormats,
     required this.minPrice,
     required this.maxPrice,
+    required this.customerCount,
     required this.rating,
     required this.subjects,
   }) : super(
@@ -67,6 +69,7 @@ class Teacher extends User {
       productVariantFormats:  productVariantFormats,
       minPrice:               Money.fromMapOrList(map['minPrice']),
       maxPrice:               Money.fromMapOrList(map['maxPrice']),
+      customerCount:          map['customerCount'],
       rating:                 Rating.fromMap(map['rating']),
       subjects:               subjects,
     );

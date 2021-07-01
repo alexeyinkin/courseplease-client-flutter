@@ -18,7 +18,7 @@ abstract class AbstractReviewDeliveryScreenCubit<S extends ReviewDeliveryScreenC
 
   final _cache = GetIt.instance.get<FilteredModelListCache>();
 
-  final int deliveryId;
+  final Delivery delivery;
   final bool showRate;
   int? _intStarRating;
   final _reviewController = TextEditingController();
@@ -33,7 +33,7 @@ abstract class AbstractReviewDeliveryScreenCubit<S extends ReviewDeliveryScreenC
   static const maxStarCount = 5;
 
   AbstractReviewDeliveryScreenCubit({
-    required this.deliveryId,
+    required this.delivery,
     required this.showRate,
   }) {
     initialState = createAndWrapState();
