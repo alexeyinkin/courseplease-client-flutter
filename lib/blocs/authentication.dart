@@ -175,7 +175,7 @@ class AuthenticationBloc extends Bloc{
     _testDeviceKey(deviceKey);
   }
 
-  void saveProfile(SaveProfileRequest request) async {
+  Future<void> saveProfile(SaveProfileRequest request) async {
     final deviceKey = _authenticationState.deviceKey;
     if (deviceKey == null) throw Exception('deviceKey is required for this');
 

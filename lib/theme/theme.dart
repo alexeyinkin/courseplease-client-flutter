@@ -52,4 +52,5 @@ class AppStyle {
   static const unreadColor = Color(0x30808080);
   static const errorColor = Color(0xFFFF0000);
   static const borderColor = Color(0x60808080);
+  static const borderRadius = 4.0;
 }

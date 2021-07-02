@@ -3,6 +3,10 @@ common:
         cancel:         'Отмена'
         edit:           'Редактировать'
         save:           'Сохранить'
+    sex:
+        male:           'Мужчина'
+        female:         'Женщина'
+        unknown:        'Не указано'
     more:               'Ещё...'
     sentenceSeparator:  '. '
     tomorrow:           'Завтра'
@@ -74,9 +78,11 @@ EditIntegrationScreen:
         viewImages:             'Показать изображения'
 
 EditProfileScreen:
+    title:          'Edit Profile'
     firstName:      'Имя'
     middleName:     'Отчество'
     lastName:       'Фамилия'
+    iSpeak:         'Языки:'
     addLanguage:    'Добавить язык'
 
 EditTeacherSubjectScreen:
@@ -335,6 +341,9 @@ TimeSlotWidget:
     buttons:
         reserve:        'Забронировать'
         cancel:         'Отмена'
+
+UnknownErrorWidget:
+    text:           'Неизвесная ошибка'
 
 UnknownMessageBodyPreviewWidget:
     text:           'Обновите приложение, чтобы просмотреть это сообщение'

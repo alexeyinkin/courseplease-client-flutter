@@ -78,8 +78,12 @@ flutter:
     - assets/auth_providers/google.svg
     - assets/auth_providers/instagram.svg
     - assets/auth_providers/vk.svg
+
     - assets/translations/en.yaml
     - assets/translations/ru.yaml
+
+    - assets/flags/arabic.svg
+    - assets/flags/by.svg
 
   generate: true
 

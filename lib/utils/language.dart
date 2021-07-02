@@ -8,13 +8,18 @@ String? getLanguageName(String lang) {
     case 'fr': return 'French';
     case 'ms': return 'Malay';
     case 'ru': return 'Русский';
+
+    case 'by': return 'Belarusian';
   }
   return null;
 }
 
 String langToCountryCode(String lang) {
   switch (lang) {
-    case 'en': return 'US';
+    case 'ar': return 'arabic';
+    case 'en': return 'GB';   // English      -> Great Britain
+    case 'hi': return 'IN';   // Hindi        -> India
+    case 'ms': return 'ID';   // Malay        -> Indonesia
     default: return lang.toUpperCase();
   }
 }

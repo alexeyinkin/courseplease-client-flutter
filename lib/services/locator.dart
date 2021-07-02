@@ -12,6 +12,7 @@ import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/repositories/chat_message.dart';
 import 'package:courseplease/repositories/delivery.dart';
 import 'package:courseplease/repositories/image.dart';
+import 'package:courseplease/repositories/language.dart';
 import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
@@ -67,6 +68,7 @@ void _initializeRepositories() {
       ..registerSingleton<DeliveryRepository>(DeliveryRepository())
       ..registerSingleton<EditorImageRepository>(EditorImageRepository())
       ..registerSingleton<GalleryImageRepository>(GalleryImageRepository())
+      ..registerSingleton<LanguageRepository>(LanguageRepository())
       ..registerSingleton<LessonRepository>(LessonRepository())
       ..registerSingleton<ProductSubjectRepository>(ProductSubjectRepository())
       ..registerSingleton<TeacherRepository>(TeacherRepository())

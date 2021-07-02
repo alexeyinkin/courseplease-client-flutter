@@ -2,6 +2,8 @@ import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/widgets.dart';
 
 class SmallPadding extends StatelessWidget {
+  const SmallPadding();
+
   @override
   Widget build(BuildContext context) {
     return Container(width: 10, height: 10);
@@ -55,6 +57,7 @@ Widget padLeft(Widget child) {
 
 List<Widget> alternateWidgetListWith(List<Widget> widgets, Widget glue) {
   final result = <Widget>[];
+  if (widgets.isEmpty) return result;
 
   for (final widget in widgets) {
     result.add(widget);

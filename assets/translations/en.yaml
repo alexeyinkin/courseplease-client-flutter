@@ -3,6 +3,10 @@ common:
         cancel:         'Cancel'
         edit:           'Edit'
         save:           'Save'
+    sex:
+        male:           'Male'
+        female:         'Female'
+        unknown:        'Unknown'
     more:               'More...'
     sentenceSeparator:  '. '
     tomorrow:           'Tomorrow'
@@ -72,9 +76,11 @@ EditIntegrationScreen:
         viewImages:             'View Images'
 
 EditProfileScreen:
+    title:          'Edit Profile'
     firstName:      'First Name'
     middleName:     'Middle Name'
     lastName:       'Last Name'
+    iSpeak:         'I Speak:'
     addLanguage:    'Add a Language'
 
 EditTeacherSubjectScreen:
@@ -332,6 +338,9 @@ TimeSlotWidget:
     buttons:
         reserve:        'Reserve'
         cancel:         'Cancel'
+
+UnknownErrorWidget:
+    text:           'Unknown Error'
 
 UnknownMessageBodyPreviewWidget:
     text:           'Can''t show this message. Please update the app.'

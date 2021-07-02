@@ -5,6 +5,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 enum RequestStatus {
   notTried,
   loading,
@@ -349,6 +351,23 @@ List<DateTime> dateTimesToLocal(List<DateTime> dateTimes) {
   }
 
   return result;
+}
+
+void showDialogWhile(
+  Future Function() dialogCreator,
+  Future future,
+) {
+  var shown = true;
+
+  final dialogFuture = dialogCreator();
+
+  dialogFuture.whenComplete(() { shown = false; });
+
+  future.whenComplete(() {
+    if (shown) {
+      navigatorKey.currentState?.pop();
+    }
+  });
 }
 
 bool isInPast(DateTime dt) => dt.isBefore(DateTime.now());

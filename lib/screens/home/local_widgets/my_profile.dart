@@ -131,7 +131,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   void _editProfile(User user) {
     EditProfileScreen.show(
       context: context,
-      userClone: User.from(user),
+      user: user,
     );
   }
 

@@ -1,37 +1,38 @@
-import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/user.dart';
-import 'package:courseplease/services/net/api_client.dart';
-import 'package:courseplease/utils/language.dart';
-import 'package:courseplease/widgets/language.dart';
+import 'package:courseplease/screens/edit_profile/local_blocs/edit_profile.dart';
+import 'package:courseplease/widgets/app_text_field.dart';
+import 'package:courseplease/widgets/buttons.dart';
+import 'package:courseplease/widgets/dialog_result.dart';
+import 'package:courseplease/widgets/language_list_editor.dart';
+import 'package:courseplease/widgets/pad.dart';
+import 'package:courseplease/widgets/sex_input.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_tags/flutter_tags.dart';
-import 'package:get_it/get_it.dart';
 
 class EditProfileScreen extends StatefulWidget {
   static const routeName = '/editProfile';
 
-  final User userClone;
+  final User user;
 
   EditProfileScreen({
-    required this.userClone,
+    required this.user,
   });
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState(
-    userClone: userClone,
+    user: user,
   );
 
   static Future<void> show({
     required BuildContext context,
-    required User userClone,
+    required User user,
   }) {
     return Navigator.push<void>(
       context,
       MaterialPageRoute(
         builder: (context) => EditProfileScreen(
-          userClone: userClone,
+          user: user,
         ),
       ),
     );
@@ -39,27 +40,29 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final User userClone;
-  final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  final EditProfileScreenCubit _cubit;
   final _formKey = GlobalKey<FormState>();
 
-  final _firstNameController = TextEditingController();
-  final _middleNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-
   _EditProfileScreenState({
-    required this.userClone,
-  }) {
-    _firstNameController.text = userClone.firstName;
-    _middleNameController.text = userClone.middleName;
-    _lastNameController.text = userClone.lastName;
+    required User user,
+  }) :
+      _cubit = EditProfileScreenCubit(user: user)
+  {
+    _cubit.results.listen((result) => popOrShowError(context, result));
   }
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<EditProfileScreenCubitState>(
+      stream: _cubit.states,
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _cubit.initialState),
+    );
+  }
+
+  Widget _buildWithState(EditProfileScreenCubitState state) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: Text(tr('EditProfileScreen.title')),
       ),
       body: Container(
         padding: EdgeInsets.all(20),
@@ -68,11 +71,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _getFirstNameInput(),
-              _getMiddleNameInput(),
-              _getLastNameInput(),
-              _getLangsInput(),
-              ElevatedButton(onPressed: _save, child: Text('Save')),
+              _getFirstNameInput(state),
+              SmallPadding(),
+              _getMiddleNameInput(state),
+              SmallPadding(),
+              _getLastNameInput(state),
+              SmallPadding(),
+              _getSexInput(state),
+              SmallPadding(),
+              _getLanguageListEditor(state),
+              SmallPadding(),
+              _getSaveButton(state),
             ],
           ),
         ),
@@ -80,100 +89,64 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _getFirstNameInput() {
-    return TextFormField(
-      controller: _firstNameController,
-      decoration: InputDecoration(
-        labelText: tr('EditProfileScreen.firstName'),
-      ),
+  Widget _getFirstNameInput(EditProfileScreenCubitState state) {
+    return AppTextField(
+      controller: state.firstNameController,
+      labelText: tr('EditProfileScreen.firstName'),
       validator: _notEmpty,
     );
   }
 
-  Widget _getMiddleNameInput() {
-    return TextFormField(
-      controller: _middleNameController,
-      decoration: InputDecoration(
-        labelText: tr('EditProfileScreen.middleName'),
-      ),
+  Widget _getMiddleNameInput(EditProfileScreenCubitState state) {
+    return AppTextField(
+      controller: state.middleNameController,
+      labelText: tr('EditProfileScreen.middleName'),
     );
   }
 
-  Widget _getLastNameInput() {
-    return TextFormField(
-      controller: _lastNameController,
-      decoration: InputDecoration(
-        labelText: tr('EditProfileScreen.lastName'),
-      ),
+  Widget _getLastNameInput(EditProfileScreenCubitState state) {
+    return AppTextField(
+      controller: state.lastNameController,
+      labelText: tr('EditProfileScreen.lastName'),
       validator: _notEmpty,
     );
   }
 
-  Widget _getLangsInput() {
-    return Container(
-      padding: EdgeInsets.only(top: 20, bottom: 20),
-      child: Tags(
-        textField: TagsTextField(
-          hintText: tr('EditProfileScreen.addLanguage'),
-          onSubmitted: _filterAndAddLang,
-          constraintSuggestion: true,
-          suggestions: ['en', 'ru', 'es'], // TODO: All languages
+  Widget _getSexInput(EditProfileScreenCubitState state) {
+    return SexInputWidget(
+      value: state.sex,
+      onChanged: _cubit.setSex,
+    );
+  }
+
+  Widget _getLanguageListEditor(EditProfileScreenCubitState state) {
+    return Row(
+      children: [
+        Text(tr('EditProfileScreen.iSpeak')),
+        SmallPadding(),
+        Expanded(
+          child: LanguageListEditor(
+            controller: state.languageListController,
+          ),
         ),
-        itemCount: userClone.langs.length,
-        itemBuilder: (index) {
-          final lang = userClone.langs[index];
-          final removeButton = userClone.langs.length == 1
-              ? null
-              : ItemTagsRemoveButton(onRemoved: () {_removeLang(lang); return true;});
-
-          return ItemTags(
-            key: ValueKey('lang-' + lang),
-            index: index,
-            title: getLanguageName(lang) ?? lang,
-            image: ItemTagsImage(
-              child: LanguageWidget(lang: lang),
-            ),
-            removeButton: removeButton,
-            color: Color(0x40808080),
-            textColor: Color(0xffff0000), // TODO: Use theme colors
-          );
-        },
-      ),
+      ],
     );
   }
 
-  void _filterAndAddLang(String lang) {
-    final index = userClone.langs.indexOf(lang);
-
-    if (index != -1) return;
-
-    setState(() {
-      userClone.langs.add(lang);
-    });
-  }
-
-  void _removeLang(String lang) {
-    final index = userClone.langs.indexOf(lang);
-
-    if (index == -1) return;
-
-    setState(() {
-      userClone.langs.removeAt(index);
-    });
+  Widget _getSaveButton(EditProfileScreenCubitState state) {
+    return Center(
+      child: ElevatedButtonWithProgress(
+        onPressed: _save,
+        child: Text(tr('common.buttons.save')),
+        isLoading: state.inProgress,
+        enabled: state.canSave,
+      ),
+    );
   }
 
   void _save() {
     if (_formKey.currentState!.validate()) {
-      final request = SaveProfileRequest(
-        firstName:  _firstNameController.text,
-        middleName: _middleNameController.text,
-        lastName:   _lastNameController.text,
-        sex:        userClone.sex,
-        langs:      userClone.langs,
-      );
-
-      _authenticationCubit.saveProfile(request);
-      Navigator.of(context).pop();
+      _cubit.save();
     }
   }
 
@@ -184,8 +157,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _middleNameController.dispose();
-    _lastNameController.dispose();
+    _cubit.dispose();
+    super.dispose();
   }
 }
