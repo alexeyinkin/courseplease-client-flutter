@@ -54,3 +54,36 @@ class AppStyle {
   static const borderColor = Color(0x60808080);
   static const borderRadius = 4.0;
 }
+
+Color getTextColor(BuildContext context) {
+  return Theme.of(context).textTheme.bodyText1!.color!;
+}
+
+InputDecoration getInputDecoration({
+  required BuildContext context,
+  String? hintText,
+  String? labelText,
+}) {
+  final textColor = getTextColor(context);
+  final borderColor = Color.lerp(textColor, null, .7)!;
+
+  final border = OutlineInputBorder(
+    borderSide: BorderSide(
+      color: borderColor,
+    ),
+  );
+
+  return InputDecoration(
+    border: border,
+    focusedBorder: border,
+    enabledBorder: border,
+    errorBorder: border,
+    disabledBorder: border,
+    contentPadding: EdgeInsets.all(10),
+    hintText: hintText,
+    labelText: labelText,
+    labelStyle: TextStyle(
+      color: borderColor,
+    ),
+  );
+}

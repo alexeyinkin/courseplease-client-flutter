@@ -18,6 +18,9 @@ common:
 ChatMessageBodyWidget:
     edited:             'отредактировано {when}'
 
+CityNameAutocomplete:
+    label:              'Город'
+
 ConfirmScreen:
     ok:                 'OK'
     cancel:             'Отмена'
@@ -27,6 +30,9 @@ ContactStatusCubit:
     errorLastTried:         'Ошибка, последняя попытка {durationAgo}'
     lastSynchronized:       'Последняя выгрузка {durationAgo}'
     synchronizingNow:       'Идёт выгрузка'
+
+CountryDropdown:
+    label:              'Страна'
 
 DeliveryProblemButton:
     text:               'Проблемы?'
@@ -84,6 +90,7 @@ EditProfileScreen:
     lastName:       'Фамилия'
     iSpeak:         'Языки:'
     addLanguage:    'Добавить язык'
+    location:       'Адрес'
 
 EditTeacherSubjectScreen:
     tabs:
@@ -135,6 +142,18 @@ LearningTabWidget:
 LessonsTabWidget:
     title:          'Уроки'
 
+LocationEditorWidget:
+    streetAddress:      'Адрес'
+    showTo:             'Показывать:'
+    privacy:
+        exactVisible:   'Всем, точный адрес'
+        fuzzyVisible:   'Всем, приблизительный район'
+        hidden:         'Никому'
+    bestFor:
+        exactVisible:   'Для бизнеса, или если обучаете не дома. Домашний адрес лучше не светить.'
+        fuzzyVisible:   'Для всех остальных. Так проще найти преподавателей, учеников и просто друзей.'
+        hidden:         'Для загадочных, если не хотите ни учиться, ни учить.'
+
 MediaDestinationDialog:
 
     nOf:
@@ -161,6 +180,9 @@ MediaDestinationWidget:
 
 MessagesTabWidget:
     iconTitle:      'Сообщения'
+
+ModelAutocomplete:
+    notFound:       '(Не найдено)'
 
 models:
     Image:

@@ -1,4 +1,5 @@
-import 'package:courseplease/blocs/editors.dart';
+import 'package:courseplease/blocs/editors/with_id_title.dart';
+import 'package:courseplease/blocs/editors/with_id_title_list.dart';
 import 'package:courseplease/models/language.dart';
 import 'package:courseplease/repositories/language.dart';
 import 'package:courseplease/services/model_cache_factory.dart';

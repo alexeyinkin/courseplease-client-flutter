@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/bloc.dart';
+import 'package:courseplease/blocs/editors/location.dart';
 import 'package:courseplease/models/language.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/services/net/api_client.dart';
@@ -22,6 +23,7 @@ class EditProfileScreenCubit extends Bloc {
   final _middleNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _languageListController = LanguageListEditorController();
+  final _locationController = LocationEditorController();
   String _sex;
   bool _inProgress = false;
 
@@ -36,6 +38,7 @@ class EditProfileScreenCubit extends Bloc {
     _middleNameController.text = user.middleName;
     _lastNameController.text = user.lastName;
     _languageListController.setIds(user.langs);
+    _locationController.setValue(user.location);
 
     initialState = _createState();
   }
@@ -50,6 +53,7 @@ class EditProfileScreenCubit extends Bloc {
       middleNameController: _middleNameController,
       lastNameController: _lastNameController,
       languageListController: _languageListController,
+      locationController: _locationController,
       sex: _sex,
       languages: _languageListController.getNonNullValues(),
       inProgress: _inProgress,
@@ -76,6 +80,7 @@ class EditProfileScreenCubit extends Bloc {
       lastName:   _lastNameController.text,
       sex:        _sex,
       langs:      _languageListController.getIds(),
+      location:   _getSaveLocationRequest(),
     );
 
     try {
@@ -86,6 +91,18 @@ class EditProfileScreenCubit extends Bloc {
       _inProgress = false;
       _pushOutput();
     }
+  }
+
+  SaveLocationRequest? _getSaveLocationRequest() {
+    final location = _locationController.getValue();
+    if (location == null) return null;
+
+    return SaveLocationRequest(
+      countryCode: location.countryCode,
+      cityId: location.cityId,
+      streetAddress: location.streetAddress,
+      privacy: location.privacy,
+    );
   }
 
   @override
@@ -103,6 +120,7 @@ class EditProfileScreenCubitState {
   final TextEditingController middleNameController;
   final TextEditingController lastNameController;
   final LanguageListEditorController languageListController;
+  final LocationEditorController locationController;
   final String sex;
   final List<Language> languages;
   final bool inProgress;
@@ -113,6 +131,7 @@ class EditProfileScreenCubitState {
     required this.middleNameController,
     required this.lastNameController,
     required this.languageListController,
+    required this.locationController,
     required this.sex,
     required this.languages,
     required this.inProgress,

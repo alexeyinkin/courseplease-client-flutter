@@ -212,6 +212,17 @@ class ApiClient {
     );
   }
 
+  Future<GeoCodeResponse> geoCode(
+    GeoCodeRequest request,
+  ) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/geo/geocode',
+      body: request,
+    );
+    return GeoCodeResponse.fromMap(mapResponse.data);
+  }
+
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
       await sendRequest(
@@ -546,6 +557,7 @@ class SaveProfileRequest extends RequestBody {
   final String lastName;
   final String sex;
   final List<String> langs;
+  final SaveLocationRequest? location;
 
   SaveProfileRequest({
     required this.firstName,
@@ -553,6 +565,7 @@ class SaveProfileRequest extends RequestBody {
     required this.lastName,
     required this.sex,
     required this.langs,
+    required this.location,
   });
 
   @override
@@ -563,6 +576,31 @@ class SaveProfileRequest extends RequestBody {
       'lastName':     lastName,
       'sex':          sex,
       'langs':        langs,
+      'location':     location?.toJson(),
+    };
+  }
+}
+
+class SaveLocationRequest extends RequestBody {
+  final String countryCode;
+  final int? cityId;
+  final String streetAddress;
+  final String privacy;
+
+  SaveLocationRequest({
+    required this.countryCode,
+    required this.cityId,
+    required this.streetAddress,
+    required this.privacy,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'countryCode': countryCode,
+      'cityId': cityId,
+      'streetAddress': streetAddress,
+      'privacy': privacy,
     };
   }
 }
@@ -856,5 +894,43 @@ class DeliveryRequest extends RequestBody {
     return {
       'deliveryId': deliveryId,
     };
+  }
+}
+
+class GeoCodeRequest extends RequestBody {
+  final String countryCode;
+  final String? cityTitle;
+  final String? streetAddress;
+
+  GeoCodeRequest({
+    required this.countryCode,
+    required this.cityTitle,
+    required this.streetAddress,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'countryCode': countryCode,
+      'cityTitle': cityTitle,
+      'streetAddress': streetAddress,
+    };
+  }
+}
+
+class GeoCodeResponse {
+  final double latitude;
+  final double longitude;
+
+  GeoCodeResponse({
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory GeoCodeResponse.fromMap(Map<String, dynamic> map) {
+    return GeoCodeResponse(
+      latitude: map['latitude'],
+      longitude: map['longitude'],
+    );
   }
 }

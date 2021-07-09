@@ -1,9 +1,11 @@
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/screens/edit_profile/local_blocs/edit_profile.dart';
+import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/app_text_field.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/dialog_result.dart';
 import 'package:courseplease/widgets/language_list_editor.dart';
+import 'package:courseplease/widgets/location_editor.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/sex_input.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -68,20 +70,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         padding: EdgeInsets.all(20),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: [
-              _getFirstNameInput(state),
-              SmallPadding(),
-              _getMiddleNameInput(state),
-              SmallPadding(),
-              _getLastNameInput(state),
-              SmallPadding(),
-              _getSexInput(state),
-              SmallPadding(),
-              _getLanguageListEditor(state),
-              SmallPadding(),
-              _getSaveButton(state),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _getFirstNameInput(state),
+                  SmallPadding(),
+                  _getMiddleNameInput(state),
+                  SmallPadding(),
+                  _getLastNameInput(state),
+                  SmallPadding(),
+                  _getSexInput(state),
+                  SmallPadding(),
+                  _getLanguageListEditor(state),
+                  Container(height: 30),
+                  _getLocationEditor(state),
+                  SmallPadding(),
+                  _getSaveButton(state),
+                ],
+              ),
             ],
           ),
         ),
@@ -129,6 +137,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             controller: state.languageListController,
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _getLocationEditor(EditProfileScreenCubitState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tr('EditProfileScreen.location'),
+          style: AppStyle.h2,
+        ),
+        SmallPadding(),
+        LocationEditorWidget(controller: state.locationController),
       ],
     );
   }

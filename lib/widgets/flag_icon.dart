@@ -5,6 +5,9 @@ import 'package:flutter/widgets.dart';
 class FlagIcon extends StatelessWidget {
   final String countryCode;
 
+  static const _w = 18.0;
+  static const _h = 10.0;
+
   FlagIcon({
     required this.countryCode,
   });
@@ -17,7 +20,7 @@ class FlagIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return overriddenFlags.containsKey(countryCode.toLowerCase())
-        ? AppFlag(countryCode, height: 10, width: 18)
-        : Flag(countryCode, height: 10, width: 18);
+        ? AppFlag(countryCode, height: _h, width: _w)
+        : Flag(countryCode, height: _h, width: _w, replacement: Container(width: _w, height: _h));
   }
 }

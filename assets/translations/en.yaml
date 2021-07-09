@@ -18,6 +18,9 @@ common:
 ChatMessageBodyWidget:
     edited:             'edited {when}'
 
+CityNameAutocomplete:
+    label:              'City'
+
 ConfirmScreen:
     ok:                 'OK'
     cancel:             'Cancel'
@@ -27,6 +30,9 @@ ContactStatusCubit:
     errorLastTried:         'Error, last tried {durationAgo}'
     lastSynchronized:       'Last synchronized {durationAgo}'
     synchronizingNow:       'Synchronizing now'
+
+CountryDropdown:
+    label:              'Country'
 
 DeliveryProblemButton:
     text:               'Problem?'
@@ -82,6 +88,7 @@ EditProfileScreen:
     lastName:       'Last Name'
     iSpeak:         'I Speak:'
     addLanguage:    'Add a Language'
+    location:       'Location'
 
 EditTeacherSubjectScreen:
     tabs:
@@ -133,6 +140,18 @@ LearningTabWidget:
 LessonsTabWidget:
     title:          'Lessons'
 
+LocationEditorWidget:
+    streetAddress:      'Street Address'
+    showTo:             'Show to:'
+    privacy:
+        exactVisible:   'Everyone, up to street address'
+        fuzzyVisible:   'Everyone, up to neighbourhood'
+        hidden:         'Nobody'
+    bestFor:
+        exactVisible:   'Best for businesses, teachers with studios outside their homes. It is best to not publish your home online.'
+        fuzzyVisible:   'Best for everyone else. This way it is easier to find students, find teachers, and to just make friends.'
+        hidden:         'Best for mysterious folks who neither teach nor learn.'
+
 MediaDestinationDialog:
 
     nOf:
@@ -158,6 +177,9 @@ MediaDestinationWidget:
 
 MessagesTabWidget:
     iconTitle:      'Messages'
+
+ModelAutocomplete:
+    notFound:       '(Not Found)'
 
 models:
     Image:

@@ -1,4 +1,5 @@
-import 'package:courseplease/blocs/editors.dart';
+import 'package:courseplease/blocs/editors/abstract.dart';
+import 'package:courseplease/blocs/editors/abstract_list.dart';
 import 'package:flutter/material.dart';
 
 import 'builders/abstract.dart';

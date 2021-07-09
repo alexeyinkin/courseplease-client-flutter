@@ -1,4 +1,4 @@
-package com.alexeyinkin.courseplease
+package com.alexeyinkin.courseplease.v1
 
 import io.flutter.embedding.android.FlutterActivity
 

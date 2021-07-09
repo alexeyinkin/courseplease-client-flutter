@@ -4,16 +4,22 @@ class Location {
   final double latitude;
   final double longitude;
   final String countryCode;
-  final String city;
+  final int? cityId;
+  final String cityTitle;
+  final String streetAddress;
   final String publicLine;
+  final String privacy;
   final List<SubwayStation> subwayStations;
 
   Location({
     required this.latitude,
     required this.longitude,
     required this.countryCode,
-    required this.city,
+    required this.cityId,
+    required this.cityTitle,
+    required this.streetAddress,
     required this.publicLine,
+    required this.privacy,
     required this.subwayStations,
   });
 
@@ -22,8 +28,11 @@ class Location {
       latitude:       location.latitude,
       longitude:      location.longitude,
       countryCode:    location.countryCode,
-      city:           location.city,
+      cityId:         location.cityId,
+      cityTitle:      location.cityTitle,
+      streetAddress:  location.streetAddress,
       publicLine:     location.publicLine,
+      privacy:        location.privacy,
       subwayStations: List<SubwayStation>.from(location.subwayStations),
     );
   }
@@ -38,8 +47,11 @@ class Location {
       latitude:       map['latitude'].toDouble(),
       longitude:      map['longitude'].toDouble(),
       countryCode:    map['countryCode'],
-      city:           map['city'],
+      cityId:         map['cityId'],
+      cityTitle:      map['cityTitle'],
+      streetAddress:  map['streetAddress'],
       publicLine:     map['publicLine'],
+      privacy:        map['privacy'],
       subwayStations: subwayStations,
     );
   }

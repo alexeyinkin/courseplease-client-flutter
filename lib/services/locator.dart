@@ -10,6 +10,8 @@ import 'package:courseplease/blocs/server_sent_events.dart';
 import 'package:courseplease/models/messaging/enum/chat_message_type.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/repositories/chat_message.dart';
+import 'package:courseplease/repositories/city_name.dart';
+import 'package:courseplease/repositories/country.dart';
 import 'package:courseplease/repositories/delivery.dart';
 import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/language.dart';
@@ -65,6 +67,8 @@ void _initializeRepositories() {
   GetIt.instance
       ..registerSingleton<ChatMessageRepository>(ChatMessageRepository())
       ..registerSingleton<ChatRepository>(ChatRepository())
+      ..registerSingleton<CityNameRepository>(CityNameRepository())
+      ..registerSingleton<CountryRepository>(CountryRepository())
       ..registerSingleton<DeliveryRepository>(DeliveryRepository())
       ..registerSingleton<EditorImageRepository>(EditorImageRepository())
       ..registerSingleton<GalleryImageRepository>(GalleryImageRepository())

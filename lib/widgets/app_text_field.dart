@@ -1,3 +1,4 @@
+import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class AppTextField extends StatelessWidget {
@@ -8,6 +9,7 @@ class AppTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final int? maxLines;
   final int? minLines;
+  final bool enabled;
 
   AppTextField({
     required this.controller,
@@ -17,33 +19,15 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.maxLines = 1,
     this.minLines,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyText1!.color!;
-    final borderColor = Color.lerp(textColor, null, .7)!;
-
-    final border = OutlineInputBorder(
-      borderSide: BorderSide(
-        color: borderColor,
-      ),
-    );
 
     return TextFormField(
-      decoration: new InputDecoration(
-        border: border,
-        focusedBorder: border,
-        enabledBorder: border,
-        errorBorder: border,
-        disabledBorder: border,
-        contentPadding: EdgeInsets.all(10),
-        hintText: hintText,
-        labelText: labelText,
-        labelStyle: TextStyle(
-          color: borderColor,
-        ),
-      ),
+      decoration: getInputDecoration(context: context, hintText: hintText, labelText: labelText),
       controller: controller,
       validator: validator,
       focusNode: focusNode,
@@ -51,6 +35,7 @@ class AppTextField extends StatelessWidget {
       minLines: minLines,
       keyboardType: TextInputType.multiline,
       cursorColor: textColor,
+      enabled: enabled,
     );
   }
 }
