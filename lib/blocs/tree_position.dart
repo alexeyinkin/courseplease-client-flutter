@@ -11,7 +11,6 @@ class TreePositionBloc<
   I,
   O extends WithIdChildrenParent<I, O, O>
 > implements Bloc {
-  // TODO: Start at root when the root screen is developed.
   late I _currentId;
   late I _lastId;
   var _modelsByIds = Map<I, O>();
@@ -36,7 +35,7 @@ class TreePositionBloc<
       _lastId = currentId,
       _modelCacheBloc = modelCacheBloc
   {
-    _productSubjectCacheBlocSubscription = _modelCacheBloc.outObjectsByIds.listen(_setModelsByIds);
+    _productSubjectCacheBlocSubscription = _modelCacheBloc.objectsByIds.listen(_setModelsByIds);
   }
 
   void _setModelsByIds(Map<I, O> map) {

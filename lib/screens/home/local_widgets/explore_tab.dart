@@ -20,6 +20,7 @@ class ExploreTab extends StatefulWidget {
 class _ExploreTabState extends State<ExploreTab> {
   final _currentTreePositionBloc = TreePositionBloc<int, ProductSubject>(
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
+    // TODO: Start at root when the root screen is developed.
     currentId: 7,
   );
 

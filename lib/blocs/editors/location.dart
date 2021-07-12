@@ -1,42 +1,61 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:courseplease/blocs/editors/with_id_title.dart';
 import 'package:courseplease/models/enum/location_privacy.dart';
 import 'package:courseplease/models/geo/city_name.dart';
+import 'package:courseplease/models/geo/country.dart';
 import 'package:courseplease/models/location.dart';
+import 'package:courseplease/repositories/country.dart';
+import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
+import '../model_by_id.dart';
 import 'abstract.dart';
 
+// TODO: Cut repeated fireChange() when multiple fields change together.
 class LocationEditorController extends AbstractValueEditorController<Location> {
   double? _latitude;
   double? _longitude;
-  String? _countryCode;
+  final countryController = WithIdTitleEditorController<String, Country>();
   final cityNameController = WithIdTitleEditorController<int, CityName>();
   final streetAddressController = TextEditingController();
   String _privacy = LocationPrivacyEnum.fuzzyVisible;
 
   final _apiClient = GetIt.instance.get<ApiClient>();
+  final _countryByIdBloc = ModelByIdBloc<String, Country>(
+    modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<String, Country, CountryRepository>(),
+  );
   Timer? _streetAddressEditingDebounce;
   static const _streetAddressDebounceDuration = Duration(milliseconds: 500);
+  String? _lastGeocoded;
+  bool _countrySet = false;
+  bool _cityNameSet = false;
 
   LocationEditorController() {
-    cityNameController.addListener(_onCityChanged);
+    _countryByIdBloc.outState.listen(_onCountryLoaded);
+    countryController.addListener(_onCountryChanged);
+    cityNameController.addListener(_onCityNameChanged);
     streetAddressController.addListener(_onStreetAddressChanged);
+  }
+
+  void _onCountryLoaded(ModelByIdState<String, Country> state) {
+    countryController.setValue(state.object);
   }
 
   @override
   Location? getValue() {
-    if (_countryCode == null) return null;
+    final country = countryController.getValue();
+    if (country == null) return null;
 
     final cityName = cityNameController.getValue();
 
     return Location(
       latitude: _latitude ?? 0,
       longitude: _longitude ?? 0,
-      countryCode: _countryCode!,
+      countryCode: country.id,
       cityId: cityName?.cityId,
       cityTitle: cityName?.title ?? '',
       streetAddress: streetAddressController.text,
@@ -59,7 +78,7 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   void _setNull() {
     _latitude = null;
     _longitude = null;
-    _countryCode = null;
+    countryController.setValue(null);
     cityNameController.setValue(null);
     streetAddressController.text = '';
     _privacy = LocationPrivacyEnum.fuzzyVisible;
@@ -68,7 +87,12 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   void _setNotNull(Location location) {
     _latitude = location.latitude;
     _longitude = location.longitude;
-    _countryCode = location.countryCode;
+
+    if (location.countryCode == '') {
+      countryController.setValue(null);
+    } else {
+      _setCountryCode(location.countryCode);
+    }
 
     if (location.cityId == null) {
       cityNameController.setValue(null);
@@ -82,21 +106,34 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
     _privacy = location.privacy;
   }
 
+  void _setCountryCode(String countryCode) {
+    _countryByIdBloc.setCurrentId(countryCode);
+  }
+
   double? get latitude => _latitude;
   double? get longitude => _longitude;
 
-  String? get countryCode => _countryCode;
+  void _onCountryChanged() {
+    if (_countrySet) {
+      cityNameController.setValue(null);
+      streetAddressController.text = '';
+    }
+    if (countryController.getValue() != null) {
+      _countrySet = true;
+    }
 
-  void setCountryCode(String? countryCode) {
-    if (countryCode == _countryCode) return;
-    _countryCode = countryCode;
-    cityNameController.setValue(null);
-    streetAddressController.text = '';
     _geoCode();
     fireChange();
   }
 
-  void _onCityChanged() {
+  void _onCityNameChanged() {
+    if (_cityNameSet) {
+      streetAddressController.text = '';
+    }
+    if (cityNameController.getValue() != null) {
+      _cityNameSet = true;
+    }
+
     _geoCode();
     fireChange();
   }
@@ -117,16 +154,19 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   }
 
   void _geoCode() async {
-    if (_countryCode == null) return;
+    final country = countryController.getValue();
+    if (country == null) return;
 
     final cityName = cityNameController.getValue();
-    if (cityName == null) return;
-
     final request = GeoCodeRequest(
-      countryCode: _countryCode!,
-      cityTitle: cityName.title,
+      countryTitle: country.title,
+      cityTitle: cityName?.title,
       streetAddress: streetAddressController.text,
     );
+
+    final json = jsonEncode(request);
+    if (json == _lastGeocoded) return;
+    _lastGeocoded = json;
 
     final response = await _apiClient.geoCode(request);
 

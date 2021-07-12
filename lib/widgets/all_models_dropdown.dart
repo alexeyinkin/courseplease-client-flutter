@@ -10,7 +10,7 @@ import 'dropdown_menu_item_separator.dart';
 class AllModelsDropdown<I, O extends WithIdTitle<I>> extends StatelessWidget {
   final I? selectedId;
   final ModelCacheBloc<I, O> modelCacheBloc;
-  final ValueChanged<I> onChanged;
+  final ValueChanged<O> onChanged;
   final String? labelText;
   final Widget? hint;
   final List<DropdownMenuItem<I>> trailing;
@@ -31,7 +31,7 @@ class AllModelsDropdown<I, O extends WithIdTitle<I>> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Map<I, O>>(
-      stream: modelCacheBloc.outObjectsByIds,
+      stream: modelCacheBloc.objectsByIds,
       builder: (context, snapshot) => _buildWithModels(context, snapshot.data ?? {}),
     );
   }
@@ -59,8 +59,11 @@ class AllModelsDropdown<I, O extends WithIdTitle<I>> extends StatelessWidget {
   }
 
   void _handleChange(I? id) {
-    if (id != null) {
-      onChanged(id);
-    }
+    if (id == null) return;
+
+    final obj = modelCacheBloc.getObjectById(id);
+    if (obj == null) return;
+
+    onChanged(obj);
   }
 }

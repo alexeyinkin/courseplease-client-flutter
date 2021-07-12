@@ -15,11 +15,11 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
   final _failedIds = Map<I, void>();
   bool _triedAll = false;
 
-  final _outObjectsByIdsController = BehaviorSubject<Map<I, O>>();
-  Stream<Map<I, O>> get outObjectsByIds => _outObjectsByIdsController.stream;
+  final _objectsByIdsController = BehaviorSubject<Map<I, O>>();
+  Stream<Map<I, O>> get objectsByIds => _objectsByIdsController.stream;
 
-  final _outStateController = BehaviorSubject<ModelCacheState<I, O>>();
-  Stream<ModelCacheState<I, O>> get outState => _outStateController.stream;
+  final _statesController = BehaviorSubject<ModelCacheState<I, O>>();
+  Stream<ModelCacheState<I, O>> get states => _statesController.stream;
 
   ModelCacheBloc({
     required AbstractRepository<I, O> repository,
@@ -116,6 +116,10 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     return result;
   }
 
+  O? getObjectById(I id) {
+    return _objectsByIds[id];
+  }
+
   void removeId(I id) {
     _objectsByIds.remove(id);
     _triedIds.remove(id);
@@ -125,8 +129,8 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
 
   @protected
   void pushOutput() {
-    _outObjectsByIdsController.sink.add(UnmodifiableMapView<I, O>(_objectsByIds));
-    _outStateController.sink.add(_createState());
+    _objectsByIdsController.sink.add(UnmodifiableMapView<I, O>(_objectsByIds));
+    _statesController.sink.add(_createState());
   }
 
   ModelCacheState<I, O> _createState() {
@@ -139,8 +143,8 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
 
   @override
   void dispose() {
-    _outStateController.close();
-    _outObjectsByIdsController.close();
+    _statesController.close();
+    _objectsByIdsController.close();
   }
 
   Type _typeOf<T>() => T;

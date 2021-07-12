@@ -6,7 +6,6 @@ import 'package:courseplease/widgets/app_text_field.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'city_name_autocomplete.dart';
@@ -57,12 +56,11 @@ class _LocationEditorWidgetState extends State<LocationEditorWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CountryDropdown(
-          countryCode: widget.controller.countryCode,
-          onChanged: widget.controller.setCountryCode,
+          controller: widget.controller.countryController,
         ),
         SmallPadding(),
         CityNameAutocomplete(
-          countryCode: widget.controller.countryCode,
+          countryCode: widget.controller.countryController.getValue()?.id,
           controller: widget.controller.cityNameController,
         ),
         SmallPadding(),
@@ -102,7 +100,11 @@ class _LocationEditorWidgetState extends State<LocationEditorWidget> {
   }
 
   double _getZoom() {
-    return _isValid() ? 15 : 0;
+    if (!_isValid()) return 0;
+
+    if (widget.controller.streetAddressController.text != '') return 15;
+    if (widget.controller.cityNameController.getValue() != null) return 6;
+    return 2;
   }
 
   bool _isValid() {

@@ -898,12 +898,12 @@ class DeliveryRequest extends RequestBody {
 }
 
 class GeoCodeRequest extends RequestBody {
-  final String countryCode;
+  final String countryTitle;
   final String? cityTitle;
   final String? streetAddress;
 
   GeoCodeRequest({
-    required this.countryCode,
+    required this.countryTitle,
     required this.cityTitle,
     required this.streetAddress,
   });
@@ -911,7 +911,7 @@ class GeoCodeRequest extends RequestBody {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'countryCode': countryCode,
+      'countryTitle': countryTitle,
       'cityTitle': cityTitle,
       'streetAddress': streetAddress,
     };

@@ -20,7 +20,7 @@ class ModelByIdBloc<I, O extends WithId<I>> extends Bloc {
   ModelByIdBloc({
     required ModelCacheBloc<I, O> modelCacheBloc,
   }) : _modelCacheBloc = modelCacheBloc {
-    _modelCacheBloc.outState.listen(_handleLoadedAnythingNew);
+    _modelCacheBloc.states.listen(_handleLoadedAnythingNew);
   }
 
   void setCurrentId(I? id) {

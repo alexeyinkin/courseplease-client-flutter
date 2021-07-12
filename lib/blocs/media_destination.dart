@@ -49,7 +49,7 @@ class MediaDestinationCubit extends Bloc {
 
   MediaDestinationCubit() {
     _authenticationBlocSubscription = _authenticationBloc.outState.listen(_onAuthenticationChange);
-    _productSubjectCacheSubscription = _productSubjectCacheBloc.outState.listen(_onProductSubjectsChange);
+    _productSubjectCacheSubscription = _productSubjectCacheBloc.states.listen(_onProductSubjectsChange);
   }
 
   void _onAuthenticationChange(AuthenticationState authenticationState) {

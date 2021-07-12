@@ -1,3 +1,5 @@
+import 'package:courseplease/blocs/editors/with_id_title.dart';
+import 'package:courseplease/blocs/sorted_model_cache.dart';
 import 'package:courseplease/models/geo/country.dart';
 import 'package:courseplease/repositories/country.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
@@ -9,22 +11,30 @@ import '../all_models_dropdown.dart';
 import '../flag_icon.dart';
 import '../pad.dart';
 
-class CountryDropdown extends StatelessWidget {
-  final String? countryCode;
-  final ValueChanged<String> onChanged;
+class CountryDropdown extends StatefulWidget {
+  final WithIdTitleEditorController<String, Country> controller;
 
   CountryDropdown({
-    required this.countryCode,
-    required this.onChanged,
+    required this.controller,
   });
 
   @override
+  _CountryDropdownState createState() => _CountryDropdownState();
+}
+
+class _CountryDropdownState extends State<CountryDropdown> {
+  final _sortedCountryCache = SortedModelCacheBloc(
+    modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<String, Country, CountryRepository>(),
+  );
+
+  @override
   Widget build(BuildContext context) {
-    final countryCache = GetIt.instance.get<ModelCacheCache>().getOrCreate<String, Country, CountryRepository>();
+    final country = widget.controller.getValue();
+
     return AllModelsDropdown<String, Country>(
-      selectedId:     countryCode,
-      modelCacheBloc: countryCache,
-      onChanged:      onChanged,
+      selectedId:     country?.id,
+      modelCacheBloc: _sortedCountryCache,
+      onChanged:      widget.controller.setValue,
       itemBuilder:    _buildItem,
       labelText:      tr('CountryDropdown.label'),
     );
