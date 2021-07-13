@@ -1,5 +1,6 @@
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/widgets/pad.dart';
+import 'package:courseplease/widgets/urls_userpic.dart';
 import 'package:flutter/material.dart';
 
 class UserpicAndNameWidget extends StatelessWidget{
@@ -34,17 +35,9 @@ class UserpicWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userpicUrlTail = user.userpicUrls['300x300'] ?? null;
-
-    if (userpicUrlTail == null) {
-      return Icon(Icons.person, size: size);
-    }
-
-    final userpicUrl = 'https://courseplease.com' + userpicUrlTail;
-
-    return CircleAvatar(
-      radius: size / 2,
-      backgroundImage: NetworkImage(userpicUrl),
+    return UrlsUserpicWidget(
+      imageUrls: user.userpicUrls,
+      size: size,
     );
   }
 }

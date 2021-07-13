@@ -1,9 +1,10 @@
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/models/server_image.dart';
 import 'interfaces.dart';
 import 'mapping.dart';
 
 // Flutter has an 'Image' widget. Naming is to avoid conflicts.
-class ImageEntity implements WithId<int> {
+class ImageEntity extends ServerImage implements WithId<int> {
   final int id;
   final String title;
   final Map<String, String> urls;
@@ -99,6 +100,12 @@ class ImageEntity implements WithId<int> {
 
     return ImageStatus.review;
   }
+
+  @override
+  bool isComplete() => true;
+
+  @override
+  String get tempId => id.toString();
 }
 
 class ImageAlbumLink {

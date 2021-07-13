@@ -26,21 +26,21 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  ably_flutter: ^1.2.0-preview.1                # No null-safety, Unstable
+  ably_flutter: ^1.2.0                          # No null-safety
   bubble: ^1.2.1
-  cached_network_image: ^3.0.0-nullsafety       # Unstable
+  cached_network_image: ^3.0.0
   charcode: ^1.2.0
   device_info: ^2.0.0
+  dio: ^4.0.0
   easy_localization: ^3.0.0
-  flag: ^5.0.0-nullsafety                       # Unstable
+  flag: ^5.0.1
   flutter_breadcrumb: ^1.0.1
   flutter_icons: ^1.1.0                         # No null-safety
   flutter_markdown: ^0.6.0
   flutter_rating_bar: ^4.0.0
   flutter_secure_storage: ^4.1.0
-  flutter_svg: ^0.21.0-nullsafety.0             # Unstable
+  flutter_svg: ^0.22.0
   flutter_webview_plugin: ^0.4.0
-  flutter_tags: ^1.0.0-nullsafety.1             # Unstable
   flutter_treeview: ^1.0.3+2
   flutter_typeahead: ^3.1.3
   get_it: ^6.0.0
@@ -48,18 +48,20 @@ dependencies:
   hive: ^2.0.0
   hive_flutter: ^1.0.0                          # No null-safety
   http: ^0.13.0
+  image: ^3.0.2
+  image_picker: ^0.8.1+3
   intl: ^0.17.0
   meta: ^1.3.0
   package_info: ^2.0.0
-  pointycastle: ^3.0.1                          # No null-safety
+  pointycastle: ^3.1.3
   provider: ^5.0.0
-  rxdart: ^0.26.0
-  uuid: ^3.0.2
-  visibility_detector: ^0.2.0-nullsafety.1      # Unstable
+  rxdart: ^0.27.1
+  uuid: ^3.0.4
+  visibility_detector: ^0.2.0
   yaml: ^3.1.0
   #youtube_player_flutter: ^7.0.0+7
   #youtube_player_iframe: ^1.2.0+2               # No null-safety
-  youtube_plyr_iframe: ^2.0.0
+  youtube_plyr_iframe: ^2.0.7
 
 dev_dependencies:
   flutter_test:

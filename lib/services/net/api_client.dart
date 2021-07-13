@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/abstract.dart';
+import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/messaging/message_body.dart';
 import 'package:courseplease/models/messaging/time_offer_message_body.dart';
 import 'package:courseplease/models/network_request_info.dart';
@@ -223,6 +224,42 @@ class ApiClient {
     return GeoCodeResponse.fromMap(mapResponse.data);
   }
 
+  Future<ImageEntity> uploadUserpic(Uint8List bytes) async {
+    final str = await sendFile(
+      path: '/api1/{@lang}/i/userpic',
+      bytes: bytes,
+    );
+
+    final map = jsonDecode(str);
+    return ImageEntity.fromMap(map['data']);
+  }
+
+  // Future<ImageEntity> _uploadUserpic(Uint8List bytes) async {
+  //   final response = sendString(
+  //     method: HttpMethod.post,
+  //     path: '/api1/{@lang}/i/userpic',
+  //     headers: headersWithContentType,
+  //     body: bodyString,
+  //   );
+  //
+  //   final formData = FormData.fromMap({
+  //     'file': MultipartFile.fromBytes(bytes, filename: '1.jpeg'),
+  //   });
+  //
+  //   final dio = Dio();
+  //
+  //   (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+  //     client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  //     return client;
+  //   };
+  //
+  //   //final uri = _createUri(path: '/api1/{@lang}/i/userpic');
+  //   final uri = 'https://192.168.42.169/api1/en/i/userpic';
+  //   final response = await dio.post(uri.toString(), data: formData);
+  //   final map = jsonDecode(response.data.toString());
+  //   return ImageEntity.fromMap(map);
+  // }
+
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
       await sendRequest(
@@ -360,6 +397,33 @@ class ApiClient {
     return response.body;
   }
 
+  Future<String> sendFile({
+    required String path,
+    Map<String, String>? queryParameters,
+    required Uint8List bytes,
+  }) async {
+    final uri = _createUri(path: path, queryParameters: queryParameters);
+    final request = http.MultipartRequest('POST', uri);
+
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        bytes,
+        filename: '1.jpeg',
+      ),
+    );
+    request.headers[_authorizationHeader] = _getBearerAuthorizationHeaderValue(_deviceKey!);
+
+    final response = await request.send();
+    final str = await response.stream.bytesToString();
+
+    if (response.statusCode != 200) {
+      throw HttpException(str, uri: uri);
+    }
+
+    return str;
+  }
+
   Uri _createUri({
     required String path,
     Map<String, String>? queryParameters,
@@ -370,12 +434,6 @@ class ApiClient {
 
   String _getBearerAuthorizationHeaderValue(String token) {
     return 'Bearer ' + token;
-  }
-
-  Map<String, String> _paramsWithPageToken(Map<String, String> queryParams, String pageToken) { // Nullable
-    return pageToken == null
-        ? queryParams
-        : mapWithEntry(queryParams, 'pageToken', pageToken);
   }
 }
 
