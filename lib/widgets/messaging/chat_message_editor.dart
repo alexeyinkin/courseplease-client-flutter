@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/chat_message_editor.dart';
+import 'package:courseplease/widgets/send_message_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../small_circular_progress_indicator.dart';
@@ -81,13 +82,7 @@ class _ChatMessageEditorState extends State<ChatMessageEditorWidget> {
             cursorColor: Theme.of(context).textTheme.bodyText1?.color,
           ),
         ),
-        TextButton(
-          child: Icon(
-            Icons.send,
-            color: Theme.of(context).textTheme.bodyText1!.color,
-          ),
-          onPressed: _chatMessageEditorCubit.onSendPressed,
-        ),
+        SendMessageButton(onPressed: _chatMessageEditorCubit.onSendPressed),
       ],
     );
   }

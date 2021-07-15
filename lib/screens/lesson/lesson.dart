@@ -1,6 +1,6 @@
 import 'package:courseplease/blocs/model_by_id.dart';
 import 'package:courseplease/repositories/lesson.dart';
-import 'package:courseplease/screens/image/image.dart';
+import 'package:courseplease/screens/image_pages/local_widgets/image_teacher_tile.dart'; // TODO: Don't use other screen's local widget.
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';

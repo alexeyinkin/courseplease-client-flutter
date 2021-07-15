@@ -11,6 +11,7 @@ import 'package:courseplease/models/messaging/enum/chat_message_type.dart';
 import 'package:courseplease/repositories/chat.dart';
 import 'package:courseplease/repositories/chat_message.dart';
 import 'package:courseplease/repositories/city_name.dart';
+import 'package:courseplease/repositories/comment.dart';
 import 'package:courseplease/repositories/country.dart';
 import 'package:courseplease/repositories/delivery.dart';
 import 'package:courseplease/repositories/image.dart';
@@ -68,6 +69,7 @@ void _initializeRepositories() {
       ..registerSingleton<ChatMessageRepository>(ChatMessageRepository())
       ..registerSingleton<ChatRepository>(ChatRepository())
       ..registerSingleton<CityNameRepository>(CityNameRepository())
+      ..registerSingleton<CommentRepository>(CommentRepository())
       ..registerSingleton<CountryRepository>(CountryRepository())
       ..registerSingleton<DeliveryRepository>(DeliveryRepository())
       ..registerSingleton<EditorImageRepository>(EditorImageRepository())

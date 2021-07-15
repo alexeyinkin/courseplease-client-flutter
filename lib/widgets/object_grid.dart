@@ -21,18 +21,22 @@ class ObjectGrid<
     required TileFactory<I, O, F, T> tileFactory,
     TileCallback<I, O>? onTap,
     required Axis scrollDirection,
+    ScrollController? scrollController,
     bool reverse = false,
     required this.gridDelegate,
     Widget? titleIfNotEmpty,
     SelectableListCubit<I, F>? listStateCubit,
+    bool shrinkWrap = false,
   }) : super(
     filter: filter,
     tileFactory: tileFactory,
     onTap: onTap,
     scrollDirection: scrollDirection,
+    scrollController: scrollController,
     reverse: reverse,
     titleIfNotEmpty: titleIfNotEmpty,
     listStateCubit: listStateCubit,
+    shrinkWrap: shrinkWrap,
   );
 
   @override
@@ -55,7 +59,7 @@ class ObjectGridState<
     SelectableListState<I, F>? selectableListState,
   ) {
     return GridView.builder(
-      controller:       _scrollController,
+      controller:       widget.scrollController ?? _scrollController,
       key:              PageStorageKey('ObjectGrid_' + T.runtimeType.toString() + '_' + widget.filter.toString()),
       scrollDirection:  widget.scrollDirection,
       reverse:          widget.reverse,

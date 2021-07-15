@@ -40,6 +40,7 @@ class ObjectLinearListView<
     ScrollController? scrollController,
     bool reverse = false,
     Widget? titleIfNotEmpty,
+    WidgetBuilder? emptyBuilder,
     bool shrinkWrap = false,
     this.separatorBuilder,
     SelectableListCubit<I, F>? listStateCubit,
@@ -51,6 +52,7 @@ class ObjectLinearListView<
     scrollController: scrollController,
     reverse: reverse,
     titleIfNotEmpty: titleIfNotEmpty,
+    emptyBuilder: emptyBuilder,
     shrinkWrap: shrinkWrap,
     listStateCubit: listStateCubit,
   );
@@ -76,6 +78,10 @@ class _ObjectLinearListViewState<
   ) {
     late final itemCount;
     late final itemBuilder;
+
+    if (modelListState.hasMore == false && modelListState.objects.isEmpty && widget.emptyBuilder != null) {
+      return widget.emptyBuilder!(context);
+    }
 
     if (widget.separatorBuilder == null) {
       itemCount = modelListState.hasMore ? null : modelListState.objects.length + 1;

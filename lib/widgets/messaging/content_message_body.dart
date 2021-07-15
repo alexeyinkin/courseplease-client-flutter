@@ -23,13 +23,13 @@ class ContentMessageBodyWidget extends StatelessWidget {
           TextSpan(
             text: body.text,
           ),
-          _getDateSpan(context),
+          _getDateSpaceSpan(context),
         ],
       ),
     );
   }
 
-  InlineSpan _getDateSpan(BuildContext context) {
+  InlineSpan _getDateSpaceSpan(BuildContext context) {
     final message = this.message;
     if (message is ChatMessage && message.dateTimeEdit != null) {
       return _getNewLineDateSpace();

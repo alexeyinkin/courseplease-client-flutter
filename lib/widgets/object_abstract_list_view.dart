@@ -24,8 +24,14 @@ abstract class ObjectAbstractListView<
   final ScrollController? scrollController;
   final bool reverse;
   final Widget? titleIfNotEmpty;
+  final WidgetBuilder? emptyBuilder;
   final WidgetBuilder? errorLoadingMoreBuilder;
+
+  // shrinkWrap = true causes some http requests to stall. Use with caution.
+  // One example is CommentListWidget.
+  // TODO: Find the reason and fix.
   final bool shrinkWrap;
+
   final SelectableListCubit<I, F>? listStateCubit;
 
   ObjectAbstractListView({
@@ -36,6 +42,7 @@ abstract class ObjectAbstractListView<
     this.scrollController,
     required this.reverse,
     this.titleIfNotEmpty,
+    this.emptyBuilder,
     this.errorLoadingMoreBuilder,
     this.shrinkWrap = false,
     this.listStateCubit,

@@ -1,14 +1,16 @@
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/models/reaction/commentable.dart';
 import 'package:courseplease/models/server_image.dart';
 import 'interfaces.dart';
 import 'mapping.dart';
 
 // Flutter has an 'Image' widget. Naming is to avoid conflicts.
-class ImageEntity extends ServerImage implements WithId<int> {
+class ImageEntity extends ServerImage implements WithId<int>, Commentable {
   final int id;
   final String title;
   final Map<String, String> urls;
   final int authorId;
+  final int commentCount;
   final ImageStatus status;
   final List<ImageAlbumLink> albums;
   final List<Mapping> mappings;
@@ -20,6 +22,7 @@ class ImageEntity extends ServerImage implements WithId<int> {
     required this.title,
     required this.urls,
     required this.authorId,
+    required this.commentCount,
     required this.status,
     required this.albums,
     required this.mappings,
@@ -33,13 +36,14 @@ class ImageEntity extends ServerImage implements WithId<int> {
         : urlsUncast.cast<String, String>();
 
     return ImageEntity(
-      id: map['id'],
-      title: map['title'],
-      urls: urls,
-      authorId: map['authorId'],
-      status: ImageEntity.getStatus(albums),
-      albums: albums,
-      mappings: Mapping.fromMaps(map['mappings'] ?? []),
+      id:           map['id'],
+      title:        map['title'],
+      urls:         urls,
+      authorId:     map['authorId'],
+      commentCount: map['commentCount'],
+      status:       ImageEntity.getStatus(albums),
+      albums:       albums,
+      mappings:     Mapping.fromMaps(map['mappings'] ?? []),
     );
   }
 

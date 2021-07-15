@@ -171,6 +171,17 @@ class NetworkFilteredModelListBloc<
     _pushOutput();
   }
 
+  void addToEnd(List<O> objects) {
+    if (objects.isEmpty) return;
+
+    _objects.addAll(objects);
+    for (final object in objects) {
+      _objectsByIds[object.id] = object;
+    }
+
+    _pushOutput();
+  }
+
   void replaceIfExist(List<O> objects) {
     bool changed = false;
 

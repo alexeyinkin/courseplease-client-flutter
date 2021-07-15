@@ -260,6 +260,15 @@ class ApiClient {
   //   return ImageEntity.fromMap(map);
   // }
 
+  Future<CreateCommentResponse> createComment(CreateCommentRequest request) async {
+    final mapResponse = await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/gallery/comments/create',
+      body: request,
+    );
+    return CreateCommentResponse.fromMap(mapResponse.data);
+  }
+
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
       await sendRequest(
@@ -989,6 +998,41 @@ class GeoCodeResponse {
     return GeoCodeResponse(
       latitude: map['latitude'],
       longitude: map['longitude'],
+    );
+  }
+}
+
+class CreateCommentRequest extends RequestBody {
+  final String catalog;
+  final int objectId;
+  final String text;
+
+  CreateCommentRequest({
+    required this.catalog,
+    required this.objectId,
+    required this.text,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'catalog': catalog,
+      'objectId': objectId,
+      'text': text,
+    };
+  }
+}
+
+class CreateCommentResponse {
+  final int commentId;
+
+  CreateCommentResponse({
+    required this.commentId,
+  });
+
+  factory CreateCommentResponse.fromMap(Map<String, dynamic> map) {
+    return CreateCommentResponse(
+      commentId: map['commentId'],
     );
   }
 }

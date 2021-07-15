@@ -49,6 +49,8 @@ class AppStyle {
     fontStyle: FontStyle.italic,
   );
 
+  static const reactionFontSize = 20.0;
+
   static const unreadColor = Color(0x30808080);
   static const errorColor = Color(0xFFFF0000);
   static const borderColor = Color(0x60808080);

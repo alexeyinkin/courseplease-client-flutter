@@ -21,6 +21,12 @@ ChatMessageBodyWidget:
 CityNameAutocomplete:
     label:              'Город'
 
+CommentForm:
+    commentHere:        'Ваш комментарий...'
+
+CommentListWidget:
+    beFirst:            'Оставьте комментарий первым!'
+
 ConfirmScreen:
     ok:                 'OK'
     cancel:             'Отмена'

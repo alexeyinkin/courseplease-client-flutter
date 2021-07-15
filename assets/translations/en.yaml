@@ -21,6 +21,12 @@ ChatMessageBodyWidget:
 CityNameAutocomplete:
     label:              'City'
 
+CommentForm:
+    commentHere:        'Comment here...'
+
+CommentListWidget:
+    beFirst:            'Be the first one to comment!'
+
 ConfirmScreen:
     ok:                 'OK'
     cancel:             'Cancel'

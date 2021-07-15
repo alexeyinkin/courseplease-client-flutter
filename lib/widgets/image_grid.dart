@@ -14,7 +14,7 @@ import 'package:flutter/rendering.dart';
 import '../models/filters/image.dart';
 import '../models/image.dart';
 import 'object_grid.dart';
-import '../screens/image/image.dart';
+import '../screens/image_pages/image_pages.dart';
 import 'overlay.dart';
 
 abstract class AbstractImageGrid<F extends AbstractFilter, R extends AbstractImageRepository<F>> extends StatefulWidget {
@@ -102,10 +102,12 @@ class ImageTile<F extends AbstractFilter> extends AbstractObjectTile<int, ImageE
 class ImageTileState<F extends AbstractFilter> extends AbstractObjectTileState<int, ImageEntity, F, ImageTile<F>> {
   @override
   Widget build(BuildContext context) {
+    final heroTag = 'image_' + widget.filter.toString() + '_' + widget.object.id.toString();
+
     return GestureDetector(
       onTap: widget.onTap,
       child: Hero(
-        tag: 'image_' + widget.filter.toString() + '_' + widget.object.id.toString(),
+        tag: heroTag,
         child: Stack(
           children: [
             _getImageOverlay(),
@@ -170,7 +172,7 @@ class ViewImageGrid extends AbstractImageGrid<ViewImageFilter, GalleryImageRepos
 class ViewImageGridState extends AbstractImageGridState<ViewImageFilter, GalleryImageRepository> {
   @override
   void handleTap(ImageEntity image, int index) {
-    ViewImageLightboxScreenLauncher.show(
+    ViewImagePagesScreenLauncher.show(
       context: context,
       filter: widget.filter,
       initialIndex: index,
@@ -207,7 +209,7 @@ class _FixedIdsImageGridState extends AbstractImageGridState<
 > {
   @override
   void handleTap(ImageEntity image, int index) {
-    ImageLightboxScreenLauncher.showWithTitles<IdsSubsetFilter<int, ImageEntity>, AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>>(
+    ImagePagesScreenLauncher.showWithTitles<IdsSubsetFilter<int, ImageEntity>, AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>>(
       context: context,
       filter: widget.filter,
       initialIndex: index,
@@ -239,7 +241,7 @@ class EditImageGrid extends AbstractImageGrid<EditImageFilter, EditorImageReposi
 class EditImageGridState extends AbstractImageGridState<EditImageFilter, EditorImageRepository> {
   @override
   void handleTap(ImageEntity image, int index) {
-    ImageLightboxScreenLauncher.showWithTitles<EditImageFilter, EditorImageRepository>(
+    ImagePagesScreenLauncher.showWithTitles<EditImageFilter, EditorImageRepository>(
       context: context,
       filter: widget.filter,
       initialIndex: index,

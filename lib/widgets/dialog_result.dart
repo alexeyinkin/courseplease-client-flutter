@@ -24,3 +24,12 @@ void popOrShowError(BuildContext context, DialogResult result) {
       break;
   }
 }
+
+void showErrorIfShould(BuildContext context, DialogResult result) {
+  switch (result.code) {
+    case DialogResultCode.error:
+      ErrorPopupScreen.show(context);
+      break;
+    default: // Nothing.
+  }
+}

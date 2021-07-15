@@ -5,20 +5,23 @@ import 'package:flutter/material.dart';
 
 class UserpicAndNameWidget extends StatelessWidget{
   final User user;
+  final TextStyle? textStyle;
 
-  static const _picSize = 30.0;
+  static const picSize = 30.0;
 
   UserpicAndNameWidget({
     required this.user,
+    this.textStyle,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        UserpicWidget(user: user, size: _picSize),
+        UserpicWidget(user: user, size: picSize),
         SmallPadding(),
-        UserNameWidget(user: user),
+        UserNameWidget(user: user, style: textStyle),
       ],
     );
   }
