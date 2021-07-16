@@ -234,32 +234,6 @@ class ApiClient {
     return ImageEntity.fromMap(map['data']);
   }
 
-  // Future<ImageEntity> _uploadUserpic(Uint8List bytes) async {
-  //   final response = sendString(
-  //     method: HttpMethod.post,
-  //     path: '/api1/{@lang}/i/userpic',
-  //     headers: headersWithContentType,
-  //     body: bodyString,
-  //   );
-  //
-  //   final formData = FormData.fromMap({
-  //     'file': MultipartFile.fromBytes(bytes, filename: '1.jpeg'),
-  //   });
-  //
-  //   final dio = Dio();
-  //
-  //   (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-  //     client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-  //     return client;
-  //   };
-  //
-  //   //final uri = _createUri(path: '/api1/{@lang}/i/userpic');
-  //   final uri = 'https://192.168.42.169/api1/en/i/userpic';
-  //   final response = await dio.post(uri.toString(), data: formData);
-  //   final map = jsonDecode(response.data.toString());
-  //   return ImageEntity.fromMap(map);
-  // }
-
   Future<CreateCommentResponse> createComment(CreateCommentRequest request) async {
     final mapResponse = await sendRequest(
       method: HttpMethod.post,
