@@ -9,6 +9,7 @@ import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/chat_message.dart';
+import 'package:courseplease/screens/teacher/teacher.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/circle_or_capsule.dart';
@@ -94,17 +95,31 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
   }
 
   Widget _getTitleWidget() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ChatAvatarWidget(chat: widget.chat, size: 20),
-          SmallPadding(),
-          ChatNameWidget(chat: widget.chat),
-        ],
+    return GestureDetector(
+      onTap: _onTitleTap,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ChatAvatarWidget(chat: widget.chat, size: 20),
+            SmallPadding(),
+            ChatNameWidget(chat: widget.chat),
+          ],
+        ),
       ),
+    );
+  }
+
+  void _onTitleTap() {
+    if (widget.chat.otherUsers.length != 1) {
+      throw Exception();
+    }
+
+    TeacherScreen.show(
+      context: context,
+      teacherId: widget.chat.otherUsers[0].id,
     );
   }
 

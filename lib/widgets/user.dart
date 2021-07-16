@@ -1,4 +1,5 @@
 import 'package:courseplease/models/user.dart';
+import 'package:courseplease/screens/teacher/teacher.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/urls_userpic.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +17,23 @@ class UserpicAndNameWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        UserpicWidget(user: user, size: picSize),
-        SmallPadding(),
-        UserNameWidget(user: user, style: textStyle),
-      ],
+    return GestureDetector(
+      onTap: () => _onTap(context),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          UserpicWidget(user: user, size: picSize),
+          SmallPadding(),
+          UserNameWidget(user: user, style: textStyle),
+        ],
+      ),
+    );
+  }
+
+  void _onTap(BuildContext context) {
+    TeacherScreen.show(
+      context: context,
+      teacherId: user.id,
     );
   }
 }

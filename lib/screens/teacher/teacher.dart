@@ -41,7 +41,7 @@ class TeacherScreen extends StatefulWidget {
   static Future<void> show({
     required BuildContext context,
     required int teacherId,
-    required int? initialSubjectId,
+    int? initialSubjectId,
   }) {
     return Navigator.push<void>(
       context,
@@ -145,6 +145,8 @@ class _TeacherScreenState extends State<TeacherScreen> {
   }
 
   Widget _getLocationLine(Teacher teacher) {
+    if (teacher.location.countryCode == '') return Container();
+
     return Container(
       padding: EdgeInsets.only(bottom: 20),
       child: LocationLineWidget(location: teacher.location),
