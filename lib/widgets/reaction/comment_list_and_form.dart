@@ -10,10 +10,12 @@ import 'comment_list.dart';
 class CommentListAndForm extends StatefulWidget {
   final CommentFilter filter;
   final FocusNode? commentFocusNode;
+  final VoidCallback? onCommentCountChanged;
 
   CommentListAndForm({
     required this.filter,
     this.commentFocusNode,
+    this.onCommentCountChanged,
   }) : super(
     key: ValueKey(filter.toString()),
   );
@@ -62,7 +64,9 @@ class _CommentListAndFormState extends State<CommentListAndForm> {
 
   void _onSubmit() {
     // Allow to rebuild first so that controller knows its new height.
-    Timer(Duration(milliseconds: 0), _animateToBottom);
+    Timer(Duration(milliseconds: 100), _animateToBottom);
+
+    if (widget.onCommentCountChanged != null) widget.onCommentCountChanged!();
   }
 
   void _animateToBottom() {

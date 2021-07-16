@@ -24,7 +24,7 @@ class ProductSubjectWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildWithState(BuildContext context, ModelListByIdsState<ProductSubject>? state) {
+  Widget _buildWithState(BuildContext context, ModelListByIdsState<int, ProductSubject>? state) {
     if (state == null || state.objects.isEmpty) {
       return SmallCircularProgressIndicator(scale: .5);
     }
@@ -32,7 +32,7 @@ class ProductSubjectWidget extends StatelessWidget {
     return Text(_getText(state));
   }
 
-  String _getText(ModelListByIdsState<ProductSubject> state) {
+  String _getText(ModelListByIdsState<int, ProductSubject> state) {
     if (translationKey == null || translationPlaceholder == null) {
       return state.objects.first.title;
     }

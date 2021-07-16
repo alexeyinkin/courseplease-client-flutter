@@ -7,8 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../pad.dart';
-
 class LineItemWidget extends StatefulWidget {
   final LineItem lineItem;
 
@@ -52,13 +50,13 @@ class _LineItemWidgetState extends State<LineItemWidget> {
   }
 
   Widget _getSubjectLine() {
-    return StreamBuilder<ModelListByIdsState<ProductSubject>>(
+    return StreamBuilder<ModelListByIdsState<int, ProductSubject>>(
       stream: _productSubjectsByIdsBloc.outState,
       builder: (context, snapshot) => _buildSubjectLineWithState(snapshot.data),
     );
   }
 
-  Widget _buildSubjectLineWithState(ModelListByIdsState<ProductSubject>? state) {
+  Widget _buildSubjectLineWithState(ModelListByIdsState<int, ProductSubject>? state) {
     if (state == null || state.objects.isEmpty) return Container();
     final ps = state.objects.first;
 

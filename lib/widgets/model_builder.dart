@@ -14,10 +14,12 @@ class ModelBuilderWidget<
 > extends StatefulWidget {
   final I id;
   final ValueFinalWidgetBuilder<O> builder;
+  final O? defaultModel;
 
   ModelBuilderWidget({
     required this.id,
     required this.builder,
+    this.defaultModel,
   }) : super(
     key: ValueKey('model_' + id.toString())
   );
@@ -58,6 +60,10 @@ class _ModelBuilderWidgetState<
   }
 
   Widget _buildWithoutModel(ModelByIdState<I, O> modelByIdState) {
+    if (widget.defaultModel != null) {
+      return widget.builder(context, widget.defaultModel!);
+    }
+
     switch (modelByIdState.requestStatus) {
       case RequestStatus.notTried:
       case RequestStatus.loading:

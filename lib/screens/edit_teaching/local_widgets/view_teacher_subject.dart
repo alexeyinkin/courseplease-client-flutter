@@ -38,13 +38,13 @@ class _ViewTeacherSubjectWidgetState extends State<ViewTeacherSubjectWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ModelListByIdsState<ProductSubject>>(
+    return StreamBuilder<ModelListByIdsState<int, ProductSubject>>(
       stream: _productSubjectsByIdsBloc.outState,
       builder: (context, snapshot) => _buildWithState(snapshot.data),
     );
   }
 
-  Widget _buildWithState(ModelListByIdsState<ProductSubject>? state) {
+  Widget _buildWithState(ModelListByIdsState<int, ProductSubject>? state) {
     if (state == null || state.objects.isEmpty) return Container();
 
     final subject = state.objects[0];

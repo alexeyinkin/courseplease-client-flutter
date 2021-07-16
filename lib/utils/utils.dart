@@ -359,6 +359,16 @@ String shortenIfLonger(String str, int length) {
       : str.substring(0, length);
 }
 
+List<I> getIds<I>(List<WithId<I>> objects) {
+  final ids = <I>[];
+
+  for (final obj in objects) {
+    ids.add(obj.id);
+  }
+
+  return ids;
+}
+
 void showDialogWhile(
   Future Function() dialogCreator,
   Future future,

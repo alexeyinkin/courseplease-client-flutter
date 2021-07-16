@@ -26,6 +26,7 @@ class CommentFormCubit extends Bloc {
   final _controller = TextEditingController();
   bool _isTextEmpty = true;
   bool _inProgress = false;
+  Comment? _currentComment;
 
   late final CommentFormCubitState initialState;
 
@@ -70,11 +71,20 @@ class CommentFormCubit extends Bloc {
     _inProgress = true;
     _pushOutput();
 
-    final text = shortenIfLonger(_controller.text, maxLength);
+    final authorId = _authenticationCubit.currentState.data?.user?.id;
+    if (authorId == null) throw Exception('Should only get here if authenticated.');
+
+    _currentComment = Comment(
+      id: 0,
+      text: shortenIfLonger(_controller.text, maxLength),
+      dateTimeInsert: DateTime.now(),
+      authorId: authorId,
+    );
+
     final request = CreateCommentRequest(
       catalog: filter.catalog,
       objectId: filter.objectId,
-      text: text,
+      text: _currentComment!.text,
     );
 
     try {
@@ -86,39 +96,27 @@ class CommentFormCubit extends Bloc {
   }
 
   void _onSuccess(CreateCommentResponse response) {
-    _addToLists(response);
+    _addCommentsToLists(response);
+
     _controller.text = '';
     _inProgress = false;
+
     _pushOutput();
     _resultsController.sink.add(DialogResult(code: DialogResultCode.ok));
   }
 
-  void _addToLists(CreateCommentResponse response) {
-    final authorId = _authenticationCubit.currentState.data?.user?.id;
-    if (authorId == null) {
-      _refreshLists();
-      return;
-    }
-
+  void _addCommentsToLists(CreateCommentResponse response) {
     final comment = Comment(
       id: response.commentId,
-      text: _controller.text,
+      text: _currentComment!.text,
       dateTimeInsert: DateTime.now(),
-      authorId: authorId,
+      authorId: _currentComment!.authorId,
     );
 
     final commentLists = _cache.getModelListsByObjectAndFilterTypes<int, Comment, CommentFilter>();
     for (final list in commentLists.values) {
       if (filter.toString() != list.filter.toString()) continue;
       list.addToEnd([comment]);
-    }
-  }
-
-  void _refreshLists() {
-    final commentLists = _cache.getModelListsByObjectAndFilterTypes<int, Comment, CommentFilter>();
-    for (final list in commentLists.values) {
-      if (filter.toString() != list.filter.toString()) continue;
-      list.clearAndLoadFirstPage();
     }
   }
 

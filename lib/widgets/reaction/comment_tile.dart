@@ -21,7 +21,7 @@ class CommentTile extends AbstractObjectTile<int, Comment, CommentFilter> {
 }
 
 class _CommentTileState extends AbstractObjectTileState<int, Comment, CommentFilter, CommentTile> {
-  static const _inlineDateWidth = 50.0;
+  static const _inlineDateWidth = 80.0;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _CommentTileState extends AbstractObjectTileState<int, Comment, CommentFil
       text: widget.object.text,
       trailing: Opacity(
         opacity: .5,
-        child: Text(formatTimeOrDate(widget.object.dateTimeInsert, locale)),
+        child: Text(formatTimeOrDate(widget.object.dateTimeInsert.toLocal(), locale)),
       ),
       trailingWidth: _inlineDateWidth,
     );

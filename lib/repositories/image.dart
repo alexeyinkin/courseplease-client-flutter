@@ -37,6 +37,18 @@ class GalleryImageRepository extends AbstractImageRepository<ViewImageFilter> {
   String getEntitiesName() {
     return _entitiesName;
   }
+
+  @override
+  Future<ImageEntity?> loadById(int id) {
+    return _client
+        .getEntity(_entitiesName, id)
+        .then((response) => _denormalizeOneOrNull(response.data));
+  }
+
+  ImageEntity? _denormalizeOneOrNull(Map<String, dynamic>? mapResult) {
+    if (mapResult == null) return null;
+    return ImageEntity.fromMap(mapResult);
+  }
 }
 
 class EditorImageRepository extends AbstractImageRepository<EditImageFilter> {

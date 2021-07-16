@@ -9,13 +9,13 @@ import 'model_cache.dart';
 
 class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
   final ModelCacheBloc<I, O> _modelCacheBloc;
-  final initialState = ModelListByIdsState<O>(objects: <O>[], requestStatus: RequestStatus.notTried);
+  final initialState = ModelListByIdsState<I, O>(objects: <O>[], objectsByIds: <I, O>{}, requestStatus: RequestStatus.notTried);
 
   var _currentIds = <I>[];
   ModelCacheState<I, O>? _cacheState;
 
-  final _outStateController = BehaviorSubject<ModelListByIdsState<O>>();
-  Stream<ModelListByIdsState<O>> get outState => _outStateController.stream;
+  final _outStateController = BehaviorSubject<ModelListByIdsState<I, O>>();
+  Stream<ModelListByIdsState<I, O>> get outState => _outStateController.stream;
 
   ModelListByIdsBloc({
     required ModelCacheBloc<I, O> modelCacheBloc,
@@ -26,22 +26,23 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
   void setCurrentIds(List<I> ids) {
     if (ListEquality().equals(ids, _currentIds)) return;
 
-    _currentIds = ids;
+    _currentIds = List<I>.from(ids);
     _modelCacheBloc.loadListIfNot(ids);
     _pushOutput();
   }
 
-  ModelListByIdsState<O> _createState() {
+  ModelListByIdsState<I, O> _createState() {
     if (_currentIds.isEmpty) {
-      return ModelListByIdsState<O>(objects: <O>[], requestStatus: RequestStatus.ok);
+      return ModelListByIdsState<I, O>(objects: <O>[], objectsByIds: <I, O>{}, requestStatus: RequestStatus.ok);
     }
 
     final cacheState = _cacheState;
     if (cacheState == null) {
-      return ModelListByIdsState(objects: <O>[], requestStatus: RequestStatus.loading);
+      return ModelListByIdsState(objects: <O>[], objectsByIds: <I, O>{}, requestStatus: RequestStatus.loading);
     }
 
     final objects = <O>[];
+    final objectsByIds = <I, O>{};
     bool complete = true;
 
     for (final id in _currentIds) {
@@ -49,6 +50,7 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
 
       if (object != null) {
         objects.add(object);
+        objectsByIds[id] = object;
         continue;
       }
 
@@ -58,8 +60,8 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
     }
 
     return complete
-        ? ModelListByIdsState(objects: objects, requestStatus: RequestStatus.ok)
-        : ModelListByIdsState(objects: objects, requestStatus: RequestStatus.loading);
+        ? ModelListByIdsState(objects: objects, objectsByIds: objectsByIds, requestStatus: RequestStatus.ok)
+        : ModelListByIdsState(objects: objects, objectsByIds: objectsByIds, requestStatus: RequestStatus.loading);
   }
 
   void _handleLoadedAnythingNew(ModelCacheState<I, O> state) {
@@ -77,12 +79,14 @@ class ModelListByIdsBloc<I, O extends WithId<I>> extends Bloc {
   }
 }
 
-class ModelListByIdsState<O extends WithId> {
+class ModelListByIdsState<I, O extends WithId<I>> {
   final List<O> objects;
+  final Map<I, O> objectsByIds;
   final RequestStatus requestStatus;
 
   ModelListByIdsState({
     required this.objects,
+    required this.objectsByIds,
     required this.requestStatus,
   });
 }

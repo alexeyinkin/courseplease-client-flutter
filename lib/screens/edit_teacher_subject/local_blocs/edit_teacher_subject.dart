@@ -88,7 +88,7 @@ class EditTeacherSubjectCubit extends Bloc {
     _productSubjectsByIdsBloc.setCurrentIds([_teacherSubjectClone.subjectId]);
   }
 
-  void _onProductSubjectChange(ModelListByIdsState<ProductSubject> state) {
+  void _onProductSubjectChange(ModelListByIdsState<int, ProductSubject> state) {
     if (state.objects.length != 1) return;
     _productSubject = state.objects[0];
     _pushOutput();

@@ -45,6 +45,11 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     _loadById(id);
   }
 
+  void reloadByIdIfExists(I id) {
+    if (!_triedIds.containsKey(id)) return;
+    _loadById(id);
+  }
+
   void _loadById(I id) async {
     _triedIds[id] = true;
 
@@ -124,6 +129,17 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     _objectsByIds.remove(id);
     _triedIds.remove(id);
     _failedIds.remove(id);
+    pushOutput();
+  }
+
+  void addAll(List<O> objects) {
+    if (objects.isEmpty) return;
+
+    for (final obj in objects) {
+      addSuccessfulObject(obj);
+      _triedIds[obj.id] = true;
+    }
+
     pushOutput();
   }
 

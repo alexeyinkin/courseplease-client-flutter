@@ -24,7 +24,7 @@ class PurchaseMessageBodyPreviewWidget extends StatelessWidget {
 
   Widget _buildWithProductSubjectOrNull(
     BuildContext context,
-    ModelListByIdsState<ProductSubject>? list,
+    ModelListByIdsState<int, ProductSubject>? list,
   ) {
     if (list == null || list.objects.isEmpty) {
       return SmallCircularProgressIndicator(scale: .5);

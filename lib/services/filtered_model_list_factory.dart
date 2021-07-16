@@ -3,6 +3,7 @@ import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
+import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
 
@@ -100,8 +101,11 @@ class FilteredModelListFactory {
     R extends AbstractFilteredRepository<I, O, F>
   >(F filter) {
     final repository = GetIt.instance.get<R>();
+    final cache = GetIt.instance.get<ModelCacheCache>().getOrCreate<I, O, R>();
+
     return NetworkFilteredModelListBloc<I, O, F>(
       repository: repository,
+      cache: cache,
       filter: filter,
     );
   }

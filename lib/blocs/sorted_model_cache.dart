@@ -62,6 +62,9 @@ class SortedModelCacheBloc<I, O extends WithIdTitle<I>> implements ModelCacheBlo
   void loadByIdIfNot(I id) => modelCacheBloc.loadByIdIfNot(id);
 
   @override
+  void reloadByIdIfExists(I id) => modelCacheBloc.reloadByIdIfExists(id);
+
+  @override
   void loadListIfNot(List<I> ids) => modelCacheBloc.loadListIfNot(ids);
 
   @override
@@ -69,4 +72,7 @@ class SortedModelCacheBloc<I, O extends WithIdTitle<I>> implements ModelCacheBlo
 
   @override
   void removeId(I id) => modelCacheBloc.removeId(id);
+
+  @override
+  void addAll(List<O> objects) => modelCacheBloc.addAll(objects);
 }

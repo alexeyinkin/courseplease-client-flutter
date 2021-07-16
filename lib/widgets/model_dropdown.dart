@@ -35,13 +35,13 @@ class _ModelDropdownState<I, O extends WithIdTitle<I>> extends State<ModelDropdo
   Widget build(BuildContext context) {
     widget.modelListByIdsBloc.setCurrentIds(widget.showIds);
 
-    return StreamBuilder<ModelListByIdsState<O>>(
+    return StreamBuilder<ModelListByIdsState<I, O>>(
       stream: widget.modelListByIdsBloc.outState,
       builder: (context, snapshot) => _buildWithState(snapshot.data ?? widget.modelListByIdsBloc.initialState),
     );
   }
 
-  Widget _buildWithState(ModelListByIdsState<O> state) {
+  Widget _buildWithState(ModelListByIdsState<I, O> state) {
     return _buildWithModels(state.objects);
   }
 

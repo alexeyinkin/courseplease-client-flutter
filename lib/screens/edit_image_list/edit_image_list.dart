@@ -140,7 +140,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
         break;
       case 1:
         widgets.add(
-          StreamBuilder<ModelListByIdsState<ProductSubject>>(
+          StreamBuilder<ModelListByIdsState<int, ProductSubject>>(
             stream: _productSubjectsByIdsBloc.outState,
             builder: (context, snapshot) => _getAlbumPurposeWidget(widget.filter.purposeIds[0], snapshot.data),
           ),
@@ -155,7 +155,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
         break;
       case 1:
         widgets.add(
-          StreamBuilder<ModelListByIdsState<ProductSubject>>(
+          StreamBuilder<ModelListByIdsState<int, ProductSubject>>(
             stream: _productSubjectsByIdsBloc.outState,
             builder: (context, snapshot) => _getProductSubjectTitleWidget(
               snapshot.data ?? _productSubjectsByIdsBloc.initialState,
@@ -183,7 +183,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
 
   Widget _getAlbumPurposeWidget(
     int purposeId,
-    ModelListByIdsState<ProductSubject>? subjectsState,
+    ModelListByIdsState<int, ProductSubject>? subjectsState,
   ) {
     final key = subjectsState == null || subjectsState.objects.length != 1
         ? purposeId.toString() + '_asTheOnly'
@@ -192,7 +192,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
     return Text(tr('models.Image.purposes.' + key));
   }
 
-  Widget _getProductSubjectTitleWidget(ModelListByIdsState<ProductSubject> state) {
+  Widget _getProductSubjectTitleWidget(ModelListByIdsState<int, ProductSubject> state) {
     if (state.objects.isNotEmpty) {
       return Text(state.objects[0].title);
     }

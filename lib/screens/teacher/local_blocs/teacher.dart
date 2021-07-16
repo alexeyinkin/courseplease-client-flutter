@@ -60,7 +60,7 @@ class TeacherScreenCubit extends Bloc {
     _pushOutput();
   }
 
-  void _onProductSubjectsChanged(ModelListByIdsState<ProductSubject> state) {
+  void _onProductSubjectsChanged(ModelListByIdsState<int, ProductSubject> state) {
     _subjects = state.objects;
     _pushOutput();
   }

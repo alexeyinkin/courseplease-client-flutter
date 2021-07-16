@@ -175,7 +175,7 @@ class ViewImagePagesScreenLauncher {
               onCommentPressed: (){
                 ImageScreen.show(
                   context: context,
-                  image: image,
+                  imageId: image.id,
                   imageHeroTag: 'image_' + filter.toString() + '_' + image.id.toString(),
                 );
               },

@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
+import 'model_cache.dart';
 
 abstract class AbstractFilteredModelListBloc<
   I,
@@ -44,9 +46,12 @@ class NetworkFilteredModelListBloc<
   F extends AbstractFilter
 > extends AbstractFilteredModelListBloc<I, O, F> {
   final AbstractFilteredRepository<I, O, F> repository;
+  final ModelCacheBloc<I, O> cache;
+  final ModelListByIdsBloc<I, O> _listBloc;
 
-  final _objects = <O>[];
-  final _objectsByIds = Map<I, O>();
+  final _ids = <I>[];
+  late ModelListByIdsState<I, O> _lastListState;
+
   RequestStatus _status = RequestStatus.notTried;
   bool _hasMore = true;
 
@@ -55,10 +60,22 @@ class NetworkFilteredModelListBloc<
 
   NetworkFilteredModelListBloc({
     required this.repository,
+    required this.cache,
     required F filter,
-  }) : super(
-    filter: filter,
-  );
+  }) :
+      _listBloc = ModelListByIdsBloc<I, O>(modelCacheBloc: cache),
+      super(
+        filter: filter,
+      )
+  {
+    _lastListState = _listBloc.initialState;
+    _listBloc.outState.listen(_onListStateChanged);
+  }
+
+  void _onListStateChanged(ModelListByIdsState<I, O> state) {
+    _lastListState = state;
+    _pushOutput();
+  }
 
   @override
   void loadInitialIfNot() {
@@ -94,12 +111,11 @@ class NetworkFilteredModelListBloc<
   }
 
   void _handleLoaded(ListLoadResult<O> loadResult) {
-    _objects.addAll(loadResult.objects);
+    cache.addAll(loadResult.objects);
+    _ids.addAll(getIds(loadResult.objects));
+    _listBloc.setCurrentIds(_ids);
 
-    for (final object in loadResult.objects) {
-      _objectsByIds[object.id] = object;
-    }
-    print('Added to list, now got ' + _objects.length.toString() + ' objects.');
+    print('Added to list, now got ' + _ids.length.toString() + ' objects.');
 
     _status               = RequestStatus.ok;
     _hasMore              = loadResult.hasMore();
@@ -121,9 +137,9 @@ class NetworkFilteredModelListBloc<
   void _pushOutput() {
     _outStateController.sink.add(
       ModelListState<I, O>(
-        objects:      _objects,
-        objectIds:    _objectsByIds.keys.toList(growable: false),
-        objectsByIds: _objectsByIds,
+        objects:      _lastListState.objects,
+        objectIds:    _lastListState.objectsByIds.keys.toList(growable: false),
+        objectsByIds: _lastListState.objectsByIds,
         status:       _status,
         hasMore:      _hasMore,
       ),
@@ -137,64 +153,40 @@ class NetworkFilteredModelListBloc<
   }
 
   O? getObject(I id) {
-    return _objectsByIds[id];
+    return _lastListState.objectsByIds[id];
   }
 
   void removeObjectIds(List<I> ids) {
     if (ids.isEmpty) return;
 
     final idsMap = Map<I, I>.fromIterable(ids, key: (id) => id, value: (id) => id);
-    final lengthWas = _objects.length;
 
-    _objects.removeWhere((O object) => idsMap.containsKey(object.id));
-    for (final id in ids) {
-      _objectsByIds.remove(id);
-    }
-
-    if (_objects.length < lengthWas) {
-      _pushOutput();
-    }
+    _ids.removeWhere((I id) => idsMap.containsKey(id));
+    _listBloc.setCurrentIds(_ids);
   }
 
   bool containsId(I id) {
-    return _objectsByIds.containsKey(id);
+    return _lastListState.objectsByIds.containsKey(id);
   }
 
   void addToBeginning(List<O> objects) {
     if (objects.isEmpty) return;
 
-    _objects.insertAll(0, objects);
-    for (final object in objects) {
-      _objectsByIds[object.id] = object;
-    }
-
-    _pushOutput();
+    cache.addAll(objects);
+    _ids.insertAll(0, getIds(objects));
+    _listBloc.setCurrentIds(_ids);
   }
 
   void addToEnd(List<O> objects) {
     if (objects.isEmpty) return;
 
-    _objects.addAll(objects);
-    for (final object in objects) {
-      _objectsByIds[object.id] = object;
-    }
-
-    _pushOutput();
+    cache.addAll(objects);
+    _ids.addAll(getIds(objects));
+    _listBloc.setCurrentIds(_ids);
   }
 
   void replaceIfExist(List<O> objects) {
-    bool changed = false;
-
-    for (final obj in objects) {
-      if (!_objectsByIds.containsKey(obj.id)) continue;
-
-      final index = _objects.indexWhere((old) => old.id == obj.id);
-      _objects[index] = obj;
-      _objectsByIds[obj.id] = obj;
-      changed = true;
-    }
-
-    if (changed) _pushOutput();
+    cache.addAll(objects);
   }
 
   void onExternalObjectChange() {
@@ -202,8 +194,8 @@ class NetworkFilteredModelListBloc<
   }
 
   void clear() {
-    _objects.clear();
-    _objectsByIds.clear();
+    _ids.clear();
+    _lastListState = _listBloc.initialState;
     _status = RequestStatus.notTried;
     _hasMore = true;
     _currentLoadingFuture = null;
@@ -212,8 +204,8 @@ class NetworkFilteredModelListBloc<
   }
 
   void clearAndLoadFirstPage() {
-    _objects.clear();
-    _objectsByIds.clear();
+    _ids.clear();
+    _lastListState = _listBloc.initialState;
     _status = RequestStatus.ok;
     _hasMore = true;
     _currentLoadingFuture = null;
@@ -238,6 +230,9 @@ class ModelListState<I, O extends WithId<I>> {
   });
 }
 
+// TODO: Use ModelCacheBloc as the direct backing to this list.
+//       Now using a NetworkFilteredModelListBloc because it was not backed
+//       by ModelCacheBloc initially.
 class SubsetFilteredModelListBloc<
   I,
   O extends WithId<I>

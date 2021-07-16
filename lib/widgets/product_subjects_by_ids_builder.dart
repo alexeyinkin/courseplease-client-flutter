@@ -5,11 +5,11 @@ import 'package:courseplease/models/product_subject.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-typedef Widget ModelListBuilder<T extends WithId>(BuildContext context, ModelListByIdsState<T>? list);
+typedef Widget ModelListBuilder<I, O extends WithId<I>>(BuildContext context, ModelListByIdsState<I, O>? list);
 
 class ProductSubjectsByIdsBuilder extends StatefulWidget {
   final List<int> ids;
-  final ModelListBuilder<ProductSubject> builder;
+  final ModelListBuilder<int, ProductSubject> builder;
 
   ProductSubjectsByIdsBuilder({
     required this.ids,
@@ -35,7 +35,7 @@ class _ProductSubjectsByIdsBuilderState extends State<ProductSubjectsByIdsBuilde
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ModelListByIdsState<ProductSubject>>(
+    return StreamBuilder<ModelListByIdsState<int, ProductSubject>>(
       stream: _productSubjectsByIdsBloc.outState,
       builder: (context, snapshot) => widget.builder(context, snapshot.data),
     );

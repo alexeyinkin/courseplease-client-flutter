@@ -23,7 +23,7 @@ class WithIdTitleListEditorController<
     _modelListByIds.outState.listen(_onStateChanged);
   }
 
-  void _onStateChanged(ModelListByIdsState<O> state) {
+  void _onStateChanged(ModelListByIdsState<I, O> state) {
     setValue(state.objects);
   }
 
