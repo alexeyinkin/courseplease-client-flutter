@@ -3,9 +3,9 @@ import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
 import 'package:flutter/material.dart';
 
-class ImageTeacherTile extends StatelessWidget {
+class UserpicNameLocationWidget extends StatelessWidget {
   final Teacher teacher;
-  ImageTeacherTile({
+  UserpicNameLocationWidget({
     required this.teacher,
   });
 

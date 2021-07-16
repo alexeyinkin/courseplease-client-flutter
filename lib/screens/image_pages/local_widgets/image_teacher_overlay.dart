@@ -1,10 +1,10 @@
 import 'package:courseplease/models/teacher.dart';
 import 'package:courseplease/widgets/overlay.dart';
-import 'package:courseplease/widgets/teacher_builder.dart';
+import 'package:courseplease/widgets/builders/models/teacher.dart';
 import 'package:courseplease/widgets/toggle_overlay.dart';
 import 'package:flutter/material.dart';
 
-import 'image_teacher_tile.dart';
+import '../../../widgets/userpic_name_location.dart';
 
 class ImageTeacherOverlay extends StatelessWidget {
   final int teacherId;
@@ -30,7 +30,7 @@ class ImageTeacherOverlay extends StatelessWidget {
       child: ToggleOverlay(
         visible: visible,
         child: RoundedOverlay(
-          child: ImageTeacherTile(teacher: teacher),
+          child: UserpicNameLocationWidget(teacher: teacher),
         ),
       ),
     );

@@ -1,10 +1,14 @@
 import 'package:courseplease/blocs/model_by_id.dart';
+import 'package:courseplease/models/filters/comment.dart';
+import 'package:courseplease/models/reaction/enum/comment_catalog_intname.dart';
 import 'package:courseplease/repositories/lesson.dart';
-import 'package:courseplease/screens/image_pages/local_widgets/image_teacher_tile.dart'; // TODO: Don't use other screen's local widget.
 import 'package:courseplease/services/model_cache_factory.dart';
+import 'package:courseplease/services/reload/lesson.dart';
 import 'package:courseplease/theme/theme.dart';
-import 'package:courseplease/utils/utils.dart';
-import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
+import 'package:courseplease/widgets/builders/models/lesson.dart';
+import 'package:courseplease/widgets/pad.dart';
+import 'package:courseplease/widgets/reaction/comment_list_and_form.dart';
+import 'package:courseplease/widgets/teacher_and_reactions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get_it/get_it.dart';
@@ -48,6 +52,7 @@ class _LessonScreenState extends State<LessonScreen> {
   );
 
   YoutubePlayerController? _youtubePlayerController;
+  final _commentFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -57,38 +62,15 @@ class _LessonScreenState extends State<LessonScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ModelByIdState<int, Lesson>>(
-      stream: _lessonByIdBloc.outState,
-      builder: (context, snapshot) => _buildWithLessonState(context, snapshot.data ?? _lessonByIdBloc.initialState),
-    );
-  }
-
-  Widget _buildWithLessonState(BuildContext context, ModelByIdState<int, Lesson> lessonByIdState) {
-    final lesson = lessonByIdState.object;
-
-    return lesson == null
-        ? _buildWithoutLesson(lessonByIdState)
-        : _buildWithLesson(context, lesson);
-  }
-
-  // TODO: Extract to a separate widget
-  Widget _buildWithoutLesson(ModelByIdState<int, Lesson> lessonByIdState) {
-    switch (lessonByIdState.requestStatus) {
-      case RequestStatus.notTried:
-      case RequestStatus.loading:
-        return SmallCircularProgressIndicator();
-      default:
-        return Center(child: Icon(Icons.error));
-    }
+    return LessonBuilderWidget(id: widget.lessonId, builder: _buildWithLesson);
   }
 
   Widget _buildWithLesson(BuildContext context, Lesson lesson) {
     _createYoutubePlayerControllerIfNot(lesson);
 
-    return Material(
-      type: MaterialType.transparency,
-      child: SafeArea(
-        child: Column(
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
           children: [
             Container(
               padding: EdgeInsets.only(bottom: 20),
@@ -97,21 +79,21 @@ class _LessonScreenState extends State<LessonScreen> {
                 aspectRatio: 16 / 9,
               ),
             ),
-            Container(
-              padding: EdgeInsets.only(bottom: 20),
-              child: Text(
-                lesson.title,
-                style: AppStyle.pageTitle,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: 20),
-              child: ImageTeacherTile(teacher: lesson.author),
-            ),
+            _buildUnderVideo(lesson),
+            HorizontalLine(),
             Container(
               child: Markdown(
                 data: lesson.body,
                 shrinkWrap: true,
+              ),
+            ),
+            HorizontalLine(),
+            Container(
+              height: 400,
+              child: CommentListAndForm(
+                filter: _getCommentFilter(),
+                commentFocusNode: _commentFocusNode,
+                onCommentCountChanged: _onCommentCountChanged,
               ),
             ),
           ],
@@ -133,10 +115,42 @@ class _LessonScreenState extends State<LessonScreen> {
     );
   }
 
+  Widget _buildUnderVideo(Lesson lesson) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
+          child: Text(
+            lesson.title,
+            style: AppStyle.h3,
+          ),
+        ),
+        TeacherAndReactionsWidget(
+          teacherId: lesson.author.id,
+          commentable: lesson,
+          onCommentPressed: _commentFocusNode.requestFocus,
+        ),
+      ],
+    );
+  }
+
+  void _onCommentCountChanged() {
+    LessonReloadService().reload(widget.lessonId);
+  }
+
+  CommentFilter _getCommentFilter() {
+    return CommentFilter(
+      catalog: CommentCatalogIntNameEnum.lessons,
+      objectId: widget.lessonId,
+    );
+  }
+
   @override
   void dispose() {
-    super.dispose();
     _youtubePlayerController?.close();
     _lessonByIdBloc.dispose();
+    _commentFocusNode.dispose();
+    super.dispose();
   }
 }

@@ -2,15 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseplease/models/filters/comment.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/reaction/enum/comment_catalog_intname.dart';
-import 'package:courseplease/screens/image_pages/local_widgets/image_teacher_tile.dart';
 import 'package:courseplease/services/reload/image.dart';
 import 'package:courseplease/widgets/error/id.dart';
-import 'package:courseplease/widgets/image_builder.dart';
+import 'package:courseplease/widgets/builders/models/image.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/reaction/comment_list_and_form.dart';
-import 'package:courseplease/widgets/reaction/reaction_buttons.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
-import 'package:courseplease/widgets/teacher_builder.dart';
+import 'package:courseplease/widgets/teacher_and_reactions.dart';
 import 'package:flutter/material.dart';
 
 class ImageScreen extends StatefulWidget {
@@ -86,7 +84,6 @@ class _ImageScreenState extends State<ImageScreen> {
 
   void _onCommentCountChanged() {
     ImageReloadService().reload(widget.imageId);
-    //ImageFireChangeService().fire(widget.imageId);
   }
 
   Widget _getImageWidget(ImageEntity image) {
@@ -120,27 +117,10 @@ class _ImageScreenState extends State<ImageScreen> {
   }
 
   Widget _buildUnderImage(ImageEntity image) {
-    return Container(
-      width: double.infinity,
-      child: Wrap(
-        alignment: WrapAlignment.spaceBetween,
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            child: TeacherBuilderWidget(
-              id: image.authorId,
-              builder: (context, teacher) => ImageTeacherTile(teacher: teacher),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            child: ReactionButtons(
-              commentable: image,
-              onCommentPressed: () => _commentFocusNode.requestFocus(),
-            ),
-          ),
-        ],
-      ),
+    return TeacherAndReactionsWidget(
+      teacherId: image.authorId,
+      commentable: image,
+      onCommentPressed: _commentFocusNode.requestFocus,
     );
   }
 

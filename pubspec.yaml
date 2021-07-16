@@ -58,7 +58,7 @@ dependencies:
   yaml: ^3.1.0
   #youtube_player_flutter: ^7.0.0+7
   #youtube_player_iframe: ^1.2.0+2               # No null-safety
-  youtube_plyr_iframe: ^2.0.7
+  youtube_plyr_iframe: ^2.0.7                     # // https://github.com/sarbagyastha/youtube_player_flutter/issues/460#issuecomment-799992113
 
 dev_dependencies:
   flutter_test:

@@ -8,7 +8,7 @@ import 'package:courseplease/services/reload/comment.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
-import 'package:courseplease/widgets/teacher_builder.dart';
+import 'package:courseplease/widgets/builders/models/teacher.dart';
 import 'package:courseplease/widgets/text_and_trailing.dart';
 import 'package:courseplease/widgets/user.dart';
 import 'package:easy_localization/easy_localization.dart';

@@ -1,8 +1,9 @@
+import 'package:courseplease/models/reaction/commentable.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'interfaces.dart';
 import 'teacher.dart';
 
-class Lesson implements WithId<int> {
+class Lesson implements WithId<int>, Commentable {
   final int id;
   final String title;
   final String type;
@@ -10,6 +11,7 @@ class Lesson implements WithId<int> {
   final int durationSeconds;
   final Map<String, String> coverUrls;
   final Teacher author;
+  final int commentCount;
   final String body;
 
   Lesson({
@@ -20,6 +22,7 @@ class Lesson implements WithId<int> {
     required this.durationSeconds,
     required this.coverUrls,
     required this.author,
+    required this.commentCount,
     required this.body,
   });
 
@@ -32,6 +35,7 @@ class Lesson implements WithId<int> {
       durationSeconds:  map['durationSeconds'],
       coverUrls:        toStringStringMap(map['coverUrls']),
       author:           Teacher.fromMap(map['author']),
+      commentCount:     map['commentCount'],
       body:             map['body'] ?? '',
     );
   }

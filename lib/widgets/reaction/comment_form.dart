@@ -67,7 +67,10 @@ class _CommentFormState extends State<CommentForm> {
             enabled: !state.inProgress,
           ),
         ),
-        SendMessageButton(onPressed: _cubit.submit),
+        SendMessageButton(
+          onPressed: _cubit.submit,
+          inProgress: state.inProgress,
+        ),
       ],
     );
   }
