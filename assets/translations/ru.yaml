@@ -27,6 +27,11 @@ CommentForm:
 CommentListWidget:
     beFirst:            'Оставьте комментарий первым!'
 
+CommentTile:
+    actions:
+        delete:         'Удалить'
+    deletePrompt:       'Удалить комментарий?'
+
 ConfirmScreen:
     ok:                 'OK'
     cancel:             'Отмена'

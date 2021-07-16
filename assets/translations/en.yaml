@@ -27,6 +27,11 @@ CommentForm:
 CommentListWidget:
     beFirst:            'Be the first one to comment!'
 
+CommentTile:
+    actions:
+        delete:         'Delete'
+    deletePrompt:       'Delete this comment?'
+
 ConfirmScreen:
     ok:                 'OK'
     cancel:             'Cancel'

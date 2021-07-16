@@ -369,6 +369,18 @@ List<I> getIds<I>(List<WithId<I>> objects) {
   return ids;
 }
 
+Map<String, dynamic> mapOrListToMap(mapOrList) {
+  if (mapOrList is Map) {
+    return mapOrList.cast<String, dynamic>();
+  }
+
+  if (mapOrList is List) {
+    return <String, dynamic>{};
+  }
+
+  throw Exception('Expected map or list, given: ' + mapOrList.runtimeType.toString());
+}
+
 void showDialogWhile(
   Future Function() dialogCreator,
   Future future,

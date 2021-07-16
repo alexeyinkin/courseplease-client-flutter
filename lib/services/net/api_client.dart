@@ -243,6 +243,14 @@ class ApiClient {
     return CreateCommentResponse.fromMap(mapResponse.data);
   }
 
+  Future<void> deleteComment(DeleteCommentRequest request) async {
+    await sendRequest(
+      method: HttpMethod.post,
+      path: '/api1/{@lang}/gallery/comments/delete',
+      body: request,
+    );
+  }
+
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
     return _createListLoadResultResponse(
       await sendRequest(
@@ -323,7 +331,7 @@ class ApiClient {
       throw ErrorApiResponse(status: status, message: responseMap['message']);
     }
 
-    return SuccessfulApiResponse(data: responseMap['data']);
+    return SuccessfulApiResponse(data: mapOrListToMap(responseMap['data']));
   }
 
   Future<Map<String, dynamic>> sendMap({
@@ -1008,5 +1016,23 @@ class CreateCommentResponse {
     return CreateCommentResponse(
       commentId: map['commentId'],
     );
+  }
+}
+
+class DeleteCommentRequest extends RequestBody {
+  final String catalog;
+  final int commentId;
+
+  DeleteCommentRequest({
+    required this.catalog,
+    required this.commentId,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'catalog': catalog,
+      'commentId': commentId,
+    };
   }
 }
