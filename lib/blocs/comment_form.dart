@@ -79,6 +79,9 @@ class CommentFormCubit extends Bloc {
       text: shortenIfLonger(_controller.text, maxLength),
       dateTimeInsert: DateTime.now(),
       authorId: authorId,
+      likeCount: 0,
+      isLiked: false,
+      loadTimestampMilliseconds: 0,
     );
 
     final request = CreateCommentRequest(
@@ -111,6 +114,9 @@ class CommentFormCubit extends Bloc {
       text: _currentComment!.text,
       dateTimeInsert: DateTime.now(),
       authorId: _currentComment!.authorId,
+      likeCount: 0,
+      isLiked: false,
+      loadTimestampMilliseconds: DateTime.now().millisecondsSinceEpoch,
     );
 
     final commentLists = _cache.getModelListsByObjectAndFilterTypes<int, Comment, CommentFilter>();

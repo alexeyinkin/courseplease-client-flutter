@@ -45,6 +45,11 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     _loadById(id);
   }
 
+  void replace(O object) {
+    _addSuccessfulObjects([object]);
+    pushOutput();
+  }
+
   void reloadByIdIfExists(I id) {
     if (!_triedIds.containsKey(id)) return;
     _loadById(id);

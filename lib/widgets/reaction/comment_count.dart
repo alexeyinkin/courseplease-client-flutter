@@ -2,15 +2,17 @@ import 'package:courseplease/models/reaction/commentable.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-import '../pad.dart';
-
 class CommentCountButton extends StatelessWidget {
   final Commentable commentable;
   final VoidCallback? onPressed;
+  final double scale;
+
+  static const _iconSize = 24.0;
 
   CommentCountButton({
     required this.commentable,
     required this.onPressed,
+    this.scale = 1,
   });
 
   @override
@@ -27,7 +29,11 @@ class CommentCountButton extends StatelessWidget {
       opacity: .3,
       child: TextButton(
         onPressed: onPressed,
-        child: Icon(Icons.mode_comment_outlined, color: textColor),
+        child: Icon(
+          Icons.mode_comment_outlined,
+          color: textColor,
+          size: _getIconSize(),
+        ),
       ),
     );
   }
@@ -39,17 +45,29 @@ class CommentCountButton extends StatelessWidget {
       onPressed: onPressed,
       child: Row(
         children: [
-          Icon(Icons.mode_comment_outlined, color: textColor),
-          SmallPadding(),
+          Icon(
+            Icons.mode_comment_outlined,
+            color: textColor,
+            size: _getIconSize(),
+          ),
+          _getSpacing(),
           Text(
             commentable.commentCount.toString(),
             style: TextStyle(
               color: textColor,
-              fontSize: AppStyle.reactionFontSize,
+              fontSize: AppStyle.reactionFontSize * scale,
             ),
           ),
         ],
       ),
     );
+  }
+
+  double _getIconSize() {
+    return _iconSize * scale;
+  }
+
+  Widget _getSpacing() {
+    return Container(width: 10 * scale);
   }
 }

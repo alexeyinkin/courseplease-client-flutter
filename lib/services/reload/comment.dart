@@ -7,6 +7,14 @@ import '../filtered_model_list_factory.dart';
 import '../model_cache_factory.dart';
 
 class CommentReloadService {
+  void reload(String catalog, int id) async {
+    final repository = GetIt.instance.get<CommentRepository>();
+    final comment = await repository.loadByCatalogAndId(catalog, id);
+    if (comment == null) return;
+
+    final cache = GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Comment, CommentRepository>();
+    cache.replace(comment);
+  }
 
   void delete(int id) {
     _deleteFromLists(id);

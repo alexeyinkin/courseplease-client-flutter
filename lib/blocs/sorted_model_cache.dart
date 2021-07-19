@@ -62,6 +62,9 @@ class SortedModelCacheBloc<I, O extends WithIdTitle<I>> implements ModelCacheBlo
   void loadByIdIfNot(I id) => modelCacheBloc.loadByIdIfNot(id);
 
   @override
+  void replace(O object) => modelCacheBloc.replace(object);
+
+  @override
   void reloadByIdIfExists(I id) => modelCacheBloc.reloadByIdIfExists(id);
 
   @override

@@ -9,6 +9,7 @@ import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/builders/models/teacher.dart';
+import 'package:courseplease/widgets/reaction/like_count.dart';
 import 'package:courseplease/widgets/text_and_trailing.dart';
 import 'package:courseplease/widgets/user.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -30,7 +31,7 @@ class CommentTile extends AbstractObjectTile<int, Comment, CommentFilter> {
 }
 
 class _CommentTileState extends AbstractObjectTileState<int, Comment, CommentFilter, CommentTile> {
-  static const _inlineDateWidth = 80.0;
+  static const _inlineDateWidth = 100.0;
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +58,29 @@ class _CommentTileState extends AbstractObjectTileState<int, Comment, CommentFil
   }
 
   Widget _getContent(BuildContext context) {
+    final objectCatalog = widget.filter.catalog;
+    final commentCatalog = objectCatalog + '-comments';
+    final comment = widget.object;
     final locale = requireLocale(context);
 
     return TextAndTrailingWidget(
-      text: widget.object.text,
-      trailing: Opacity(
-        opacity: .5,
-        child: Text(formatTimeOrDate(widget.object.dateTimeInsert.toLocal(), locale)),
+      text: comment.text,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Opacity(
+            opacity: .5,
+            child: Text(formatTimeOrDate(comment.dateTimeInsert.toLocal(), locale)),
+          ),
+          SmallPadding(),
+          LikeCountButton(
+            likable: comment,
+            catalog: commentCatalog,
+            canLike: comment.authorId != getCurrentUserId(),
+            reloadCallback: () => CommentReloadService().reload(objectCatalog, comment.id),
+            scale: .7,
+          ),
+        ],
       ),
       trailingWidth: _inlineDateWidth,
     );

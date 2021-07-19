@@ -25,4 +25,17 @@ class CommentRepository extends AbstractFilteredRepository<int, Comment, Comment
 
     return ListLoadResult<Comment>(objects, mapResult.nextPageToken);
   }
+
+  Future<Comment?> loadByCatalogAndId(String catalog, int id) async {
+    final mapResponse = await _client.sendRequest(
+      method: HttpMethod.get,
+      path: '/api1/{@lang}/gallery/' + catalog + '/comments/' + id.toString(),
+    );
+    return _denormalizeOneOrNull(mapResponse.data);
+  }
+
+  Comment? _denormalizeOneOrNull(Map<String, dynamic>? mapResult) {
+    if (mapResult == null) return null;
+    return Comment.fromMap(mapResult);
+  }
 }

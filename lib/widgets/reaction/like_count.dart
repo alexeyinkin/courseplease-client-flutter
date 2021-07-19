@@ -5,14 +5,14 @@ import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../pad.dart';
-
 class LikeCountButton extends StatelessWidget {
   final Likable likable;
   final String catalog;
   final bool canLike;
   final VoidCallback reloadCallback;
+  final double scale;
 
+  static const _iconSize = 24.0;
   final _likeCubit = GetIt.instance.get<LikeCubit>();
 
   LikeCountButton({
@@ -20,6 +20,7 @@ class LikeCountButton extends StatelessWidget {
     required this.catalog,
     required this.canLike,
     required this.reloadCallback,
+    this.scale = 1,
   });
 
   @override
@@ -46,9 +47,13 @@ class LikeCountButton extends StatelessWidget {
 
     return Opacity(
       opacity: .3,
-      child: TextButton(
-        onPressed: _onCreateLikePressed,
-        child: Icon(Icons.favorite_outline, color: textColor),
+      child: GestureDetector(
+        onTap: _onCreateLikePressed,
+        child: Icon(
+          Icons.favorite_outline,
+          color: textColor,
+          size: _getIconSize(),
+        ),
       ),
     );
   }
@@ -56,17 +61,21 @@ class LikeCountButton extends StatelessWidget {
   Widget _buildNonZeroLiked(Likable upToDateLikable, BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    return TextButton(
-      onPressed: _onDeleteLikePressed,
+    return GestureDetector(
+      onTap: _onDeleteLikePressed,
       child: Row(
         children: [
-          Icon(Icons.favorite, color: primaryColor),
-          SmallPadding(),
+          Icon(
+            Icons.favorite,
+            color: primaryColor,
+            size: _getIconSize(),
+          ),
+          _getSpacing(),
           Text(
             upToDateLikable.likeCount.toString(),
             style: TextStyle(
               color: primaryColor,
-              fontSize: AppStyle.reactionFontSize,
+              fontSize: AppStyle.reactionFontSize * scale,
             ),
           ),
         ],
@@ -77,22 +86,34 @@ class LikeCountButton extends StatelessWidget {
   Widget _buildNonZeroNotLiked(Likable upToDateLikable, BuildContext context) {
     final textColor = getTextColor(context);
 
-    return TextButton(
-      onPressed: _onCreateLikePressed,
+    return GestureDetector(
+      onTap: _onCreateLikePressed,
       child: Row(
         children: [
-          Icon(Icons.favorite_border, color: textColor),
-          SmallPadding(),
+          Icon(
+            Icons.favorite_border,
+            color: textColor,
+            size: _getIconSize(),
+          ),
+          _getSpacing(),
           Text(
             upToDateLikable.likeCount.toString(),
             style: TextStyle(
               color: textColor,
-              fontSize: AppStyle.reactionFontSize,
+              fontSize: AppStyle.reactionFontSize * scale,
             ),
           ),
         ],
       ),
     );
+  }
+
+  double _getIconSize() {
+    return _iconSize * scale;
+  }
+
+  Widget _getSpacing() {
+    return Container(width: 10 * scale);
   }
 
   void _onCreateLikePressed() async {
