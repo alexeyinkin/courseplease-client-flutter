@@ -4,6 +4,7 @@ import 'package:courseplease/blocs/chat_message_factory.dart';
 import 'package:courseplease/blocs/chat_message_send_queue.dart';
 import 'package:courseplease/blocs/chats.dart';
 import 'package:courseplease/blocs/contact_status.dart';
+import 'package:courseplease/blocs/like.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/blocs/realtime_factory.dart';
 import 'package:courseplease/blocs/server_sent_events.dart';
@@ -99,6 +100,7 @@ void _initializeBlocs() {
       ..registerSingleton<ChatMessageFactory>(ChatMessageFactory())
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
       ..registerSingleton<HomeScreenCubit>(HomeScreenCubit())
+      ..registerSingleton<LikeCubit>(LikeCubit())
   ;
 }
 

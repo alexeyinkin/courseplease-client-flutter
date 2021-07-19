@@ -335,3 +335,8 @@ class RequestAuthorizationEvent extends AuthenticationEvent {
     required this.context,
   });
 }
+
+int? getCurrentUserId() {
+  final cubit = GetIt.instance.get<AuthenticationBloc>();
+  return cubit.currentState.data?.user?.id;
+}

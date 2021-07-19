@@ -1,19 +1,23 @@
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/models/reaction/likable.dart';
 import 'package:courseplease/models/reaction/commentable.dart';
 import 'package:courseplease/models/server_image.dart';
 import 'interfaces.dart';
 import 'mapping.dart';
 
 // Flutter has an 'Image' widget. Naming is to avoid conflicts.
-class ImageEntity extends ServerImage implements WithId<int>, Commentable {
+class ImageEntity extends ServerImage implements WithId<int>, Commentable, Likable {
   final int id;
   final String title;
   final Map<String, String> urls;
   final int authorId;
   final int commentCount;
+  final int likeCount;
+  final bool isLiked;
   final ImageStatus status;
   final List<ImageAlbumLink> albums;
   final List<Mapping> mappings;
+  final int loadTimestampMilliseconds;
 
   static const lightboxFormat = '2000x2000';
 
@@ -23,9 +27,12 @@ class ImageEntity extends ServerImage implements WithId<int>, Commentable {
     required this.urls,
     required this.authorId,
     required this.commentCount,
+    required this.likeCount,
+    required this.isLiked,
     required this.status,
     required this.albums,
     required this.mappings,
+    required this.loadTimestampMilliseconds,
   });
 
   factory ImageEntity.fromMap(Map<String, dynamic> map) {
@@ -41,9 +48,12 @@ class ImageEntity extends ServerImage implements WithId<int>, Commentable {
       urls:         urls,
       authorId:     map['authorId'],
       commentCount: map['commentCount'],
+      likeCount:    map['likeCount'],
+      isLiked:      map['isLiked'],
       status:       ImageEntity.getStatus(albums),
       albums:       albums,
       mappings:     Mapping.fromMaps(map['mappings'] ?? []),
+      loadTimestampMilliseconds:  DateTime.now().millisecondsSinceEpoch,
     );
   }
 

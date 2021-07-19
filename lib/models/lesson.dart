@@ -1,9 +1,10 @@
 import 'package:courseplease/models/reaction/commentable.dart';
+import 'package:courseplease/models/reaction/likable.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'interfaces.dart';
 import 'teacher.dart';
 
-class Lesson implements WithId<int>, Commentable {
+class Lesson implements WithId<int>, Commentable, Likable {
   final int id;
   final String title;
   final String type;
@@ -12,7 +13,10 @@ class Lesson implements WithId<int>, Commentable {
   final Map<String, String> coverUrls;
   final Teacher author;
   final int commentCount;
+  final int likeCount;
+  final bool isLiked;
   final String body;
+  final int loadTimestampMilliseconds;
 
   Lesson({
     required this.id,
@@ -23,7 +27,10 @@ class Lesson implements WithId<int>, Commentable {
     required this.coverUrls,
     required this.author,
     required this.commentCount,
+    required this.likeCount,
+    required this.isLiked,
     required this.body,
+    required this.loadTimestampMilliseconds,
   });
 
   factory Lesson.fromMap(Map<String, dynamic> map) {
@@ -36,7 +43,10 @@ class Lesson implements WithId<int>, Commentable {
       coverUrls:        toStringStringMap(map['coverUrls']),
       author:           Teacher.fromMap(map['author']),
       commentCount:     map['commentCount'],
+      likeCount:        map['likeCount'],
+      isLiked:          map['isLiked'],
       body:             map['body'] ?? '',
+      loadTimestampMilliseconds:  DateTime.now().millisecondsSinceEpoch,
     );
   }
 }

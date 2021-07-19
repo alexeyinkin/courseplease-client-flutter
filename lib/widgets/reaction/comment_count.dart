@@ -6,7 +6,7 @@ import '../pad.dart';
 
 class CommentCountButton extends StatelessWidget {
   final Commentable commentable;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   CommentCountButton({
     required this.commentable,

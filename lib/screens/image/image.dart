@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/filters/comment.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/reaction/enum/comment_catalog_intname.dart';
+import 'package:courseplease/models/reaction/enum/like_catalog_intname.dart';
 import 'package:courseplease/services/reload/image.dart';
 import 'package:courseplease/widgets/error/id.dart';
 import 'package:courseplease/widgets/builders/models/image.dart';
@@ -121,6 +123,10 @@ class _ImageScreenState extends State<ImageScreen> {
       teacherId: image.authorId,
       commentable: image,
       onCommentPressed: _commentFocusNode.requestFocus,
+      likable: image,
+      catalog: LikeCatalogIntNameEnum.photos,
+      reloadCallback: () => ImageReloadService().reload(image.id),
+      isMy: image.authorId == getCurrentUserId(),
     );
   }
 
