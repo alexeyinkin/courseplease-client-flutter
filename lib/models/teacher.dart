@@ -1,15 +1,10 @@
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'location.dart';
-import 'money.dart';
-import 'product_variant_format.dart';
 import 'rating.dart';
 import 'teacher_subject.dart';
 
 class Teacher extends User {
-  final List<ProductVariantFormat> productVariantFormats;
-  final Money minPrice;
-  final Money maxPrice;
   final int customerCount;
   final Rating rating;
   final List<TeacherSubject> subjects;
@@ -25,9 +20,6 @@ class Teacher extends User {
     required Map<String, String> userpicUrls,
     required Location location,
     required String bio,
-    required this.productVariantFormats,
-    required this.minPrice,
-    required this.maxPrice,
     required this.customerCount,
     required this.rating,
     required this.subjects,
@@ -49,11 +41,6 @@ class Teacher extends User {
   }
 
   factory Teacher.fromMap(Map<String, dynamic> map) {
-    final productVariantFormats = map['productVariantFormats']
-        .map((map) => ProductVariantFormat.fromMap(map))
-        .toList()
-        .cast<ProductVariantFormat>();
-
     final subjects = TeacherSubject.fromMaps(map['subjects'] ?? []);
 
     return Teacher(
@@ -66,9 +53,6 @@ class Teacher extends User {
       userpicUrls:            toStringStringMap(map['userpicUrls']),
       location:               Location.fromMap(map['location']),
       bio:                    map['bio'] ?? '',
-      productVariantFormats:  productVariantFormats,
-      minPrice:               Money.fromMapOrList(map['minPrice']),
-      maxPrice:               Money.fromMapOrList(map['maxPrice']),
       customerCount:          map['customerCount'],
       rating:                 Rating.fromMap(map['rating']),
       subjects:               subjects,

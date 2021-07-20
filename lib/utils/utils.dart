@@ -369,6 +369,16 @@ List<I> getIds<I>(List<WithId<I>> objects) {
   return ids;
 }
 
+List<T> notNulls<T>(List<T?> list) {
+  final result = <T>[];
+
+  for (final item in list) {
+    if (item != null) result.add(item);
+  }
+
+  return result;
+}
+
 Map<String, dynamic> mapOrListToMap(mapOrList) {
   if (mapOrList is Map) {
     return mapOrList.cast<String, dynamic>();

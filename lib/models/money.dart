@@ -166,6 +166,18 @@ class Money {
     return result == null ? null : Money.from(result);
   }
 
+  static Money? max(List<Money> list) {
+    Money? result;
+
+    for (final money in list) {
+      if (result == null || money.gt(result)) {
+        result = money;
+      }
+    }
+
+    return result == null ? null : Money.from(result);
+  }
+
   bool gt(Money money) {
     if (money.isZero()) return isPositive();
     if (isZero()) return money.isNegative();

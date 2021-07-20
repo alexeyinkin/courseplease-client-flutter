@@ -1,3 +1,5 @@
+import 'package:courseplease/models/money.dart';
+import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/widgets/object_grid.dart';
 import 'package:courseplease/screens/teacher/teacher.dart';
@@ -6,6 +8,7 @@ import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/price_button.dart';
 import 'package:courseplease/widgets/product_variants_line.dart';
 import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'image_grid.dart';
@@ -87,8 +90,10 @@ class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
 class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilter, TeacherTile> {
   @override
   Widget build(BuildContext context) {
-    final relativeUrl = widget.object.userpicUrls['300x300'] ?? null;
+    final user = widget.object;
+    final relativeUrl = user.userpicUrls['300x300'] ?? null;
     final url = relativeUrl == null ? null : 'https://courseplease.com' + relativeUrl;
+    final ts = TeacherSubject.mergeAll(user.subjects);
 
     return GestureDetector(
       onTap: widget.onTap,
@@ -111,7 +116,7 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
                       backgroundImage: url == null ? null : NetworkImage(url),
                     ),
                   ),
-                  TeacherRatingAndCustomerCountWidget(teacher: widget.object),
+                  TeacherRatingAndCustomerCountWidget(teacher: user),
                 ],
               ),
             ),
@@ -121,25 +126,25 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
                 children: [
                   Container(
                     padding: EdgeInsets.only(bottom: 5),
-                    child: Text(widget.object.firstName + ' ' + widget.object.lastName + ' ' + widget.object.id.toString(), style: TextStyle(fontWeight: FontWeight.bold))
+                    child: Text(user.firstName + ' ' + user.lastName + ' ' + user.id.toString(), style: TextStyle(fontWeight: FontWeight.bold))
                   ),
                   Container(
                     padding: EdgeInsets.only(bottom: 5),
-                    child: LocationLineWidget(location: widget.object.location, textOpacity: .5),
+                    child: LocationLineWidget(location: user.location, textOpacity: .5),
                   ),
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
                     child: TeacherImageLineWidget(
                       teacherFilter: widget.filter,
-                      teacherId: widget.object.id,
+                      teacherId: user.id,
                       height: 50,
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
-                    child: ProductVariantsLineWidget(formats: widget.object.productVariantFormats),
+                    child: ProductVariantsLineWidget(formats: ts.productVariantFormats),
                   ),
-                  _getPriceButton(),
+                  _getPriceButton(ts),
                 ],
               ),
             ),
@@ -149,18 +154,30 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
     );
   }
 
-  Widget _getPriceButton() {
-    if (widget.object.maxPrice.isZero()) return Container();
+  Widget _getPriceButton(TeacherSubject ts) {
+    final maxPrice = _getMaxPrice(ts);
+    if (maxPrice == null) return Container();
 
     return Container(
       alignment: Alignment.topRight,
       padding: EdgeInsets.only(bottom: 10),
       child: PriceButton(
-        money: widget.object.maxPrice,
-        per: "h",
+        money: maxPrice,
+        per: tr('util.units.h'),
         onPressed: widget.onTap,
       ),
     );
+  }
+
+  Money? _getMaxPrice(TeacherSubject ts) {
+    var money = Money({});
+
+    for (final pv in ts.productVariantFormats) {
+      if (pv.enabled == false || pv.maxPrice == null) continue;
+      if (pv.maxPrice!.gt(money)) money = pv.maxPrice!;
+    }
+
+    return money.isZero() ? null : money;
   }
 }
 

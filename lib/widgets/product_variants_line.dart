@@ -1,9 +1,9 @@
-import 'package:courseplease/models/product_variant_format.dart';
+import 'package:courseplease/models/interfaces.dart';
 import 'package:flutter/material.dart';
 import 'readonly_tags.dart';
 
 class ProductVariantsLineWidget extends StatelessWidget {
-  final List<ProductVariantFormat> formats;
+  final List<WithTitle> formats;
 
   ProductVariantsLineWidget({
     required this.formats,

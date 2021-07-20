@@ -1,6 +1,9 @@
+import 'package:courseplease/models/interfaces.dart';
+import 'package:courseplease/utils/utils.dart';
+
 import 'money.dart';
 
-class ProductVariantFormatWithPrice {
+class ProductVariantFormatWithPrice implements WithTitle {
   /// Null when creating a format. Always non-null when shopping.
   final int? productVariantId;
 
@@ -38,6 +41,17 @@ class ProductVariantFormatWithPrice {
       enabled:          obj.enabled,
       minPrice:         obj.minPrice,
       maxPrice:         obj.maxPrice,
+    );
+  }
+
+  ProductVariantFormatWithPrice merge(ProductVariantFormatWithPrice obj) {
+    return ProductVariantFormatWithPrice(
+      productVariantId: 0,
+      intName: intName,
+      title: title,
+      enabled: enabled && obj.enabled,
+      minPrice: null,
+      maxPrice: Money.max(notNulls([maxPrice, obj.maxPrice])),
     );
   }
 }

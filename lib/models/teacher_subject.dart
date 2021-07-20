@@ -83,4 +83,26 @@ class TeacherSubject {
     }
     return ids;
   }
+
+  factory TeacherSubject.mergeAll(List<TeacherSubject> list) {
+    var enabled = false;
+    var productVariantFormats = <String, ProductVariantFormatWithPrice>{};
+
+    for (final ts in list) {
+      if (ts.enabled) enabled = true;
+
+      for (final format in ts.productVariantFormats) {
+        if (!format.enabled) continue;
+        productVariantFormats[format.intName] = productVariantFormats[format.intName]?.merge(format) ?? format;
+      }
+    }
+
+    return TeacherSubject(
+      subjectId: 0,
+      enabled: enabled,
+      body: '',
+      imageAlbumThumbs: {},
+      productVariantFormats: productVariantFormats.values.toList(growable: false),
+    );
+  }
 }
