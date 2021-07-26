@@ -1,18 +1,19 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:courseplease/models/money.dart';
 import 'package:courseplease/models/shop/line_item.dart';
-import 'package:courseplease/screens/home/local_blocs/home.dart';
+import 'package:courseplease/screens/error_popup/error_popup.dart';
 import 'package:courseplease/screens/order/local_blocs/order.dart';
+import 'package:courseplease/screens/webview/webview.dart';
+import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:courseplease/widgets/app_navigator.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/pad.dart';
-import 'package:courseplease/widgets/shop/line_item.dart';
+import 'package:courseplease/widgets/shop/line_items.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
 class OrderScreen extends StatefulWidget {
   final Money? initialTopUpMoney;
@@ -46,8 +47,6 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   final OrderScreenCubit _orderScreenCubit;
-  final _homeScreenCubit = GetIt.instance.get<HomeScreenCubit>();
-  late final StreamSubscription _orderScreenCubitSubscription;
 
   _OrderScreenState({
     Money? initialTopUpMoney,
@@ -58,27 +57,38 @@ class _OrderScreenState extends State<OrderScreen> {
         lineItems: initialLineItems,
       )
   {
-    _orderScreenCubitSubscription = _orderScreenCubit.outState.listen(
-      _onStateChange
+    _orderScreenCubit.navigations.listen(_navigateToGateway);
+    _orderScreenCubit.cancels.listen((_) => _close());
+    _orderScreenCubit.errors.listen((_) => _onError());
+    _orderScreenCubit.successes.listen((_) => _onSuccess());
+  }
+
+  void _navigateToGateway(CreateCartAndOrderResponse response) async {
+    final messageJson = await WebViewScreen.show(
+      context: context,
+      url: response.payRequest!.url,
+      title: LineItemsWidget(
+        lineItems: _orderScreenCubit.currentState.lineItems,
+        showPrice: false,
+      ),
+      toolbarHeight: 80, // TODO: Adjust if multiple items or add '+ 1 more'.
     );
+
+    _orderScreenCubit.setWebViewResponse(messageJson);
   }
 
-  void _onStateChange(OrderScreenCubitState state) {
-    _homeScreenCubit.setCurrentTab(HomeScreenTab.messages);
-
-    if (state.status == OrderScreenCubitStatus.complete) {
-      _closeAllRoutesExceptFirst();
-    }
+  void _onError() {
+    ErrorPopupScreen.show(context);
   }
 
-  void _closeAllRoutesExceptFirst() {
-    Navigator.of(context).popUntil((route) => route.isFirst);
+  void _onSuccess() {
+    AppNavigator(context).toLastPurchasedLesson();
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<OrderScreenCubitState>(
-      stream: _orderScreenCubit.outState,
+      stream: _orderScreenCubit.states,
       builder: (context, snapshot) => _buildWithStateOrNull(snapshot.data),
     );
   }
@@ -113,25 +123,13 @@ class _OrderScreenState extends State<OrderScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ..._getLineItems(state.lineItems),
+          LineItemsWidget(lineItems: state.lineItems, showPrice: true),
           _getBalanceRowIfUsed(state),
           _getPayableRowIfNeed(state),
           _getTerms(state),
         ],
       ),
     );
-  }
-
-  List<Widget> _getLineItems(List<LineItem> lineItems) {
-    final result = <Widget>[];
-
-    for (final lineItem in lineItems) {
-      result.add(
-        LineItemWidget(lineItem: lineItem),
-      );
-    }
-
-    return result;
   }
 
   Widget _getBalanceRowIfUsed(OrderScreenCubitState state) {
@@ -198,9 +196,12 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
+  void _close() {
+    Navigator.of(context).pop();
+  }
+
   @override
   void dispose() {
-    _orderScreenCubitSubscription.cancel();
     _orderScreenCubit.dispose();
     super.dispose();
   }

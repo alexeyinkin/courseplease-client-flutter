@@ -196,8 +196,8 @@ class Money {
   }
 
   bool lt(Money money) {
-    if (money.isZero()) return isPositive();
-    if (isZero()) return money.isNegative();
+    if (money.isZero()) return isNegative();
+    if (isZero()) return money.isPositive();
 
     for (final entry in map.entries) {
       final otherValue = money.map[entry.key];

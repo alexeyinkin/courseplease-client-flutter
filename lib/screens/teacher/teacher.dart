@@ -189,6 +189,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
     ProductVariantFormatWithPrice format,
     Teacher teacher,
   ) {
+    // TODO: Check auth, show sign in if not.
     OrderScreen.show(
       context: context,
       lineItems: [

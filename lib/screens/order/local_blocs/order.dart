@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/bloc.dart';
@@ -14,8 +15,21 @@ class OrderScreenCubit extends Bloc {
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   late final StreamSubscription _authenticationSubscription;
 
-  final _outStateController = BehaviorSubject<OrderScreenCubitState>();
-  Stream<OrderScreenCubitState> get outState => _outStateController.stream;
+  final _statesController = BehaviorSubject<OrderScreenCubitState>();
+  Stream<OrderScreenCubitState> get states => _statesController.stream;
+  OrderScreenCubitState get currentState => _createState();
+
+  final _navigationsController = BehaviorSubject<CreateCartAndOrderResponse>();
+  Stream<CreateCartAndOrderResponse> get navigations => _navigationsController.stream;
+
+  final _cancelsController = BehaviorSubject<void>();
+  Stream<void> get cancels => _cancelsController.stream;
+
+  final _errorsController = BehaviorSubject<void>();
+  Stream<void> get errors => _errorsController.stream;
+
+  final _successesController = BehaviorSubject<void>();
+  Stream<void> get successes => _successesController.stream;
 
   AuthenticationState? _authenticationState;
   List<MoneyAccount> _accountsBefore = [];
@@ -34,6 +48,8 @@ class OrderScreenCubit extends Bloc {
     _authenticationSubscription = _authenticationCubit.outState.listen(
       _onAuthenticationStateChanged,
     );
+
+    _processIfNotHolding();
   }
 
   void _onAuthenticationStateChanged(AuthenticationState state) {
@@ -43,9 +59,10 @@ class OrderScreenCubit extends Bloc {
   }
 
   void _pushOutput() {
-    if (_authenticationState == null) return;
+    if (_authenticationState == null) return; // Will push on change.
+
     final state = _createState();
-    _outStateController.sink.add(state);
+    _statesController.sink.add(state);
   }
 
   OrderScreenCubitState _createState() {
@@ -150,6 +167,14 @@ class OrderScreenCubit extends Bloc {
     return true;
   }
 
+  void _processIfNotHolding() {
+    final state = _createState();
+
+    if (state.holdMoney.isZero()) {
+      process();
+    }
+  }
+
   void process() async {
     final request = CreateCartAndOrderRequest(lineItems: _lineItems);
 
@@ -164,23 +189,42 @@ class OrderScreenCubit extends Bloc {
     if (response.payRequest == null) {
       _onOrderComplete(); // Paid off the balance.
     } else {
-      _navigateToPaymentGateway();
+      _navigationsController.sink.add(response);
     }
   }
 
   void _onOrderComplete() {
     _status = OrderScreenCubitStatus.complete;
     _pushOutput();
+
+    _successesController.sink.add(true);
   }
 
-  void _navigateToPaymentGateway() {
-    // TODO
+  /// After redirecting from the payment gateway to our site,
+  /// the page sends this message and closes the webview screen.
+  void setWebViewResponse(String? json) {
+    if (json == null) {
+      _cancelsController.sink.add(true);
+      return;
+    }
+
+    final map = jsonDecode(json);
+    if (map['status'] != 1) {
+      _errorsController.sink.add(true);
+      return;
+    }
+
+    _onOrderComplete();
   }
 
   @override
   void dispose() {
     _authenticationSubscription.cancel();
-    _outStateController.close();
+    _navigationsController.close();
+    _cancelsController.close();
+    _errorsController.close();
+    _successesController.close();
+    _statesController.close();
   }
 }
 

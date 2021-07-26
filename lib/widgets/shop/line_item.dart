@@ -9,9 +9,11 @@ import 'package:get_it/get_it.dart';
 
 class LineItemWidget extends StatefulWidget {
   final LineItem lineItem;
+  final bool showPrice;
 
   LineItemWidget({
     required this.lineItem,
+    required this.showPrice,
   });
 
   @override
@@ -32,13 +34,7 @@ class _LineItemWidgetState extends State<LineItemWidget> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Row(
-        children: [
-          Expanded(child: UserpicAndNameWidget(user: widget.lineItem.user)),
-          Container(width: 30),
-          Text(widget.lineItem.format.maxPrice.toString()),
-        ],
-      ),
+      title: _getTitle(),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -46,6 +42,21 @@ class _LineItemWidgetState extends State<LineItemWidget> {
           _getFormatLine(),
         ],
       ),
+    );
+  }
+
+  Widget _getTitle() {
+    final children = <Widget>[
+      Expanded(child: UserpicAndNameWidget(user: widget.lineItem.user)),
+    ];
+
+    if (widget.showPrice) {
+      children.add(Container(width: 30));
+      children.add(Text(widget.lineItem.format.maxPrice.toString()));
+    }
+
+    return Row(
+      children: children,
     );
   }
 
