@@ -213,6 +213,29 @@ models:
         'consulting/students-place':    'Student''s Place'
         'consulting/online':            'Online'
 
+MoneyAccountTransaction:
+    type:
+        in:             'Deposit'
+        out:            'Withdraw'
+        send:           'Sent'
+        receive:        'Received'
+        earn:           'Earning'
+        unearn:         'Cancelled Earning'
+        spend:          'Spent'
+        refund:         'Refund'
+
+MoneyAccountTransactionsScreen:
+    placeholder:        'When you pay or get paid, here will be your transactions.'
+
+MoneyAccountTransactionTable:
+    field:
+        id:             'ID'
+        type:           'Type'
+        money:          'Amount'
+        balanceAfter:   'Left'
+        dateTimeInsert: 'Date'
+        description:    'Comment'
+
 MyProfileTabWidget:
     iconTitle:          'Profile'
 

@@ -216,6 +216,29 @@ models:
         'consulting/students-place':    'У ученика'
         'consulting/online':            'Online'
 
+MoneyAccountTransaction:
+    type:
+        in:             'Пополнение'
+        out:            'Вывод'
+        send:           'Отправка'
+        receive:        'Получение'
+        earn:           'Заработок'
+        unearn:         'Отмена заработка'
+        spend:          'Покупка'
+        refund:         'Возврат'
+
+MoneyAccountTransactionsScreen:
+    placeholder:        'Когда вы заплатите или заработаете деньги, здесь будет список операций.'
+
+MoneyAccountTransactionTable:
+    field:
+        id:             'ID'
+        type:           'Тип'
+        money:          'Сумма'
+        balanceAfter:   'Осталось'
+        dateTimeInsert: 'Дата'
+        description:    'Комментарий'
+
 MyProfileTabWidget:
     iconTitle:          'Профиль'
 

@@ -49,12 +49,30 @@ class AppStyle {
     fontStyle: FontStyle.italic,
   );
 
+  static const moneyPositive = TextStyle(
+    color: positiveColor,
+  );
+
+  static const moneyNegative = TextStyle(
+    color: negativeColor,
+  );
+
+  static const tableHeader = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+  );
+
   static const reactionFontSize = 20.0;
 
-  static const unreadColor = Color(0x30808080);
+  static const overlayColor = Color(0x30808080);
+  static const unreadColor = overlayColor;
+
   static const errorColor = Color(0xFFFF0000);
   static const borderColor = Color(0x60808080);
   static const borderRadius = 4.0;
+
+  static const positiveColor = Color(0xFF00DF00);
+  static const negativeColor = Color(0xFFDF0000);
 }
 
 Color getTextColor(BuildContext context) {

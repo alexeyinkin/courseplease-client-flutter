@@ -18,6 +18,7 @@ import 'package:courseplease/repositories/delivery.dart';
 import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/language.dart';
 import 'package:courseplease/repositories/lesson.dart';
+import 'package:courseplease/repositories/money_account_transaction.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/screens/home/local_blocs/home.dart';
@@ -77,6 +78,7 @@ void _initializeRepositories() {
       ..registerSingleton<GalleryImageRepository>(GalleryImageRepository())
       ..registerSingleton<LanguageRepository>(LanguageRepository())
       ..registerSingleton<LessonRepository>(LessonRepository())
+      ..registerSingleton<MoneyAccountTransactionRepository>(MoneyAccountTransactionRepository())
       ..registerSingleton<ProductSubjectRepository>(ProductSubjectRepository())
       ..registerSingleton<TeacherRepository>(TeacherRepository())
   ;

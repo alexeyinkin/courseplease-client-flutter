@@ -44,11 +44,14 @@ class Money {
     return Money(map);
   }
 
-  String toString() {
+  @override
+  String toString({bool plusForPositive = false}) {
     final parts = <String>[];
 
     for (final entry in map.entries) {
-      parts.add(formatMoneyValue(entry.value) + ' ' + curToSymbol(entry.key));
+      parts.add(
+        formatMoneyValue(entry.value, plusForPositive: plusForPositive) + ' ' + curToSymbol(entry.key),
+      );
     }
 
     return parts.join(' + ');

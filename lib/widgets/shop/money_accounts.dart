@@ -1,4 +1,5 @@
 import 'package:courseplease/models/shop/money_account.dart';
+import 'package:courseplease/screens/money_account_transactions/money_account_transactions.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -36,9 +37,19 @@ class MoneyAccountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      account.balance.toString(),
-      style: AppStyle.h3,
+    return GestureDetector(
+      onTap: () => _onTap(context),
+      child: Text(
+        account.balance.toString(),
+        style: AppStyle.h3,
+      ),
+    );
+  }
+
+  void _onTap(BuildContext context) {
+    MoneyAccountTransactionsScreen.show(
+      context: context,
+      cur: account.cur,
     );
   }
 }

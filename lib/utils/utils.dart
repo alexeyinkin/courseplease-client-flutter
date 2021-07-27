@@ -240,8 +240,16 @@ String formatLongRoughDurationValidFor(Duration duration) {
   return plural('util.longDurationValidFor.days', duration.inDays);
 }
 
-String formatMoneyValue(double value) {
-  return value.toStringAsFixed(value.truncateToDouble() == value ? 0 : 2);
+String formatMoneyValue(double value, {bool plusForPositive = false}) {
+  final sign = getSignSymbol(value, plusForPositive: plusForPositive);
+  return sign + value.abs().toStringAsFixed(value.truncateToDouble() == value ? 0 : 2);
+}
+
+String getSignSymbol(double value, {required bool plusForPositive}) {
+  if (value < 0) return '−'; // Unicode minus.
+  if (value == 0) return '';
+
+  return plusForPositive ? '+' : '';
 }
 
 /// Until we have a rich editor, text should be preprocessed before showing
