@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:courseplease/widgets/shop/currency_symbol_widget.dart';
 import 'package:flutter/material.dart';
 
 class CurrencyDropdownWidget extends StatelessWidget {
@@ -15,12 +15,12 @@ class CurrencyDropdownWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = values
-        .map((value) => DropdownMenuItem<String>(value: value, child: Text(_getCurrencyTitle(value))))
+        .map((value) => DropdownMenuItem<String>(value: value, child: CurrencySymbolWidget(cur: value)))
         .toList();
 
     if (value != null && !values.contains(value)) {
       items.add(
-        DropdownMenuItem<String>(value: value, child: Text(_getCurrencyTitle(value!))),
+        DropdownMenuItem<String>(value: value, child: CurrencySymbolWidget(cur: value!)),
       );
     }
 
@@ -29,10 +29,5 @@ class CurrencyDropdownWidget extends StatelessWidget {
       items: items,
       onChanged: (String? value) => onChanged(value!),
     );
-  }
-
-  String _getCurrencyTitle(String value) {
-    final translated = tr('util.currencySymbols.' + value);
-    return translated.split('.').last;
   }
 }
