@@ -35,12 +35,20 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    _productSubjectsByIdsBloc.setCurrentIds(widget.showIds);
+
+    return StreamBuilder<ModelListByIdsState<int, ProductSubject>>(
+      stream: _productSubjectsByIdsBloc.outState,
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _productSubjectsByIdsBloc.initialState),
+    );
+  }
+
+  Widget _buildWithState(ModelListByIdsState<int, ProductSubject> state) {
     return ModelDropdown<int, ProductSubject>(
-      selectedId:         widget.selectedId,
-      showIds:            _getShowIds(),
-      modelListByIdsBloc: _productSubjectsByIdsBloc,
-      onChanged:          _handleChange,
-      hint:               widget.hint,
+      selectedId:   widget.selectedId,
+      models:       _getModels(state),
+      onIdChanged:  _onIdChanged,
+      hint:         widget.hint,
       trailing: [
         DropdownMenuItem<int>(
           value: ProductSubjectDropdown.moreId,
@@ -50,11 +58,20 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
     );
   }
 
-  List<int> _getShowIds() {
-    final result = List<int>.from(widget.showIds);
+  List<ProductSubject> _getModels(ModelListByIdsState<int, ProductSubject> state) {
+    final result = <ProductSubject>[];
+
+    for (final id in widget.showIds) {
+      final ps = state.objectsByIds[id];
+      if (ps == null) continue;
+      result.add(ps);
+    }
 
     if (widget.selectedId != null && !result.contains(widget.selectedId)) {
-      result.add(widget.selectedId!);
+      final ps = state.objectsByIds[widget.selectedId];
+      if (ps != null) {
+        result.add(ps);
+      }
     }
 
     return result;
@@ -63,7 +80,7 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
   // For some reason the direct use of 'onChanged: widget.onChanged' above throws
   //   type '(int) => void' is not a subtype of type '(dynamic) => void'
   // at runtime. So the handler must use dynamic for id and then cast it to int.
-  void _handleChange(id) {
+  void _onIdChanged(id) {
     switch (id) {
       case ProductSubjectDropdown.moreId:
         _handleMore();

@@ -1,4 +1,5 @@
 import 'package:courseplease/models/product_variant_format_with_price.dart';
+import 'package:courseplease/utils/units.dart';
 import 'package:courseplease/widgets/edit_money.dart';
 import 'package:courseplease/widgets/teacher_subject_product_variants.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class _EditFormatPriceWidgetState extends State<EditFormatPriceWidget> {
               child: EditMoneyWidget(
                 money: widget.productVariantFormatWithPrice.maxPrice!,
                 curs: widget.curs,
+                unit: UnitsEnum.h,
                 valueFocusNode: _valueFocusNode,
                 valueController: _valueTextEditingController,
               ),

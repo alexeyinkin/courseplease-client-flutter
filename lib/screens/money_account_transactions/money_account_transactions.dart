@@ -1,14 +1,12 @@
 import 'package:courseplease/blocs/authentication.dart';
-import 'package:courseplease/models/filters/money_account_transaction.dart';
 import 'package:courseplease/models/shop/money_account.dart';
+import 'package:courseplease/screens/money_account_transactions/local_widgets/money_account_tab.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/auth/sign_in.dart';
 import 'package:courseplease/widgets/fitted_icon_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-
-import 'local_widgets/money_account_transaction_table.dart';
 
 class MoneyAccountTransactionsScreen extends StatefulWidget {
   // TODO: Use, now showing first tab.
@@ -41,6 +39,9 @@ class _MoneyAccountTransactionsScreenState extends State<MoneyAccountTransaction
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(tr('MoneyAccountTransactionsScreen.title')),
+      ),
       body: SafeArea(
         child: StreamBuilder<AuthenticationState>(
           stream: _authenticationCubit.outState,
@@ -99,13 +100,9 @@ class _MoneyAccountTransactionsScreenState extends State<MoneyAccountTransaction
     final tabs = <Widget>[];
 
     for (final account in accounts) {
-      final filter = MoneyAccountTransactionFilter(
-        cur: account.cur,
-      );
-
       tabs.add(
-        MoneyAccountTransactionTable(
-          filter: filter,
+        MoneyAccountTabWidget(
+          account: account,
         ),
       );
     }

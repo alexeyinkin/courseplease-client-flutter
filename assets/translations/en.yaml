@@ -45,6 +45,13 @@ ContactStatusCubit:
 CountryDropdown:
     label:              'Country'
 
+CreateWithdrawAccountScreen:
+    title:                  'Add Withdraw Account'
+    inputs:
+        title:              'Name this account to store'
+    buttons:
+        add:                'Add'
+
 DeliveryProblemButton:
     text:               'Problem?'
 
@@ -168,6 +175,7 @@ MediaDestinationDialog:
     nOf:
         image:
             one:    '{} Image'
+            two:    '{} Images'
             other:  '{} Images'
 
     doWith:
@@ -213,6 +221,10 @@ models:
         'consulting/students-place':    'Student''s Place'
         'consulting/online':            'Online'
 
+MoneyAccountTabWidget:
+    withdraw:               'Withdraw'
+    pendingWithdrawOrders:  'Pending Withdraw Orders:'
+
 MoneyAccountTransaction:
     type:
         in:             'Deposit'
@@ -225,6 +237,7 @@ MoneyAccountTransaction:
         refund:         'Refund'
 
 MoneyAccountTransactionsScreen:
+    title:              'Transactions'
     placeholder:        'When you pay or get paid, here will be your transactions.'
 
 MoneyAccountTransactionTable:
@@ -446,3 +459,20 @@ util:
 
 ViewTeacherSubjectWidget:
     disabled:       'Not accepting customers'
+
+WithdrawOrderTileWidget:
+    status:
+        0:          'Pending'
+
+WithdrawScreen:
+    title:          'Withdraw Money'
+    buttons:
+        addAccount: 'Add'
+        withdraw:   'Withdraw'
+
+WithdrawAccountDropdown:
+    label:          'Account'
+
+WithdrawServiceDropdown:
+    label:          'Channel'
+    hint:           '(Select Channel)'

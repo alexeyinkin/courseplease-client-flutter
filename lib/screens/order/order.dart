@@ -184,7 +184,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget _getProceedButton(OrderScreenCubitState state) {
     return ElevatedButtonWithProgress(
-      onPressed: _orderScreenCubit.process,
+      onPressed: _orderScreenCubit.proceed,
       enabled: state.canProceed,
       isLoading: state.inProgress,
       child: Text(

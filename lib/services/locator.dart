@@ -21,6 +21,9 @@ import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/money_account_transaction.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
+import 'package:courseplease/repositories/withdraw_account.dart';
+import 'package:courseplease/repositories/withdraw_order.dart';
+import 'package:courseplease/repositories/withdraw_service.dart';
 import 'package:courseplease/screens/home/local_blocs/home.dart';
 import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
 import 'package:courseplease/services/messaging/message_body_denormalizer_locator.dart';
@@ -81,6 +84,9 @@ void _initializeRepositories() {
       ..registerSingleton<MoneyAccountTransactionRepository>(MoneyAccountTransactionRepository())
       ..registerSingleton<ProductSubjectRepository>(ProductSubjectRepository())
       ..registerSingleton<TeacherRepository>(TeacherRepository())
+      ..registerSingleton<WithdrawAccountRepository>(WithdrawAccountRepository())
+      ..registerSingleton<WithdrawOrderRepository>(WithdrawOrderRepository())
+      ..registerSingleton<WithdrawServiceRepository>(WithdrawServiceRepository())
   ;
 }
 

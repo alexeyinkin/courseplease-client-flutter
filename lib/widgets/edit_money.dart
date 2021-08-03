@@ -1,19 +1,23 @@
 import 'package:courseplease/models/money.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:courseplease/widgets/app_text_field.dart';
 import 'package:courseplease/widgets/currency_dropdown.dart';
 import 'package:courseplease/widgets/pad.dart';
+import 'package:courseplease/widgets/shop/currency_symbol_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class EditMoneyWidget extends StatefulWidget {
   final Money money;
   final List<String> curs;
+  final String? unit;
   final FocusNode? valueFocusNode;
   final TextEditingController valueController;
 
   EditMoneyWidget({
     required this.money,
     required this.curs,
+    this.unit,
     this.valueFocusNode,
     required this.valueController,
   });
@@ -42,14 +46,13 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final unit = tr('util.units.h');
-    final perH = tr('util.amountPerUnit', namedArgs: {'amount': '', 'unit': unit});
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         _getValueInput(),
         SmallPadding(),
-        _getCurrencyDropdown(),
-        Text(perH),
+        _getCurrencyWidget(),
+        _getUnitWidgetIfNeed(),
       ],
     );
   }
@@ -57,15 +60,12 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
   Widget _getValueInput() {
     return SizedBox(
       width: 80,
-      child: TextFormField(
+      child: AppTextField(
         controller: widget.valueController,
         textAlign: TextAlign.end,
         keyboardType: TextInputType.number,
         focusNode: widget.valueFocusNode,
         onTap: _onValueInputTap,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-        )
       ),
     );
   }
@@ -77,7 +77,11 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
     );
   }
 
-  Widget _getCurrencyDropdown() {
+  Widget _getCurrencyWidget() {
+    if (widget.curs.length == 1) {
+      return CurrencySymbolWidget(cur: widget.curs[0]);
+    }
+
     return CurrencyDropdownWidget(
       value: widget.money.getFirstKey() ?? widget.curs[0],
       values: widget.curs,
@@ -87,6 +91,13 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
 
   void _onValueChanged() {
     _updateWidgetMoney();
+  }
+
+  Widget _getUnitWidgetIfNeed() {
+    if (widget.unit == null) return Container();
+    final unitString = tr('util.units.' + widget.unit!);
+    final perUnitString = tr('util.amountPerUnit', namedArgs: {'amount': '', 'unit': unitString});
+    return Text(perUnitString);
   }
 
   double? _parseValue() {

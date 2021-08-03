@@ -171,11 +171,11 @@ class OrderScreenCubit extends Bloc {
     final state = _createState();
 
     if (state.holdMoney.isZero()) {
-      process();
+      proceed();
     }
   }
 
-  void process() async {
+  void proceed() async {
     final request = CreateCartAndOrderRequest(lineItems: _lineItems);
 
     _status = OrderScreenCubitStatus.creatingOrder;

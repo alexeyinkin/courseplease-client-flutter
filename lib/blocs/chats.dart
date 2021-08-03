@@ -113,7 +113,7 @@ class ChatsCubit extends Bloc {
       // TODO: Check if chat matches the filter. Not an issue so far as ChatFilter has no fields.
       // TODO: Remove and add in one operation to not emit two states.
       list.removeObjectIds([chat.id]); // TODO: Speed up. Make 'removeObject'.
-      list.addToBeginning([chat]);
+      list.addAllToBeginning([chat]);
     }
   }
 
@@ -154,7 +154,7 @@ class ChatsCubit extends Bloc {
     for (final list in messageLists.values) {
       if (list.filter.chatId != message.chatId) continue;
       if (list.containsId(message.id)) continue;
-      list.addToBeginning([message]);
+      list.addAllToBeginning([message]);
     }
   }
 
@@ -295,7 +295,7 @@ class ChatsCubit extends Bloc {
     final chatLists = _cache.getModelListsByObjectAndFilterTypes<int, Chat, ChatFilter>();
 
     for (final list in chatLists.values) {
-      list.addToBeginning([chat]);
+      list.addAllToBeginning([chat]);
     }
   }
 

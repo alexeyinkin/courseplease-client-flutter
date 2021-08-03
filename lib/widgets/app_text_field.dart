@@ -7,6 +7,9 @@ class AppTextField extends StatelessWidget {
   final String? hintText;
   final FormFieldValidator<String>? validator;
   final FocusNode? focusNode;
+  final TextAlign textAlign;
+  final TextInputType keyboardType;
+  final VoidCallback? onTap;
   final int? maxLines;
   final int? minLines;
   final bool enabled;
@@ -17,6 +20,9 @@ class AppTextField extends StatelessWidget {
     this.hintText,
     this.validator,
     this.focusNode,
+    this.textAlign = TextAlign.start,
+    this.keyboardType = TextInputType.multiline,
+    this.onTap,
     this.maxLines = 1,
     this.minLines,
     this.enabled = true,
@@ -33,7 +39,9 @@ class AppTextField extends StatelessWidget {
       focusNode: focusNode,
       maxLines: maxLines,
       minLines: minLines,
-      keyboardType: TextInputType.multiline,
+      textAlign: textAlign,
+      keyboardType: keyboardType,
+      onTap: onTap,
       cursorColor: textColor,
       enabled: enabled,
     );

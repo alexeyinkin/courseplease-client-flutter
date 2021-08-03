@@ -45,6 +45,13 @@ ContactStatusCubit:
 CountryDropdown:
     label:              'Страна'
 
+CreateWithdrawAccountScreen:
+    title:                  'Добавить счёт вывода'
+    inputs:
+        title:              'Название для удобства'
+    buttons:
+        add:                'Добавить'
+
 DeliveryProblemButton:
     text:               'Проблемы?'
 
@@ -216,6 +223,10 @@ models:
         'consulting/students-place':    'У ученика'
         'consulting/online':            'Online'
 
+MoneyAccountTabWidget:
+    withdraw:               'Вывести'
+    pendingWithdrawOrders:  'Заявки на вывод:'
+
 MoneyAccountTransaction:
     type:
         in:             'Пополнение'
@@ -228,6 +239,7 @@ MoneyAccountTransaction:
         refund:         'Возврат'
 
 MoneyAccountTransactionsScreen:
+    title:              'Операции'
     placeholder:        'Когда вы заплатите или заработаете деньги, здесь будет список операций.'
 
 MoneyAccountTransactionTable:
@@ -455,3 +467,20 @@ util:
 
 ViewTeacherSubjectWidget:
     disabled:       'Не беру клиентов'
+
+WithdrawOrderTileWidget:
+    status:
+        0:          'Ожидание'
+
+WithdrawScreen:
+    title:          'Вывести деньги'
+    buttons:
+        addAccount: 'Добавить'
+        withdraw:   'Вывести'
+
+WithdrawAccountDropdown:
+    label:          'Счёт'
+
+WithdrawServiceDropdown:
+    label:          'Способ'
+    hint:           '(Выберите способ)'

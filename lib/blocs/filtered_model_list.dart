@@ -169,7 +169,7 @@ class NetworkFilteredModelListBloc<
     return _lastListState.objectsByIds.containsKey(id);
   }
 
-  void addToBeginning(List<O> objects) {
+  void addAllToBeginning(List<O> objects) {
     if (objects.isEmpty) return;
 
     cache.addAll(objects);
