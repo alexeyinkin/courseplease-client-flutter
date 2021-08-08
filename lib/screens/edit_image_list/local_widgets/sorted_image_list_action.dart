@@ -36,7 +36,7 @@ class SortedImageListActionWidget extends AbstractListActionWidget<
   }) {
     return WithSelectedButton<MediaSortActionEnum>(
       selectedCount: selectableListState.selectedIds.length,
-      notSelectedPlaceholderText: tr('EditImageListScreen.selectImages'),
+      notSelectedPlaceholderText: tr('EditImageListScreen.select'),
       menuItems: [
         PopupMenuItem(
           child: Text(tr('EditImageListScreen.actions.move')),

@@ -36,7 +36,7 @@ class UnsortedImageListActionWidget extends AbstractListActionWidget<
     required SelectableListState<int, MyImageFilter> selectableListState,
   }) {
     if (!selectableListState.selected) {
-      return Text(tr('EditImageListScreen.selectImages'));
+      return Text(tr('EditImageListScreen.select'));
     }
 
     final withSelectedText = tr('EditImageListScreen.publishNSelected', namedArgs: {'n': selectableListState.selectedIds.length.toString()});

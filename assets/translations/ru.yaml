@@ -66,7 +66,7 @@ EditImageListScreen:
         delete:         'Удалить'
 
     publishNSelected:   'Опубликовать {n}'
-    selectImages:       'Выберите изображения'
+    select:             'Выберите изображения'
 
     title:
         allImages:      'Все изображения'           # Trailing after something else.
@@ -267,6 +267,9 @@ MyLessonListScreen:
         move:           'Изменить предмет...'
         delete:         'Удалить'
     select:             'Выберите уроки'
+
+    confirmDelete:      'Delete? This cannot be undone.'
+    delete:             'Delete'
 
 MyProfileTabWidget:
     iconTitle:          'Профиль'
