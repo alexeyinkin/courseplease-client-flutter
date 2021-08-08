@@ -1,5 +1,6 @@
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/interfaces.dart';
+import 'package:courseplease/widgets/checkbox_overlay.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -83,21 +84,9 @@ class AbstractObjectTileState<
   @protected
   Widget getCheckboxOverlay() {
     if (!this.widget.selectable) return Container();
-    return Positioned(
-      top: 0,
-      right: 0,
-      child: Checkbox(
-        onChanged: _onSelected,
-        value: widget.selected,
-        activeColor: Colors.black,
-      ),
+    return CheckboxOverlay(
+      value: widget.selected,
+      onChanged: widget.onSelected,
     );
-  }
-
-  void _onSelected(bool? value) {
-    if (value == null) {
-      throw Exception('Never happens as null is for tristate checkboxes only.');
-    }
-    widget.onSelected(value);
   }
 }

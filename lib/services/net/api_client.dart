@@ -108,14 +108,6 @@ class ApiClient {
     return MeResponseData.fromMap(mapResponse.data);
   }
 
-  Future sortMedia(MediaSortRequest request) {
-    return sendRequest(
-      method: HttpMethod.post,
-      path: '/api1/{@lang}/sort',
-      body: request,
-    );
-  }
-
   Future<MeResponseData> saveConsultingProduct(SaveConsultingProductRequest request) async {
     final mapResponse = await sendRequest(
       method: HttpMethod.post,
@@ -675,21 +667,6 @@ class SaveContactParamsRequest extends RequestBody {
   }
 }
 
-class MediaSortRequest extends RequestBody {
-  final List<MediaSortCommand> commands;
-
-  MediaSortRequest({
-    required this.commands,
-  });
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      'commands': commands,
-    };
-  }
-}
-
 class SaveConsultingProductRequest extends RequestBody {
   final int subjectId;
   final bool enabled;
@@ -731,33 +708,6 @@ class SaveConsultingProductVariantRequest extends RequestBody {
       'formatIntName': formatIntName,
       'enabled': enabled,
       'price': price,
-    };
-  }
-}
-
-class MediaSortCommand<F extends AbstractFilter> extends JsonSerializable {
-  final String type;
-  final int id;
-  final String action;
-  final F? fetchFilter;
-  final F? setFilter;
-
-  MediaSortCommand({
-    required this.type,
-    required this.id,
-    required this.action,
-    this.fetchFilter,
-    this.setFilter,
-  });
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      'type':         type,
-      'id':           id,
-      'action':       action,
-      'fetchFilter':  fetchFilter?.toJson() ?? {},
-      'setFilter':    setFilter?.toJson() ?? {},
     };
   }
 }

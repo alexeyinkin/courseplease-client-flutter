@@ -3,7 +3,7 @@ import 'package:courseplease/blocs/model_by_id.dart';
 import 'package:courseplease/models/filters/comment.dart';
 import 'package:courseplease/models/reaction/enum/comment_catalog_intname.dart';
 import 'package:courseplease/models/reaction/enum/like_catalog_intname.dart';
-import 'package:courseplease/repositories/lesson.dart';
+import 'package:courseplease/repositories/gallery_lesson.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/reload/lesson.dart';
 import 'package:courseplease/theme/theme.dart';
@@ -50,7 +50,7 @@ class LessonScreen extends StatefulWidget {
 
 class _LessonScreenState extends State<LessonScreen> {
   final _lessonByIdBloc = ModelByIdBloc<int, Lesson>(
-      modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Lesson, LessonRepository>(),
+    modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Lesson, GalleryLessonRepository>(),
   );
 
   YoutubePlayerController? _youtubePlayerController;
@@ -129,13 +129,13 @@ class _LessonScreenState extends State<LessonScreen> {
           ),
         ),
         TeacherAndReactionsWidget(
-          teacherId: lesson.author.id,
+          teacherId: lesson.authorId,
           commentable: lesson,
           onCommentPressed: _commentFocusNode.requestFocus,
           likable: lesson,
           catalog: LikeCatalogIntNameEnum.lessons,
           reloadCallback: () => LessonReloadService().reload(lesson.id),
-          isMy: lesson.author.id == getCurrentUserId(),
+          isMy: lesson.authorId == getCurrentUserId(),
         ),
       ],
     );

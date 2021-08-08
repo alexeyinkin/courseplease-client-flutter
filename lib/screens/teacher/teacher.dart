@@ -6,6 +6,7 @@ import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/capsules.dart';
 import 'package:courseplease/widgets/location_line.dart';
+import 'package:courseplease/widgets/media/image/gallery_image_grid.dart';
 import 'package:courseplease/widgets/profile.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
@@ -14,10 +15,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import '../../widgets/image_grid.dart';
-import '../../widgets/lesson_grid.dart';
-import '../../models/filters/lesson.dart';
-import '../../models/filters/image.dart';
+import '../../widgets/lesson/gallery_lesson_grid.dart';
+import '../../models/filters/gallery_lesson.dart';
+import '../../models/filters/gallery_image.dart';
 import '../../models/product_subject.dart';
 import '../../models/teacher.dart';
 
@@ -209,8 +209,8 @@ class _TeacherScreenState extends State<TeacherScreen> {
       constraints: BoxConstraints(
         maxHeight: 300,
       ),
-      child: LessonGrid(
-        filter: LessonFilter(subjectId: state.selectedSubjectId, teacherId: widget.teacherId),
+      child: GalleryLessonGrid(
+        filter: GalleryLessonFilter(subjectId: state.selectedSubjectId, teacherId: widget.teacherId),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
           child: Text('My Lessons', style: AppStyle.h2),
@@ -224,8 +224,8 @@ class _TeacherScreenState extends State<TeacherScreen> {
   Widget _getWorksBlock(TeacherScreenCubitState state) {
     return Container(
       height: 200,
-      child: ViewImageGrid(
-        filter: ViewImageFilter(subjectId: state.selectedSubjectId, teacherId: widget.teacherId),
+      child: GalleryImageGrid(
+        filter: GalleryImageFilter(subjectId: state.selectedSubjectId, teacherId: widget.teacherId),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
           child: Text('My Works', style: AppStyle.h2),

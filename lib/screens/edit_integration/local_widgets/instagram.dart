@@ -75,10 +75,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
       selectedId: widget.params.newImageSubjectId,
       showIds: showIds,
       onChanged: _handleNewPhotoPortfolioSubjectIdChange,
-      hint: Opacity(
-        opacity: .5,
-        child: Text(tr('InstagramContactParamsWidget.buttons.selectSubject')),
-      ),
+      hintText: tr('InstagramContactParamsWidget.buttons.selectSubject'),
     );
   }
 

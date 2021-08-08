@@ -1,4 +1,4 @@
-import 'package:courseplease/blocs/list_action.dart';
+import 'package:courseplease/blocs/list_action/list_action.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/interfaces.dart';
@@ -20,7 +20,7 @@ abstract class AbstractListSelectionWidget<
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<SelectableListState<I, F>>(
-      stream: selectableListCubit.outState,
+      stream: selectableListCubit.states,
       builder: (context, snapshot) => buildWithSelectableListState(
         context: context,
         selectableListState: snapshot.data ?? selectableListCubit.initialState,

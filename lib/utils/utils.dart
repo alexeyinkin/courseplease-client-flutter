@@ -392,11 +392,11 @@ Map<String, dynamic> mapOrListToMap(mapOrList) {
     return mapOrList.cast<String, dynamic>();
   }
 
-  if (mapOrList is List) {
+  if (mapOrList == null || mapOrList is List) {
     return <String, dynamic>{};
   }
 
-  throw Exception('Expected map or list, given: ' + mapOrList.runtimeType.toString());
+  throw Exception('Expected map | list | null. Given: ' + mapOrList.runtimeType.toString());
 }
 
 void showDialogWhile(

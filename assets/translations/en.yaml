@@ -55,6 +55,9 @@ CreateWithdrawAccountScreen:
 DeliveryProblemButton:
     text:               'Problem?'
 
+DonePopupScreen:
+    text:               'Done'
+
 EditImageListScreen:
 
     actions:
@@ -64,7 +67,6 @@ EditImageListScreen:
 
     publishNSelected:   'Publish {n}'
     selectImages:       'Select Images'
-    withNSelected:      'With {n}'
 
     title:
         # Trailing after something else.
@@ -158,6 +160,9 @@ LearningTabWidget:
 LessonsTabWidget:
     title:          'Lessons'
 
+LessonsThumbWidget:
+    title:          'Lessons'
+
 LocationEditorWidget:
     streetAddress:      'Street Address'
     showTo:             'Show to:'
@@ -204,7 +209,7 @@ models:
     Image:
         purposes:
             4:              'My Portfolio'
-            5:              'My Student''s Works'
+            5:              'My Students'' Works'
             8:              'Other Photos'
             8_asTheOnly:    'Photos'
         statuses:
@@ -248,6 +253,17 @@ MoneyAccountTransactionTable:
         balanceAfter:   'Left'
         dateTimeInsert: 'Date'
         description:    'Comment'
+
+MyLessonListScreen:
+    title:
+        allMyLessons:   'All My Lessons'
+        subjects:
+            one:        '{} Subject'
+            other:      '{} Subjects'
+    actions:
+        move:           'Move to Another Subject...'
+        delete:         'Delete'
+    select:             'Select Lessons'
 
 MyProfileTabWidget:
     iconTitle:          'Profile'
@@ -476,3 +492,6 @@ WithdrawAccountDropdown:
 WithdrawServiceDropdown:
     label:          'Channel'
     hint:           '(Select Channel)'
+
+WithSelectedButton:
+    withNSelected:  'With {n}'

@@ -13,7 +13,7 @@ class ProductSubjectDropdown extends StatefulWidget {
   final int? selectedId;
   final List<int> showIds;
   final ValueChanged<int> onChanged;
-  final Widget? hint;
+  final String? hintText;
 
   static const moreId = -1;
 
@@ -21,7 +21,7 @@ class ProductSubjectDropdown extends StatefulWidget {
     required this.selectedId,
     required this.showIds,
     required this.onChanged,
-    this.hint,
+    this.hintText,
   });
 
   @override
@@ -48,7 +48,8 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
       selectedId:   widget.selectedId,
       models:       _getModels(state),
       onIdChanged:  _onIdChanged,
-      hint:         widget.hint,
+      hint:         widget.hintText == null ? null : Text(widget.hintText!),
+      labelText:    widget.hintText,
       trailing: [
         DropdownMenuItem<int>(
           value: ProductSubjectDropdown.moreId,
@@ -60,14 +61,17 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
 
   List<ProductSubject> _getModels(ModelListByIdsState<int, ProductSubject> state) {
     final result = <ProductSubject>[];
+    bool selectedFound = false;
 
     for (final id in widget.showIds) {
       final ps = state.objectsByIds[id];
       if (ps == null) continue;
       result.add(ps);
+
+      if (id == widget.selectedId) selectedFound = true;
     }
 
-    if (widget.selectedId != null && !result.contains(widget.selectedId)) {
+    if (widget.selectedId != null && !selectedFound) {
       final ps = state.objectsByIds[widget.selectedId];
       if (ps != null) {
         result.add(ps);

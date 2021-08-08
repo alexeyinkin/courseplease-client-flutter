@@ -1,8 +1,10 @@
-import 'package:courseplease/widgets/buttons.dart';
+import 'package:courseplease/blocs/list_action/list_action.dart';
+import 'package:courseplease/blocs/list_action/media_sort_list_action.dart';
+import 'package:courseplease/models/filters/my_image.dart';
+import 'package:courseplease/screens/edit_image_list/local_widgets/synchronize_profile_button.dart';
+import 'package:courseplease/screens/edit_image_list/local_widgets/synchronize_profiles_button.dart';
 import 'package:flutter/material.dart';
-import 'package:courseplease/blocs/list_action.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
-import 'package:courseplease/models/filters/image.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/screens/edit_image_list/local_blocs/image_list_action.dart';
 import 'package:courseplease/widgets/list_action.dart';
@@ -12,13 +14,13 @@ import 'package:courseplease/widgets/list_action.dart';
 class ConditionalSynchronizeProfilesButton extends AbstractListActionWidget<
   int,
   ImageEntity,
-  EditImageFilter,
+  MyImageFilter,
   MediaSortActionEnum,
   ImageListActionCubit
 > {
   ConditionalSynchronizeProfilesButton({
     required ImageListActionCubit imageListActionCubit,
-    required SelectableListCubit<int, EditImageFilter> selectableListCubit,
+    required SelectableListCubit<int, MyImageFilter> selectableListCubit,
   }) : super(
     listActionCubit: imageListActionCubit,
     selectableListCubit: selectableListCubit,
@@ -28,19 +30,17 @@ class ConditionalSynchronizeProfilesButton extends AbstractListActionWidget<
   Widget buildWithStates({
     required BuildContext context,
     required ListActionCubitState<MediaSortActionEnum> listActionCubitState,
-    required SelectableListState<int, EditImageFilter> selectableListState,
+    required SelectableListState<int, MyImageFilter> selectableListState,
   }) {
-    if (selectableListState.filter == null) return Container();
-
     if (selectableListState.filter.unsorted) {
-      return _SynchronizeProfilesButton(
+      return SynchronizeProfilesButton(
         imageListActionCubit: listActionCubit,
         listActionCubitState: listActionCubitState,
       );
     }
 
     if (selectableListState.filter.contactIds.length == 1) {
-      return _SynchronizeProfileButton(
+      return SynchronizeProfileButton(
         imageListActionCubit: listActionCubit,
         listActionCubitState: listActionCubitState,
         contactId: selectableListState.filter.contactIds[0],
@@ -48,53 +48,5 @@ class ConditionalSynchronizeProfilesButton extends AbstractListActionWidget<
     }
 
     return Container();
-  }
-}
-
-class _SynchronizeProfilesButton extends StatelessWidget {
-  final ImageListActionCubit imageListActionCubit;
-  final ListActionCubitState<MediaSortActionEnum> listActionCubitState;
-
-  _SynchronizeProfilesButton({
-    required this.imageListActionCubit,
-    required this.listActionCubitState,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButtonWithProgress(
-      child: Icon(Icons.sync),
-      isLoading: listActionCubitState.actionInProgress == MediaSortActionEnum.synchronize,
-      onPressed: _onPressed,
-    );
-  }
-
-  void _onPressed() {
-    imageListActionCubit.synchronizeProfiles();
-  }
-}
-
-class _SynchronizeProfileButton extends StatelessWidget {
-  final ImageListActionCubit imageListActionCubit;
-  final ListActionCubitState<MediaSortActionEnum> listActionCubitState;
-  final int contactId;
-
-  _SynchronizeProfileButton({
-    required this.imageListActionCubit,
-    required this.listActionCubitState,
-    required this.contactId,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButtonWithProgress(
-      child: Icon(Icons.sync),
-      isLoading: listActionCubitState.actionInProgress == MediaSortActionEnum.synchronize,
-      onPressed: _onPressed,
-    );
-  }
-
-  void _onPressed() {
-    imageListActionCubit.synchronizeProfile(contactId);
   }
 }

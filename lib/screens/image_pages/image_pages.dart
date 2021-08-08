@@ -8,7 +8,7 @@ import 'package:courseplease/widgets/error/id.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import '../../models/filters/image.dart';
+import '../../models/filters/gallery_image.dart';
 import '../../models/image.dart';
 import 'local_widgets/image_reaction_overlay.dart';
 import 'local_widgets/image_teacher_overlay.dart';
@@ -157,13 +157,13 @@ class ImagePagesScreenState<
 class ViewImagePagesScreenLauncher {
   static Future<void> show({
     required BuildContext context,
-    required ViewImageFilter filter,
+    required GalleryImageFilter filter,
     required int initialIndex,
   }) {
     return Navigator.push<void>(
       context,
       MaterialPageRoute(
-        builder: (context) => ImagePagesScreen<ViewImageFilter, GalleryImageRepository>(
+        builder: (context) => ImagePagesScreen<GalleryImageFilter, GalleryImageRepository>(
           filter: filter,
           initialIndex: initialIndex,
           imageOverlayBuilder: (context, image, visible) => [

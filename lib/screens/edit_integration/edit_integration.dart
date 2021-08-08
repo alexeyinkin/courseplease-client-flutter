@@ -1,4 +1,4 @@
-import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/models/filters/my_image.dart';
 import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
 import 'package:courseplease/screens/edit_integration/local_blocs/edit_integration.dart';
 import 'package:courseplease/models/common.dart';
@@ -199,7 +199,7 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   void _viewDownloaded() async {
     EditImageListScreen.show(
       context: context,
-      filter: EditImageFilter(
+      filter: MyImageFilter(
         contactIds: [contactClone.id],
       ),
       contactsByIds: {contactClone.id: contactClone},

@@ -1,12 +1,14 @@
+import 'package:courseplease/blocs/list_action/media_sort_list_action.dart';
 import 'package:courseplease/blocs/media_destination.dart';
-import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/models/done_popup/done_popup.dart';
+import 'package:courseplease/models/filters/my_image.dart';
 import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/media_destination.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:courseplease/blocs/list_action.dart';
+import 'package:courseplease/blocs/list_action/list_action.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/screens/edit_image_list/local_blocs/image_list_action.dart';
@@ -15,13 +17,13 @@ import 'package:courseplease/widgets/list_action.dart';
 class UnsortedImageListActionWidget extends AbstractListActionWidget<
     int,
     ImageEntity,
-    EditImageFilter,
+    MyImageFilter,
     MediaSortActionEnum,
     ImageListActionCubit
 > {
   UnsortedImageListActionWidget({
     required ImageListActionCubit imageListActionCubit,
-    required SelectableListCubit<int, EditImageFilter> selectableListCubit,
+    required SelectableListCubit<int, MyImageFilter> selectableListCubit,
   }) : super(
     listActionCubit: imageListActionCubit,
     selectableListCubit: selectableListCubit,
@@ -31,7 +33,7 @@ class UnsortedImageListActionWidget extends AbstractListActionWidget<
   Widget buildWithStates({
     required BuildContext context,
     required ListActionCubitState<MediaSortActionEnum> listActionCubitState,
-    required SelectableListState<int, EditImageFilter> selectableListState,
+    required SelectableListState<int, MyImageFilter> selectableListState,
   }) {
     if (!selectableListState.selected) {
       return Text(tr('EditImageListScreen.selectImages'));
@@ -55,7 +57,7 @@ class UnsortedImageListActionWidget extends AbstractListActionWidget<
         ElevatedButtonWithProgress(
           child: Icon(Icons.delete),
           isLoading: listActionCubitState.actionInProgress == MediaSortActionEnum.delete,
-          onPressed: () => _onUnlinkPressed(selectableListState),
+          onPressed: () => _onUnlinkPressed(context, selectableListState),
         ),
       ],
     );
@@ -73,9 +75,9 @@ class UnsortedImageListActionWidget extends AbstractListActionWidget<
 
   void _showPublishDialog(
     BuildContext context,
-    SelectableListState<int, EditImageFilter> selectableListState,
+    SelectableListState<int, MyImageFilter> selectableListState,
   ) async {
-    MediaDestinationDialog.show<int, ImageEntity, EditImageFilter, EditorImageRepository>(
+    MediaDestinationDialog.show<int, ImageEntity, MyImageFilter, MyImageRepository>(
       context: context,
       selectableListState: selectableListState,
       listActionCubit: listActionCubit,
@@ -90,7 +92,7 @@ class UnsortedImageListActionWidget extends AbstractListActionWidget<
 
   void _onMoveActionPressed(
     BuildContext context,
-    SelectableListState<int, EditImageFilter> selectableListState,
+    SelectableListState<int, MyImageFilter> selectableListState,
     MediaDestinationState mediaDestinationState,
   ) async {
     await listActionCubit.move(
@@ -98,12 +100,12 @@ class UnsortedImageListActionWidget extends AbstractListActionWidget<
       _mediaDestinationStateToSetFilter(mediaDestinationState),
     );
     _closeDialog(context);
-    // TODO: Show a confirmation.
+    DonePopupScreen.show(context);
   }
 
   // TODO: Move to a common superclass with SortedImageListActionWidget
-  EditImageFilter _mediaDestinationStateToSetFilter(MediaDestinationState state) {
-    return EditImageFilter(
+  MyImageFilter _mediaDestinationStateToSetFilter(MediaDestinationState state) {
+    return MyImageFilter(
       purposeIds: state.purposeId == null ? [] : [state.purposeId!],
       subjectIds: state.subjectId == null ? [] : [state.subjectId!],
     );
@@ -114,9 +116,10 @@ class UnsortedImageListActionWidget extends AbstractListActionWidget<
   }
 
   void _onUnlinkPressed(
-    SelectableListState<int, EditImageFilter> selectableListState,
+    BuildContext context,
+    SelectableListState<int, MyImageFilter> selectableListState,
   ) async {
     await listActionCubit.unlink(selectableListState);
-    // TODO: Show a confirmation.
+    DonePopupScreen.show(context);
   }
 }

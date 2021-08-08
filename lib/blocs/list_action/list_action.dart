@@ -45,11 +45,3 @@ class ListActionCubitState<A> {
     required this.actionInProgress,
   });
 }
-
-enum MediaSortActionEnum {
-  move,
-  link,
-  unlink,
-  delete,
-  synchronize,
-}

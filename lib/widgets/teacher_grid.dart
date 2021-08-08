@@ -11,10 +11,10 @@ import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'image_grid.dart';
-import '../models/filters/image.dart';
+import '../models/filters/gallery_image.dart';
 import '../models/filters/teacher.dart';
 import '../models/teacher.dart';
+import 'media/image/gallery_image_grid.dart';
 
 class TeacherGrid extends StatefulWidget {
   TeacherFilter filter;
@@ -198,8 +198,8 @@ class TeacherImageLineWidget extends StatelessWidget {
     var i = 0;
     return Container(
       height: this.height,
-      child: ViewImageGrid(
-        filter: ViewImageFilter(subjectId: teacherFilter.subjectId, teacherId: teacherId),
+      child: GalleryImageGrid(
+        filter: GalleryImageFilter(subjectId: teacherFilter.subjectId, teacherId: teacherId),
         scrollDirection: Axis.horizontal,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,

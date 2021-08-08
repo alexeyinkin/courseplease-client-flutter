@@ -1,17 +1,20 @@
-class ImageAlbumThumb {
+import 'package:courseplease/models/album_thumb.dart';
+
+class ImageAlbumThumb extends AlbumThumb {
   final int id;
   final int purposeId;
-  final String? lastPublishedImageThumbUrl;
-  final int publishedImageCount;
-  final DateTime? dateTimeLastPublish;
 
   ImageAlbumThumb({
+    required String? lastPublishedImageThumbUrl,
+    required int publishedImageCount,
+    required DateTime? dateTimeLastPublish,
     required this.id,
     required this.purposeId,
-    required this.lastPublishedImageThumbUrl,
-    required this.publishedImageCount,
-    required this.dateTimeLastPublish,
-  });
+  }) : super(
+    lastPublishedImageThumbUrl: lastPublishedImageThumbUrl,
+    publishedImageCount: publishedImageCount,
+    dateTimeLastPublish: dateTimeLastPublish,
+  );
 
   factory ImageAlbumThumb.fromMap(Map<String, dynamic> map) {
     final dateTimeLastPublishString = map['dateTimeLastPublish'];

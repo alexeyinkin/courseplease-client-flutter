@@ -15,10 +15,11 @@ import 'package:courseplease/repositories/city_name.dart';
 import 'package:courseplease/repositories/comment.dart';
 import 'package:courseplease/repositories/country.dart';
 import 'package:courseplease/repositories/delivery.dart';
+import 'package:courseplease/repositories/gallery_lesson.dart';
 import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/repositories/language.dart';
-import 'package:courseplease/repositories/lesson.dart';
 import 'package:courseplease/repositories/money_account_transaction.dart';
+import 'package:courseplease/repositories/my_lesson.dart';
 import 'package:courseplease/repositories/product_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/repositories/withdraw_account.dart';
@@ -77,11 +78,12 @@ void _initializeRepositories() {
       ..registerSingleton<CommentRepository>(CommentRepository())
       ..registerSingleton<CountryRepository>(CountryRepository())
       ..registerSingleton<DeliveryRepository>(DeliveryRepository())
-      ..registerSingleton<EditorImageRepository>(EditorImageRepository())
       ..registerSingleton<GalleryImageRepository>(GalleryImageRepository())
+      ..registerSingleton<GalleryLessonRepository>(GalleryLessonRepository())
       ..registerSingleton<LanguageRepository>(LanguageRepository())
-      ..registerSingleton<LessonRepository>(LessonRepository())
       ..registerSingleton<MoneyAccountTransactionRepository>(MoneyAccountTransactionRepository())
+      ..registerSingleton<MyImageRepository>(MyImageRepository())
+      ..registerSingleton<MyLessonRepository>(MyLessonRepository())
       ..registerSingleton<ProductSubjectRepository>(ProductSubjectRepository())
       ..registerSingleton<TeacherRepository>(TeacherRepository())
       ..registerSingleton<WithdrawAccountRepository>(WithdrawAccountRepository())

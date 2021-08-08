@@ -1,5 +1,5 @@
 import 'package:courseplease/models/lesson.dart';
-import 'package:courseplease/repositories/lesson.dart';
+import 'package:courseplease/repositories/gallery_lesson.dart';
 import 'package:courseplease/widgets/builders/models/abstract.dart';
 import 'package:flutter/widgets.dart';
 
@@ -16,7 +16,7 @@ class LessonBuilderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ModelBuilderWidget<int, Lesson, LessonRepository>(
+    return ModelBuilderWidget<int, Lesson, GalleryLessonRepository>(
       id: id,
       builder: builder,
     );

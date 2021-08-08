@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'abstract.dart';
 
-class LessonFilter extends AbstractFilter {
+class GalleryImageFilter extends AbstractFilter {
   final int? subjectId;
   final int? teacherId;
 
-  LessonFilter({
-    this.subjectId,
+  GalleryImageFilter({
+    required this.subjectId,
     this.teacherId,
   });
 

@@ -1,4 +1,4 @@
-import 'package:courseplease/blocs/list_action.dart';
+import 'package:courseplease/blocs/list_action/list_action.dart';
 import 'package:courseplease/blocs/media_destination.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import 'buttons.dart';
-import 'image_grid.dart';
+import 'media/image/responsive_image_grid.dart';
 
 class MediaDestinationWidget extends StatelessWidget {
   final MediaDestinationCubit mediaDestinationCubit;
@@ -43,14 +43,17 @@ class MediaDestinationWidget extends StatelessWidget {
 
   Widget _getSubjectRow(MediaDestinationState state) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(tr('MediaDestinationWidget.toSubject')),
         SmallPadding(),
-        ProductSubjectDropdown(
-          selectedId: state.subjectId,
-          showIds: state.showSubjectIds,
-          onChanged: mediaDestinationCubit.setSubjectId,
-          hint: Text(tr('MediaDestinationWidget.selectSubject')),
+        Expanded(
+          child: ProductSubjectDropdown(
+            selectedId: state.subjectId,
+            showIds: state.showSubjectIds,
+            onChanged: mediaDestinationCubit.setSubjectId,
+            hintText: tr('MediaDestinationWidget.selectSubject'),
+          ),
         ),
       ],
     );
@@ -126,6 +129,7 @@ class MediaDestinationDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ...previewWidgets,
+          SmallPadding(),
           MediaDestinationWidget(
             mediaDestinationCubit: mediaDestinationCubit,
           ),

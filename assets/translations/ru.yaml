@@ -55,6 +55,9 @@ CreateWithdrawAccountScreen:
 DeliveryProblemButton:
     text:               'Проблемы?'
 
+DonePopupScreen:
+    text:               'Готово'
+
 EditImageListScreen:
 
     actions:
@@ -64,7 +67,6 @@ EditImageListScreen:
 
     publishNSelected:   'Опубликовать {n}'
     selectImages:       'Выберите изображения'
-    withNSelected:      'Действия с {n}'
 
     title:
         allImages:      'Все изображения'           # Trailing after something else.
@@ -160,6 +162,9 @@ LearningTabWidget:
 LessonsTabWidget:
     title:          'Уроки'
 
+LessonsThumbWidget:
+    title:          'Уроки'
+
 LocationEditorWidget:
     streetAddress:      'Адрес'
     showTo:             'Показывать:'
@@ -250,6 +255,18 @@ MoneyAccountTransactionTable:
         balanceAfter:   'Осталось'
         dateTimeInsert: 'Дата'
         description:    'Комментарий'
+
+MyLessonListScreen:
+    title:
+        allMyLessons:   'Все мои уроки'
+        subjects:
+            one:        '{} предмет'
+            few:        '{} предмета'
+            other:      '{} предметов'
+    actions:
+        move:           'Изменить предмет...'
+        delete:         'Удалить'
+    select:             'Выберите уроки'
 
 MyProfileTabWidget:
     iconTitle:          'Профиль'
@@ -484,3 +501,6 @@ WithdrawAccountDropdown:
 WithdrawServiceDropdown:
     label:          'Способ'
     hint:           '(Выберите способ)'
+
+WithSelectedButton:
+    withNSelected:      'Действия с {n}'

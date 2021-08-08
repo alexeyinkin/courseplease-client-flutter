@@ -17,9 +17,9 @@ class TeacherRepository extends AbstractFilteredRepository<int, Teacher, Teacher
   }
 
   ListLoadResult<Teacher> _denormalizeList(ListLoadResult<Map<String, dynamic>> mapResult) {
-    var objects = <Teacher>[];
+    final objects = <Teacher>[];
 
-    for (var obj in mapResult.objects) {
+    for (final obj in mapResult.objects) {
       objects.add(Teacher.fromMap(obj));
     }
 

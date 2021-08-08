@@ -1,5 +1,6 @@
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/models/filters/my_image.dart';
+import 'package:courseplease/models/filters/gallery_image.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/net/api_client.dart';
@@ -20,9 +21,9 @@ abstract class AbstractImageRepository<F extends AbstractFilter> extends Abstrac
 
   @protected
   ListLoadResult<ImageEntity> denormalizeList(ListLoadResult<Map<String, dynamic>> mapResult) {
-    var objects = <ImageEntity>[];
+    final objects = <ImageEntity>[];
 
-    for (var obj in mapResult.objects) {
+    for (final obj in mapResult.objects) {
       objects.add(ImageEntity.fromMap(obj));
     }
 
@@ -30,7 +31,7 @@ abstract class AbstractImageRepository<F extends AbstractFilter> extends Abstrac
   }
 }
 
-class GalleryImageRepository extends AbstractImageRepository<ViewImageFilter> {
+class GalleryImageRepository extends AbstractImageRepository<GalleryImageFilter> {
   static const _entitiesName = 'gallery/images';
 
   @override
@@ -51,7 +52,7 @@ class GalleryImageRepository extends AbstractImageRepository<ViewImageFilter> {
   }
 }
 
-class EditorImageRepository extends AbstractImageRepository<EditImageFilter> {
+class MyImageRepository extends AbstractImageRepository<MyImageFilter> {
   static const _entitiesName = 'me/images';
 
   @override

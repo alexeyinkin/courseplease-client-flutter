@@ -7,13 +7,16 @@ class SelectableListCubit<I, F extends AbstractFilter> extends Bloc {
   final Map<I, I> _allIds = Map<I, I>();
   final Map<I, I> _selectedIds = Map<I, I>();
   bool _canSelectMore = false;
-  bool _wasSourceListEverNotEmpty = false;
+  bool _wasSourceListNotEmpty = false;
   F _filter;
 
   late SelectableListState<I, F> initialState;
 
-  final _outStateController = BehaviorSubject<SelectableListState<I, F>>();
-  Stream<SelectableListState<I, F>> get outState => _outStateController.stream;
+  final _statesController = BehaviorSubject<SelectableListState<I, F>>();
+  Stream<SelectableListState<I, F>> get states => _statesController.stream;
+
+  final _emptiedController = BehaviorSubject<void>();
+  Stream<void> get emptied => _emptiedController.stream;
 
   SelectableListCubit({
     required F initialFilter,
@@ -25,7 +28,6 @@ class SelectableListCubit<I, F extends AbstractFilter> extends Bloc {
       selectedIds: Map<I, I>(),
       canSelectMore: false,
       isEmpty: true,
-      wasEmptied: false,
       filter: initialFilter,
     );
   }
@@ -82,7 +84,7 @@ class SelectableListCubit<I, F extends AbstractFilter> extends Bloc {
     _selectedIds.removeWhere((key, _) => !_allIds.containsKey(key));
 
     if (allIds.isNotEmpty) {
-      _wasSourceListEverNotEmpty = true;
+      _wasSourceListNotEmpty = true;
     }
 
     _onChanged();
@@ -90,17 +92,22 @@ class SelectableListCubit<I, F extends AbstractFilter> extends Bloc {
 
   void _onChanged() {
     _canSelectMore = _selectedIds.length < _allIds.length;
+
+    if (_allIds.isEmpty && _wasSourceListNotEmpty) {
+      _wasSourceListNotEmpty = false;
+      _emptiedController.sink.add(true);
+    }
+
     _pushOutput();
   }
 
   void _pushOutput() {
-    _outStateController.sink.add(
+    _statesController.sink.add(
       SelectableListState(
         selected: _selectedIds.isNotEmpty,
         selectedIds: UnmodifiableMapView<I, I>(_selectedIds),
         canSelectMore: _canSelectMore,
         isEmpty: _allIds.isEmpty,
-        wasEmptied: _allIds.isEmpty && _wasSourceListEverNotEmpty,
         filter: _filter,
       ),
     );
@@ -108,7 +115,8 @@ class SelectableListCubit<I, F extends AbstractFilter> extends Bloc {
 
   @override
   void dispose() {
-    _outStateController.close();
+    _statesController.close();
+    _emptiedController.close();
   }
 }
 
@@ -117,7 +125,6 @@ class SelectableListState<I, F extends AbstractFilter> {
   final Map<I, I> selectedIds;
   final bool canSelectMore;
   final bool isEmpty;
-  final bool wasEmptied;
   final F filter;
 
   SelectableListState({
@@ -125,7 +132,6 @@ class SelectableListState<I, F extends AbstractFilter> {
     required this.selectedIds,
     required this.canSelectMore,
     required this.isEmpty,
-    required this.wasEmptied,
     required this.filter,
   });
 }

@@ -1,5 +1,5 @@
 import 'package:courseplease/blocs/authentication.dart';
-import 'package:courseplease/models/filters/image.dart';
+import 'package:courseplease/models/filters/my_image.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/screens/edit_profile/edit_profile.dart';
 import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
@@ -120,7 +120,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   void _sortUnsortedMedia() async {
     await EditImageListScreen.show(
       context: context,
-      filter: EditImageFilter(
+      filter: MyImageFilter(
         unsorted: true,
       ),
     );

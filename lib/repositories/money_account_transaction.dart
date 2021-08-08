@@ -17,9 +17,9 @@ class MoneyAccountTransactionRepository extends AbstractFilteredRepository<int, 
   }
 
   ListLoadResult<MoneyAccountTransaction> _denormalizeList(ListLoadResult<Map<String, dynamic>> mapResult) {
-    var objects = <MoneyAccountTransaction>[];
+    final objects = <MoneyAccountTransaction>[];
 
-    for (var obj in mapResult.objects) {
+    for (final obj in mapResult.objects) {
       objects.add(MoneyAccountTransaction.fromMap(obj));
     }
 

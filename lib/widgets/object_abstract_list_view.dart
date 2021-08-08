@@ -96,7 +96,7 @@ abstract class ObjectAbstractListViewState<
     widget.listStateCubit!.setAll(listState.objectIds);
 
     return StreamBuilder<SelectableListState<I, F>>(
-      stream: widget.listStateCubit!.outState,
+      stream: widget.listStateCubit!.states,
       builder: (context, snapshot) => _buildWithListAndSelectionStates(
         context,
         listState,
