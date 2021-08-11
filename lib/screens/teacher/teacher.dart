@@ -7,6 +7,7 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/capsules.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/media/image/gallery_image_grid.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/profile.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
@@ -109,7 +110,9 @@ class _TeacherScreenState extends State<TeacherScreen> {
                 ],
                 childrenUnderName: [
                   _getSubjectsLine(state),
+                  SmallPadding(),
                   _getLocationLine(teacher),
+                  SmallPadding(),
                   _getBio(state, teacher),
                   _getFormatList(state, teacher),
                 ],
@@ -124,6 +127,10 @@ class _TeacherScreenState extends State<TeacherScreen> {
   }
 
   Widget _getSubjectsLine(TeacherScreenCubitState state) {
+    if (state.teacher!.subjectIds.isEmpty) {
+      return Text(tr('TeacherScreen.student'));
+    }
+
     return Container(
       padding: EdgeInsets.only(bottom: 20),
       child: Row(
@@ -147,10 +154,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
   Widget _getLocationLine(Teacher teacher) {
     if (teacher.location.countryCode == '') return Container();
 
-    return Container(
-      padding: EdgeInsets.only(bottom: 20),
-      child: LocationLineWidget(location: teacher.location),
-    );
+    return LocationLineWidget(location: teacher.location);
   }
 
   Widget _getBio(TeacherScreenCubitState state, Teacher teacher) {
@@ -166,11 +170,10 @@ class _TeacherScreenState extends State<TeacherScreen> {
   }
 
   Widget _getFormatList(TeacherScreenCubitState state, Teacher teacher) {
+    if (teacher.subjectIds.isEmpty) return Container(); // A student.
+
     final ts = state.selectedTeacherSubject;
-    if (ts == null) {
-      return _getFormatListPlaceholder(tr('TeacherScreen.notCurrentlyTeaching'));
-    }
-    if (ts.productVariantFormats.isEmpty) {
+    if (ts == null || ts.productVariantFormats.isEmpty) {
       return _getFormatListPlaceholder(tr('TeacherScreen.notCurrentlyTeachingThis'));
     }
 

@@ -397,8 +397,8 @@ SignInWidget:
     continueWith:   'Continue with {@providerTitle}'
 
 TeacherScreen:
-    notCurrentlyTeaching:       'Not currently teaching.'
-    notCurrentlyTeachingThis:   'Not currently teaching this subject. Try other categories or teachers.'
+    notCurrentlyTeachingThis:   'Not currently teaching this subject. Try other subjects or teachers.'
+    student:                    'Student'
 
 TeachersTabWidget:
     title:          'Teachers'

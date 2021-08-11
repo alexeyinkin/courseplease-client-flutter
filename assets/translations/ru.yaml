@@ -400,8 +400,8 @@ SignInWidget:
     continueWith:   'Войти через {@providerTitle}'
 
 TeacherScreen:
-    notCurrentlyTeaching:       'Временно не преподаёт.'
     notCurrentlyTeachingThis:   'Временно не преподаёт этот предмет. Попробуйте другие предметы или преподавателей.'
+    student:                    'Ученик'
 
 TeachersTabWidget:
     title:          'Преподаватели'
