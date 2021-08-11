@@ -44,6 +44,10 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
   }
 
   Widget _buildWithState(ModelListByIdsState<int, ProductSubject> state) {
+    if (widget.selectedId != null && !state.objectsByIds.containsKey(widget.selectedId)) {
+      return Container(); // Not yet loaded.
+    }
+
     return ModelDropdown<int, ProductSubject>(
       selectedId:   widget.selectedId,
       models:       _getModels(state),

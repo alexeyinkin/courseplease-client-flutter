@@ -1,10 +1,10 @@
-import 'package:courseplease/models/lesson.dart';
+import 'package:courseplease/models/lesson_interface.dart';
 import 'package:courseplease/widgets/duration.dart';
 import 'package:courseplease/widgets/lesson/text_lesson_cover.dart';
 import 'package:flutter/material.dart';
 
 class VideoLessonCoverWithTimeWidget extends StatelessWidget {
-  final Lesson lesson;
+  final LessonInterface lesson;
   final bool showPlayButton;
 
   VideoLessonCoverWithTimeWidget({

@@ -2,8 +2,9 @@ import 'package:courseplease/models/reaction/commentable.dart';
 import 'package:courseplease/models/reaction/likable.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'interfaces.dart';
+import 'lesson_interface.dart';
 
-class Lesson implements WithId<int>, Commentable, Likable {
+class Lesson implements WithId<int>, LessonInterface, Commentable, Likable {
   final int id;
   final String title;
   final String type;
@@ -17,6 +18,8 @@ class Lesson implements WithId<int>, Commentable, Likable {
   final String body;
   final int loadTimestampMilliseconds;
   final DateTime dateTimeInsert;
+
+  String? get coverUrl => coverUrls.isEmpty ? null : coverUrls.values.last;
 
   Lesson({
     required this.id,

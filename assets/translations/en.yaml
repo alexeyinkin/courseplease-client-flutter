@@ -45,6 +45,11 @@ ContactStatusCubit:
 CountryDropdown:
     label:              'Country'
 
+CreateLessonScreen:
+    title:              'Import a YouTube Lesson'
+    url:                'URL'
+    urlTip:             'You can only import your own videos.'
+
 CreateWithdrawAccountScreen:
     title:                  'Add Withdraw Account'
     inputs:

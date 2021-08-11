@@ -30,6 +30,7 @@ dependencies:
   bubble: ^1.2.1
   cached_network_image: ^3.0.0
   charcode: ^1.2.0
+  clipboard: ^0.1.3
   device_info: ^2.0.2
   easy_localization: ^3.0.0
   flag: ^5.0.1

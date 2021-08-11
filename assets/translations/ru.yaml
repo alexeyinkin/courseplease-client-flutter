@@ -45,6 +45,11 @@ ContactStatusCubit:
 CountryDropdown:
     label:              'Страна'
 
+CreateLessonScreen:
+    title:              'Добавить урок с YouTube'
+    url:                'URL'
+    urlTip:             'Можно добавлять только свои уроки.'
+
 CreateWithdrawAccountScreen:
     title:                  'Добавить счёт вывода'
     inputs:

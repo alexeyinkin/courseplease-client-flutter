@@ -71,6 +71,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
   }
 
   Widget _getPortfolioProductSubjectDropdown(List<int> showIds) {
+    // TODO: Use TeacherProductSubjectDropdown to avoid duplication of gathering showIds.
     return ProductSubjectDropdown(
       selectedId: widget.params.newImageSubjectId,
       showIds: showIds,
@@ -99,6 +100,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
   }
 
   void _handleNewPhotoPortfolioSubjectIdChange(int id) {
+    // TODO: Backstage if the subject does not allow portfolio.
     setState(() {
       widget.params.newImageAction = InstagramNewImageAction.portfolio;
       widget.params.newImageSubjectId = id;

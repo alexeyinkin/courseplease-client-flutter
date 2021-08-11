@@ -5,6 +5,7 @@ import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/screens/create_lesson/create_lesson.dart';
 import 'package:courseplease/screens/my_lesson_list/local_widgets/title.dart';
 import 'package:courseplease/widgets/lesson/my_lesson_grid.dart';
 import 'package:flutter/material.dart';
@@ -102,6 +103,14 @@ class _MyLessonListScreenState extends State<MyLessonListScreen> {
     return SortedLessonListToolbar(
       listActionCubit: _listActionCubit,
       selectableListCubit: _selectableListCubit,
+      onCreatePressed: _onCreatePressed,
+    );
+  }
+
+  void _onCreatePressed() {
+    CreateLessonScreen.show(
+      context: context,
+      filter: widget.filter,
     );
   }
 

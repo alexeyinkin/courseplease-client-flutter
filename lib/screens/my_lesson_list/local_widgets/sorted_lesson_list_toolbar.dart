@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 class SortedLessonListToolbar extends StatelessWidget {
   final LessonListActionCubit listActionCubit;
   final SelectableListCubit<int, MyLessonFilter> selectableListCubit;
+  final VoidCallback onCreatePressed;
 
   SortedLessonListToolbar({
     required this.listActionCubit,
     required this.selectableListCubit,
+    required this.onCreatePressed,
   });
 
   @override
@@ -27,8 +29,12 @@ class SortedLessonListToolbar extends StatelessWidget {
           listActionCubit: listActionCubit,
           selectableListCubit: selectableListCubit,
         ),
+        Spacer(),
+        ElevatedButton(
+          child: Icon(Icons.add),
+          onPressed: onCreatePressed,
+        ),
         // TODO: Add a synchronization button when we can pull lessons from YouTube channels and playlists.
-        // Spacer(),
         // ConditionalSynchronizeProfilesButton(
         //   imageListActionCubit: listActionCubit,
         //   selectableListCubit: selectableListCubit,

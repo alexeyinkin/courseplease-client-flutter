@@ -28,12 +28,9 @@ class GalleryLessonTileState extends AbstractObjectTileState<int, Lesson, Galler
             onTap: _handleCoverTap,
             child: Container(
               padding: EdgeInsets.only(bottom: 5),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: LessonCoverWidget(
-                  lesson: widget.object,
-                  showPlayButton: true,
-                ),
+              child: LessonCoverWidget(
+                lesson: widget.object,
+                showPlayButton: true,
               ),
             ),
           ),

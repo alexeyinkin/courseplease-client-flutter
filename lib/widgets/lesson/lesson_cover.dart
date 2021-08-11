@@ -1,10 +1,10 @@
-import 'package:courseplease/models/lesson.dart';
+import 'package:courseplease/models/lesson_interface.dart';
 import 'package:courseplease/widgets/lesson/text_lesson_cover.dart';
 import 'package:courseplease/widgets/lesson/video_lesson_cover_with_time.dart';
 import 'package:flutter/widgets.dart';
 
 class LessonCoverWidget extends StatelessWidget {
-  final Lesson lesson;
+  final LessonInterface lesson;
   final bool showPlayButton;
 
   LessonCoverWidget({
@@ -14,6 +14,13 @@ class LessonCoverWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: _getContent(),
+    );
+  }
+
+  Widget _getContent() {
     switch (lesson.type) {
       case 'text':
         return TextLessonCoverWidget(lesson: lesson);

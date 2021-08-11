@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:courseplease/models/lesson.dart';
+import 'package:courseplease/models/lesson_interface.dart';
 import 'package:courseplease/widgets/error/id.dart';
 import 'package:flutter/widgets.dart';
 
 class TextLessonCoverWidget extends StatelessWidget {
-  final Lesson lesson;
+  final LessonInterface lesson;
 
   TextLessonCoverWidget({
     required this.lesson,
@@ -22,8 +22,10 @@ class TextLessonCoverWidget extends StatelessWidget {
   }
 
   String? _getUrl() {
-    final urlPath = lesson.coverUrls['1920x1080'];
+    final urlPath = lesson.coverUrl;
     if (urlPath == null) return null;
+
+    if (urlPath.toLowerCase().startsWith('http')) return urlPath;
     return 'https://courseplease.com' + urlPath;
   }
 }

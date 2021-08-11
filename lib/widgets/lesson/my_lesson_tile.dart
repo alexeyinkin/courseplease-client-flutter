@@ -38,12 +38,9 @@ class _MyLessonTileState extends AbstractObjectTileState<int, Lesson, MyLessonFi
             onTap: _handleCoverTap,
             child: Container(
               padding: EdgeInsets.only(bottom: 5),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: LessonCoverWidget(
-                  lesson: widget.object,
-                  showPlayButton: false,
-                ),
+              child: LessonCoverWidget(
+                lesson: widget.object,
+                showPlayButton: false,
               ),
             ),
           ),

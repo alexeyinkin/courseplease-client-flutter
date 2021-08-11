@@ -48,6 +48,7 @@ class MediaDestinationWidget extends StatelessWidget {
         Text(tr('MediaDestinationWidget.toSubject')),
         SmallPadding(),
         Expanded(
+          // TODO: Use TeacherProductSubjectDropdown to avoid duplication of gathering showIds.
           child: ProductSubjectDropdown(
             selectedId: state.subjectId,
             showIds: state.showSubjectIds,
