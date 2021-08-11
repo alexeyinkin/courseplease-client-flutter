@@ -1,7 +1,7 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/screens/create_lesson/local_blocs/create_lesson.dart';
-import 'package:courseplease/screens/create_lesson/local_widgets/external_lesson.dart';
+import 'package:courseplease/widgets/lesson/readonly_lesson_editor.dart';
 import 'package:courseplease/screens/error_popup/error_popup.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/app_text_field.dart';
@@ -130,7 +130,7 @@ class _CreateLessonScreenState extends State<CreateLessonScreen> {
     }
 
     if (state.externalLesson == null) return Container();
-    return ExternalLessonWidget(externalLesson: state.externalLesson!);
+    return ReadonlyLessonEditorWidget(lesson: state.externalLesson!);
   }
 
   void _onError() {

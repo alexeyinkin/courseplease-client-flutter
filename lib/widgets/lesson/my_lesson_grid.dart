@@ -1,6 +1,7 @@
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/repositories/my_lesson.dart';
+import 'package:courseplease/screens/edit_lesson/edit_lesson.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:flutter/rendering.dart';
 import '../../screens/lesson/lesson.dart';
@@ -78,10 +79,9 @@ class _MyLessonGridState extends State<MyLessonGrid> {
   }
 
   void _handleTap(Lesson lesson, int index) {
-    LessonScreen.show(
+    EditLessonScreen.show(
       context: context,
-      lessonId: lesson.id,
-      autoplay: true, // TODO: No autoplay if tapped the title and not the cover.
+      lesson: lesson,
     );
   }
 }

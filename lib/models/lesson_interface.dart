@@ -5,4 +5,7 @@ abstract class LessonInterface extends WithId<int> {
   String? get coverUrl;
   int get durationSeconds;
   String get type;
+  String get title;
+  String get body;
+  String get lang;
 }

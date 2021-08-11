@@ -108,6 +108,9 @@ EditIntegrationScreen:
         synchronizeNow:         'Synchronize Now'
         viewImages:             'View Images'
 
+EditLessonScreen:
+    title:                      'Edit Lesson'
+
 EditProfileScreen:
     title:          'Edit Profile'
     firstName:      'First Name'

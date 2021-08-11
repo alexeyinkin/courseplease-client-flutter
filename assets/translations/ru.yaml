@@ -110,6 +110,9 @@ EditIntegrationScreen:
         synchronizeNow:         'Выгрузить сейчас'
         viewImages:             'Показать изображения'
 
+EditLessonScreen:
+    title:                      'Редактировать урок'
+
 EditProfileScreen:
     title:          'Edit Profile'
     firstName:      'Имя'
