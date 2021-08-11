@@ -115,7 +115,7 @@ class _EditImageListScreenState extends State<EditImageListScreen> {
   }
 
   void _onError() {
-    ErrorPopupScreen.show(context);
+    ErrorPopupScreen.show(context: context);
   }
 
   @override

@@ -2,7 +2,13 @@ import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class UnknownErrorWidget extends StatelessWidget {
+class AppErrorWidget extends StatelessWidget {
+  final String? text;
+
+  AppErrorWidget({
+    this.text,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -10,7 +16,7 @@ class UnknownErrorWidget extends StatelessWidget {
         children: [
           Icon(Icons.error),
           SmallPadding(),
-          Text(tr('UnknownErrorWidget.text')),
+          Text(text ?? tr('UnknownErrorWidget.text')),
         ],
       ),
     );

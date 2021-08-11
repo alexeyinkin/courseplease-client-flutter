@@ -55,7 +55,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
   }
 
   void _onError() {
-    ErrorPopupScreen.show(context);
+    ErrorPopupScreen.show(context: context);
   }
 
   void _onSuccess(WithdrawOrder order) {

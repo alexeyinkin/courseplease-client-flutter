@@ -134,7 +134,11 @@ class _CreateLessonScreenState extends State<CreateLessonScreen> {
   }
 
   void _onError() {
-    ErrorPopupScreen.show(context);
+    ErrorPopupScreen.show(
+      context: context,
+      // TODO: Tell from network errors.
+      text: tr('CreateLessonScreen.errors.duplicate'),
+    );
   }
 
   void _onSuccess() {

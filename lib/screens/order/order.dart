@@ -78,7 +78,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   void _onError() {
-    ErrorPopupScreen.show(context);
+    ErrorPopupScreen.show(context: context);
   }
 
   void _onSuccess() {

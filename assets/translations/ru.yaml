@@ -49,6 +49,8 @@ CreateLessonScreen:
     title:              'Добавить урок с YouTube'
     url:                'URL'
     urlTip:             'Можно добавлять только свои уроки.'
+    errors:
+        duplicate:      'Этот урок уже есть в системе.'
 
 CreateWithdrawAccountScreen:
     title:                  'Добавить счёт вывода'

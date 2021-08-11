@@ -52,7 +52,7 @@ class _CreateWithdrawAccountScreenState extends State<CreateWithdrawAccountScree
   }
 
   void _onError() {
-    ErrorPopupScreen.show(context);
+    ErrorPopupScreen.show(context: context);
   }
 
   void _onSuccess(WithdrawAccount account) {

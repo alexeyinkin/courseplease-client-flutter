@@ -49,6 +49,8 @@ CreateLessonScreen:
     title:              'Import a YouTube Lesson'
     url:                'URL'
     urlTip:             'You can only import your own videos.'
+    errors:
+        duplicate:      'This lesson is already imported.'
 
 CreateWithdrawAccountScreen:
     title:                  'Add Withdraw Account'

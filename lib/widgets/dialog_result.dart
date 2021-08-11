@@ -20,7 +20,7 @@ void popOrShowError(BuildContext context, DialogResult result) {
       Navigator.of(context).pop(result);
       break;
     case DialogResultCode.error:
-      ErrorPopupScreen.show(context);
+      ErrorPopupScreen.show(context: context);
       break;
   }
 }
@@ -28,7 +28,7 @@ void popOrShowError(BuildContext context, DialogResult result) {
 void showErrorIfShould(BuildContext context, DialogResult result) {
   switch (result.code) {
     case DialogResultCode.error:
-      ErrorPopupScreen.show(context);
+      ErrorPopupScreen.show(context: context);
       break;
     default: // Nothing.
   }
