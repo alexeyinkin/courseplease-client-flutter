@@ -4,23 +4,19 @@ import 'package:courseplease/widgets/auth/device_validity.dart';
 import 'package:flutter/material.dart';
 import '../../../models/filters/teacher.dart';
 import '../../../widgets/teacher_grid.dart';
-import 'package:provider/provider.dart';
 
 class TeachersTab extends StatelessWidget {
+  final TreePositionState<int, ProductSubject> treePositionState;
+
+  TeachersTab({
+    required this.treePositionState,
+  });
+
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<TreePositionBloc<int, ProductSubject>>();
+    if (treePositionState.currentId == null) return Container();
+    final filter = TeacherFilter(subjectId: treePositionState.currentId);
 
-    return StreamBuilder<int>(
-      stream: bloc.outCurrentId,
-      builder: (context, snapshot) {
-        final filter = TeacherFilter(subjectId: snapshot.data);
-        return _buildWithFilter(filter);
-      }
-    );
-  }
-
-  Widget _buildWithFilter(TeacherFilter filter) {
     return CommonDeviceValidityWidget(
       validDeviceBuilder: (_) => _buildValidWithFilter(filter),
     );

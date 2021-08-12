@@ -4,23 +4,19 @@ import 'package:courseplease/widgets/auth/device_validity.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/media/image/gallery_image_grid.dart';
 import '../../../models/filters/gallery_image.dart';
-import 'package:provider/provider.dart';
 
 class ImagesTab extends StatelessWidget {
+  final TreePositionState<int, ProductSubject> treePositionState;
+
+  ImagesTab({
+    required this.treePositionState,
+  });
+
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<TreePositionBloc<int, ProductSubject>>();
+    if (treePositionState.currentId == null) return Container();
+    final filter = GalleryImageFilter(subjectId: treePositionState.currentId);
 
-    return StreamBuilder<int>(
-      stream: bloc.outCurrentId,
-      builder: (context, snapshot) {
-        final filter = GalleryImageFilter(subjectId: snapshot.data);
-        return _buildWithFilter(filter);
-      }
-    );
-  }
-
-  Widget _buildWithFilter(GalleryImageFilter filter) {
     return CommonDeviceValidityWidget(
       validDeviceBuilder: (_) => _buildValidWithFilter(filter),
     );

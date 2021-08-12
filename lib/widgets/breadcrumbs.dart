@@ -1,100 +1,123 @@
 import 'package:courseplease/blocs/tree_position.dart';
-import 'package:courseplease/models/breadcrumbs.dart';
 import 'package:courseplease/models/interfaces.dart';
-import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 
 class BreadcrumbsWidget<I, O extends WithIdTitleChildrenParent<I, O, O>> extends StatelessWidget {
-  final TreePositionBloc<I, O> currentTreePositionBloc;
+  final TreePositionState<I, O> treePositionState;
+  final ValueChanged<I?> onChanged;
 
   BreadcrumbsWidget({
-    required this.currentTreePositionBloc,
+    required this.treePositionState,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Breadcrumbs<O>>(
-      stream: currentTreePositionBloc.outBreadcrumbs,
-      builder: (context, snapshot) => _buildWithBreadcrumbsOrNull(snapshot.data),
-    );
-  }
-
-  Widget _buildWithBreadcrumbsOrNull(Breadcrumbs<O>? breadcrumbs) {
-    return (breadcrumbs == null)
-        ? SmallCircularProgressIndicator(scale: .5)
-        : _buildWithBreadcrumbs(breadcrumbs);
-  }
-
-  Widget _buildWithBreadcrumbs(Breadcrumbs<O> breadcrumbs) {
     final children = <Widget>[
-      Icon(Icons.home, size: 40),
+      _buildHome(),
+      ..._buildAncestors(),
+      ..._buildCurrent(),
+      ..._buildDescendants(),
     ];
-
-    for (final breadcrumb in breadcrumbs.list) {
-      children.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildItemSeparator(breadcrumb),
-            GestureDetector(
-              child: _buildItemContent(breadcrumb),
-              onTap: () => currentTreePositionBloc.setCurrentId(breadcrumb.item.id),
-            ),
-          ],
-        ),
-      );
-    }
 
     return Wrap(
       children: children,
     );
   }
 
-  Widget _buildItemContent(Breadcrumb<O> breadcrumb) {
-    switch (breadcrumb.status) {
-      case BreadcrumbStatus.ancestor:
-        return Text(
-          breadcrumb.item.title,
-          style: AppStyle.breadcrumbItem,
-        );
+  Widget _buildHome() {
+    return GestureDetector(
+      child: Icon(Icons.home, size: 40),
+      onTap: () => onChanged(null),
+    );
+  }
 
-      case BreadcrumbStatus.current:
-        return Text(
-          breadcrumb.item.title,
-          style: AppStyle.breadcrumbItemActive,
-        );
+  List<Widget> _buildAncestors() {
+    final result = <Widget>[];
 
-      case BreadcrumbStatus.descendant:
+    for (final item in treePositionState.ancestorBreadcrumbs) {
+      result.add(
+        _BreadcrumbWidget<I, O>(
+          item: item,
+          position: _BreadcrumbPosition.ancestor,
+          onTap: () => onChanged(item.id),
+        ),
+      );
+    }
+
+    return result;
+  }
+
+  List<Widget> _buildCurrent() {
+    if (treePositionState.currentObject == null) return [];
+    return [
+      _BreadcrumbWidget<I, O>(
+        item: treePositionState.currentObject!,
+        position: _BreadcrumbPosition.current,
+      ),
+    ];
+  }
+
+  List<Widget> _buildDescendants() {
+    final result = <Widget>[];
+
+    for (final item in treePositionState.descendantBreadcrumbs) {
+      result.add(
+        _BreadcrumbWidget<I, O>(
+          item: item,
+          position: _BreadcrumbPosition.descendant,
+          onTap: () => onChanged(item.id),
+        ),
+      );
+    }
+
+    return result;
+  }
+}
+
+class _BreadcrumbWidget<I, O extends WithIdTitle<I>> extends StatelessWidget {
+  final O item;
+  final _BreadcrumbPosition position;
+  final VoidCallback? onTap;
+
+  _BreadcrumbWidget({
+    required this.item,
+    required this.position,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildChevron(),
+        GestureDetector(
+          child: _buildContent(),
+          onTap: onTap,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChevron() {
+    switch (position) {
+      case _BreadcrumbPosition.ancestor:
+      case _BreadcrumbPosition.current:
+        return _getRawChevron();
+
+      case _BreadcrumbPosition.descendant:
         return Opacity(
           opacity: .1,
-          child: Text(
-            breadcrumb.item.title,
-            style: AppStyle.breadcrumbItem,
-          ),
+          child: _getRawChevron(),
         );
     }
 
-    throw Exception('Unknown BreadcrumbStatus: ' + breadcrumb.status.toString());
+    throw Exception('Unknown position: ' + position.toString());
   }
 
-  Widget _buildItemSeparator(Breadcrumb<O> breadcrumb) {
-    switch (breadcrumb.status) {
-      case BreadcrumbStatus.ancestor:
-      case BreadcrumbStatus.current:
-        return _getRawItemSeparator();
-
-      case BreadcrumbStatus.descendant:
-        return Opacity(
-          opacity: .1,
-          child: _getRawItemSeparator(),
-        );
-    }
-
-    throw Exception('Unknown BreadcrumbStatus: ' + breadcrumb.status.toString());
-  }
-
-  Widget _getRawItemSeparator() {
+  Widget _getRawChevron() {
     return Container(
       child: Icon(
         Icons.chevron_right,
@@ -102,4 +125,37 @@ class BreadcrumbsWidget<I, O extends WithIdTitleChildrenParent<I, O, O>> extends
       ),
     );
   }
+
+  Widget _buildContent() {
+    switch (position) {
+      case _BreadcrumbPosition.ancestor:
+        return Text(
+          item.title,
+          style: AppStyle.breadcrumbItem,
+        );
+
+      case _BreadcrumbPosition.current:
+        return Text(
+          item.title,
+          style: AppStyle.breadcrumbItemActive,
+        );
+
+      case _BreadcrumbPosition.descendant:
+        return Opacity(
+          opacity: .1,
+          child: Text(
+            item.title,
+            style: AppStyle.breadcrumbItem,
+          ),
+        );
+    }
+
+    throw Exception('Unknown position: ' + position.toString());
+  }
+}
+
+enum _BreadcrumbPosition {
+  ancestor,
+  current,
+  descendant,
 }

@@ -28,6 +28,7 @@ abstract class WithIdChildrenParent<I, C, P> implements
 abstract class WithIdTitleChildrenParent<I, C, P> implements
     WithId<I>,
     WithTitle,
+    WithIdTitle<I>,
     WithChildren<C>,
     WithParent<P>,
     WithIdChildrenParent<I, C, P>

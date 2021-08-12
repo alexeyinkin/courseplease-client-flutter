@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:courseplease/blocs/model_with_children_cache.dart';
-import 'package:courseplease/models/breadcrumbs.dart';
 import 'package:courseplease/models/interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
@@ -11,31 +9,35 @@ class TreePositionBloc<
   I,
   O extends WithIdChildrenParent<I, O, O>
 > implements Bloc {
-  late I _currentId;
-  late I _lastId;
+  I? _currentId;
+  I? _lastId;
+  var _topLevelModels = <O>[];
   var _modelsByIds = Map<I, O>();
 
-  late final ModelWithChildrenCacheBloc<I, O> _modelCacheBloc;
+  final ModelWithChildrenCacheBloc<I, O> _modelCacheBloc;
   late final StreamSubscription _productSubjectCacheBlocSubscription;
 
-  final _outCurrentIdController = BehaviorSubject<I>();
-  Stream<I> get outCurrentId => _outCurrentIdController.stream;
+  final _statesController = BehaviorSubject<TreePositionState<I, O>>();
+  Stream<TreePositionState<I, O>> get states => _statesController.stream;
 
-  final _outBreadcrumbsController = BehaviorSubject<Breadcrumbs<O>>();
-  Stream<Breadcrumbs<O>> get outBreadcrumbs => _outBreadcrumbsController.stream;
-
-  final _outChildrenController = BehaviorSubject<List<O>>();
-  Stream<List<O>> get outChildren => _outChildrenController.stream;
+  late final TreePositionState<I, O> initialState;
 
   TreePositionBloc({
     required ModelWithChildrenCacheBloc<I, O> modelCacheBloc,
-    required I currentId,
+    I? currentId,
   }) :
       _currentId = currentId,
       _lastId = currentId,
       _modelCacheBloc = modelCacheBloc
   {
+    initialState = _createState();
+    _modelCacheBloc.outTopLevelObjects.listen(_setTopLevelModels);
     _productSubjectCacheBlocSubscription = _modelCacheBloc.objectsByIds.listen(_setModelsByIds);
+  }
+
+  void _setTopLevelModels(List<O> list) {
+    _topLevelModels = list;
+    _pushOutput();
   }
 
   void _setModelsByIds(Map<I, O> map) {
@@ -43,7 +45,7 @@ class TreePositionBloc<
     _pushOutput();
   }
 
-  void setCurrentId(I id) {
+  void setCurrentId(I? id) {
     if (_currentId == id) return;
     _currentId = id;
 
@@ -55,57 +57,52 @@ class TreePositionBloc<
   }
 
   void _pushOutput() {
-    if (_currentId != null) {
-      _outCurrentIdController.sink.add(_currentId);
-      _pushBreadcrumbs();
-      _pushChildren();
-    }
+    _statesController.sink.add(_createState());
   }
 
-  void _pushBreadcrumbs() {
-    final chain = <Breadcrumb<O>>[];
+  TreePositionState<I, O> _createState() {
+    return TreePositionState<I, O>(
+      currentId:              _currentId,
+      ancestorBreadcrumbs:    _getAncestorBreadcrumbs(),
+      currentObject:          _modelsByIds[_currentId],
+      descendantBreadcrumbs:  _getDescendantBreadcrumbs(),
+      currentChildren:        _getCurrentChildren(),
+    );
+  }
+
+  List<O> _getAncestorBreadcrumbs() {
+    final result = <O>[];
+    var item = _modelsByIds[_currentId]?.parent;
+
+    while (item != null) {
+      result.insert(0, item);
+      item = item.parent;
+    }
+
+    return result;
+  }
+
+  List<O> _getDescendantBreadcrumbs() {
+    final result = <O>[];
     var item = _modelsByIds[_lastId];
 
     while (item != null && item.id != _currentId) {
-      chain.insert(
-        0,
-        Breadcrumb<O>(item: item, status: BreadcrumbStatus.descendant),
-      );
+      result.insert(0, item);
       item = item.parent;
     }
 
-    item = _modelsByIds[_currentId];
-    if (item != null) {
-      chain.insert(
-        0,
-        Breadcrumb<O>(item: item, status: BreadcrumbStatus.current),
-      );
-      item = item.parent;
-    }
-
-    while (item != null) {
-      chain.insert(
-        0,
-        Breadcrumb<O>(item: item, status: BreadcrumbStatus.ancestor),
-      );
-      item = item.parent;
-    }
-
-    _outBreadcrumbsController.sink.add(
-      Breadcrumbs<O>(
-        list: UnmodifiableListView(chain),
-      ),
-    );
+    return result;
   }
 
-  void _pushChildren() {
-    var item = _modelsByIds[_currentId];
-    _outChildrenController.sink.add(
-        UnmodifiableListView(item == null ? <O>[] : item.children)
-    );
+  List<O> _getCurrentChildren() {
+    final item = _modelsByIds[_currentId];
+    return item == null ? _topLevelModels : item.children;
   }
 
-  bool _isDescendant(I ancestorId, I descendantId) {
+  bool _isDescendant(I? ancestorId, I? descendantId) {
+    if (ancestorId == null) return true;
+    if (descendantId == null) return false;
+
     O? item = _modelsByIds[descendantId];
 
     while (item != null) {
@@ -118,9 +115,26 @@ class TreePositionBloc<
 
   @override
   void dispose() {
+    _statesController.close();
     _productSubjectCacheBlocSubscription.cancel();
-    _outChildrenController.close();
-    _outBreadcrumbsController.close();
-    _outCurrentIdController.close();
   }
+}
+
+class TreePositionState<
+  I,
+  O extends WithIdChildrenParent<I, O, O>
+> {
+  final I? currentId;
+  final List<O> ancestorBreadcrumbs;
+  final O? currentObject;
+  final List<O> descendantBreadcrumbs;
+  final List<O> currentChildren;
+
+  TreePositionState({
+    required this.currentId,
+    required this.ancestorBreadcrumbs,
+    required this.currentObject,
+    required this.descendantBreadcrumbs,
+    required this.currentChildren,
+  });
 }
