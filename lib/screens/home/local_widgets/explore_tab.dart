@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/product_subject_cache.dart';
+import 'package:courseplease/screens/home/local_widgets/explore_root_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/images_tab.dart';
 import 'package:courseplease/widgets/breadcrumbs.dart';
 import 'package:courseplease/screens/home/local_widgets/teachers_tab.dart';
@@ -31,6 +32,12 @@ class _ExploreTabState extends State<ExploreTab> {
   }
 
   Widget _buildWithState(TreePositionState<int, ProductSubject> state) {
+    return state.currentId == null
+        ? ExploreRootTabWidget(treePositionState: state, onSubjectChanged: _currentTreePositionBloc.setCurrentId)
+        : _buildNonRoot(state);
+  }
+
+  Widget _buildNonRoot(TreePositionState<int, ProductSubject> state) {
     return DefaultTabController(
       length: 3,
       child: Column(

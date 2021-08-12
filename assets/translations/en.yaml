@@ -137,6 +137,9 @@ errors:
     noInternet:     'Could not load the info'
     notAuthorized:  'Access denied'
 
+ExploreRootTabWidget:
+    title:          'What Do You Want to Learn?'
+
 ExploreTabWidget:
     iconTitle:      'Explore'
 

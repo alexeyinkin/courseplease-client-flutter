@@ -139,6 +139,9 @@ errors:
     noInternet:     'Не удалось получить информацию'
     notAuthorized:  'Доступ закрыт'
 
+ExploreRootTabWidget:
+    title:          'Чему хотите научиться?'
+
 ExploreTabWidget:
     iconTitle:      'Подбор'
 

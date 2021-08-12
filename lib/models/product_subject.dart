@@ -6,6 +6,7 @@ class ProductSubject implements
 {
   final int id;
   final String title;
+  final List<String> coverUrls;
   final bool allowsImagePortfolio;
   final List<ProductSubject> children;
   ProductSubject? parent;
@@ -13,6 +14,7 @@ class ProductSubject implements
   ProductSubject({
     required this.id,
     required this.title,
+    required this.coverUrls,
     required this.allowsImagePortfolio,
     required this.children,
   });
@@ -27,6 +29,7 @@ class ProductSubject implements
     final result = ProductSubject(
       id:                   map['id'],
       title:                map['title'],
+      coverUrls:            map['coverUrls'].cast<String>(),
       allowsImagePortfolio: map['allowsImagePortfolio'],
       children:             children,
     );
