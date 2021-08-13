@@ -45,7 +45,6 @@ class _GalleryLessonGridState extends State<GalleryLessonGrid> {
 
   Widget _buildWithFilter() {
     return Container(
-      padding: EdgeInsets.all(padding),
       child: ObjectGrid<int, Lesson, GalleryLessonFilter, GalleryLessonRepository, GalleryLessonTile>(
         filter: widget.filter,
         tileFactory: _createTile,

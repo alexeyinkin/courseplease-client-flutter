@@ -73,6 +73,7 @@ class TeacherGridState extends State<TeacherGrid> {
   ) {
     return TeacherTile(
       request: request,
+      productSubject: widget.productSubject,
       subjectAndDescendantIds: subjectAndDescendantIds,
     );
   }
@@ -87,10 +88,12 @@ class TeacherGridState extends State<TeacherGrid> {
 }
 
 class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
+  final ProductSubject? productSubject;
   final Map<int, void>? subjectAndDescendantIds;
 
   TeacherTile({
     required TileCreationRequest<int, Teacher, TeacherFilter> request,
+    required this.productSubject,
     required this.subjectAndDescendantIds,
   }) : super(
     request: request,
@@ -149,6 +152,7 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
                     padding: EdgeInsets.only(bottom: 10),
                     child: TeacherImageLineWidget(
                       teacherFilter: widget.filter,
+                      productSubject: widget.productSubject,
                       teacherId: user.id,
                       height: 50,
                     ),
@@ -197,26 +201,23 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
 
 class TeacherImageLineWidget extends StatelessWidget {
   final TeacherFilter teacherFilter;
+  final ProductSubject? productSubject;
   final int teacherId;
   final double height;
 
   TeacherImageLineWidget({
     required this.teacherFilter,
+    required this.productSubject,
     required this.teacherId,
     required this.height,
   });
 
   @override
   Widget build(BuildContext context) {
-    var i = 0;
     return Container(
       height: this.height,
       child: GalleryImageGrid(
-        filter: GalleryImageFilter(
-          subjectId: teacherFilter.subjectId,
-          teacherId: teacherId,
-          purposeId: ImageAlbumPurpose.portfolio,
-        ),
+        filter: _getFilter(),
         scrollDirection: Axis.horizontal,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
@@ -225,5 +226,19 @@ class TeacherImageLineWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  GalleryImageFilter _getFilter() {
+    return GalleryImageFilter(
+      subjectId: teacherFilter.subjectId,
+      teacherId: teacherId,
+      purposeId: _getFilterPurpose(),
+    );
+  }
+
+  int _getFilterPurpose() {
+    if (productSubject == null) return ImageAlbumPurpose.portfolio;
+    if (productSubject!.allowsImagePortfolio) return ImageAlbumPurpose.portfolio;
+    return ImageAlbumPurpose.backstage;
   }
 }

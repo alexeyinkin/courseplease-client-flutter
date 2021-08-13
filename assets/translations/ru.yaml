@@ -405,6 +405,12 @@ SignInWidget:
 TeacherScreen:
     notCurrentlyTeachingThis:   'Временно не преподаёт этот предмет. Попробуйте другие предметы или преподавателей.'
     student:                    'Ученик'
+    subtitles:
+        lessons:                'Мои видеоуроки'
+        portfolio:              'Мои работы'
+        customersPortfolio:     'Работы моих учеников'
+        backstage:              'Backstage'
+        backstageAsOnly:        'Галерея'
 
 TeachersTabWidget:
     title:          'Преподаватели'

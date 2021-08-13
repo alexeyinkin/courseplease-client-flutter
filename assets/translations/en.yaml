@@ -402,6 +402,12 @@ SignInWidget:
 TeacherScreen:
     notCurrentlyTeachingThis:   'Not currently teaching this subject. Try other subjects or teachers.'
     student:                    'Student'
+    subtitles:
+        lessons:                'My Lessons'
+        portfolio:              'My Works'
+        customersPortfolio:     'My Students'' works'
+        backstage:              'Backstage'
+        backstageAsOnly:        'Gallery'
 
 TeachersTabWidget:
     title:          'Teachers'

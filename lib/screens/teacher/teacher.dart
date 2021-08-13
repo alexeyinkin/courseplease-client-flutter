@@ -119,7 +119,9 @@ class _TeacherScreenState extends State<TeacherScreen> {
                 ],
               ),
               _getLessonsBlock(state),
-              _getWorksBlock(state),
+              _getPortfolioBlock(state),
+              _getCustomersPortfolioBlock(state),
+              _getBackstageBlock(state),
             ],
           ),
         ),
@@ -217,7 +219,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
         filter: GalleryLessonFilter(subjectId: state.selectedSubjectId, teacherId: widget.teacherId),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
-          child: Text('My Lessons', style: AppStyle.h2),
+          child: Text('TeacherScreen.subtitles.lessons', style: AppStyle.h2),
         ),
         scrollDirection: Axis.horizontal,
         crossAxisCount: 1,
@@ -225,18 +227,48 @@ class _TeacherScreenState extends State<TeacherScreen> {
     );
   }
 
-  Widget _getWorksBlock(TeacherScreenCubitState state) {
+  Widget _getPortfolioBlock(TeacherScreenCubitState state) {
+    if (!_supportsPortfolio(state)) return Container();
+    return _getImageGrid(state, ImageAlbumPurpose.portfolio, 'portfolio');
+  }
+
+  Widget _getCustomersPortfolioBlock(TeacherScreenCubitState state) {
+    if (!_supportsPortfolio(state)) return Container();
+    return _getImageGrid(state, ImageAlbumPurpose.customersPortfolio, 'customersPortfolio');
+  }
+
+  Widget _getBackstageBlock(TeacherScreenCubitState state) {
+    final key = _supportsPortfolio(state)
+        ? 'backstage'
+        : 'backstageAsOnly';
+    return _getImageGrid(state, ImageAlbumPurpose.backstage, key);
+  }
+
+  bool _supportsPortfolio(TeacherScreenCubitState state) {
+    return state.selectedSubject?.allowsImagePortfolio ?? false;
+  }
+
+  Widget _getImageGrid(
+    TeacherScreenCubitState state,
+    int purposeId,
+    String titleKeyTail,
+  ) {
     return Container(
-      height: 200,
+      constraints: BoxConstraints(
+        maxHeight: 200,
+      ),
       child: GalleryImageGrid(
         filter: GalleryImageFilter(
           subjectId: state.selectedSubjectId,
           teacherId: widget.teacherId,
-          purposeId: ImageAlbumPurpose.portfolio,
+          purposeId: purposeId,
         ),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
-          child: Text('My Works', style: AppStyle.h2),
+          child: Text(
+            tr('TeacherScreen.subtitles.' + titleKeyTail),
+            style: AppStyle.h2,
+          ),
         ),
         scrollDirection: Axis.horizontal,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
