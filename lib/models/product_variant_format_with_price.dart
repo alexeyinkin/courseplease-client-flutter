@@ -51,6 +51,7 @@ class ProductVariantFormatWithPrice implements WithTitle {
       title: title,
       enabled: enabled && obj.enabled,
       minPrice: null,
+      // TODO: Handle different currencies.
       maxPrice: Money.max(notNulls([maxPrice, obj.maxPrice])),
     );
   }

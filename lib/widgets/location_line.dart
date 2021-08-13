@@ -14,6 +14,8 @@ class LocationLineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (location.countryCode == '') return Container();
+
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [

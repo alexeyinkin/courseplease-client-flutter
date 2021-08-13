@@ -83,7 +83,7 @@ class _EditMoneyWidgetState extends State<EditMoneyWidget> {
     }
 
     return CurrencyDropdownWidget(
-      value: widget.money.getFirstKey() ?? widget.curs[0],
+      value: _cur,
       values: widget.curs,
       onChanged: _onCurrencyChanged,
     );

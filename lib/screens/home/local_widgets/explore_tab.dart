@@ -39,7 +39,7 @@ class _ExploreTabState extends State<ExploreTab> {
 
   Widget _buildNonRoot(TreePositionState<int, ProductSubject> state) {
     return DefaultTabController(
-      length: 3,
+      length: _getTabCount(state),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -49,24 +49,55 @@ class _ExploreTabState extends State<ExploreTab> {
           ),
           _buildChildrenSubjectsLine(state),
           TabBar(
-            tabs: [
-              Tab(text: tr('ImagesTabWidget.title')),
-              Tab(text: tr('TeachersTabWidget.title')),
-              Tab(text: tr('LessonsTabWidget.title')),
-            ],
+            tabs: _getTabTitles(state),
           ),
           Expanded(
             child: TabBarView(
-              children: [
-                ImagesTab(treePositionState: state),
-                TeachersTab(treePositionState: state),
-                LessonsTab(treePositionState: state),
-              ],
+              children: _getTabContents(state),
             ),
           ),
         ],
       ),
     );
+  }
+
+  int _getTabCount(TreePositionState<int, ProductSubject> state) {
+    // Always present:
+    //   Lessons
+    //   Teachers
+    int result = 2;
+
+    if (state.currentObject?.allowsImagePortfolio ?? false) {
+      result++;
+    }
+
+    return result;
+  }
+
+  List<Widget> _getTabTitles(TreePositionState<int, ProductSubject> state) {
+    final result = <Widget>[];
+
+    if (state.currentObject?.allowsImagePortfolio ?? false) {
+      result.add(Tab(text: tr('ImagesTabWidget.title')));
+    }
+
+    result.add(Tab(text: tr('LessonsTabWidget.title')));
+    result.add(Tab(text: tr('TeachersTabWidget.title')));
+
+    return result;
+  }
+
+  List<Widget> _getTabContents(TreePositionState<int, ProductSubject> state) {
+    final result = <Widget>[];
+
+    if (state.currentObject?.allowsImagePortfolio ?? false) {
+      result.add(ImagesTab(treePositionState: state));
+    }
+
+    result.add(LessonsTab(treePositionState: state));
+    result.add(TeachersTab(treePositionState: state));
+
+    return result;
   }
 
   Widget _buildChildrenSubjectsLine(TreePositionState<int, ProductSubject> state) {

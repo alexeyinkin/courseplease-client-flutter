@@ -1,3 +1,4 @@
+import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
 import 'package:courseplease/models/shop/line_item.dart';
 import 'package:courseplease/screens/order/order.dart';
@@ -228,7 +229,11 @@ class _TeacherScreenState extends State<TeacherScreen> {
     return Container(
       height: 200,
       child: GalleryImageGrid(
-        filter: GalleryImageFilter(subjectId: state.selectedSubjectId, teacherId: widget.teacherId),
+        filter: GalleryImageFilter(
+          subjectId: state.selectedSubjectId,
+          teacherId: widget.teacherId,
+          purposeId: ImageAlbumPurpose.portfolio,
+        ),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
           child: Text('My Works', style: AppStyle.h2),

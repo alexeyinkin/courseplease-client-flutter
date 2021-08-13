@@ -4,11 +4,14 @@ import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
+import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/money.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/product_variant_format.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
+import 'package:courseplease/models/teacher.dart';
 import 'package:courseplease/models/teacher_subject.dart';
+import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -19,7 +22,6 @@ import 'package:rxdart/rxdart.dart';
 class EditTeacherSubjectCubit extends Bloc {
   final TeacherSubject _teacherSubjectClone;
   ProductSubject? _productSubject;
-  bool _closeScreen = false;
   final _bodyTextEditingController = TextEditingController();
 
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
@@ -27,9 +29,16 @@ class EditTeacherSubjectCubit extends Bloc {
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
   );
   late final StreamSubscription _productSubjectsSubscription;
+  final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
 
   final _outStateController = BehaviorSubject<EditTeacherSubjectState>();
   Stream<EditTeacherSubjectState> get outState => _outStateController.stream;
+
+  final _errorsController = BehaviorSubject<void>();
+  Stream<void> get errors => _errorsController.stream;
+
+  final _successesController = BehaviorSubject<void>();
+  Stream<void> get successes => _successesController.stream;
 
   late final EditTeacherSubjectState initialState;
 
@@ -52,7 +61,6 @@ class EditTeacherSubjectCubit extends Bloc {
       productSubject: null,
       canSave: true,
       actionInProgress: null,
-      closeScreen: false,
       bodyTextEditingController: _bodyTextEditingController,
     );
 
@@ -103,16 +111,23 @@ class EditTeacherSubjectCubit extends Bloc {
     _actionInProgress = EditTeacherSubjectAction.save;
     _pushOutput();
 
-    await _authenticationCubit
-        .saveConsultingProduct(_createRequest())
-        .then(_onSaveSuccess);
-
-    _actionInProgress = null;
-    _pushOutput();
+    try {
+      await _authenticationCubit.saveConsultingProduct(_createRequest());
+      _successesController.sink.add(true);
+      _reloadLists();
+    } catch (ex) {
+      _actionInProgress = null;
+      _pushOutput();
+      _errorsController.sink.add(true);
+    }
   }
 
-  void _onSaveSuccess(_) {
-    _closeScreen = true;
+  void _reloadLists() {
+    final lists = _filteredModelListCache.getModelListsByObjectAndFilterTypes<int, Teacher, TeacherFilter>();
+
+    for (final list in lists.values) {
+      list.clear();
+    }
   }
 
   SaveConsultingProductRequest _createRequest() {
@@ -154,7 +169,6 @@ class EditTeacherSubjectCubit extends Bloc {
       productSubject: _productSubject,
       canSave: _actionInProgress == null,
       actionInProgress: _actionInProgress,
-      closeScreen: _closeScreen,
       bodyTextEditingController: _bodyTextEditingController,
     );
   }
@@ -164,6 +178,8 @@ class EditTeacherSubjectCubit extends Bloc {
     _productSubjectsSubscription.cancel();
     _productSubjectsByIdsBloc.dispose();
     _outStateController.close();
+    _errorsController.close();
+    _successesController.close();
   }
 }
 
@@ -172,7 +188,6 @@ class EditTeacherSubjectState {
   final ProductSubject? productSubject;
   final bool canSave;
   final EditTeacherSubjectAction? actionInProgress;
-  final bool closeScreen;
   final TextEditingController bodyTextEditingController;
 
   EditTeacherSubjectState({
@@ -180,7 +195,6 @@ class EditTeacherSubjectState {
     required this.productSubject,
     required this.canSave,
     required this.actionInProgress,
-    required this.closeScreen,
     required this.bodyTextEditingController,
   });
 }

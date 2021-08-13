@@ -40,4 +40,14 @@ class ProductSubject implements
 
     return result;
   }
+
+  Map<int, void> getThisAndDescendantIdsMap() {
+    final result = <int, void>{id: true};
+
+    for (final child in children) {
+      result.addAll(child.getThisAndDescendantIdsMap());
+    }
+
+    return result;
+  }
 }

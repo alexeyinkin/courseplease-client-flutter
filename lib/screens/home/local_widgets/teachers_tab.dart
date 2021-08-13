@@ -23,6 +23,9 @@ class TeachersTab extends StatelessWidget {
   }
 
   Widget _buildValidWithFilter(TeacherFilter filter) {
-    return TeacherGrid(filter: filter);
+    return TeacherGrid(
+      filter: filter,
+      productSubject: treePositionState.currentObject,
+    );
   }
 }

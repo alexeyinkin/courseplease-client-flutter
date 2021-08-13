@@ -84,11 +84,16 @@ class TeacherSubject {
     return ids;
   }
 
-  factory TeacherSubject.mergeAll(List<TeacherSubject> list) {
+  factory TeacherSubject.mergeWithSubjectIds(
+    List<TeacherSubject> list,
+    Map<int, void>? subjectIds,
+  ) {
     var enabled = false;
     var productVariantFormats = <String, ProductVariantFormatWithPrice>{};
 
     for (final ts in list) {
+      if (subjectIds != null && !subjectIds.containsKey(ts.subjectId)) continue;
+
       if (ts.enabled) enabled = true;
 
       for (final format in ts.productVariantFormats) {

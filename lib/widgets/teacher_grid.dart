@@ -1,4 +1,6 @@
+import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/money.dart';
+import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/widgets/object_grid.dart';
@@ -17,10 +19,12 @@ import '../models/teacher.dart';
 import 'media/image/gallery_image_grid.dart';
 
 class TeacherGrid extends StatefulWidget {
-  TeacherFilter filter;
+  final TeacherFilter filter;
+  final ProductSubject? productSubject;
 
   TeacherGrid({
     required this.filter,
+    required this.productSubject,
   }) : super(key: ValueKey(filter.toString()));
 
   @override
@@ -44,11 +48,13 @@ class TeacherGridState extends State<TeacherGrid> {
   }
 
   Widget _buildWithFilter() {
+    final subjectAndDescendantIds = widget.productSubject?.getThisAndDescendantIdsMap();
+
     return Container(
       padding: EdgeInsets.all(padding),
       child: ObjectGrid<int, Teacher, TeacherFilter, TeacherRepository, TeacherTile>(
         filter: widget.filter,
-        tileFactory: _createTile,
+        tileFactory: (request) => _createTile(request, subjectAndDescendantIds),
         onTap: _handleTap,
         scrollDirection: Axis.vertical,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -61,9 +67,13 @@ class TeacherGridState extends State<TeacherGrid> {
     );
   }
 
-  TeacherTile _createTile(TileCreationRequest<int, Teacher, TeacherFilter> request) {
+  TeacherTile _createTile(
+    TileCreationRequest<int, Teacher, TeacherFilter> request,
+    Map<int, void>? subjectAndDescendantIds,
+  ) {
     return TeacherTile(
       request: request,
+      subjectAndDescendantIds: subjectAndDescendantIds,
     );
   }
 
@@ -77,8 +87,11 @@ class TeacherGridState extends State<TeacherGrid> {
 }
 
 class TeacherTile extends AbstractObjectTile<int, Teacher, TeacherFilter> {
+  final Map<int, void>? subjectAndDescendantIds;
+
   TeacherTile({
     required TileCreationRequest<int, Teacher, TeacherFilter> request,
+    required this.subjectAndDescendantIds,
   }) : super(
     request: request,
   );
@@ -93,7 +106,7 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
     final user = widget.object;
     final relativeUrl = user.userpicUrls['300x300'] ?? null;
     final url = relativeUrl == null ? null : 'https://courseplease.com' + relativeUrl;
-    final ts = TeacherSubject.mergeAll(user.subjects);
+    final ts = TeacherSubject.mergeWithSubjectIds(user.subjects, widget.subjectAndDescendantIds);
 
     return GestureDetector(
       onTap: widget.onTap,
@@ -199,7 +212,11 @@ class TeacherImageLineWidget extends StatelessWidget {
     return Container(
       height: this.height,
       child: GalleryImageGrid(
-        filter: GalleryImageFilter(subjectId: teacherFilter.subjectId, teacherId: teacherId),
+        filter: GalleryImageFilter(
+          subjectId: teacherFilter.subjectId,
+          teacherId: teacherId,
+          purposeId: ImageAlbumPurpose.portfolio,
+        ),
         scrollDirection: Axis.horizontal,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,

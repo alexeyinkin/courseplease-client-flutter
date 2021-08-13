@@ -1,8 +1,8 @@
-import 'dart:async';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/screens/edit_teacher_subject/local_blocs/edit_teacher_subject.dart';
 import 'package:courseplease/screens/edit_teacher_subject/local_widgets/edit_body_tab.dart';
 import 'package:courseplease/screens/edit_teacher_subject/local_widgets/edit_prices_tab.dart';
+import 'package:courseplease/screens/error_popup/error_popup.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -37,14 +37,25 @@ class EditTeacherSubjectScreen extends StatefulWidget {
 }
 
 class _EditTeacherSubjectScreenState extends State<EditTeacherSubjectScreen> {
-  late final EditTeacherSubjectCubit _editTeacherSubjectCubit;
+  final EditTeacherSubjectCubit _editTeacherSubjectCubit;
 
   _EditTeacherSubjectScreenState({
     required TeacherSubject teacherSubjectClone,
-  }) {
-    _editTeacherSubjectCubit = EditTeacherSubjectCubit(
-      teacherSubjectClone: teacherSubjectClone,
-    );
+  }) :
+      _editTeacherSubjectCubit = EditTeacherSubjectCubit(
+        teacherSubjectClone: teacherSubjectClone,
+      )
+  {
+    _editTeacherSubjectCubit.errors.listen((_) => _onError());
+    _editTeacherSubjectCubit.successes.listen((_) => _onSuccess());
+  }
+
+  void _onError() {
+    ErrorPopupScreen.show(context: context);
+  }
+
+  void _onSuccess() {
+    Navigator.of(context).pop();
   }
 
   @override
@@ -58,14 +69,6 @@ class _EditTeacherSubjectScreenState extends State<EditTeacherSubjectScreen> {
   }
 
   Widget _buildWithState(EditTeacherSubjectState state) {
-    if (state.closeScreen) {
-      Timer(Duration.zero, () {
-        Navigator.of(context).pop();
-      });
-
-      return Container(); // TODO: Show confirmation.
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
