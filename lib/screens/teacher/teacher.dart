@@ -238,10 +238,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
   }
 
   Widget _getBackstageBlock(TeacherScreenCubitState state) {
-    final key = _supportsPortfolio(state)
-        ? 'backstage'
-        : 'backstageAsOnly';
-    return _getImageGrid(state, ImageAlbumPurpose.backstage, key);
+    return _getImageGrid(state, ImageAlbumPurpose.backstage, 'backstage');
   }
 
   bool _supportsPortfolio(TeacherScreenCubitState state) {

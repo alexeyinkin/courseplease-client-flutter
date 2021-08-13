@@ -66,7 +66,7 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
   }
 
   void _onAddSubjectPressed(AuthenticationState state) async {
-    final id = await SelectProductSubjectScreen.selectSubjectId(context);
+    final id = await SelectProductSubjectScreen.selectSubjectId(context: context);
     if (id == null) return;
 
     if (state.data == null) {

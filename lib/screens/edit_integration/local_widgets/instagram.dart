@@ -2,7 +2,7 @@ import 'package:courseplease/models/contact/instagram.dart';
 import 'package:courseplease/screens/select_product_subject/select_product_subject.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/pad.dart';
-import 'package:courseplease/widgets/product_subject_dropdown.dart';
+import 'package:courseplease/widgets/teacher_product_subject_dropdown.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -26,57 +26,113 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(tr('InstagramContactParamsWidget.placeNewImagesTo.title')),
-        RadioListTile(
-          title: Text(tr('InstagramContactParamsWidget.placeNewImagesTo.unsorted')),
-          value: InstagramNewImageAction.unsorted,
-          groupValue: widget.params.newImageAction,
-          onChanged: _handleNewPhotoActionChange,
-        ),
-        RadioListTile(
-          title: Row(
-            children: [
-              Text(tr('InstagramContactParamsWidget.placeNewImagesTo.portfolio')),
-              SmallPadding(),
-              _getPortfolioProductSubjectSelect(),
-            ],
-          ),
-          value: InstagramNewImageAction.portfolio,
-          groupValue: widget.params.newImageAction,
-          onChanged: _handleNewPhotoActionChange,
-        ),
+        _getUnsortedRadio(),
+        _getBackstageRadio(),
+        _getPortfolioRadio(),
       ],
     );
   }
 
-  Widget _getPortfolioProductSubjectSelect() {
+  Widget _getUnsortedRadio() {
+    return RadioListTile(
+      title: Text(tr('InstagramContactParamsWidget.placeNewImagesTo.unsorted')),
+      value: InstagramNewImageAction.unsorted,
+      groupValue: widget.params.newImageAction,
+      onChanged: _handleNewPhotoActionChange,
+    );
+  }
+
+  Widget _getBackstageRadio() {
+    final selected = (widget.params.newImageAction == InstagramNewImageAction.backstage);
+    final List<Widget> children;
+
+    if (!selected) {
+      children = [
+        Text(tr('InstagramContactParamsWidget.placeNewImagesTo.backstage')),
+      ];
+    } else {
+      children = [
+        Text(tr('InstagramContactParamsWidget.placeNewImagesToSelected.backstage')),
+        SmallPadding(),
+        Expanded(
+          child: _getPortfolioProductSubjectSelect(allowingImagePortfolio: false),
+        ),
+      ];
+    }
+
+    return RadioListTile(
+      title: Row(children: children),
+      value: InstagramNewImageAction.backstage,
+      groupValue: widget.params.newImageAction,
+      onChanged: _handleNewPhotoActionChange,
+    );
+  }
+
+  Widget _getPortfolioRadio() {
+    final selected = (widget.params.newImageAction == InstagramNewImageAction.portfolio);
+    final List<Widget> children;
+
+    if (!selected) {
+      children = [
+        Text(tr('InstagramContactParamsWidget.placeNewImagesTo.portfolio')),
+      ];
+    } else {
+      children = [
+        Text(tr('InstagramContactParamsWidget.placeNewImagesToSelected.portfolio')),
+        SmallPadding(),
+        Expanded(
+          child: _getPortfolioProductSubjectSelect(allowingImagePortfolio: true),
+        ),
+      ];
+    }
+
+    return RadioListTile(
+      title: Row(children: children),
+      value: InstagramNewImageAction.portfolio,
+      groupValue: widget.params.newImageAction,
+      onChanged: _handleNewPhotoActionChange,
+    );
+  }
+
+  Widget _getPortfolioProductSubjectSelect({
+    required bool allowingImagePortfolio,
+  }) {
     final teacherSubjectIds = _getTeacherSubjectIds();
 
     return teacherSubjectIds.isEmpty && widget.params.newImageSubjectId == null
-        ? _getChoosePortfolioProductSubjectButton()
-        : _getPortfolioProductSubjectDropdown(teacherSubjectIds);
+        ? _getChoosePortfolioProductSubjectButton(allowingImagePortfolio: allowingImagePortfolio)
+        : _getPortfolioProductSubjectDropdown(allowingImagePortfolio: allowingImagePortfolio);
   }
 
-  Widget _getChoosePortfolioProductSubjectButton() {
+  Widget _getChoosePortfolioProductSubjectButton({
+    required bool allowingImagePortfolio,
+  }) {
     return ElevatedButton(
-      onPressed: _selectPortfolioProductSubject,
+      onPressed: () => _selectPortfolioProductSubject(allowingImagePortfolio: allowingImagePortfolio),
       child: Text(tr('InstagramContactParamsWidget.buttons.selectSubject')),
     );
   }
 
-  void _selectPortfolioProductSubject() async {
-    final id = await SelectProductSubjectScreen.selectSubjectId(context);
+  void _selectPortfolioProductSubject({
+    required bool allowingImagePortfolio,
+  }) async {
+    final id = await SelectProductSubjectScreen.selectSubjectId(
+      context: context,
+      allowingImagePortfolio: allowingImagePortfolio,
+    );
     if (id != null) {
       _handleNewPhotoPortfolioSubjectIdChange(id);
     }
   }
 
-  Widget _getPortfolioProductSubjectDropdown(List<int> showIds) {
-    // TODO: Use TeacherProductSubjectDropdown to avoid duplication of gathering showIds.
-    return ProductSubjectDropdown(
+  Widget _getPortfolioProductSubjectDropdown({
+    required bool allowingImagePortfolio,
+  }) {
+    return TeacherProductSubjectDropdown(
       selectedId: widget.params.newImageSubjectId,
-      showIds: showIds,
       onChanged: _handleNewPhotoPortfolioSubjectIdChange,
       hintText: tr('InstagramContactParamsWidget.buttons.selectSubject'),
+      allowingImagePortfolio: allowingImagePortfolio,
     );
   }
 
@@ -100,9 +156,7 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
   }
 
   void _handleNewPhotoPortfolioSubjectIdChange(int id) {
-    // TODO: Backstage if the subject does not allow portfolio.
     setState(() {
-      widget.params.newImageAction = InstagramNewImageAction.portfolio;
       widget.params.newImageSubjectId = id;
     });
   }

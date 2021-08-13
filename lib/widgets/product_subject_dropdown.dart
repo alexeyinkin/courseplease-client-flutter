@@ -14,6 +14,7 @@ class ProductSubjectDropdown extends StatefulWidget {
   final List<int> showIds;
   final ValueChanged<int> onChanged;
   final String? hintText;
+  final bool allowingImagePortfolio;
 
   static const moreId = -1;
 
@@ -22,6 +23,7 @@ class ProductSubjectDropdown extends StatefulWidget {
     required this.showIds,
     required this.onChanged,
     this.hintText,
+    this.allowingImagePortfolio = false,
   });
 
   @override
@@ -70,6 +72,7 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
     for (final id in widget.showIds) {
       final ps = state.objectsByIds[id];
       if (ps == null) continue;
+      if (widget.allowingImagePortfolio && !ps.allowsImagePortfolio) continue;
       result.add(ps);
 
       if (id == widget.selectedId) selectedFound = true;
@@ -99,7 +102,11 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
   }
 
   void _handleMore() async {
-    final id = await SelectProductSubjectScreen.selectSubjectId(context);
+    final id = await SelectProductSubjectScreen.selectSubjectId(
+      context: context,
+      allowingImagePortfolio: widget.allowingImagePortfolio,
+    );
+
     if (id != null) {
       widget.onChanged(id);
     }

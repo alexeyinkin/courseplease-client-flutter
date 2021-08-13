@@ -7,15 +7,27 @@ import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get_it/get_it.dart';
 
 class SelectProductSubjectScreen extends StatefulWidget {
-  static const routeName = '/chooseProductSubject';
+  final bool allowingImagePortfolio;
+
+  SelectProductSubjectScreen({
+    required this.allowingImagePortfolio,
+  });
 
   @override
   State<SelectProductSubjectScreen> createState() => _SelectProductSubjectScreenState();
 
-  static Future<int?> selectSubjectId(BuildContext context) {
-    return Navigator.of(context)
-        .pushNamed(SelectProductSubjectScreen.routeName)
-        .then((idDynamic) => idDynamic as int?);
+  static Future<int?> selectSubjectId({
+    required BuildContext context,
+    bool allowingImagePortfolio = false,
+  }) async {
+    return Navigator.push<int?>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SelectProductSubjectScreen(
+          allowingImagePortfolio: allowingImagePortfolio,
+        ),
+      ),
+    );
   }
 }
 
@@ -52,12 +64,23 @@ class _SelectProductSubjectScreenState extends State<SelectProductSubjectScreen>
   }
 
   List<Node<ProductSubject>> _objectsToTreeNodes(List<ProductSubject> objects) {
-    return objects
-        .map(_objectToTreeNode)
-        .toList();
+    final result = <Node<ProductSubject>>[];
+
+    for (final obj in objects) {
+      final node = _objectToTreeNode(obj);
+      if (node == null) continue;
+
+      result.add(node);
+    }
+
+    return result;
   }
 
-  Node<ProductSubject> _objectToTreeNode(ProductSubject object) {
+  Node<ProductSubject>? _objectToTreeNode(ProductSubject object) {
+    if (widget.allowingImagePortfolio && object.allowsImagePortfolio == false) {
+      return null;
+    }
+
     return Node<ProductSubject>(
       key: object.id.toString(),
       label: object.title,

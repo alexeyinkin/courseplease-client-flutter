@@ -155,11 +155,16 @@ InstagramContactParamsWidget:
     placeNewImagesTo:
         title:      'Куда сохранять новые изображения:'
         unsorted:   'В Неразобранные, чтобы я выбирал альбом для каждого'
-        portfolio:  'В моё портфолио в качестве преподавателя по'
+        backstage:  'В мою жизнь и backstage'
+        portfolio:  'В моё портфолио'
 
+    placeNewImagesToSelected:
+        backstage:  'В мою жизнь и backstage в качестве преподавателя по'
+        portfolio:  'В моё портфолио в качестве преподавателя по'
 
 InstagramStatusCubit:
     addNewImagesToUnsorted:     'Сохранять новые изображения в Неразобранные'
+    addNewImagesToBackstage:    'Сохранять новые изображения в мой backstage в качестве преподавателя по {subjectTitle}'
     addNewImagesToPortfolio:    'Сохранять новые изображения в Моё портфолио в качестве преподавателя по {subjectTitle}'
 
 LearningLessonsTabWidget:
@@ -409,8 +414,7 @@ TeacherScreen:
         lessons:                'Мои видеоуроки'
         portfolio:              'Мои работы'
         customersPortfolio:     'Работы моих учеников'
-        backstage:              'Backstage'
-        backstageAsOnly:        'Галерея'
+        backstage:              'Жизнь и backstage'
 
 TeachersTabWidget:
     title:          'Преподаватели'

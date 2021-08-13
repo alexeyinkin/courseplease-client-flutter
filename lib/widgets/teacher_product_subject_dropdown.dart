@@ -8,11 +8,13 @@ class TeacherProductSubjectDropdown extends StatelessWidget {
   final int? selectedId;
   final ValueChanged<int> onChanged;
   final String? hintText;
+  final bool allowingImagePortfolio;
 
   TeacherProductSubjectDropdown({
     required this.selectedId,
     required this.onChanged,
     this.hintText,
+    this.allowingImagePortfolio = false,
   });
 
   @override
@@ -33,6 +35,7 @@ class TeacherProductSubjectDropdown extends StatelessWidget {
       selectedId: selectedId,
       showIds: subjectIds,
       onChanged: onChanged,
+      allowingImagePortfolio: allowingImagePortfolio,
     );
   }
 

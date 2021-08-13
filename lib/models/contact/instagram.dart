@@ -14,6 +14,9 @@ class InstagramContactParams extends ContactParams {
     InstagramNewImageAction action;
 
     switch (map['newImageAction']) {
+      case 'backstage':
+        action = InstagramNewImageAction.backstage;
+        break;
       case 'portfolio':
         action = InstagramNewImageAction.portfolio;
         break;
@@ -50,5 +53,6 @@ class InstagramContactParams extends ContactParams {
 
 enum InstagramNewImageAction {
   unsorted,
+  backstage,
   portfolio,
 }

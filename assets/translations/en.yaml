@@ -153,11 +153,16 @@ InstagramContactParamsWidget:
     placeNewImagesTo:
         title:      'Place new images to:'
         unsorted:   'Unsorted, so I can set an album for each one'
-        portfolio:  'To My Portfolio as a teacher of'
+        backstage:  'To My Life and Backstage album'
+        portfolio:  'To My Portfolio'
 
+    placeNewImagesToSelected:
+        backstage:  'To My Life and Backstage album as a teacher of'
+        portfolio:  'To My Portfolio as a teacher of'
 
 InstagramStatusCubit:
     addNewImagesToUnsorted:     'Place new images to Unsorted'
+    addNewImagesToBackstage:    'Place new images to My Life and Backstage as a teacher of {subjectTitle}'
     addNewImagesToPortfolio:    'Place new images to My Portfolio as a teacher of {subjectTitle}'
 
 LearningLessonsTabWidget:
@@ -406,8 +411,7 @@ TeacherScreen:
         lessons:                'My Lessons'
         portfolio:              'My Works'
         customersPortfolio:     'My Students'' works'
-        backstage:              'Backstage'
-        backstageAsOnly:        'Gallery'
+        backstage:              'Life and Backstage'
 
 TeachersTabWidget:
     title:          'Teachers'

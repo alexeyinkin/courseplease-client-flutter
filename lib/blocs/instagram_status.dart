@@ -41,17 +41,23 @@ class InstagramStatusCubit extends ContactStatusCubit {
     final descriptionParts = <String>[];
     final params = contact.params as InstagramContactParams;
 
+    final subjectTitle = _newPhotoSubject == null
+        ? '...'
+        : _newPhotoSubject!.title;
+
     if (contact.downloadEnabled) {
       switch (params.newImageAction) {
         case InstagramNewImageAction.unsorted:
           descriptionParts.add(tr('InstagramStatusCubit.addNewImagesToUnsorted'));
           break;
+        case InstagramNewImageAction.backstage:
+          descriptionParts.add(tr('InstagramStatusCubit.addNewImagesToBackstage', namedArgs:{'subjectTitle': subjectTitle}));
+          break;
         case InstagramNewImageAction.portfolio:
-          final subjectTitle = _newPhotoSubject == null
-              ? '...'
-              : _newPhotoSubject!.title;
           descriptionParts.add(tr('InstagramStatusCubit.addNewImagesToPortfolio', namedArgs:{'subjectTitle': subjectTitle}));
           break;
+        default:
+          throw Exception('Unknown newImageAction: ' + params.newImageAction.toString());
       }
     }
 
