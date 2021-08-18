@@ -403,6 +403,9 @@ SendingChatMessageWidget:
     retry:          'Повторить'
     delete:         'Удалить'
 
+SignInWebViewScreen:
+    title:          'Войти'
+
 SignInWidget:
     #Title is replaced manually in AuthProviderWidget
     continueWith:   'Войти через {@providerTitle}'

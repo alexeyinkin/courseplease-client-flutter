@@ -12,6 +12,10 @@ class WebViewScreen extends StatelessWidget {
     this.toolbarHeight,
   });
 
+  static const _androidChromeAgent = 'Mozilla/5.0 (Linux; Android 8.1.0; SM-T585) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36';
+  static const _androidFirefoxAgent = 'Mozilla/5.0 (Android 8.1.0; Mobile; rv:91.0) Gecko/91.0 Firefox/91.0';
+  static const _linuxFirefoxAgent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:90.0) Gecko/20100101 Firefox/90.0';
+
   static Future<String?> show({
     required BuildContext context,
     required String url,
@@ -43,6 +47,7 @@ class WebViewScreen extends StatelessWidget {
         title: title,
         toolbarHeight: toolbarHeight,
       ),
+      userAgent: _androidFirefoxAgent,
     );
   }
 

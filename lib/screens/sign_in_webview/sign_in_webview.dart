@@ -1,67 +1,56 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:courseplease/screens/webview/webview.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-// TODO: Turn this to a wrapper of WebViewScreen.
-class SignInWebviewScreen extends StatelessWidget {
+class SignInWebViewScreen {
   final String uri;
 
-  SignInWebviewScreen({
+  SignInWebViewScreen({
     required this.uri,
   });
 
-  static Future<void> show({
+  static Future<SignInWebViewResult> show({
     required BuildContext context,
-    required String uri,
-  }) {
-    return Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SignInWebviewScreen(
-          uri: uri,
-        ),
-      ),
+    required String url,
+  }) async {
+    final message = await WebViewScreen.show(
+      context: context,
+      url: url,
+      title: Text(tr('SignInWebViewScreen.title')),
+    );
+
+    if (message == null) return _getErrorResult();
+    final map = jsonDecode(message);
+
+    return map['return'] == 'ok'
+        ? _getOkResult()
+        : _getErrorResult();
+  }
+
+  static SignInWebViewResult _getErrorResult() {
+    return SignInWebViewResult(
+      status: SignInWebViewStatus.error,
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return WebviewScaffold(
-      url: uri,
-      javascriptChannels: <JavascriptChannel>[
-        JavascriptChannel(
-          name: 'appWebview',
-          onMessageReceived: (message) => _onMessageReceived(context, message),
-        ),
-      ].toSet(),
-      appBar: AppBar(
-        title: Text('Sign In :)'),
-      ),
-    );
-  }
-
-  void _onMessageReceived(BuildContext context, JavascriptMessage message) {
-    final map = jsonDecode(message.message);
-
-    Navigator.of(context).pop(
-      SignInWebviewResult(
-        status: map['return'] == 'ok' ? SignInWebviewStatus.ok : SignInWebviewStatus.error,
-      ),
+  static SignInWebViewResult _getOkResult() {
+    return SignInWebViewResult(
+      status: SignInWebViewStatus.ok,
     );
   }
 }
 
-class SignInWebviewResult {
-  final SignInWebviewStatus status;
+class SignInWebViewResult {
+  final SignInWebViewStatus status;
 
-  SignInWebviewResult({
+  SignInWebViewResult({
     required this.status,
   });
 }
 
-enum SignInWebviewStatus {
+enum SignInWebViewStatus {
   ok,
   error,
 }

@@ -25,7 +25,7 @@ class AuthenticationBloc extends Bloc{
   final _oauthTempTokens = Map<String, String>();
 
   final _providers = <AuthProvider>[
-    FacebookAuthProvider(id: 7, appId: '686805814840335', redirectHostAndPort: AuthProvider.defaultProductionHostAndPort),
+    FacebookAuthProvider(id: 29, appId: '1367168980317097', redirectHostAndPort: AuthProvider.defaultProductionHostAndPort),
     InstagramAuthProvider(id: 24, appId: '314996693237774', redirectHostAndPort: AuthProvider.defaultProductionHostAndPort),
     VkAuthProvider(id: 8, appId: '7413348', redirectHostAndPort: AuthProvider.defaultProductionHostAndPort),
     // AuthProvider(color: Color(0xFFEA4335), intName: 'google', title: 'Google'),
@@ -79,9 +79,9 @@ class AuthenticationBloc extends Bloc{
     final state = jsonEncode(stateAssoc);
     final uri = provider.getOauthUrl(state);
 
-    await SignInWebviewScreen.show(
+    await SignInWebViewScreen.show(
       context: context,
-      uri: uri,
+      url: uri,
     );
 
     _testDeviceKey(deviceKey);

@@ -400,6 +400,9 @@ SendingChatMessageWidget:
     retry:          'Retry'
     delete:         'Delete'
 
+SignInWebViewScreen:
+    title:          'Sign In'
+
 SignInWidget:
     #Title is replaced manually in AuthProviderWidget
     continueWith:   'Continue with {@providerTitle}'
