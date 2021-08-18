@@ -65,15 +65,6 @@ class ApiClient {
     return MeResponseData.fromMap(mapResponse.data);
   }
 
-  Future<CreateOAuthTempTokenResponseData> createOAuthTempToken(CreateOAuthTempTokenRequest request) async {
-    final mapResponse = await sendRequest(
-      method: HttpMethod.post,
-      path: '/api1/auth/createOAuthTempToken',
-      body: request,
-    );
-    return CreateOAuthTempTokenResponseData.fromMap(mapResponse.data);
-  }
-
   Future<MeResponseData> saveProfile(SaveProfileRequest request) async {
     final mapResponse = await sendRequest(
       method: HttpMethod.post,
@@ -563,32 +554,6 @@ class RealtimeCredentials {
 
   String getChecksum() {
     return providerName + '_' + providerToken + '_' + crossDeviceToken;
-  }
-}
-
-class CreateOAuthTempTokenRequest extends RequestBody {
-  final int providerId;
-
-  CreateOAuthTempTokenRequest({
-    required this.providerId,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'providerId': providerId,
-    };
-  }
-}
-
-class CreateOAuthTempTokenResponseData {
-  final String key;
-
-  CreateOAuthTempTokenResponseData._({
-    required this.key,
-  });
-
-  factory CreateOAuthTempTokenResponseData.fromMap(Map<String, dynamic> map) {
-    return CreateOAuthTempTokenResponseData._(key: map['key']);
   }
 }
 

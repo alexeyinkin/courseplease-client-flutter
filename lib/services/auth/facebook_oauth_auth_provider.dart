@@ -1,12 +1,12 @@
 import 'dart:ui';
-import 'auth_provider.dart';
+import 'oauth_auth_provider.dart';
 
-class FacebookAuthProvider extends AuthProvider {
+class FacebookOAuthAuthProvider extends OAuthAuthProvider {
   final String appId;
 
   static const version = '9.0';
 
-  FacebookAuthProvider({
+  FacebookOAuthAuthProvider({
     required int id,
     required String redirectHostAndPort,
     required this.appId,

@@ -1,4 +1,4 @@
-import 'package:courseplease/models/auth/auth_provider.dart';
+import 'package:courseplease/services/auth/auth_provider.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

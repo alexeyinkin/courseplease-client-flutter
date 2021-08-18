@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:courseplease/blocs/bloc.dart';
-import 'package:courseplease/models/auth/auth_provider.dart';
-import 'package:courseplease/models/auth/facebook_auth_provider.dart';
-import 'package:courseplease/models/auth/instagram_auth_provider.dart';
-import 'package:courseplease/models/auth/vk_auth_provider.dart';
+import 'package:courseplease/services/auth/auth_provider.dart';
+import 'package:courseplease/services/auth/facebook_native_auth_provider.dart';
+import 'package:courseplease/services/auth/oauth_auth_provider.dart';
+import 'package:courseplease/services/auth/instagram_auth_provider.dart';
+import 'package:courseplease/services/auth/vk_auth_provider.dart';
 import 'package:courseplease/models/teacher_subject.dart';
-import 'package:courseplease/screens/sign_in_webview/sign_in_webview.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/auth/app_info.dart';
 import 'package:courseplease/utils/auth/device_info.dart';
@@ -22,12 +21,11 @@ class AuthenticationBloc extends Bloc{
 
   final _apiClient = GetIt.instance.get<ApiClient>();
   final _secureStorage = FlutterSecureStorage();
-  final _oauthTempTokens = Map<String, String>();
 
   final _providers = <AuthProvider>[
-    FacebookAuthProvider(id: 29, appId: '1367168980317097', redirectHostAndPort: AuthProvider.defaultProductionHostAndPort),
-    InstagramAuthProvider(id: 24, appId: '314996693237774', redirectHostAndPort: AuthProvider.defaultProductionHostAndPort),
-    VkAuthProvider(id: 8, appId: '7413348', redirectHostAndPort: AuthProvider.defaultProductionHostAndPort),
+    FacebookNativeAuthProvider(id: 29),
+    //InstagramAuthProvider(id: 24, appId: '314996693237774', redirectHostAndPort: OAuthAuthProvider.defaultProductionHostAndPort),
+    //VkAuthProvider(id: 8, appId: '7413348', redirectHostAndPort: OAuthAuthProvider.defaultProductionHostAndPort),
     // AuthProvider(color: Color(0xFFEA4335), intName: 'google', title: 'Google'),
   ];
 
@@ -59,30 +57,11 @@ class AuthenticationBloc extends Bloc{
   }
 
   void requestAuthorization(AuthProvider provider, BuildContext context) async {
-    _setState(AuthenticationState.requested(_authenticationState));
-
-    final request = CreateOAuthTempTokenRequest(providerId: provider.id);
-    final tempToken = await _apiClient.createOAuthTempToken(request);
-    _oauthTempTokens[provider.intName] = tempToken.key;
-
-    _requestAuthorization(provider, tempToken.key, context);
-  }
-
-  void _requestAuthorization(AuthProvider provider, String oauthTempToken, BuildContext context) async {
     final deviceKey = _authenticationState.deviceKey;
     if (deviceKey == null) throw Exception('deviceKey is required for this');
 
-    final stateAssoc = {
-      'key': oauthTempToken,
-      'host': AuthProvider.defaultProductionHostAndPort,
-    };
-    final state = jsonEncode(stateAssoc);
-    final uri = provider.getOauthUrl(state);
-
-    await SignInWebViewScreen.show(
-      context: context,
-      url: uri,
-    );
+    _setState(AuthenticationState.requested(_authenticationState));
+    await provider.authenticate(context);
 
     _testDeviceKey(deviceKey);
   }

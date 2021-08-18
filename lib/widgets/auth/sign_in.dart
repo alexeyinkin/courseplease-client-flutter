@@ -1,5 +1,5 @@
 import 'package:courseplease/blocs/authentication.dart';
-import 'package:courseplease/models/auth/auth_provider.dart';
+import 'package:courseplease/services/auth/auth_provider.dart';
 import 'package:courseplease/widgets/auth/auth_providers.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';

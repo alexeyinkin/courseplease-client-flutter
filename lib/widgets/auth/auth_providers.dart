@@ -1,4 +1,5 @@
-import 'package:courseplease/models/auth/auth_provider.dart';
+import 'package:courseplease/services/auth/auth_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'auth_provider.dart';
 

@@ -59,16 +59,25 @@ class UserpicWidget extends StatelessWidget {
 class UserNameWidget extends StatelessWidget {
   final User user;
   final TextStyle? style;
+  final bool showId;
 
   UserNameWidget({
     required this.user,
     this.style,
+    this.showId = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final parts = <String>[
+      user.firstName,
+      user.lastName,
+    ];
+
+    if (showId) parts.add(user.id.toString());
+
     return Text(
-      user.firstName + ' ' + user.lastName,
+      parts.join(' '),
       style: style,
     );
   }

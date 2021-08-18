@@ -1,39 +1,36 @@
 import 'dart:ui';
-import 'auth_provider.dart';
+import 'oauth_auth_provider.dart';
 
-class VkAuthProvider extends AuthProvider {
+class InstagramAuthProvider extends OAuthAuthProvider {
   final String appId;
 
-  static const version = '5.126';
-
-  VkAuthProvider({
+  InstagramAuthProvider({
     required int id,
     required String redirectHostAndPort,
     required this.appId,
   }) : super(
     id: id,
     redirectHostAndPort: redirectHostAndPort,
-    intName: 'vk',
-    title: 'VK',
-    color: Color(0xFF2787F5),
+    intName: 'instagram',
+    title: 'Instagram',
+    color: Color(0xFFB83291),
   );
 
   @override
   String getOauthUrl(String state) {
     final uri = Uri(
       scheme: 'https',
-      host:   'oauth.vk.com',
-      path:   '/authorize',
+      host:   'api.instagram.com',
+      path:   '/oauth/authorize',
       queryParameters: {
         'client_id':      appId,
-        'display':        'popup',
         'redirect_uri':   getRedirectUri(),
-        'scope':          'email',
+        'scope':          'user_profile,user_media',
         'response_type':  'code',
         'state':          state,
-        'v':              version,
       }
     );
     return uri.toString();
+    //return 'https://api.instagram.com/oauth/authorize?client_id=314996693237774&redirect_uri=https://courseplease.com/auth&scope=user_profile,user_media&response_type=code';
   }
 }
