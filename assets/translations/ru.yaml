@@ -294,10 +294,12 @@ MyProfileTabWidget:
 
 MyProfileWidget:
     edit:               'Редактировать'
-    linkedProfiles:     'Интеграции с соц. сетями'
+    linkedProfiles:     'Интеграции с соцсетями'
     myProfile:          'Мой профиль'
     myTeaching:         'Мои предметы'
     sortImportedMedia:  'Разобрать импортированное'
+    connect:            'Подключить {@providerTitle}'
+    connectMore:        'Ещё:'
 
 MyRefundRequestMessageBodyWidget:
     beforeComplaint:    'Запрошен возврат денег:'

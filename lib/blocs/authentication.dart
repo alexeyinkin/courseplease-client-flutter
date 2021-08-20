@@ -1,10 +1,6 @@
 import 'dart:async';
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/services/auth/auth_provider.dart';
-import 'package:courseplease/services/auth/facebook_native_auth_provider.dart';
-import 'package:courseplease/services/auth/oauth_auth_provider.dart';
-import 'package:courseplease/services/auth/instagram_auth_provider.dart';
-import 'package:courseplease/services/auth/vk_auth_provider.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/auth/app_info.dart';
@@ -22,26 +18,15 @@ class AuthenticationBloc extends Bloc{
   final _apiClient = GetIt.instance.get<ApiClient>();
   final _secureStorage = FlutterSecureStorage();
 
-  final _providers = <AuthProvider>[
-    FacebookNativeAuthProvider(id: 29),
-    //InstagramAuthProvider(id: 24, appId: '314996693237774', redirectHostAndPort: OAuthAuthProvider.defaultProductionHostAndPort),
-    //VkAuthProvider(id: 8, appId: '7413348', redirectHostAndPort: OAuthAuthProvider.defaultProductionHostAndPort),
-    // AuthProvider(color: Color(0xFFEA4335), intName: 'google', title: 'Google'),
-  ];
-
   final initialState = AuthenticationState.notLoadedFromStorage();
 
   var _authenticationState = AuthenticationState.notLoadedFromStorage();
   AuthenticationState get currentState => _authenticationState;
 
-  final _outProvidersController = BehaviorSubject<List<AuthProvider>>();
-  Stream<List<AuthProvider>> get outProviders => _outProvidersController.stream;
-
   final _outStateController = BehaviorSubject<AuthenticationState>();
   Stream<AuthenticationState> get outState => _outStateController.stream;
 
   AuthenticationBloc() {
-    _outProvidersController.sink.add(_providers);
     _setState(initialState);
     _init();
   }
@@ -56,7 +41,7 @@ class AuthenticationBloc extends Bloc{
     }
   }
 
-  void requestAuthorization(AuthProvider provider, BuildContext context) async {
+  void requestAuthorization(BuildContext context, AuthProvider provider) async {
     final deviceKey = _authenticationState.deviceKey;
     if (deviceKey == null) throw Exception('deviceKey is required for this');
 
@@ -196,7 +181,6 @@ class AuthenticationBloc extends Bloc{
 
   @override
   void dispose() {
-    _outProvidersController.close();
     _outStateController.close();
   }
 }

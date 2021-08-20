@@ -44,7 +44,6 @@ abstract class OAuthAuthProvider extends AuthProvider {
     final uri = getOauthUrl(state);
 
     await SignInWebViewScreen.show(
-      context: context,
       url: uri,
     );
   }

@@ -65,7 +65,6 @@ class _OrderScreenState extends State<OrderScreen> {
 
   void _navigateToGateway(CreateCartAndOrderResponse response) async {
     final messageJson = await WebViewScreen.show(
-      context: context,
       url: response.payRequest!.url,
       title: LineItemsWidget(
         lineItems: _orderScreenCubit.currentState.lineItems,

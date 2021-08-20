@@ -1,11 +1,14 @@
-import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/filters/my_image.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/screens/edit_profile/edit_profile.dart';
 import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
 import 'package:courseplease/screens/edit_teaching/edit_teaching.dart';
+import 'package:courseplease/screens/home/local_blocs/my_profile.dart';
+import 'package:courseplease/services/auth/auth_provider.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/theme/theme.dart';
+import 'package:courseplease/widgets/auth/auth_provider_icons.dart';
+import 'package:courseplease/widgets/auth/auth_providers.dart';
 import 'package:courseplease/widgets/auth/sign_out_button.dart';
 import 'package:courseplease/widgets/linked_profiles.dart';
 import 'package:courseplease/widgets/location_line.dart';
@@ -16,7 +19,6 @@ import 'package:courseplease/widgets/unsorted_media_preview.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get_it/get_it.dart';
 
 class MyProfileWidget extends StatefulWidget {
   @override
@@ -24,31 +26,30 @@ class MyProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<MyProfileWidget> {
-  final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  final _cubit = MyProfileCubit();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<AuthenticationState>(
-      stream: _authenticationCubit.outState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _authenticationCubit.initialState),
+    return StreamBuilder<MyProfileCubitState>(
+      stream: _cubit.states,
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _cubit.initialState),
     );
   }
 
-  Widget _buildWithState(AuthenticationState state) {
-    if (state.data?.user == null) return Container();
+  Widget _buildWithState(MyProfileCubitState state) {
+    if (state.meResponseData?.user == null) return Container();
     return _buildWithAuthenticatedState(state);
   }
 
-  Widget _buildWithAuthenticatedState(AuthenticationState state) {
-    // TODO: Fix this mess of exclamations.
-    //       Make a separate state class when authenticated
-    //       and where everything is not null?
-    return Column(
+  Widget _buildWithAuthenticatedState(MyProfileCubitState state) {
+    final data = state.meResponseData!;
+
+    return ListView(
       children: [
-        _getProfileWidget(state.data!),
-        _getEditMenu(state.data!),
-        _getExistingIntegrationsMenu(state.data!),
-        _getAddIntegrationsMenu(state.data!.user!),
+        _getProfileWidget(data),
+        _getEditMenu(data),
+        _getExistingIntegrationsMenu(data),
+        _getAddIntegrationsMenu(state),
       ],
     );
   }
@@ -125,7 +126,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
       ),
     );
 
-    _authenticationCubit.reloadCurrentActor();
+    _cubit.reloadCurrentActor();
   }
 
   void _editProfile(User user) {
@@ -156,7 +157,55 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
     );
   }
 
-  Widget _getAddIntegrationsMenu(User user) {
-    return Container();
+  Widget _getAddIntegrationsMenu(MyProfileCubitState state) {
+    return Container(
+      padding: EdgeInsets.only(left: 16, top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _getAddSuggestedIntegrationsMenu(state.suggestedAuthProviders),
+          SmallPadding(),
+          SmallPadding(),
+          _getAddIntegrationsExpandableMenu(state),
+        ],
+      ),
+    );
+  }
+
+  Widget _getAddSuggestedIntegrationsMenu(List<AuthProvider> providers) {
+    return AuthProvidersWidget(
+      providers: providers,
+      titleTemplate: tr('MyProfileWidget.connect'),
+      onTap: _onConnectTap,
+    );
+  }
+
+  Widget _getAddIntegrationsExpandableMenu(MyProfileCubitState state) {
+    return state.connectAccountsExpanded
+        ? _getAddIntegrationsExpandedMenu(state.otherAuthProviders)
+        : _getAddIntegrationsCollapsedMenu();
+  }
+
+  Widget _getAddIntegrationsExpandedMenu(List<AuthProvider> providers) {
+    return AuthProviderIconsWidget(
+      providers: providers,
+      leadingIfNotEmpty: GestureDetector(
+        onTap: _cubit.toggleMore,
+        child: Text(tr('MyProfileWidget.connectMore')),
+      ),
+      scale: .7,
+      onTap: _onConnectTap,
+    );
+  }
+
+  Widget _getAddIntegrationsCollapsedMenu() {
+    return GestureDetector(
+      onTap: _cubit.toggleMore,
+      child: Text(tr('common.more')),
+    );
+  }
+
+  void _onConnectTap(AuthProvider provider) {
+    _cubit.requestAuthorization(context, provider);
   }
 }

@@ -12,11 +12,9 @@ class SignInWebViewScreen {
   });
 
   static Future<SignInWebViewResult> show({
-    required BuildContext context,
     required String url,
   }) async {
     final message = await WebViewScreen.show(
-      context: context,
       url: url,
       title: Text(tr('SignInWebViewScreen.title')),
     );

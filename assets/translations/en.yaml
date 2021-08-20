@@ -291,10 +291,12 @@ MyProfileTabWidget:
 
 MyProfileWidget:
     edit:               'Edit'
-    linkedProfiles:     'Linked Profiles'
+    linkedProfiles:     'Connected Profiles'
     myProfile:          'My Profile'
     myTeaching:         'My Teaching'
     sortImportedMedia:  'Sort Imported Media'
+    connect:            'Connect {@providerTitle}'
+    connectMore:        'More:'
 
 MyRefundRequestMessageBodyWidget:
     beforeComplaint:    'Requested refund:'

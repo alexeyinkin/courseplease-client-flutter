@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
+import '../../main.dart';
+
 class WebViewScreen extends StatelessWidget {
   final String url;
   final Widget title;
@@ -17,12 +19,11 @@ class WebViewScreen extends StatelessWidget {
   static const _linuxFirefoxAgent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:90.0) Gecko/20100101 Firefox/90.0';
 
   static Future<String?> show({
-    required BuildContext context,
     required String url,
     required Widget title,
     double? toolbarHeight,
   }) async {
-    return await Navigator.of(context).push(
+    return await navigatorKey.currentState!.push(
       MaterialPageRoute(
         builder: (_) => WebViewScreen(
           url: url,
