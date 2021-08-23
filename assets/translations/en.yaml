@@ -407,7 +407,7 @@ SignInWebViewScreen:
 
 SignInWidget:
     #Title is replaced manually in AuthProviderWidget
-    continueWith:   'Continue with {@providerTitle}'
+    continueWith:   'Sign in with {@providerTitle}'
 
 TeacherScreen:
     notCurrentlyTeachingThis:   'Not currently teaching this subject. Try other subjects or teachers.'

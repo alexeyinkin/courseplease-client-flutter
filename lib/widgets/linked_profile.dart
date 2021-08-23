@@ -29,6 +29,7 @@ class LinkedProfileWidget extends StatefulWidget {
   static bool shouldShow(EditableContact contact) {
     switch (contact.className) {
       case 'facebook':
+      case 'google':
       case 'instagram':
       case 'vk':
         return true;
