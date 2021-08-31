@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:courseplease/screens/home/local_widgets/explore_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/messages_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/profile_tab.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get_it/get_it.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'local_blocs/home.dart';
 import 'local_widgets/learning_tab.dart';
 
@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
             label: tr('LearningTabWidget.iconTitle'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(FlutterIcons.teach_mco),
+            icon: Icon(MdiIcons.teach),
             label: tr('TeachingTabWidget.iconTitle'),
           ),
           BottomNavigationBarItem(

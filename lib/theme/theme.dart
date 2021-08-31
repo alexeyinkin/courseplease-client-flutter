@@ -13,6 +13,7 @@ class AppStyle {
 
   static const h3 = TextStyle(
     fontSize: 24,
+    fontWeight: FontWeight.bold,
   );
 
   static const bold = TextStyle(

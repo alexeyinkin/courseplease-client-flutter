@@ -143,6 +143,17 @@ ExploreRootTabWidget:
 ExploreTabWidget:
     iconTitle:      'Explore'
 
+FilterScreen:
+    buttons:
+        apply:      'Apply'
+        clear:      'Clear'
+
+GalleryImageFilterDialogContentWidget:
+    subtitles:
+        formats:    'Teaching Format'
+        location:   'Teacher''s Location'
+        price:      'Price per hour'
+
 ImagesTabWidget:
     title:          'Works'
 
@@ -323,6 +334,12 @@ OthersRefundRequestMessageBodyWidget:
 
 PickedTabWidget:
     iconTitle:      'Picked'
+
+PriceRangeTextWidget:
+    any:                'Any'
+    from:               'From {from}'
+    to:                 'Up to {to}'
+    range:              '{from}–{to}'
 
 PurchaseMessageBodyPreviewWidget:
     text:               'Purchased 1 hour lesson in {subject}, {format}.'

@@ -1,24 +1,41 @@
 import 'package:courseplease/blocs/tree_position.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/screens/home/local_blocs/images_tab.dart';
 import 'package:courseplease/widgets/auth/device_validity.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/media/image/gallery_image_grid.dart';
 import '../../../models/filters/gallery_image.dart';
 
 class ImagesTab extends StatelessWidget {
+  final ImagesTabCubit cubit;
   final TreePositionState<int, ProductSubject> treePositionState;
 
   ImagesTab({
+    required this.cubit,
     required this.treePositionState,
   });
 
   @override
   Widget build(BuildContext context) {
     if (treePositionState.currentId == null) return Container();
+
+    return StreamBuilder<ImagesTabCubitState>(
+      stream: cubit.states,
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? cubit.initialState),
+    );
+  }
+
+  Widget _buildWithState(ImagesTabCubitState state) {
     final filter = GalleryImageFilter(
-      subjectId: treePositionState.currentId,
-      purposeId: ImageAlbumPurpose.portfolio,
+      subjectId:  treePositionState.currentId,
+      purposeId:  ImageAlbumPurpose.portfolio,
+      // TODO: Move to a merge() method.
+      formats:    state.filter.formats,
+      location:   state.filter.location,
+      priceFrom:  state.filter.priceFrom,
+      priceTo:    state.filter.priceTo,
+      cur:        state.filter.cur,
     );
 
     return CommonDeviceValidityWidget(

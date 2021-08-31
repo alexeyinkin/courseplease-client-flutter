@@ -2,7 +2,7 @@ import 'package:courseplease/widgets/list_action.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:flutter/material.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ListSelectionWidget extends AbstractListSelectionWidget {
   ListSelectionWidget({
@@ -21,12 +21,12 @@ class ListSelectionWidget extends AbstractListSelectionWidget {
         ElevatedButton(
           onPressed: selectableListState.canSelectMore ? _selectAll : null,
           // TODO: Use better icons, awaiting them here: https://github.com/Templarian/MaterialDesign/issues/5853
-          child: Icon(FlutterIcons.checkbox_multiple_marked_mco),
+          child: Icon(MdiIcons.checkboxMultipleMarked),
         ),
         SmallPadding(),
         ElevatedButton(
           onPressed: selectableListState.selected ? _selectNone : null,
-          child: Icon(FlutterIcons.checkbox_multiple_blank_mco),
+          child: Icon(MdiIcons.checkboxMultipleBlank),
         ),
       ],
     );

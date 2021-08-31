@@ -15,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await Hive.initFlutter();
-  initializeServiceLocator();
+  await initializeServiceLocator();
 
   runApp(CoursePleaseAppWrapper());
 }

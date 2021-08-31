@@ -18,7 +18,7 @@ import 'package:courseplease/widgets/messaging/unknown_message_body.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../models/messaging/chat_message_interface.dart';
 import 'content_message_body.dart';
@@ -140,9 +140,9 @@ class ChatMessageBodyWidget extends StatelessWidget {
   IconData _getReadStatusIcon() {
     switch (showReadStatus) {
       case ChatMessageShowReadStatus.read:
-        return FlutterIcons.check_all_mco;
+        return MdiIcons.checkAll;
       case ChatMessageShowReadStatus.unread:
-        return FlutterIcons.check_mco;
+        return MdiIcons.check;
       case ChatMessageShowReadStatus.noPlaceholder:
       case ChatMessageShowReadStatus.placeholder:
         throw Exception('Should not get here.');

@@ -1,3 +1,4 @@
+import 'package:courseplease/models/shop/enum/currency_alpha3.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -31,6 +32,10 @@ class Money {
 
   factory Money.zero() {
     return Money(Map<String, double>());
+  }
+
+  factory Money.singleCurrency(String cur, double value) {
+    return Money({cur: value});
   }
 
   factory Money.fromNullableMap(Map<String?, double?> nullableMap) {
@@ -94,9 +99,9 @@ class Money {
 
   static String curToSymbol(String cur) {
     switch (cur) {
-      case 'USD': return '\$';
-      case 'EUR': return '€';
-      case 'RUB': return '₽';
+      case CurrencyAlpha3Enum.USD: return '\$';
+      case CurrencyAlpha3Enum.EUR: return '€';
+      case CurrencyAlpha3Enum.RUB: return '₽';
     }
     return cur;
   }

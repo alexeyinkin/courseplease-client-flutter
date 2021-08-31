@@ -150,7 +150,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           style: AppStyle.h2,
         ),
         SmallPadding(),
-        LocationEditorWidget(controller: state.locationController),
+        LocationEditorWidget(
+          controller: state.locationController,
+          showStreetAddress: true,
+          showMap: true,
+          showPrivacy: true,
+        ),
       ],
     );
   }

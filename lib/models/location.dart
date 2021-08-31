@@ -61,4 +61,12 @@ class Location {
         ? null
         : Location.fromMap(map);
   }
+
+  Map<String, dynamic> toJson() {
+    // TODO: Add all fields. This is now used only for filters that only have these fields.
+    return {
+      'countryCode':  countryCode,
+      'cityId':       cityId,
+    };
+  }
 }

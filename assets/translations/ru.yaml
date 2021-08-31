@@ -145,6 +145,17 @@ ExploreRootTabWidget:
 ExploreTabWidget:
     iconTitle:      'Подбор'
 
+FilterScreen:
+    buttons:
+        apply:      'Применить'
+        clear:      'Сбросить'
+
+GalleryImageFilterDialogContentWidget:
+    subtitles:
+        formats:    'Формат обучения'
+        location:   'Адрес учителя'
+        price:      'Цена за час'
+
 ImagesTabWidget:
     title:          'Работы'
 
@@ -326,6 +337,12 @@ OthersRefundRequestMessageBodyWidget:
 
 PickedTabWidget:
     iconTitle:      'Избранное'
+
+PriceRangeTextWidget:
+    any:                'Любая'
+    from:               'От {from}'
+    to:                 'До {to}'
+    range:              '{from}–{to}'
 
 PurchaseMessageBodyPreviewWidget:
     text:               'Покупка, {subject}, урок 1 час, {format}.'

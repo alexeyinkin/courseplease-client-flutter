@@ -28,6 +28,8 @@ import 'package:courseplease/repositories/withdraw_service.dart';
 import 'package:courseplease/screens/home/local_blocs/home.dart';
 import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
 import 'package:courseplease/services/messaging/message_body_denormalizer_locator.dart';
+import 'package:courseplease/services/shop/cbr_rate_loader.dart';
+import 'package:courseplease/services/shop/currency_converter.dart';
 import 'package:courseplease/services/sse/abstract.dart';
 import 'package:courseplease/services/sse/chat_message_edit_sse_listener.dart';
 import 'package:courseplease/services/sse/chat_sse_reloader.dart';
@@ -52,7 +54,7 @@ import 'messaging/time_offer_denormalizer.dart';
 import 'model_cache_factory.dart';
 import 'net/api_client.dart';
 
-void initializeServiceLocator() {
+Future<void> initializeServiceLocator() async {
   // Keep this order. Higher level services may use lower-level services.
   _initializeNetwork();
   _initializeChatMessageDenormalizers();
@@ -60,6 +62,7 @@ void initializeServiceLocator() {
   _initializeCaches();
   _initializeBlocs();
   _initializeSse();
+  await _initializeServices();
 }
 
 void _initializeNetwork() {
@@ -177,4 +180,10 @@ SseReloaderLocator _createSseReloaderLocator() {
   ;
 
   return sseReloaderLocator;
+}
+
+Future<void> _initializeServices() async {
+  GetIt.instance
+      ..registerSingleton<CurrencyConverter>(await CbrRateLoader.loadConverterFromAssets())
+  ;
 }

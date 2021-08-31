@@ -13,9 +13,15 @@ import 'geo/country_dropdown.dart';
 
 class LocationEditorWidget extends StatefulWidget {
   final LocationEditorController controller;
+  final bool showStreetAddress;
+  final bool showMap;
+  final bool showPrivacy;
 
   LocationEditorWidget({
     required this.controller,
+    required this.showStreetAddress,
+    required this.showMap,
+    required this.showPrivacy,
   });
 
   @override
@@ -25,6 +31,8 @@ class LocationEditorWidget extends StatefulWidget {
 class _LocationEditorWidgetState extends State<LocationEditorWidget> {
   final Completer<GoogleMapController> _mapControllerCompleter = Completer();
   late final StreamSubscription _changesSubscription;
+
+  static const _topPadding = EdgeInsets.only(top: 10);
 
   @override
   void initState() {
@@ -63,24 +71,33 @@ class _LocationEditorWidgetState extends State<LocationEditorWidget> {
           countryCode: widget.controller.countryController.getValue()?.id,
           controller: widget.controller.cityNameController,
         ),
-        SmallPadding(),
-        AppTextField(
-          controller: widget.controller.streetAddressController,
-          labelText: tr('LocationEditorWidget.streetAddress'),
-        ),
-        SmallPadding(),
-        _buildMap(),
-        SmallPadding(),
-        _buildPrivacyControl(),
+        _buildStreetAddressIfNeed(),
+        _buildMapIfNeed(),
+        _buildPrivacyControlIfNeed(),
       ],
     );
   }
 
-  Widget _buildMap() {
+  Widget _buildStreetAddressIfNeed() {
+    if (!widget.showStreetAddress) return Container();
+
+    return Container(
+      padding: _topPadding,
+      child: AppTextField(
+        controller: widget.controller.streetAddressController,
+        labelText: tr('LocationEditorWidget.streetAddress'),
+      ),
+    );
+  }
+
+  Widget _buildMapIfNeed() {
+    if (!widget.showMap) return Container();
+
     // TODO: Dark mode.
     // TODO: Handle theme changes:
     //       https://medium.com/swlh/switch-to-dark-mode-in-real-time-with-flutter-and-google-maps-f0f080cd72e9
     return Container(
+      padding: _topPadding,
       height: 200,
       child: GoogleMap(
         initialCameraPosition: _getCameraPosition(),
@@ -126,10 +143,13 @@ class _LocationEditorWidgetState extends State<LocationEditorWidget> {
     return LatLng(widget.controller.latitude ?? 0, widget.controller.longitude ?? 0);
   }
 
-  Widget _buildPrivacyControl() {
+  Widget _buildPrivacyControlIfNeed() {
+    if (!widget.showPrivacy) return Container();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SmallPadding(),
         Text(tr('LocationEditorWidget.showTo')),
         RadioListTile(
           value: LocationPrivacyEnum.exactVisible,

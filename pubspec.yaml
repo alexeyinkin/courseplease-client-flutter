@@ -31,11 +31,11 @@ dependencies:
   cached_network_image: ^3.0.0
   charcode: ^1.2.0
   clipboard: ^0.1.3
+  collection: ^1.15.0
   device_info: ^2.0.2
   easy_localization: ^3.0.0
   flag: ^5.0.1
   flutter_facebook_auth: ^3.5.0+1
-  flutter_icons: ^1.1.0                         # No null-safety
   flutter_markdown: ^0.6.2
   flutter_rating_bar: ^4.0.0
   flutter_secure_storage: ^4.2.0
@@ -52,12 +52,14 @@ dependencies:
   image: ^3.0.2
   image_picker: ^0.8.1+3
   intl: ^0.17.0
+  material_design_icons_flutter: ^5.0.5955-rc.1 # Unstable
   package_info: ^2.0.2
   pointycastle: ^3.1.3
   provider: ^5.0.0
   rxdart: ^0.27.1
   uuid: ^3.0.4
   visibility_detector: ^0.2.0
+  xml: ^5.1.0
   #webview_flutter: ^2.0.10                      # Migrate to this when it supports Tinkoff payment page.
   yaml: ^3.1.0
   #youtube_player_flutter: ^7.0.0+7
@@ -89,6 +91,8 @@ flutter:
 
     - assets/flags/arabic.svg
     - assets/flags/by.svg
+
+    - assets/currency_rates/cbr_daily.xml
 
   generate: true
 
