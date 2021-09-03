@@ -3,6 +3,7 @@ import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/editors/checkbox_group.dart';
 import 'package:courseplease/blocs/editors/location.dart';
 import 'package:courseplease/models/filters/gallery_image.dart';
+import 'package:courseplease/models/filters/price.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_variant_format.dart';
 import 'package:courseplease/models/shop/enum/currency_alpha3.dart';
@@ -57,10 +58,11 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
     _formatsController.setValue(filter.formats.isEmpty ? ProductVariantFormatIntNameEnum.allForFilter : filter.formats);
     _locationController.setValue(filter.location);
 
-    if (filter.cur != null) {
-      _priceFrom = filter.priceFrom ?? 0;
-      _priceTo = filter.priceTo;
-      _cur = filter.cur!;
+    final price = filter.price;
+    if (price != null) {
+      _priceFrom = price.from;
+      _priceTo = price.to;
+      _cur = price.cur;
     }
 
     _pushOutput();
@@ -74,9 +76,7 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
       purposeId:  ImageAlbumPurpose.portfolio,
       formats:    ListEquality().equals(formats, ProductVariantFormatIntNameEnum.allForFilter) ? [] : formats,
       location:   _locationController.getValue(),
-      priceFrom:  _priceFrom == 0 ? null : _priceFrom,
-      priceTo:    _priceTo,
-      cur:        (_priceFrom == 0 && _priceTo == null) ? null : _cur,
+      price:      PriceFilter.fromValues(cur: _cur, from: _priceFrom, to: _priceTo)
     );
   }
 

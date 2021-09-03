@@ -1,4 +1,6 @@
-import 'abstract.dart';
+import 'package:courseplease/models/filters/abstract.dart';
+import 'package:courseplease/models/filters/location.dart';
+import 'package:courseplease/models/filters/price.dart';
 import 'package:courseplease/models/location.dart';
 
 class GalleryImageFilter extends AbstractFilter {
@@ -7,9 +9,7 @@ class GalleryImageFilter extends AbstractFilter {
   final int purposeId;
   final List<String> formats;
   final Location? location;
-  final double? priceFrom;
-  final double? priceTo;
-  final String? cur;
+  final PriceFilter? price;
 
   GalleryImageFilter({
     required this.subjectId,
@@ -17,9 +17,7 @@ class GalleryImageFilter extends AbstractFilter {
     required this.purposeId,
     this.formats = const <String>[],
     this.location,
-    this.priceFrom,
-    this.priceTo,
-    this.cur,
+    this.price,
   });
 
   @override
@@ -29,10 +27,8 @@ class GalleryImageFilter extends AbstractFilter {
       'teacherId':  teacherId,
       'purposeId':  purposeId,
       'formats':    formats,
-      'location':   location?.toJson(),
-      'priceFrom':  priceFrom,
-      'priceTo':    priceTo,
-      'cur':        cur,
+      'location':   LocationFilter.fromLocation(location)?.toJson(),
+      'price':      price?.toJson(),
     };
   }
 }

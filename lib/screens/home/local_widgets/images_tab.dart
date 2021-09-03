@@ -33,9 +33,7 @@ class ImagesTab extends StatelessWidget {
       // TODO: Move to a merge() method.
       formats:    state.filter.formats,
       location:   state.filter.location,
-      priceFrom:  state.filter.priceFrom,
-      priceTo:    state.filter.priceTo,
-      cur:        state.filter.cur,
+      price:      state.filter.price,
     );
 
     return CommonDeviceValidityWidget(

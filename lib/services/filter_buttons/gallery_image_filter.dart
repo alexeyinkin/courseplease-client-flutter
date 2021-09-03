@@ -7,7 +7,7 @@ class GalleryImageFilterButtonService extends AbstractFilterButtonService<Galler
 
     if (filter.formats.isNotEmpty) constraintCount++;
     if (filter.location != null) constraintCount++;
-    if (filter.priceFrom != 0 || filter.priceTo != null) constraintCount++;
+    if (filter.price != null) constraintCount++;
 
     return FilterButtonInfo(
       constraintCount: constraintCount,
