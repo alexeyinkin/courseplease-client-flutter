@@ -3,24 +3,23 @@ import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/editors/checkbox_group.dart';
 import 'package:courseplease/blocs/editors/location.dart';
 import 'package:courseplease/blocs/editors/price_range.dart';
-import 'package:courseplease/models/filters/gallery_image.dart';
-import 'package:courseplease/models/image.dart';
+import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/product_variant_format.dart';
 import 'package:courseplease/models/shop/enum/currency_alpha3.dart';
 import 'package:courseplease/screens/filter/local_blocs/filter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 
-class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<GalleryImageFilter> {
-  final _statesController = BehaviorSubject<GalleryImageFilterDialogCubitState>();
-  Stream<GalleryImageFilterDialogCubitState> get states => _statesController.stream;
-  late final GalleryImageFilterDialogCubitState initialState;
+class TeacherFilterDialogCubit extends AbstractFilterScreenContentCubit<TeacherFilter> {
+  final _statesController = BehaviorSubject<TeacherFilterDialogCubitState>();
+  Stream<TeacherFilterDialogCubitState> get states => _statesController.stream;
+  late final TeacherFilterDialogCubitState initialState;
 
   final _formatsController = CheckboxGroupEditorController();
   final _locationController = LocationEditorController();
   final PriceRangeEditorController _priceRangeController;
 
-  GalleryImageFilterDialogCubit() :
+  TeacherFilterDialogCubit() :
       _priceRangeController = PriceRangeEditorController(cur: _getCur()) // TODO: Listen for changes in AuthenticationBloc.
   {
     initialState = _createState();
@@ -37,8 +36,8 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
     _statesController.sink.add(_createState());
   }
 
-  GalleryImageFilterDialogCubitState _createState() {
-    return GalleryImageFilterDialogCubitState(
+  TeacherFilterDialogCubitState _createState() {
+    return TeacherFilterDialogCubitState(
       canClear:             true, // TODO
       formatsController:    _formatsController,
       locationController:   _locationController,
@@ -46,7 +45,7 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
     );
   }
 
-  void setFilter(GalleryImageFilter filter) {
+  void setFilter(TeacherFilter filter) {
     _formatsController.setValue(filter.formats.isEmpty ? ProductVariantFormatIntNameEnum.allForFilter : filter.formats);
     _locationController.setValue(filter.location);
     _priceRangeController.setValue(filter.price);
@@ -54,12 +53,11 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
     _pushOutput();
   }
 
-  GalleryImageFilter getFilter() {
+  TeacherFilter getFilter() {
     final formats = _formatsController.getValue();
 
-    return GalleryImageFilter(
+    return TeacherFilter(
       subjectId:  null,
-      purposeId:  ImageAlbumPurpose.portfolio,
       formats:    ListEquality().equals(formats, ProductVariantFormatIntNameEnum.allForFilter) ? [] : formats,
       location:   _locationController.getValue(),
       price: _priceRangeController.getValue(),
@@ -80,13 +78,13 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
   }
 }
 
-class GalleryImageFilterDialogCubitState {
+class TeacherFilterDialogCubitState {
   final bool canClear;
   final CheckboxGroupEditorController formatsController;
   final LocationEditorController locationController;
   final PriceRangeEditorController priceRangeController;
 
-  GalleryImageFilterDialogCubitState({
+  TeacherFilterDialogCubitState({
     required this.canClear,
     required this.formatsController,
     required this.locationController,

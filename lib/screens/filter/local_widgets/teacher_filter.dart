@@ -1,5 +1,5 @@
 import 'package:courseplease/models/shop/price_range.dart';
-import 'package:courseplease/screens/filter/local_blocs/gallery_image_filter.dart';
+import 'package:courseplease/screens/filter/local_blocs/teacher_filter.dart';
 import 'package:courseplease/screens/filter/local_widgets/dialog_section.dart';
 import 'package:courseplease/widgets/location_editor.dart';
 import 'package:courseplease/widgets/price_range_slider.dart';
@@ -8,22 +8,22 @@ import 'package:courseplease/widgets/teaching_format_checkbox_group.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class GalleryImageFilterDialogContentWidget extends StatelessWidget {
-  final GalleryImageFilterDialogCubit cubit;
+class TeacherFilterDialogContentWidget extends StatelessWidget {
+  final TeacherFilterDialogCubit cubit;
 
-  GalleryImageFilterDialogContentWidget({
+  TeacherFilterDialogContentWidget({
     required this.cubit,
   });
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<GalleryImageFilterDialogCubitState>(
+    return StreamBuilder<TeacherFilterDialogCubitState>(
       stream: cubit.states,
       builder: (context, snapshot) => _buildWithState(context, snapshot.data ?? cubit.initialState),
     );
   }
 
-  Widget _buildWithState(BuildContext context, GalleryImageFilterDialogCubitState state) {
+  Widget _buildWithState(BuildContext context, TeacherFilterDialogCubitState state) {
     return ListView(
       shrinkWrap: true,
       children: [
@@ -36,18 +36,18 @@ class GalleryImageFilterDialogContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _getFormatsPart(BuildContext context, GalleryImageFilterDialogCubitState state) {
+  Widget _getFormatsPart(BuildContext context, TeacherFilterDialogCubitState state) {
     return DialogSectionWidget(
-      text: tr('GalleryImageFilterDialogContentWidget.subtitles.formats'),
+      text: tr('TeacherFilterDialogContentWidget.subtitles.formats'),
       child: TeachingFormatCheckboxGroupWidget(
         controller: state.formatsController,
       ),
     );
   }
 
-  Widget _getLocationPart(BuildContext context, GalleryImageFilterDialogCubitState state) {
+  Widget _getLocationPart(BuildContext context, TeacherFilterDialogCubitState state) {
     return DialogSectionWidget(
-      text: tr('GalleryImageFilterDialogContentWidget.subtitles.location'),
+      text: tr('TeacherFilterDialogContentWidget.subtitles.location'),
       child: LocationEditorWidget(
         controller: state.locationController,
         showStreetAddress: false,
@@ -57,9 +57,9 @@ class GalleryImageFilterDialogContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _getPricePart(BuildContext context, GalleryImageFilterDialogCubitState state) {
+  Widget _getPricePart(BuildContext context, TeacherFilterDialogCubitState state) {
     return DialogSectionWidget(
-      text: tr('GalleryImageFilterDialogContentWidget.subtitles.price'),
+      text: tr('TeacherFilterDialogContentWidget.subtitles.price'),
       child: PriceRangeSlider(
         controller: state.priceRangeController,
         maxUsd: PriceRange.maxUsd, // TODO: Query server for price range

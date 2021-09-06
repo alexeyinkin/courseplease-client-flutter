@@ -1,7 +1,7 @@
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/filters/location.dart';
-import 'package:courseplease/models/filters/price.dart';
 import 'package:courseplease/models/location.dart';
+import 'package:courseplease/models/shop/price_range.dart';
 
 class GalleryImageFilter extends AbstractFilter {
   final int? subjectId;
@@ -9,7 +9,7 @@ class GalleryImageFilter extends AbstractFilter {
   final int purposeId;
   final List<String> formats;
   final Location? location;
-  final PriceFilter? price;
+  final PriceRange? price;
 
   GalleryImageFilter({
     required this.subjectId,

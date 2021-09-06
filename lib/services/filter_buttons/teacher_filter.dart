@@ -1,8 +1,8 @@
-import 'package:courseplease/models/filters/gallery_image.dart';
+import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/services/filter_buttons/abstract.dart';
 
-class GalleryImageFilterButtonService extends AbstractFilterButtonService<GalleryImageFilter>{
-  FilterButtonInfo getFilterButtonInfo(GalleryImageFilter filter) {
+class TeacherFilterButtonService extends AbstractFilterButtonService<TeacherFilter>{
+  FilterButtonInfo getFilterButtonInfo(TeacherFilter filter) {
     int constraintCount = 0;
 
     if (filter.formats.isNotEmpty) constraintCount++;

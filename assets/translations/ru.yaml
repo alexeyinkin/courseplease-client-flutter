@@ -153,7 +153,7 @@ FilterScreen:
 GalleryImageFilterDialogContentWidget:
     subtitles:
         formats:    'Формат обучения'
-        location:   'Адрес учителя'
+        location:   'Место обучения'
         price:      'Цена за час'
 
 ImagesTabWidget:
@@ -428,6 +428,12 @@ SignInWebViewScreen:
 SignInWidget:
     #Title is replaced manually in AuthProviderWidget
     continueWith:   'Войти через {@providerTitle}'
+
+TeacherFilterDialogContentWidget:
+    subtitles:
+        formats:    'Формат'
+        location:   'Место'
+        price:      'Цена за час'
 
 TeacherScreen:
     notCurrentlyTeachingThis:   'Временно не преподаёт этот предмет. Попробуйте другие предметы или преподавателей.'

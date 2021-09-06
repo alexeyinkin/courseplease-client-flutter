@@ -1,14 +1,17 @@
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/filters/gallery_image.dart';
+import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/screens/home/local_blocs/images_tab.dart';
+import 'package:courseplease/screens/home/local_blocs/teachers_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/explore_root_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/images_filter_buton.dart';
 import 'package:courseplease/screens/home/local_widgets/images_tab.dart';
+import 'package:courseplease/screens/home/local_widgets/teachers_filter_button.dart';
 import 'package:courseplease/widgets/breadcrumbs.dart';
 import 'package:courseplease/screens/home/local_widgets/teachers_tab.dart';
 import 'package:courseplease/widgets/capsules.dart';
-import 'package:courseplease/widgets/default_tab_controller_indexed_stack.dart';
+import 'package:courseplease/widgets/tab_controller_indexed_stack.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -29,6 +32,12 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
     ),
   );
 
+  final _teachersTabCubit = TeachersTabCubit(
+    initialFilter: TeacherFilter(
+      subjectId: null,
+    ),
+  );
+
   final _currentTreePositionBloc = TreePositionBloc<int, ProductSubject>(
     modelCacheBloc: GetIt.instance.get<ProductSubjectCacheBloc>(),
   );
@@ -36,6 +45,7 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
   @override
   void dispose() {
     _imagesTabCubit.dispose();
+    _teachersTabCubit.dispose();
     _currentTreePositionBloc.dispose();
     super.dispose();
   }
@@ -101,7 +111,7 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
   }
 
   Widget _getFilterButton(TreePositionState<int, ProductSubject> state) {
-    return DefaultTabControllerIndexedStack(
+    return TabControllerIndexedStack(
       children: _getFilterButtons(state),
     );
   }
@@ -114,7 +124,7 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
     }
 
     result.add(Container()); // TODO: Button for lessons
-    result.add(Container()); // TODO: Button for teachers
+    result.add(TeachersFilterButton(cubit: _teachersTabCubit));
 
     return result;
   }
@@ -140,7 +150,7 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
     }
 
     result.add(LessonsTab(treePositionState: state));
-    result.add(TeachersTab(treePositionState: state));
+    result.add(TeachersTab(treePositionState: state, cubit: _teachersTabCubit));
 
     return result;
   }

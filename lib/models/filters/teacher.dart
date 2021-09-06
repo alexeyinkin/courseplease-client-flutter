@@ -1,11 +1,20 @@
 import 'dart:convert';
-import 'abstract.dart';
+import 'package:courseplease/models/filters/abstract.dart';
+import 'package:courseplease/models/filters/location.dart';
+import 'package:courseplease/models/location.dart';
+import 'package:courseplease/models/shop/price_range.dart';
 
 class TeacherFilter extends AbstractFilter {
   final int? subjectId;
+  final List<String> formats;
+  final Location? location;
+  final PriceRange? price;
 
   TeacherFilter({
     required this.subjectId,
+    this.formats = const <String>[],
+    this.location,
+    this.price,
   });
 
   String toString() {
@@ -15,7 +24,10 @@ class TeacherFilter extends AbstractFilter {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'subjectId': subjectId,
+      'subjectId':  subjectId,
+      'formats':    formats,
+      'location':   LocationFilter.fromLocation(location)?.toJson(),
+      'price':      price?.toJson(),
     };
   }
 }

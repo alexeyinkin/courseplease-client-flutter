@@ -72,7 +72,6 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
     } else {
       _setNotNull(location);
     }
-    fireChange();
   }
 
   void _setNull() {
@@ -82,6 +81,7 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
     cityNameController.setValue(null);
     streetAddressController.text = '';
     _privacy = LocationPrivacyEnum.fuzzyVisible;
+    fireChange();
   }
 
   void _setNotNull(Location location) {
@@ -104,6 +104,8 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
 
     streetAddressController.text = location.streetAddress;
     _privacy = location.privacy;
+
+    fireChange();
   }
 
   void _setCountryCode(String countryCode) {

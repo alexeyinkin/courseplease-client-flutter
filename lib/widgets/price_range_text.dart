@@ -1,17 +1,37 @@
+import 'package:courseplease/blocs/editors/price_range.dart';
 import 'package:courseplease/models/money.dart';
+import 'package:courseplease/models/shop/price_range.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 
+class PriceRangeControllerTextWidget extends StatelessWidget {
+  final PriceRangeEditorController controller;
+
+  PriceRangeControllerTextWidget({
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<void>(
+      stream: controller.changes,
+      builder: (context, snapshot) => _buildOnChange(),
+    );
+  }
+
+  Widget _buildOnChange() {
+    return PriceRangeTextWidget(
+      priceRange: controller.getValue(),
+    );
+  }
+}
+
 class PriceRangeTextWidget extends StatelessWidget {
-  final double from;
-  final double? to;
-  final String cur;
+  final PriceRange priceRange;
 
   PriceRangeTextWidget({
-    required this.from,
-    required this.to,
-    required this.cur,
+    required this.priceRange,
   });
 
   @override
@@ -20,22 +40,22 @@ class PriceRangeTextWidget extends StatelessWidget {
   }
 
   String _getText() {
-    if (from == 0 && to == null) return tr('PriceRangeTextWidget.any');
+    if (priceRange.from == 0 && priceRange.to == null) return tr('PriceRangeTextWidget.any');
 
     final per = tr('util.units.h');
 
-    if (to == null) {
-      final formatted = Money.singleCurrency(cur, from).formatPer(per);
+    if (priceRange.to == null) {
+      final formatted = Money.singleCurrency(priceRange.cur, priceRange.from).formatPer(per);
       return tr('PriceRangeTextWidget.from', namedArgs: {'from': formatted});
     }
 
-    if (from == 0) {
-      final formatted = Money.singleCurrency(cur, to!).formatPer(per);
+    if (priceRange.from == 0) {
+      final formatted = Money.singleCurrency(priceRange.cur, priceRange.to!).formatPer(per);
       return tr('PriceRangeTextWidget.to', namedArgs: {'to': formatted});
     }
 
-    final formattedFrom = formatMoneyValue(from);
-    final formattedTo = Money.singleCurrency(cur, to!).formatPer(per);
+    final formattedFrom = formatMoneyValue(priceRange.from);
+    final formattedTo = Money.singleCurrency(priceRange.cur, priceRange.to!).formatPer(per);
     return tr('PriceRangeTextWidget.range', namedArgs: {'from': formattedFrom, 'to': formattedTo});
   }
 }

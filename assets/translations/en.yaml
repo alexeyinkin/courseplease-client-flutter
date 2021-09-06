@@ -426,6 +426,12 @@ SignInWidget:
     #Title is replaced manually in AuthProviderWidget
     continueWith:   'Sign in with {@providerTitle}'
 
+TeacherFilterDialogContentWidget:
+    subtitles:
+        formats:    'Format'
+        location:   'Location'
+        price:      'Price per hour'
+
 TeacherScreen:
     notCurrentlyTeachingThis:   'Not currently teaching this subject. Try other subjects or teachers.'
     student:                    'Student'
