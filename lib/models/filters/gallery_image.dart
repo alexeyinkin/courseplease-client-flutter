@@ -10,6 +10,7 @@ class GalleryImageFilter extends AbstractFilter {
   final List<String> formats;
   final Location? location;
   final PriceRange? price;
+  final List<String> langs;
 
   GalleryImageFilter({
     required this.subjectId,
@@ -18,6 +19,7 @@ class GalleryImageFilter extends AbstractFilter {
     this.formats = const <String>[],
     this.location,
     this.price,
+    this.langs = const<String>[],
   });
 
   @override
@@ -29,6 +31,7 @@ class GalleryImageFilter extends AbstractFilter {
       'formats':    formats,
       'location':   LocationFilter.fromLocation(location)?.toJson(),
       'price':      price?.toJson(),
+      'langs':      langs,
     };
   }
 }

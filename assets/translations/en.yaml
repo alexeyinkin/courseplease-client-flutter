@@ -153,6 +153,7 @@ GalleryImageFilterDialogContentWidget:
         formats:    'Teaching Format'
         location:   'Teacher''s Location'
         price:      'Price per hour'
+        langs:      'Teacher''s Language'
 
 ImagesTabWidget:
     title:          'Works'
@@ -431,6 +432,7 @@ TeacherFilterDialogContentWidget:
         formats:    'Format'
         location:   'Location'
         price:      'Price per hour'
+        langs:      'Language'
 
 TeacherScreen:
     notCurrentlyTeachingThis:   'Not currently teaching this subject. Try other subjects or teachers.'

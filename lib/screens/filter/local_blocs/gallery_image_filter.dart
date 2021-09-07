@@ -8,6 +8,7 @@ import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_variant_format.dart';
 import 'package:courseplease/models/shop/enum/currency_alpha3.dart';
 import 'package:courseplease/screens/filter/local_blocs/filter.dart';
+import 'package:courseplease/widgets/language_list_editor.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -19,6 +20,7 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
   final _formatsController = CheckboxGroupEditorController();
   final _locationController = LocationEditorController();
   final PriceRangeEditorController _priceRangeController;
+  final _langsController = LanguageListEditorController();
 
   GalleryImageFilterDialogCubit() :
       _priceRangeController = PriceRangeEditorController(cur: _getCur()) // TODO: Listen for changes in AuthenticationBloc.
@@ -43,6 +45,7 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
       formatsController:    _formatsController,
       locationController:   _locationController,
       priceRangeController: _priceRangeController,
+      langsController:      _langsController,
     );
   }
 
@@ -50,6 +53,7 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
     _formatsController.setValue(filter.formats.isEmpty ? ProductVariantFormatIntNameEnum.allForFilter : filter.formats);
     _locationController.setValue(filter.location);
     _priceRangeController.setValue(filter.price);
+    _langsController.setIds(filter.langs);
 
     _pushOutput();
   }
@@ -62,7 +66,8 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
       purposeId:  ImageAlbumPurpose.portfolio,
       formats:    ListEquality().equals(formats, ProductVariantFormatIntNameEnum.allForFilter) ? [] : formats,
       location:   _locationController.getValue(),
-      price: _priceRangeController.getValue(),
+      price:      _priceRangeController.getValue(),
+      langs:      _langsController.getIds(),
     );
   }
 
@@ -71,6 +76,7 @@ class GalleryImageFilterDialogCubit extends AbstractFilterScreenContentCubit<Gal
     _formatsController.setValue(ProductVariantFormatIntNameEnum.allForFilter);
     _locationController.setValue(null);
     _priceRangeController.setValue(null);
+    _langsController.setValue([]);
     _pushOutput();
   }
 
@@ -85,11 +91,13 @@ class GalleryImageFilterDialogCubitState {
   final CheckboxGroupEditorController formatsController;
   final LocationEditorController locationController;
   final PriceRangeEditorController priceRangeController;
+  final LanguageListEditorController langsController;
 
   GalleryImageFilterDialogCubitState({
     required this.canClear,
     required this.formatsController,
     required this.locationController,
     required this.priceRangeController,
+    required this.langsController,
   });
 }

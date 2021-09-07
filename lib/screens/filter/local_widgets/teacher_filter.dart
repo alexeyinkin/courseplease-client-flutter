@@ -1,6 +1,7 @@
 import 'package:courseplease/models/shop/price_range.dart';
 import 'package:courseplease/screens/filter/local_blocs/teacher_filter.dart';
 import 'package:courseplease/screens/filter/local_widgets/dialog_section.dart';
+import 'package:courseplease/widgets/language_list_editor.dart';
 import 'package:courseplease/widgets/location_editor.dart';
 import 'package:courseplease/widgets/price_range_slider.dart';
 import 'package:courseplease/widgets/price_range_text.dart';
@@ -27,16 +28,18 @@ class TeacherFilterDialogContentWidget extends StatelessWidget {
     return ListView(
       shrinkWrap: true,
       children: [
-        _getFormatsPart(context, state),
+        _getFormatsPart(state),
         Container(height: 30),
-        _getLocationPart(context, state),
+        _getLocationPart(state),
         Container(height: 30),
-        _getPricePart(context, state),
+        _getPricePart(state),
+        Container(height: 30),
+        _getLangsPart(state),
       ],
     );
   }
 
-  Widget _getFormatsPart(BuildContext context, TeacherFilterDialogCubitState state) {
+  Widget _getFormatsPart(TeacherFilterDialogCubitState state) {
     return DialogSectionWidget(
       text: tr('TeacherFilterDialogContentWidget.subtitles.formats'),
       child: TeachingFormatCheckboxGroupWidget(
@@ -45,7 +48,7 @@ class TeacherFilterDialogContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _getLocationPart(BuildContext context, TeacherFilterDialogCubitState state) {
+  Widget _getLocationPart(TeacherFilterDialogCubitState state) {
     return DialogSectionWidget(
       text: tr('TeacherFilterDialogContentWidget.subtitles.location'),
       child: LocationEditorWidget(
@@ -57,7 +60,7 @@ class TeacherFilterDialogContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _getPricePart(BuildContext context, TeacherFilterDialogCubitState state) {
+  Widget _getPricePart(TeacherFilterDialogCubitState state) {
     return DialogSectionWidget(
       text: tr('TeacherFilterDialogContentWidget.subtitles.price'),
       child: PriceRangeSlider(
@@ -66,6 +69,15 @@ class TeacherFilterDialogContentWidget extends StatelessWidget {
       ),
       titleTrailing: PriceRangeControllerTextWidget(
         controller: state.priceRangeController,
+      ),
+    );
+  }
+
+  Widget _getLangsPart(TeacherFilterDialogCubitState state) {
+    return DialogSectionWidget(
+      text: tr('TeacherFilterDialogContentWidget.subtitles.langs'),
+      child: LanguageListEditor(
+        controller: state.langsController,
       ),
     );
   }

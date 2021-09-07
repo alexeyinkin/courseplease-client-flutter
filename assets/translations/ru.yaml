@@ -155,6 +155,7 @@ GalleryImageFilterDialogContentWidget:
         formats:    'Формат обучения'
         location:   'Место обучения'
         price:      'Цена за час'
+        langs:      'Языки учителя'
 
 ImagesTabWidget:
     title:          'Работы'
@@ -434,6 +435,7 @@ TeacherFilterDialogContentWidget:
         formats:    'Формат'
         location:   'Место'
         price:      'Цена за час'
+        langs:      'Языки'
 
 TeacherScreen:
     notCurrentlyTeachingThis:   'Временно не преподаёт этот предмет. Попробуйте другие предметы или преподавателей.'

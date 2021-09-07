@@ -9,12 +9,14 @@ class TeacherFilter extends AbstractFilter {
   final List<String> formats;
   final Location? location;
   final PriceRange? price;
+  final List<String> langs;
 
   TeacherFilter({
     required this.subjectId,
     this.formats = const <String>[],
     this.location,
     this.price,
+    this.langs = const<String>[],
   });
 
   String toString() {
@@ -28,6 +30,7 @@ class TeacherFilter extends AbstractFilter {
       'formats':    formats,
       'location':   LocationFilter.fromLocation(location)?.toJson(),
       'price':      price?.toJson(),
+      'langs':      langs,
     };
   }
 }

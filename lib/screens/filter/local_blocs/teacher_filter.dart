@@ -7,6 +7,7 @@ import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/product_variant_format.dart';
 import 'package:courseplease/models/shop/enum/currency_alpha3.dart';
 import 'package:courseplease/screens/filter/local_blocs/filter.dart';
+import 'package:courseplease/widgets/language_list_editor.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -18,6 +19,7 @@ class TeacherFilterDialogCubit extends AbstractFilterScreenContentCubit<TeacherF
   final _formatsController = CheckboxGroupEditorController();
   final _locationController = LocationEditorController();
   final PriceRangeEditorController _priceRangeController;
+  final _langsController = LanguageListEditorController();
 
   TeacherFilterDialogCubit() :
       _priceRangeController = PriceRangeEditorController(cur: _getCur()) // TODO: Listen for changes in AuthenticationBloc.
@@ -42,6 +44,7 @@ class TeacherFilterDialogCubit extends AbstractFilterScreenContentCubit<TeacherF
       formatsController:    _formatsController,
       locationController:   _locationController,
       priceRangeController: _priceRangeController,
+      langsController:      _langsController,
     );
   }
 
@@ -49,6 +52,7 @@ class TeacherFilterDialogCubit extends AbstractFilterScreenContentCubit<TeacherF
     _formatsController.setValue(filter.formats.isEmpty ? ProductVariantFormatIntNameEnum.allForFilter : filter.formats);
     _locationController.setValue(filter.location);
     _priceRangeController.setValue(filter.price);
+    _langsController.setIds(filter.langs);
 
     _pushOutput();
   }
@@ -60,7 +64,8 @@ class TeacherFilterDialogCubit extends AbstractFilterScreenContentCubit<TeacherF
       subjectId:  null,
       formats:    ListEquality().equals(formats, ProductVariantFormatIntNameEnum.allForFilter) ? [] : formats,
       location:   _locationController.getValue(),
-      price: _priceRangeController.getValue(),
+      price:      _priceRangeController.getValue(),
+      langs:      _langsController.getIds(),
     );
   }
 
@@ -69,6 +74,7 @@ class TeacherFilterDialogCubit extends AbstractFilterScreenContentCubit<TeacherF
     _formatsController.setValue(ProductVariantFormatIntNameEnum.allForFilter);
     _locationController.setValue(null);
     _priceRangeController.setValue(null);
+    _langsController.setValue([]);
     _pushOutput();
   }
 
@@ -83,11 +89,13 @@ class TeacherFilterDialogCubitState {
   final CheckboxGroupEditorController formatsController;
   final LocationEditorController locationController;
   final PriceRangeEditorController priceRangeController;
+  final LanguageListEditorController langsController;
 
   TeacherFilterDialogCubitState({
     required this.canClear,
     required this.formatsController,
     required this.locationController,
     required this.priceRangeController,
+    required this.langsController,
   });
 }
