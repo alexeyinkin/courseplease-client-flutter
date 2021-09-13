@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/filters/location.dart';
 import 'package:courseplease/models/location.dart';
@@ -18,10 +17,6 @@ class TeacherFilter extends AbstractFilter {
     this.price,
     this.langs = const<String>[],
   });
-
-  String toString() {
-    return jsonEncode({'subjectId': subjectId});
-  }
 
   @override
   Map<String, dynamic> toJson() {

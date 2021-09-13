@@ -34,6 +34,7 @@ class ImagesTab extends StatelessWidget {
       formats:    state.filter.formats,
       location:   state.filter.location,
       price:      state.filter.price,
+      langs:      state.filter.langs,
     );
 
     return CommonDeviceValidityWidget(

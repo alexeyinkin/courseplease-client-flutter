@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'abstract.dart';
 
 class GalleryLessonFilter extends AbstractFilter {
@@ -9,11 +8,6 @@ class GalleryLessonFilter extends AbstractFilter {
     this.subjectId,
     this.teacherId,
   });
-
-  @override
-  String toString() {
-    return jsonEncode({'subjectId': subjectId, 'teacherId': teacherId});
-  }
 
   @override
   Map<String, dynamic> toJson() {
