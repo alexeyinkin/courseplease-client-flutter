@@ -87,6 +87,7 @@ class ProfileWidget extends StatelessWidget {
       child: UserNameWidget(
         user: user,
         style: AppStyle.pageTitle,
+        showId: true,
       ),
     );
   }

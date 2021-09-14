@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DropdownMenuItemSeparator<T> extends DropdownMenuItem<T> {
-  DropdownMenuItemSeparator() : super(child: Container()); // Trick the assertion.
+  DropdownMenuItemSeparator() : super(child: Container(), enabled: false);
 
   @override
   Widget build(BuildContext context) {
