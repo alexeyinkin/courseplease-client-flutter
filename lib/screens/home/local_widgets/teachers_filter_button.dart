@@ -20,6 +20,7 @@ class TeachersFilterButton extends StatelessWidget {
       filterButtonService: TeacherFilterButtonService(),
       dialogContentCubitFactory: () => TeacherFilterDialogCubit(),
       dialogContentBuilder: (context, cubit) => TeacherFilterDialogContentWidget(cubit: cubit),
+      style: FilterButtonStyle.flat,
     );
   }
 }

@@ -9,6 +9,7 @@ class TeacherFilter extends AbstractFilter {
   final Location? location;
   final PriceRange? price;
   final List<String> langs;
+  final String? search;
 
   TeacherFilter({
     required this.subjectId,
@@ -16,7 +17,19 @@ class TeacherFilter extends AbstractFilter {
     this.location,
     this.price,
     this.langs = const<String>[],
+    this.search,
   });
+
+  TeacherFilter withSearch(String? search) {
+    return TeacherFilter(
+      subjectId:  subjectId,
+      formats:    formats,
+      location:   location,
+      price:      price,
+      langs:      langs,
+      search:     search,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() {
@@ -26,6 +39,7 @@ class TeacherFilter extends AbstractFilter {
       'location':   LocationFilter.fromLocation(location)?.toJson(),
       'price':      price?.toJson(),
       'langs':      langs,
+      'search':     search,
     };
   }
 }

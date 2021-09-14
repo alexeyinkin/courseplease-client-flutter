@@ -157,6 +157,10 @@ GalleryImageFilterDialogContentWidget:
         price:      'Цена за час'
         langs:      'Языки учителя'
 
+GalleryLessonFilterDialogContentWidget:
+    subtitles:
+        langs:      'Язык'
+
 ImagesTabWidget:
     title:          'Работы'
 
@@ -191,6 +195,7 @@ LearningTabWidget:
 
 LessonsTabWidget:
     title:          'Уроки'
+    search:         'Поиск по названиям'
 
 LessonsThumbWidget:
     title:          'Уроки'
@@ -448,6 +453,7 @@ TeacherScreen:
 
 TeachersTabWidget:
     title:          'Преподаватели'
+    search:         'Поиск по именам'
 
 TeachingLessonsTabWidget:
     title:              'Уроки'

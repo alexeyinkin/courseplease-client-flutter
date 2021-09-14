@@ -1,20 +1,20 @@
 import 'package:courseplease/blocs/filterable.dart';
 import 'package:courseplease/blocs/text_change_debouncer.dart';
-import 'package:courseplease/models/filters/teacher.dart';
+import 'package:courseplease/models/filters/gallery_lesson.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
-class TeachersTabCubit extends FilterableCubit<TeacherFilter> {
-  final _statesController = BehaviorSubject<TeachersTabCubitState>();
-  Stream<TeachersTabCubitState> get states => _statesController.stream;
-  late final TeachersTabCubitState initialState;
+class LessonsTabCubit extends FilterableCubit<GalleryLessonFilter> {
+  final _statesController = BehaviorSubject<LessonsTabCubitState>();
+  Stream<LessonsTabCubitState> get states => _statesController.stream;
+  late final LessonsTabCubitState initialState;
 
-  TeacherFilter _filterWithoutSearch;
+  GalleryLessonFilter _filterWithoutSearch;
   final _searchController = TextEditingController();
   late final TextChangeDebouncer _searchDebouncer;
 
-  TeachersTabCubit({
-    required TeacherFilter initialFilter,
+  LessonsTabCubit({
+    required GalleryLessonFilter initialFilter,
   }) :
       _filterWithoutSearch = initialFilter
   {
@@ -26,7 +26,7 @@ class TeachersTabCubit extends FilterableCubit<TeacherFilter> {
     _pushOutput();
   }
 
-  void setFilter(TeacherFilter filter) {
+  void setFilter(GalleryLessonFilter filter) {
     _filterWithoutSearch = filter;
     _pushOutput();
   }
@@ -35,14 +35,14 @@ class TeachersTabCubit extends FilterableCubit<TeacherFilter> {
     _statesController.sink.add(_createState());
   }
 
-  TeachersTabCubitState _createState() {
-    return TeachersTabCubitState(
+  LessonsTabCubitState _createState() {
+    return LessonsTabCubitState(
       filter: _createFilter(),
       searchController: _searchController,
     );
   }
 
-  TeacherFilter _createFilter() {
+  GalleryLessonFilter _createFilter() {
     return _filterWithoutSearch.withSearch(_searchController.text);
   }
 
@@ -54,11 +54,11 @@ class TeachersTabCubit extends FilterableCubit<TeacherFilter> {
   }
 }
 
-class TeachersTabCubitState extends FilterableCubitState<TeacherFilter>{
-  final TeacherFilter filter;
+class LessonsTabCubitState extends FilterableCubitState<GalleryLessonFilter>{
+  final GalleryLessonFilter filter;
   final TextEditingController searchController;
 
-  TeachersTabCubitState({
+  LessonsTabCubitState({
     required this.filter,
     required this.searchController,
   });

@@ -2,6 +2,7 @@ import 'package:courseplease/blocs/tree_position.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/screens/home/local_blocs/images_tab.dart';
+import 'package:courseplease/screens/home/local_widgets/images_filter_buton.dart';
 import 'package:courseplease/widgets/auth/device_validity.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/media/image/gallery_image_grid.dart';
@@ -43,6 +44,19 @@ class ImagesTab extends StatelessWidget {
   }
 
   Widget _buildValidWithFilter(GalleryImageFilter filter) {
+    return Stack(
+      children: [
+        _buildGrid(filter),
+        Positioned(
+          top: 10,
+          right: 10,
+          child: ImagesFilterButton(cubit: cubit),
+        ),
+      ]
+    );
+  }
+
+  Widget _buildGrid(GalleryImageFilter filter) {
     return GalleryImageGrid(
       filter: filter,
       scrollDirection: Axis.vertical,

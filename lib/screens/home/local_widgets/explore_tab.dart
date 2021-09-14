@@ -1,17 +1,16 @@
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/filters/gallery_image.dart';
+import 'package:courseplease/models/filters/gallery_lesson.dart';
 import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/screens/home/local_blocs/images_tab.dart';
+import 'package:courseplease/screens/home/local_blocs/lessons_tab.dart';
 import 'package:courseplease/screens/home/local_blocs/teachers_tab.dart';
 import 'package:courseplease/screens/home/local_widgets/explore_root_tab.dart';
-import 'package:courseplease/screens/home/local_widgets/images_filter_buton.dart';
 import 'package:courseplease/screens/home/local_widgets/images_tab.dart';
-import 'package:courseplease/screens/home/local_widgets/teachers_filter_button.dart';
 import 'package:courseplease/widgets/breadcrumbs.dart';
 import 'package:courseplease/screens/home/local_widgets/teachers_tab.dart';
 import 'package:courseplease/widgets/capsules.dart';
-import 'package:courseplease/widgets/tab_controller_indexed_stack.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -29,6 +28,12 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
     initialFilter: GalleryImageFilter(
       subjectId: null,
       purposeId: ImageAlbumPurpose.portfolio,
+    ),
+  );
+
+  final _lessonsTabCubit = LessonsTabCubit(
+    initialFilter: GalleryLessonFilter(
+      subjectId: null,
     ),
   );
 
@@ -72,16 +77,9 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: BreadcrumbsWidget(
-                  treePositionState: state,
-                  onChanged: _currentTreePositionBloc.setCurrentId,
-                ),
-              ),
-              _getFilterButton(state),
-            ],
+          BreadcrumbsWidget(
+            treePositionState: state,
+            onChanged: _currentTreePositionBloc.setCurrentId,
           ),
           _buildChildrenSubjectsLine(state),
           TabBar(
@@ -110,25 +108,6 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
     return result;
   }
 
-  Widget _getFilterButton(TreePositionState<int, ProductSubject> state) {
-    return TabControllerIndexedStack(
-      children: _getFilterButtons(state),
-    );
-  }
-
-  List<Widget> _getFilterButtons(TreePositionState<int, ProductSubject> state) {
-    final result = <Widget>[];
-
-    if (state.currentObject?.allowsImagePortfolio ?? false) {
-      result.add(ImagesFilterButton(cubit: _imagesTabCubit));
-    }
-
-    result.add(Container()); // TODO: Button for lessons
-    result.add(TeachersFilterButton(cubit: _teachersTabCubit));
-
-    return result;
-  }
-
   List<Widget> _getTabTitles(TreePositionState<int, ProductSubject> state) {
     final result = <Widget>[];
 
@@ -149,7 +128,7 @@ class _ExploreTabState extends State<ExploreTab> with SingleTickerProviderStateM
       result.add(ImagesTab(treePositionState: state, cubit: _imagesTabCubit));
     }
 
-    result.add(LessonsTab(treePositionState: state));
+    result.add(LessonsTab(treePositionState: state, cubit: _lessonsTabCubit));
     result.add(TeachersTab(treePositionState: state, cubit: _teachersTabCubit));
 
     return result;

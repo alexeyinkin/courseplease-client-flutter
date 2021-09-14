@@ -20,6 +20,7 @@ class ImagesFilterButton extends StatelessWidget {
       filterButtonService: GalleryImageFilterButtonService(),
       dialogContentCubitFactory: () => GalleryImageFilterDialogCubit(),
       dialogContentBuilder: (context, cubit) => GalleryImageFilterDialogContentWidget(cubit: cubit),
+      style: FilterButtonStyle.elevated,
     );
   }
 }

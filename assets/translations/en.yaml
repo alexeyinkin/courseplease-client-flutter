@@ -155,6 +155,10 @@ GalleryImageFilterDialogContentWidget:
         price:      'Price per hour'
         langs:      'Teacher''s Language'
 
+GalleryLessonFilterDialogContentWidget:
+    subtitles:
+        langs:      'Language'
+
 ImagesTabWidget:
     title:          'Works'
 
@@ -189,6 +193,7 @@ LearningTabWidget:
 
 LessonsTabWidget:
     title:          'Lessons'
+    search:         'Search Titles'
 
 LessonsThumbWidget:
     title:          'Lessons'
@@ -445,6 +450,7 @@ TeacherScreen:
 
 TeachersTabWidget:
     title:          'Teachers'
+    search:         'Search Names'
 
 TeachingLessonsTabWidget:
     title:              'Lessons'
