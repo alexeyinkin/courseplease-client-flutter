@@ -119,10 +119,13 @@ abstract class ObjectAbstractListViewState<
       children.add(widget.titleIfNotEmpty!);
     }
 
-    final listViewWidget = getListViewWidget(
-      modelListState,
-      listBloc,
-      selectableListState,
+    final listViewWidget = RefreshIndicator(
+      onRefresh: listBloc.clearAndLoadFirstPage,
+      child: getListViewWidget(
+        modelListState,
+        listBloc,
+        selectableListState,
+      ),
     );
 
     children.add(

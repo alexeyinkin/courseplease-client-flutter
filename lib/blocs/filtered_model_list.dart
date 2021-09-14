@@ -33,6 +33,7 @@ abstract class AbstractFilteredModelListBloc<
   void loadInitialIfNot();
   void loadMoreIfCan();
   void loadAll();
+  Future<void> clearAndLoadFirstPage();
 
   @override
   void dispose() {
@@ -203,7 +204,7 @@ class NetworkFilteredModelListBloc<
     _pushOutput();
   }
 
-  void clearAndLoadFirstPage() {
+  Future<void> clearAndLoadFirstPage() {
     _ids.clear();
     _lastListState = _listBloc.initialState;
     _status = RequestStatus.ok;
@@ -211,6 +212,7 @@ class NetworkFilteredModelListBloc<
     _currentLoadingFuture = null;
     _nextPageToken = null;
     _loadMore();
+    return _currentLoadingFuture ?? Future.value(true);
   }
 }
 
@@ -285,6 +287,10 @@ class SubsetFilteredModelListBloc<
 
   @override
   void loadAll() {
+    // Nothing we can do about loading as the content is pushed from the nested bloc.
+  }
+
+  Future<void> clearAndLoadFirstPage() async {
     // Nothing we can do about loading as the content is pushed from the nested bloc.
   }
 

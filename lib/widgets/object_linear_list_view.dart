@@ -99,6 +99,7 @@ class _ObjectLinearListViewState<
       itemCount:        itemCount,
       itemBuilder:      itemBuilder,
       shrinkWrap:       widget.shrinkWrap,
+      physics:          const AlwaysScrollableScrollPhysics(), // Always allow RefreshIndicator
     );
   }
 

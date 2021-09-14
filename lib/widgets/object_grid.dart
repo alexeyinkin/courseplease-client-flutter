@@ -67,6 +67,7 @@ class ObjectGridState<
       itemCount:        modelListState.hasMore ? null : modelListState.objects.length + 1,
       itemBuilder:      (context, index) => buildTile(index, modelListState, listBloc, selectableListState),
       shrinkWrap:       widget.shrinkWrap,
+      physics:          const AlwaysScrollableScrollPhysics(), // Always allow RefreshIndicator
     );
   }
 }
