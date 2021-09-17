@@ -48,6 +48,7 @@ class OrderScreenCubit extends Bloc {
     _authenticationSubscription = _authenticationCubit.outState.listen(
       _onAuthenticationStateChanged,
     );
+    _onAuthenticationStateChanged(_authenticationCubit.currentState);
 
     _processIfNotHolding();
   }

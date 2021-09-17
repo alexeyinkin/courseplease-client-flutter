@@ -72,7 +72,7 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
   Widget build(BuildContext context) {
     return StreamBuilder<AuthenticationState>(
       stream: _authenticationCubit.outState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _authenticationCubit.initialState),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _authenticationCubit.currentState),
     );
   }
 
