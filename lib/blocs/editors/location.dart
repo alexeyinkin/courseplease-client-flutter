@@ -17,6 +17,7 @@ import 'abstract.dart';
 
 // TODO: Cut repeated fireChange() when multiple fields change together.
 class LocationEditorController extends AbstractValueEditorController<Location> {
+  final bool geocode;
   double? _latitude;
   double? _longitude;
   final countryController = WithIdTitleEditorController<String, Country>();
@@ -30,11 +31,16 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   );
   Timer? _streetAddressEditingDebounce;
   static const _streetAddressDebounceDuration = Duration(milliseconds: 500);
+
+  // TODO: Cache more than one.
   String? _lastGeocoded;
+
   bool _countrySet = false;
   bool _cityNameSet = false;
 
-  LocationEditorController() {
+  LocationEditorController({
+    required this.geocode,
+  }) {
     _countryByIdBloc.outState.listen(_onCountryLoaded);
     countryController.addListener(_onCountryChanged);
     cityNameController.addListener(_onCityNameChanged);
@@ -124,7 +130,7 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
       _countrySet = true;
     }
 
-    _geoCode();
+    _geoCodeIfNeed();
     fireChange();
   }
 
@@ -136,14 +142,15 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
       _cityNameSet = true;
     }
 
-    _geoCode();
+    _geoCodeIfNeed();
     fireChange();
   }
 
   void _onStreetAddressChanged() {
     if (_streetAddressEditingDebounce?.isActive ?? false) _streetAddressEditingDebounce!.cancel();
     _streetAddressEditingDebounce = Timer(_streetAddressDebounceDuration, () {
-      _geoCode();
+      _geoCodeIfNeed();
+      fireChange();
     });
   }
 
@@ -153,6 +160,11 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
     if (privacy == null || privacy == _privacy) return;
     _privacy = privacy;
     fireChange();
+  }
+
+  void _geoCodeIfNeed() {
+    if (!geocode) return;
+    _geoCode();
   }
 
   void _geoCode() async {

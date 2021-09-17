@@ -23,7 +23,7 @@ class EditProfileScreenCubit extends Bloc {
   final _middleNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _languageListController = LanguageListEditorController();
-  final _locationController = LocationEditorController();
+  final _locationController = LocationEditorController(geocode: true);
   String _sex;
   bool _inProgress = false;
 

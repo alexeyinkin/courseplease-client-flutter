@@ -17,7 +17,7 @@ class TeacherFilterDialogCubit extends AbstractFilterScreenContentCubit<TeacherF
   late final TeacherFilterDialogCubitState initialState;
 
   final _formatsController = CheckboxGroupEditorController();
-  final _locationController = LocationEditorController();
+  final _locationController = LocationEditorController(geocode: false);
   final PriceRangeEditorController _priceRangeController;
   final _langsController = LanguageListEditorController();
 
