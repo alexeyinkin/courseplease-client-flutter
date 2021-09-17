@@ -3,18 +3,29 @@ import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/repositories/image.dart';
 import 'package:courseplease/screens/image/image.dart';
+import 'package:courseplease/screens/image_pages/local_widgets/previous_image_overlay.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
+import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/error/id.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import '../../models/filters/gallery_image.dart';
 import '../../models/image.dart';
+import 'local_widgets/close_image_overlay.dart';
 import 'local_widgets/image_reaction_overlay.dart';
 import 'local_widgets/image_teacher_overlay.dart';
 import 'local_widgets/image_title_overlay.dart';
+import 'local_widgets/next_image_overlay.dart';
 
-typedef List<Widget> ImageOverlayBuilder(BuildContext context, ImageEntity entity, bool controlsVisible);
+typedef List<Widget> ImageOverlayBuilder({
+  required BuildContext context,
+  required ImageEntity image,
+  required String imageHeroTag,
+  required bool controlsVisible,
+  VoidCallback? onPreviousPressed,
+  VoidCallback? onNextPressed,
+});
 
 class ImagePagesScreen<
   F extends AbstractFilter,
@@ -48,6 +59,9 @@ class ImagePagesScreenState<
   int index;
   bool _controlsVisible = true;
 
+  static const _transitionDuration = Duration(milliseconds: 300);
+  static const _transitionCurve = Curves.ease;
+
   ImagePagesScreenState({
     required this.filter,
     required this.index,
@@ -79,32 +93,49 @@ class ImagePagesScreenState<
     AbstractFilteredModelListBloc bloc,
   ) {
     final length = listState.objects.length;
+    final totalLength = listState.hasMore ? null : length;
 
     // TODO: Handle error.
 
     return Material(
-      type: MaterialType.transparency,
+      type: MaterialType.canvas,
+      color: AppStyle.lightboxBackgroundColor,
       child: SafeArea(
         child: GestureDetector(
           onTap: _toggleControls,
-          child: PageView.builder(
-            allowImplicitScrolling: true,
-            controller: _pageController,
-            itemCount: listState.hasMore ? null : length,
-            itemBuilder: (context, index) {
-              if (index < length) {
-                return _buildPage(context, listState, index);
-              }
-              bloc.loadMoreIfCan();
-              return SmallCircularProgressIndicator();
-            }
+          child: Stack(
+            children: [
+              PageView.builder(
+                allowImplicitScrolling: true,
+                controller: _pageController,
+                itemCount: totalLength,
+                itemBuilder: (context, index) {
+                  if (index < length) {
+                    return _buildPage(context, listState, index, totalLength);
+                  }
+                  bloc.loadMoreIfCan();
+                  return SmallCircularProgressIndicator();
+                }
+              ),
+              ..._getStaticControls(),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildPage(BuildContext context, ModelListState<int, ImageEntity> listState, int index) {
+  List<Widget> _getStaticControls() {
+    final result = <Widget>[];
+
+    result.add(
+      CloseImageOverlay(visible: _controlsVisible),
+    );
+
+    return result;
+  }
+
+  Widget _buildPage(BuildContext context, ModelListState<int, ImageEntity> listState, int index, int? totalLength) {
     final image = listState.objects[index];
 
     final urlTail = image.getLightboxUrl();
@@ -132,7 +163,7 @@ class ImagePagesScreenState<
               ),
             ),
           ),
-          ..._buildOverlays(context, image),
+          ..._buildOverlays(context, image, index, totalLength),
         ],
       ),
     );
@@ -142,9 +173,17 @@ class ImagePagesScreenState<
     return 'image_' + widget.filter.toString() + '_' + image.id.toString();
   }
 
-  List<Widget> _buildOverlays(BuildContext context, ImageEntity image) {
+  List<Widget> _buildOverlays(BuildContext context, ImageEntity image, int index, int? totalLength) {
     if (widget.imageOverlayBuilder == null) return [];
-    return widget.imageOverlayBuilder!(context, image, _controlsVisible);
+
+    return widget.imageOverlayBuilder!(
+      context: context,
+      image: image,
+      controlsVisible: _controlsVisible,
+      imageHeroTag: _getHeroTag(image),
+      onPreviousPressed: index == 0 ? null : () => _pageController.previousPage(duration: _transitionDuration, curve: _transitionCurve),
+      onNextPressed: (index - 1) == totalLength ? null : () => _pageController.nextPage(duration: _transitionDuration, curve: _transitionCurve),
+    );
   }
 
   void _toggleControls() {
@@ -166,24 +205,46 @@ class ViewImagePagesScreenLauncher {
         builder: (context) => ImagePagesScreen<GalleryImageFilter, GalleryImageRepository>(
           filter: filter,
           initialIndex: initialIndex,
-          imageOverlayBuilder: (context, image, visible) => [
-            ImageTitleOverlay(image: image, visible: visible),
-            ImageTeacherOverlay(teacherId: image.authorId, visible: visible),
-            ImageReactionOverlay(
-              image: image,
-              visible: visible,
-              onCommentPressed: (){
-                ImageScreen.show(
-                  context: context,
-                  imageId: image.id,
-                  imageHeroTag: 'image_' + filter.toString() + '_' + image.id.toString(),
-                );
-              },
-            ),
-          ],
+          imageOverlayBuilder: _buildOverlays,
         ),
       ),
     );
+  }
+
+  static List<Widget> _buildOverlays({
+    required BuildContext context,
+    required ImageEntity image,
+    required String imageHeroTag,
+    required bool controlsVisible,
+    VoidCallback? onPreviousPressed,
+    VoidCallback? onNextPressed,
+    VoidCallback? onClosePressed,
+  }) {
+    final result = <Widget>[
+      ImageTitleOverlay(image: image, visible: controlsVisible),
+      ImageTeacherOverlay(teacherId: image.authorId, visible: controlsVisible),
+      ImageReactionOverlay(
+        image: image,
+        visible: controlsVisible,
+        onCommentPressed: (){
+          ImageScreen.show(
+            context: context,
+            imageId: image.id,
+            imageHeroTag: imageHeroTag,
+          );
+        },
+      ),
+    ];
+
+    if (onPreviousPressed != null) {
+      result.add(PreviousImageOverlay(visible: controlsVisible, onPressed: onPreviousPressed));
+    }
+
+    if (onNextPressed != null) {
+      result.add(NextImageOverlay(visible: controlsVisible, onPressed: onNextPressed));
+    }
+
+    return result;
   }
 }
 
@@ -199,11 +260,32 @@ class ImagePagesScreenLauncher {
         builder: (context) => ImagePagesScreen<F, R>(
           filter: filter,
           initialIndex: initialIndex,
-          imageOverlayBuilder: (context, image, visible) => [
-            ImageTitleOverlay(image: image, visible: visible),
-          ],
+          imageOverlayBuilder: _buildOverlays,
         ),
       ),
     );
+  }
+
+  static List<Widget> _buildOverlays({
+    required BuildContext context,
+    required ImageEntity image,
+    required String imageHeroTag,
+    required bool controlsVisible,
+    VoidCallback? onPreviousPressed,
+    VoidCallback? onNextPressed,
+  }) {
+    final result = <Widget>[
+      ImageTitleOverlay(image: image, visible: controlsVisible),
+    ];
+
+    if (onPreviousPressed != null) {
+      result.add(PreviousImageOverlay(visible: controlsVisible, onPressed: onPreviousPressed));
+    }
+
+    if (onNextPressed != null) {
+      result.add(NextImageOverlay(visible: controlsVisible, onPressed: onNextPressed));
+    }
+
+    return result;
   }
 }
