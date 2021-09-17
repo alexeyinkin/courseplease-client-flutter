@@ -442,6 +442,7 @@ TeacherFilterDialogContentWidget:
 TeacherScreen:
     notCurrentlyTeachingThis:   'Not currently teaching this subject. Try other subjects or teachers.'
     student:                    'Student'
+    teaches:                    'Teaches'
     subtitles:
         lessons:                'My Lessons'
         portfolio:              'My Works'

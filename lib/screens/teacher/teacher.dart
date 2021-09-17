@@ -6,6 +6,7 @@ import 'package:courseplease/screens/teacher/local_blocs/teacher.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/capsules.dart';
+import 'package:courseplease/widgets/frames/framed_column.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/media/image/gallery_image_grid.dart';
 import 'package:courseplease/widgets/pad.dart';
@@ -69,10 +70,14 @@ class _TeacherScreenState extends State<TeacherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<TeacherScreenCubitState>(
-      stream: _cubit.outState,
-      builder: (context, snapshot) => _buildWithTeacherState(
-        snapshot.data ?? _cubit.initialState,
+    return Scaffold(
+      body: SafeArea(
+        child: StreamBuilder<TeacherScreenCubitState>(
+          stream: _cubit.outState,
+          builder: (context, snapshot) => _buildWithTeacherState(
+            snapshot.data ?? _cubit.initialState,
+          ),
+        ),
       ),
     );
   }
@@ -91,41 +96,33 @@ class _TeacherScreenState extends State<TeacherScreen> {
       case RequestStatus.loading:
         return SmallCircularProgressIndicator();
       default:
+        // TODO: Allow to retry.
         return Center(child: Icon(Icons.error));
     }
   }
 
   Widget _buildWithTeacher(TeacherScreenCubitState state, Teacher teacher) {
-    return Material(
-      type: MaterialType.transparency,
-      child: SafeArea(
-        child: Container(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ProfileWidget(
-                user: teacher,
-                childrenUnderUserpic: [
-                  TeacherRatingAndCustomerCountWidget(teacher: teacher),
-                ],
-                childrenUnderName: [
-                  _getSubjectsLine(state),
-                  SmallPadding(),
-                  _getLocationLine(teacher),
-                  SmallPadding(),
-                  _getBio(state, teacher),
-                  _getFormatList(state, teacher),
-                ],
-              ),
-              _getLessonsBlock(state),
-              _getPortfolioBlock(state),
-              _getCustomersPortfolioBlock(state),
-              _getBackstageBlock(state),
-            ],
-          ),
+    return FramedColumn(
+      children: [
+        ProfileWidget(
+          user: teacher,
+          childrenUnderUserpic: [
+            TeacherRatingAndCustomerCountWidget(teacher: teacher),
+          ],
+          childrenUnderName: [
+            _getSubjectsLine(state),
+            SmallPadding(),
+            _getLocationLine(teacher),
+            SmallPadding(),
+            _getBio(state, teacher),
+            _getFormatList(state, teacher),
+          ],
         ),
-      ),
+        _getLessonsBlock(state),
+        _getPortfolioBlock(state),
+        _getCustomersPortfolioBlock(state),
+        _getBackstageBlock(state),
+      ],
     );
   }
 
@@ -140,7 +137,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
         children: [
-          Text('Teaches'),
+          Text(tr('TeacherScreen.teaches')),
           Container(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: CapsulesWidget<int, ProductSubject>(

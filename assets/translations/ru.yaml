@@ -445,6 +445,7 @@ TeacherFilterDialogContentWidget:
 TeacherScreen:
     notCurrentlyTeachingThis:   'Временно не преподаёт этот предмет. Попробуйте другие предметы или преподавателей.'
     student:                    'Ученик'
+    teaches:                    'Преподаёт'
     subtitles:
         lessons:                'Мои видеоуроки'
         portfolio:              'Мои работы'
