@@ -6,20 +6,25 @@ import 'package:get_it/get_it.dart';
 
 class ModelCacheCache {
   final _factory = ModelCacheFactory();
-  final _map = Map<Type, ModelCacheBloc>();
+  final _map = Map<Type, Map<Type, ModelCacheBloc>>();
 
   ModelCacheBloc<I, O> getOrCreate<
     I,
     O extends WithId<I>,
     R extends AbstractRepository<I, O>
   >() {
-    final type = _typeOf<O>();
+    final objectType = _typeOf<O>();
+    final repositoryType = _typeOf<R>();
 
-    if (!_map.containsKey(type)) {
-      _map[type] = _factory.create<I, O, R>();
+    if (!_map.containsKey(objectType)) {
+      _map[objectType] = <Type, ModelCacheBloc>{};
     }
 
-    return _map[type] as ModelCacheBloc<I, O>;
+    if (!_map[objectType]!.containsKey(repositoryType)) {
+      _map[objectType]![repositoryType] = _factory.create<I, O, R>();
+    }
+
+    return _map[objectType]![repositoryType] as ModelCacheBloc<I, O>;
   }
 
   ModelWithChildrenCacheBloc<I, O> getOrCreateWithChildren<
@@ -27,13 +32,18 @@ class ModelCacheCache {
     O extends WithIdChildrenParent<I, O, O>,
     R extends AbstractRepository<I, O>
   >() {
-    final type = _typeOf<O>();
+    final objectType = _typeOf<O>();
+    final repositoryType = _typeOf<R>();
 
-    if (!_map.containsKey(type)) {
-      _map[type] = _factory.createWithChildren<I, O, R>();
+    if (!_map.containsKey(objectType)) {
+      _map[objectType] = <Type, ModelCacheBloc>{};
     }
 
-    return _map[type] as ModelWithChildrenCacheBloc<I, O>;
+    if (!_map[objectType]!.containsKey(repositoryType)) {
+      _map[objectType]![repositoryType] = _factory.createWithChildren<I, O, R>();
+    }
+
+    return _map[objectType]![repositoryType] as ModelWithChildrenCacheBloc<I, O>;
   }
 
   Type _typeOf<T>() => T;

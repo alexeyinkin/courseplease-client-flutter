@@ -24,7 +24,7 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
   ModelCacheBloc({
     required AbstractRepository<I, O> repository,
   }) : _repository = repository {
-    print('Creating ModelCacheBloc for ' + _typeOf<O>().toString());
+    print('Creating ModelCacheBloc for ' + _typeOf<O>().toString() + ' with ' + repository.runtimeType.toString());
   }
 
   void loadAllIfNot() {
