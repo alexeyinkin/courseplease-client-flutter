@@ -20,16 +20,18 @@ class ProductSubjectWithImageAndChildren extends StatelessWidget {
       children: [
         _getCover(),
         SmallPadding(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _getTitle(),
-            SmallPadding(),
-            Opacity(
-              opacity: .5,
-              child: _getChildren(),
-            ),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _getTitle(),
+              SmallPadding(),
+              Opacity(
+                opacity: .5,
+                child: _getChildren(),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -58,7 +60,7 @@ class ProductSubjectWithImageAndChildren extends StatelessWidget {
       onTap: () => _onTap(subject.id),
       child: Text(
         subject.title,
-        style: AppStyle.h3,
+        style: AppStyle.h4,
       ),
     );
   }

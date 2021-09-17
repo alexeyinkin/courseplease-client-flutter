@@ -24,7 +24,7 @@ class ExploreRootTabWidget extends StatelessWidget {
         children: [
           Text(
             tr('ExploreRootTabWidget.title'),
-            style: AppStyle.h2,
+            style: AppStyle.h3,
           ),
           Container(height: 20),
           Expanded(

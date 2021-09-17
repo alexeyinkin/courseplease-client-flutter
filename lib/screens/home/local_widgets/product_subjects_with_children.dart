@@ -1,5 +1,6 @@
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/screens/home/local_widgets/product_subject_with_image_and_children.dart';
+import 'package:courseplease/widgets/pad.dart';
 import 'package:flutter/material.dart';
 
 class ProductSubjectsWithChildrenWidget extends StatelessWidget {
@@ -25,7 +26,7 @@ class ProductSubjectsWithChildrenWidget extends StatelessWidget {
     }
 
     return ListView(
-      children: children,
+      children: alternateWidgetListWith(children, SmallPadding()),
     );
   }
 }

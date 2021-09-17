@@ -16,6 +16,11 @@ class AppStyle {
     fontWeight: FontWeight.bold,
   );
 
+  static const h4 = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+
   static const bold = TextStyle(
     fontWeight: FontWeight.bold,
   );
@@ -74,6 +79,8 @@ class AppStyle {
 
   static const positiveColor = Color(0xFF00DF00);
   static const negativeColor = Color(0xFFDF0000);
+
+  static const lightboxBackgroundColor = Color(0xFF000000);
 }
 
 Color getTextColor(BuildContext context) {
