@@ -235,12 +235,17 @@ class ApiClient {
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getAllEntities(String name) async {
-    return _createListLoadResultResponse(
-      await sendRequest(
+    try {
+      final response = await sendRequest(
         method: HttpMethod.get,
         path: '/api1/{@lang}/' + name,
-      ),
-    );
+      );
+      return _createListLoadResultResponse(response);
+    } catch (ex) {
+      print('Failed to get all entities!');
+      print(ex.toString());
+      throw ex;
+    }
   }
 
   Future<SuccessfulApiResponse<ListLoadResult<Map<String, dynamic>>>> getEntities({

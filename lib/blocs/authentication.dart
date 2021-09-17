@@ -82,16 +82,20 @@ class AuthenticationBloc extends Bloc{
     _outStateController.sink.add(state);
   }
 
-  Future<RegisterDeviceResponseData> _registerDevice() async {
-    final response = await _apiClient.registerDevice(await _createRegisterDeviceRequest());
-    _storeDeviceKey(response.key);
-    _apiClient.setDeviceKey(response.key);
+  Future<void> _registerDevice() async {
+    try {
+      final response = await _apiClient.registerDevice(await _createRegisterDeviceRequest());
+      _storeDeviceKey(response.key);
+      _apiClient.setDeviceKey(response.key);
 
-    _setState(
-      AuthenticationState.deviceKey(response.key),
-    );
-
-    return response;
+      _setState(
+        AuthenticationState.deviceKey(response.key),
+      );
+    } on UnsupportedError catch (ex) {
+      print(ex.toString());
+      print(ex.stackTrace);
+      _setDeviceKeyFailedState();
+    }
   }
 
   Future<RegisterDeviceRequest> _createRegisterDeviceRequest() async {
