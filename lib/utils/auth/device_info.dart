@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:courseplease/utils/auth/platform.dart';
 import 'package:device_info/device_info.dart';
+import 'package:flutter/foundation.dart';
 
 /// All the info that can be obtained about a device.
 class DeviceInfo {
@@ -17,21 +16,21 @@ class DeviceInfo {
 
   static Future<DeviceInfo> getCurrent() async {
     return DeviceInfo._(
-      platform:           PlatformInstance(),
+      platform:           PlatformInstance.current(),
       androidDeviceInfo:  await _getAndroidDeviceInfo(),
       iosDeviceInfo:      await _getIosDeviceInfo(),
     );
   }
 
   static Future<AndroidDeviceInfo?> _getAndroidDeviceInfo() async {
-    if (!Platform.isAndroid) return null;
+    if (defaultTargetPlatform != TargetPlatform.android) return null;
 
     final plugin = DeviceInfoPlugin();
     return plugin.androidInfo;
   }
 
   static Future<IosDeviceInfo?> _getIosDeviceInfo() async {
-    if (!Platform.isIOS) return null;
+    if (defaultTargetPlatform != TargetPlatform.iOS) return null;
 
     final plugin = DeviceInfoPlugin();
     return plugin.iosInfo;
