@@ -1,6 +1,5 @@
 import 'package:courseplease/blocs/model_cache.dart';
-import 'package:courseplease/models/interfaces.dart';
-import 'package:courseplease/utils/sort.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SortedModelCacheBloc<I, O extends WithIdTitle<I>> implements ModelCacheBloc<I, O> {
@@ -22,7 +21,7 @@ class SortedModelCacheBloc<I, O extends WithIdTitle<I>> implements ModelCacheBlo
 
   void _onStateChanged(ModelCacheState<I, O> state) {
     final objects = state.objectsByIds.values.toList();
-    objects.sort(Sorters.titleAsc);
+    objects.sort(WithTitle.compareCaseInsensitive);
 
     final objectsByIds = <I, O>{};
     for (final obj in objects) {

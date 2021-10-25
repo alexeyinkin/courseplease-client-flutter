@@ -1,5 +1,5 @@
 import 'package:courseplease/models/messaging/chat_message_interface.dart';
-import '../interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'message_body.dart';
 
 class ChatMessage implements WithId<int>, ChatMessageInterface {

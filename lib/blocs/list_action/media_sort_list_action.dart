@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:courseplease/blocs/list_action/list_action.dart';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../authentication.dart';

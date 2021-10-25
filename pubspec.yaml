@@ -21,6 +21,12 @@ environment:
   sdk: ">=2.13.4 <3.0.0"
 
 dependencies:
+  # Our own packages:
+#  model_interfaces:
+#    path: '../../../dart/model_interfaces'
+  model_interfaces: ^0.0.2
+
+  # SDK packages:
   flutter:
     sdk: flutter
   flutter_localizations:

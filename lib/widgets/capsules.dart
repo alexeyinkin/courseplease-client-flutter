@@ -1,6 +1,6 @@
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/widgets/capsule.dart';
 import 'package:flutter/material.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 class CapsulesWidget<I, T extends WithIdTitle<I>> extends StatelessWidget {
   final List<T> objects;

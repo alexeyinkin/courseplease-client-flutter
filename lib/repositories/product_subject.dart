@@ -1,8 +1,8 @@
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/net/api_client.dart';
-import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 class ProductSubjectRepository extends AbstractRepository<int, ProductSubject> {
   static const _entitiesName = 'gallery/subjects';
@@ -33,11 +33,11 @@ class ProductSubjectRepository extends AbstractRepository<int, ProductSubject> {
 
   @override
   Future<ProductSubject?> loadById(int id) {
-    return loadAll().then((objects) => whereId(objects, id));
+    return loadAll().then((objects) => WithId.getById(objects, id));
   }
 
   @override
-  Future<List<ProductSubject>> loadByIds(List<int> ids) {
-    return loadAll().then((objects) => whereIds(objects, ids));
+  Future<Iterable<ProductSubject>> loadByIds(List<int> ids) {
+    return loadAll().then((objects) => WithId.getByIds(objects, ids));
   }
 }

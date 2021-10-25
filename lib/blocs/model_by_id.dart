@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'bloc.dart';

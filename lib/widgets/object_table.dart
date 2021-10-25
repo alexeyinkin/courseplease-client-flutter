@@ -1,12 +1,12 @@
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 typedef TableRowBuilder<O> = TableRow Function(BuildContext context, O object, int index);
 

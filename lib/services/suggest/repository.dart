@@ -1,8 +1,8 @@
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/suggest/abstract.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 class RepositorySuggestionService<
   I,

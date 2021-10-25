@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/services/net/api_client.dart';
-import '../interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 abstract class AbstractFilter implements JsonSerializable {
   @override

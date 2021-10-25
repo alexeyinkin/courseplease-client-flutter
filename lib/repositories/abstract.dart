@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:http/http.dart' as http;
+import 'package:model_interfaces/model_interfaces.dart';
 
 class ListLoadResult<T> {
   final List<T> objects;
@@ -23,7 +23,7 @@ abstract class AbstractRepository<I, O extends WithId<I>> {
     throw UnimplementedError();
   }
 
-  Future<List<O>> loadByIds(List<I> ids) {
+  Future<Iterable<O>> loadByIds(List<I> ids) {
     throw UnimplementedError();
   }
 }

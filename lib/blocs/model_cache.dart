@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:meta/meta.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'bloc.dart';
@@ -68,13 +68,13 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     pushOutput();
   }
 
-  void _handleLoaded(List<I> ids, List<O> objects) {
+  void _handleLoaded(Iterable<I> ids, Iterable<O> objects) {
     _addSuccessfulObjects(objects);
     _addFailedObjects(_getNotLoadedIds(ids));
     pushOutput();
   }
 
-  void _addSuccessfulObjects(List<O> objects) {
+  void _addSuccessfulObjects(Iterable<O> objects) {
     for (final object in objects) {
       addSuccessfulObject(object);
     }
@@ -117,7 +117,7 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     return result;
   }
 
-  List<I> _getNotLoadedIds(List<I> ids) {
+  List<I> _getNotLoadedIds(Iterable<I> ids) {
     final result = <I>[];
     for (final id in ids) {
       if (_objectsByIds.containsKey(id)) continue;

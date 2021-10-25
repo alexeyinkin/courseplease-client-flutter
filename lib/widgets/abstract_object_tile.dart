@@ -1,8 +1,8 @@
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/widgets/checkbox_overlay.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 typedef void TileCallback<I, O extends WithId<I>>(O object, int index);
 

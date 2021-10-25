@@ -1,9 +1,9 @@
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 typedef Widget ModelListBuilder<I, O extends WithId<I>>(BuildContext context, ModelListByIdsState<I, O>? list);
 

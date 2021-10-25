@@ -1,9 +1,9 @@
 import 'package:courseplease/models/language.dart';
 import 'package:courseplease/repositories/language.dart';
-import 'package:courseplease/utils/sort.dart';
 import 'package:courseplease/widgets/select_item_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import 'language.dart';
 
@@ -35,7 +35,7 @@ class AddLanguageButton extends StatelessWidget {
     }
 
     final result = map.values.toList(growable: false);
-    result.sort(Sorters.titleAsc);
+    result.sort(WithTitle.compareCaseInsensitive);
     return result;
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'package:courseplease/blocs/model_cache.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ModelWithChildrenCacheBloc<I, O extends WithIdChildrenParent<I, O, O>> extends ModelCacheBloc<I, O>{

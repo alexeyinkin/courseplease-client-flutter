@@ -1,7 +1,7 @@
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
 import 'package:get_it/get_it.dart';
-import '../interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'chat_message.dart';
 
 class Chat implements WithId<int> {

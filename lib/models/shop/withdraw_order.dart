@@ -1,5 +1,5 @@
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/models/money.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 class WithdrawOrder extends WithId<int> {
   final int id;

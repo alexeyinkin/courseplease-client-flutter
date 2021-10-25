@@ -1,7 +1,7 @@
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
-class WithdrawAccount extends WithIdTitle<int> {
+class WithdrawAccount implements WithIdTitle<int> {
   final int id;
   final int serviceId;
   final String title;

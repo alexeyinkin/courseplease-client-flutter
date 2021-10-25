@@ -6,8 +6,8 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import '../models/filters/abstract.dart';
-import '../models/interfaces.dart';
 import 'error/error_loading_more.dart';
 
 abstract class ObjectAbstractListView<

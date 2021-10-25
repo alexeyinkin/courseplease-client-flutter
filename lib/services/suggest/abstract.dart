@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:courseplease/models/interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 typedef FutureOr<Iterable<T>> SuggestionsCallback<T>(String pattern); // As in flutter_typeahead
 

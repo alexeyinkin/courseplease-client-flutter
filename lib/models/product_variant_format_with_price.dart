@@ -1,5 +1,5 @@
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import 'money.dart';
 

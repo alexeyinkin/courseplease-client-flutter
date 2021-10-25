@@ -1,8 +1,7 @@
 import 'package:courseplease/models/map_property.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
-import '../interfaces.dart';
-
-class WithdrawService extends WithIdTitle<int> {
+class WithdrawService implements WithIdTitle<int> {
   final int id;
   final String title;
   final List<MapProperty> properties;

@@ -1,6 +1,6 @@
-import 'package:courseplease/models/interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
-class CityName extends WithIdTitle<int> {
+class CityName implements WithIdTitle<int> {
   final int id;
   final int cityId;
   final String title;

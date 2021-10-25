@@ -1,9 +1,9 @@
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:flutter/material.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import 'abstract_object_tile.dart';
 import 'object_abstract_list_view.dart';

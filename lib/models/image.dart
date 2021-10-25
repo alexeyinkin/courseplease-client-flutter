@@ -2,7 +2,7 @@ import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/reaction/likable.dart';
 import 'package:courseplease/models/reaction/commentable.dart';
 import 'package:courseplease/models/server_image.dart';
-import 'interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'mapping.dart';
 
 // Flutter has an 'Image' widget. Naming is to avoid conflicts.

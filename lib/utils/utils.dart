@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:courseplease/models/interfaces.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -39,30 +38,6 @@ Map<K, V> mapOrEmptyListToMap<K, V>(mapOrEmptyList) {
   return (mapOrEmptyList is List)
       ? Map<K, V>()  // Empty PHP array converted to array instead of map.
       : mapOrEmptyList.cast<K, V>();
-}
-
-O? whereId<I, O extends WithId<I>>(List<O> objects, I? id) {
-  if (id == null) return null;
-
-  for (final object in objects) {
-    if (object.id == id) {
-      return object;
-    }
-  }
-  return null;
-}
-
-List<O> whereIds<I, O extends WithId<I>>(List<O> objects, List<I> ids) {
-  final idsMap = ids.asMap();
-  final result = <O>[];
-
-  for (final object in objects) {
-    if (idsMap.containsKey(object.id)) {
-      result.add(object);
-    }
-  }
-
-  return result;
 }
 
 Map<K, V> mapWithEntry<K, V>(Map<K, V> map, K key, V value) {
@@ -291,16 +266,6 @@ RelativeRect getContextRelativeRect(BuildContext context) {
   );
 }
 
-List<I> idsList<I>(List<WithId<I>> objects) {
-  final result = <I>[];
-
-  for (final object in objects) {
-    result.add(object.id);
-  }
-
-  return result;
-}
-
 List<String> dateTimesToStrings(List<DateTime> dateTimes) {
   final result = <String>[];
 
@@ -365,16 +330,6 @@ String shortenIfLonger(String str, int length) {
   return str.length < length
       ? str
       : str.substring(0, length);
-}
-
-List<I> getIds<I>(List<WithId<I>> objects) {
-  final ids = <I>[];
-
-  for (final obj in objects) {
-    ids.add(obj.id);
-  }
-
-  return ids;
 }
 
 List<T> notNulls<T>(List<T?> list) {

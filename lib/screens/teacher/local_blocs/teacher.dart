@@ -9,6 +9,7 @@ import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TeacherScreenCubit extends Bloc {
@@ -82,7 +83,7 @@ class TeacherScreenCubit extends Bloc {
       teacher: _teacher,
       selectedSubjectId: _selectedSubjectId,
       subjects: _subjects ?? [],
-      selectedSubject: whereId(_subjects ?? [], _selectedSubjectId),
+      selectedSubject: WithId.getById(_subjects ?? [], _selectedSubjectId),
       selectedTeacherSubject: _selectedSubjectId == null ? null : _teacher?.getTeacherSubjectById(_selectedSubjectId!),
       requestStatus: _requestStatus,
     );

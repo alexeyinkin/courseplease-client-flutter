@@ -1,4 +1,4 @@
-import '../interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'likable.dart';
 
 class Comment implements WithId<int>, Likable {

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/utils/utils.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
 import 'model_cache.dart';
@@ -113,7 +113,7 @@ class NetworkFilteredModelListBloc<
 
   void _handleLoaded(ListLoadResult<O> loadResult) {
     cache.addAll(loadResult.objects);
-    _ids.addAll(getIds(loadResult.objects));
+    _ids.addAll(WithId.getIds(loadResult.objects));
     _listBloc.setCurrentIds(_ids);
 
     print('Added to list, now got ' + _ids.length.toString() + ' objects.');
@@ -174,7 +174,7 @@ class NetworkFilteredModelListBloc<
     if (objects.isEmpty) return;
 
     cache.addAll(objects);
-    _ids.insertAll(0, getIds(objects));
+    _ids.insertAll(0, WithId.getIds(objects));
     _listBloc.setCurrentIds(_ids);
   }
 
@@ -182,7 +182,7 @@ class NetworkFilteredModelListBloc<
     if (objects.isEmpty) return;
 
     cache.addAll(objects);
-    _ids.addAll(getIds(objects));
+    _ids.addAll(WithId.getIds(objects));
     _listBloc.setCurrentIds(_ids);
   }
 

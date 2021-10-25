@@ -1,8 +1,8 @@
 import 'package:courseplease/blocs/list_action/list_action.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:flutter/material.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 /// A widget that shows content based on the selection in list.
 /// This could be buttons to select or deselect, or selection count display.

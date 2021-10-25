@@ -1,7 +1,7 @@
 import 'package:courseplease/models/reaction/commentable.dart';
 import 'package:courseplease/models/reaction/likable.dart';
 import 'package:courseplease/utils/utils.dart';
-import 'interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'lesson_interface.dart';
 
 class Lesson implements WithId<int>, LessonInterface, Commentable, Likable {

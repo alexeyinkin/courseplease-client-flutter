@@ -1,11 +1,11 @@
 import 'dart:collection';
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 class FilteredModelListCache {
   final _factory = FilteredModelListFactory();

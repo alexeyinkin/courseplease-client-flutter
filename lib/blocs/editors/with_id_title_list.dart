@@ -1,5 +1,5 @@
 import 'package:courseplease/blocs/editors/with_id_title.dart';
-import 'package:courseplease/models/interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import '../model_cache.dart';
 import '../models_by_ids.dart';

@@ -1,6 +1,6 @@
 import 'package:courseplease/blocs/tree_position.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:flutter/material.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import '../theme/theme.dart';
 
 class BreadcrumbsWidget<I, O extends WithIdTitleChildrenParent<I, O, O>> extends StatelessWidget {

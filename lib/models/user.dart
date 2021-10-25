@@ -1,5 +1,5 @@
 import 'package:courseplease/utils/utils.dart';
-import 'interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'location.dart';
 
 class User implements WithId<int> {

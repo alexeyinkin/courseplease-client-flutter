@@ -1,4 +1,4 @@
-import 'interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 class ProductSubject implements
     WithIdTitle<int>,

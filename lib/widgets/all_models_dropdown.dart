@@ -1,8 +1,8 @@
 import 'package:courseplease/blocs/model_cache.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/builders/abstract.dart';
 import 'package:flutter/material.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import 'builders/text.dart';
 import 'dropdown_menu_item_separator.dart';

@@ -1,9 +1,8 @@
 import 'package:courseplease/models/geo/country.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/net/api_client.dart';
-import 'package:courseplease/utils/sort.dart';
-import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 class CountryRepository extends AbstractRepository<String, Country> {
   static const _entitiesName = 'geo/countries';
@@ -29,17 +28,17 @@ class CountryRepository extends AbstractRepository<String, Country> {
       objects.add(Country.fromMap(obj));
     }
 
-    objects.sort(Sorters.titleAsc);
+    objects.sort(WithTitle.compareCaseInsensitive);
     return objects;
   }
 
   @override
   Future<Country?> loadById(String id) {
-    return loadAll().then((objects) => whereId(objects, id));
+    return loadAll().then((objects) => WithId.getById(objects, id));
   }
 
   @override
-  Future<List<Country>> loadByIds(List<String> ids) {
-    return loadAll().then((objects) => whereIds(objects, ids));
+  Future<Iterable<Country>> loadByIds(List<String> ids) {
+    return loadAll().then((objects) => WithId.getByIds(objects, ids));
   }
 }

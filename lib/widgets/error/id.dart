@@ -1,5 +1,5 @@
-import 'package:courseplease/models/interfaces.dart';
 import 'package:flutter/material.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import '../pad.dart';
 

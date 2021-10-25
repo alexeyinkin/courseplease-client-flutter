@@ -1,6 +1,6 @@
-import 'package:courseplease/models/interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
-class Country extends WithIdTitle<String> {
+class Country implements WithIdTitle<String> {
   final String id;
   final String title;
 

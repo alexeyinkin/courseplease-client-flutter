@@ -497,6 +497,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  model_interfaces:
+    dependency: "direct main"
+    description:
+      name: model_interfaces
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   nested:
     dependency: transitive
     description:
@@ -854,4 +861,4 @@ packages:
     version: "2.0.7"
 sdks:
   dart: ">=2.14.0 <3.0.0"
-  flutter: ">=2.0.0"
+  flutter: ">=2.5.3"

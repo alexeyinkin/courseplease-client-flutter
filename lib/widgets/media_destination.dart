@@ -3,7 +3,6 @@ import 'package:courseplease/blocs/media_destination.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/image.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -12,6 +11,7 @@ import 'package:courseplease/widgets/product_subject_dropdown.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import 'buttons.dart';
 import 'media/image/responsive_image_grid.dart';

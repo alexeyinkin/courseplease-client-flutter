@@ -1,11 +1,11 @@
 import 'package:courseplease/blocs/editors/text.dart';
-import 'package:courseplease/models/interfaces.dart';
 import 'package:courseplease/services/suggest/abstract.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/app_text_field.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 class ModelAutocomplete<O extends WithIdTitle> extends StatefulWidget {
   final TextValueEditorController<O> controller;

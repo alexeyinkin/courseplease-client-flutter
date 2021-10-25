@@ -3,8 +3,8 @@ import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import '../models/filters/abstract.dart';
-import '../models/interfaces.dart';
 import 'object_abstract_list_view.dart';
 
 class ObjectGrid<

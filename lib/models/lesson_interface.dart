@@ -1,4 +1,4 @@
-import 'interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 abstract class LessonInterface extends WithId<int> {
   int get id;

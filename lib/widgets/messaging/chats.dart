@@ -6,12 +6,12 @@ import 'package:courseplease/models/filters/chat.dart';
 import 'package:courseplease/models/filters/chat_message.dart';
 import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/screens/chat_message_list/chat_message_list.dart';
-import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/messaging/chat_list.dart';
 import 'package:courseplease/widgets/messaging/select_chat_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import '../pad.dart';
 import 'chat_message_list.dart';
@@ -126,7 +126,7 @@ class _ChatsWidgetState extends State<ChatsWidget> {
       return SelectChatPlaceholderWidget();
     }
 
-    final ids = idsList(state.currentChat!.otherUsers);
+    final ids = WithId.getIds(state.currentChat!.otherUsers);
     final key = filter.toString() + '_' + ids.join('_');
 
     if (!_messageListWidgets.containsKey(key)) {

@@ -1,8 +1,8 @@
 import 'package:courseplease/models/location.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
 import 'package:courseplease/models/shop/review.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
-import '../interfaces.dart';
 import '../user.dart';
 
 class Delivery extends WithId<int> {

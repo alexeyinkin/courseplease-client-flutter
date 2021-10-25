@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/model_with_children_cache.dart';
-import 'package:courseplease/models/interfaces.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
 
