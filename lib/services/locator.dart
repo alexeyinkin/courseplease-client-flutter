@@ -1,4 +1,4 @@
-import 'package:courseplease/blocs/ably.dart';
+import 'package:courseplease/blocs/ably/ably_native_protocol.dart';
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/chat_message_factory.dart';
 import 'package:courseplease/blocs/chat_message_send_queue.dart';
@@ -146,7 +146,7 @@ void _initializeSse() {
   final sseListenerLocator = _createSseListenerLocator();
   final sseReloaderLocator = _createSseReloaderLocator();
   final realtimeFactories = {
-    'ably': AblySseCubitFactory(),
+    'ably': AblyNativeProtocolCubitFactory(),
   };
 
   GetIt.instance

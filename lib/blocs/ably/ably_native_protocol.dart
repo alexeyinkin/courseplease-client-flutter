@@ -10,9 +10,9 @@ import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/encrypt.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
-import 'authentication.dart';
+import '../authentication.dart';
 
-class AblySseCubit extends AbstractRealtimeCubit {
+class AblyNativeProtocolCubit extends AbstractRealtimeCubit {
   final RealtimeCredentials credentials;
   final _apiClient = GetIt.instance.get<ApiClient>();
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
@@ -25,11 +25,12 @@ class AblySseCubit extends AbstractRealtimeCubit {
   bool _wasEverContinuous = false;
   bool _reloadAllOnAttach = false;
 
-  AblySseCubit({
+  AblyNativeProtocolCubit({
     required this.credentials,
   }) {
     _init();
   }
+
   void _init() async {
     final clientOptions = ably.ClientOptions();
     clientOptions.authCallback = _getAuthToken;
@@ -46,13 +47,13 @@ class AblySseCubit extends AbstractRealtimeCubit {
     _channelMessageSubscription = _messageStream!.listen(_onMessage);
   }
 
-  Future<ably.TokenRequest?> _getAuthToken(ably.TokenParams params) async {
+  Future<ably.TokenRequest> _getAuthToken(ably.TokenParams params) async {
     final meResponseData = await _apiClient.getMe();
     final tokenRequestJson = meResponseData.realtimeCredentials?.providerToken;
 
     if (tokenRequestJson == null) {
       print('COURSEPLEASE: Returning null token request.');
-      return null;
+      throw Exception('COURSEPLEASE: Returning null token request.');
     }
 
     final tokenRequestMap = jsonDecode(tokenRequestJson);
@@ -93,7 +94,7 @@ class AblySseCubit extends AbstractRealtimeCubit {
   void _onChannelStateChange(ably.ChannelStateChange stateChange) {
     print("Ably channel state changed: ${stateChange.current}");
 
-    if (!stateChange.resumed && _wasEverContinuous) {
+    if (!stateChange.resumed! && _wasEverContinuous) {
       // Message continuity has been lost.
       _reloadAllOnAttach = true;
     }
@@ -139,9 +140,9 @@ class AblySseCubit extends AbstractRealtimeCubit {
   }
 }
 
-class AblySseCubitFactory extends RealtimeFactoryInterface {
+class AblyNativeProtocolCubitFactory extends RealtimeFactoryInterface {
   @override
   AbstractRealtimeCubit? createIfValid(RealtimeCredentials credentials) {
-    return AblySseCubit(credentials: credentials);
+    return AblyNativeProtocolCubit(credentials: credentials);
   }
 }
