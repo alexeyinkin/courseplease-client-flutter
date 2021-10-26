@@ -46,7 +46,12 @@ class AuthenticationBloc extends Bloc{
     if (deviceKey == null) throw Exception('deviceKey is required for this');
 
     _setState(AuthenticationState.requested(_authenticationState));
-    await provider.authenticate(context);
+    try {
+      await provider.authenticate(context);
+    } catch (e) {
+      // User has closed the popup. Or something else happened.
+      // No handling. Just check the device key to get to a known state.
+    }
 
     _testDeviceKey(deviceKey);
   }
