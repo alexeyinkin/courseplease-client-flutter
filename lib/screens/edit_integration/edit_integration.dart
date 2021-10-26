@@ -3,9 +3,8 @@ import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
 import 'package:courseplease/screens/edit_integration/local_blocs/edit_integration.dart';
 import 'package:courseplease/models/common.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
-import 'package:courseplease/models/contact/instagram.dart';
 import 'package:courseplease/models/contact/profile_sync_status.dart';
-import 'package:courseplease/screens/edit_integration/local_widgets/instagram.dart';
+import 'package:courseplease/widgets/builders/factories/contact_params_widget_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/buttons.dart';
@@ -14,6 +13,7 @@ import 'package:courseplease/widgets/icon_text_status.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class EditIntegrationScreen extends StatefulWidget {
   static const routeName = 'editIntegration';
@@ -46,13 +46,14 @@ class EditIntegrationScreen extends StatefulWidget {
 
 class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
   final EditableContact contactClone;
-  late final EditIntegrationCubit _editIntegrationCubit;
+  final EditIntegrationCubit _editIntegrationCubit;
+  final _contactParamsWidgetFactory = GetIt.instance.get<ContactParamsWidgetFactory>();
 
   _EditIntegrationScreenState({
     required this.contactClone,
-  }) {
-    _editIntegrationCubit = EditIntegrationCubit(contactId: contactClone.id);
-  }
+  }) :
+      _editIntegrationCubit = EditIntegrationCubit(contactId: contactClone.id)
+  ;
 
   @override
   Widget build(BuildContext context) {
@@ -224,15 +225,11 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     });
   }
 
-  // TODO: Extract to a factory
   Widget _getProviderSettingWidget(MeResponseData meResponseData) {
-    if (contactClone.params is InstagramContactParams) {
-      return InstagramContactParamsWidget(
-        meResponseData: meResponseData,
-        params: contactClone.params as InstagramContactParams,
-      );
-    }
-    return Container();
+    return _contactParamsWidgetFactory.createWidget(
+      meResponseData: meResponseData,
+      contact: contactClone,
+    );
   }
 
   Widget _getSaveButton(EditIntegrationState state) {

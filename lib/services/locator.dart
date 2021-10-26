@@ -25,6 +25,7 @@ import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/repositories/withdraw_account.dart';
 import 'package:courseplease/repositories/withdraw_order.dart';
 import 'package:courseplease/repositories/withdraw_service.dart';
+import 'package:courseplease/widgets/builders/factories/contact_params_widget_factory.dart';
 import 'package:courseplease/screens/home/local_blocs/home.dart';
 import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
 import 'package:courseplease/services/messaging/message_body_denormalizer_locator.dart';
@@ -63,6 +64,7 @@ Future<void> initializeServiceLocator() async {
   _initializeBlocs();
   _initializeSse();
   await _initializeServices();
+  _initializeWidgetFactories();
 }
 
 void _initializeNetwork() {
@@ -185,5 +187,11 @@ SseReloaderLocator _createSseReloaderLocator() {
 Future<void> _initializeServices() async {
   GetIt.instance
       ..registerSingleton<CurrencyConverter>(await CbrRateLoader.loadConverterFromAssets())
+  ;
+}
+
+void _initializeWidgetFactories() {
+  GetIt.instance
+      ..registerSingleton<ContactParamsWidgetFactory>(ContactParamsWidgetFactory())
   ;
 }

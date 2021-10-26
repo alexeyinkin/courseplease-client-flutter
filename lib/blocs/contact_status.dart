@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/instagram_status.dart';
 import 'package:courseplease/models/common.dart';
+import 'package:courseplease/models/contact/contact_class_enum.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/contact/profile_sync_status.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -143,7 +144,7 @@ class ReadableProfileSyncStatus {
 class ContactStatusCubitFactory {
   ContactStatusCubit? create(EditableContact contact) {
     switch (contact.className) {
-      case 'instagram':
+      case ContactClassEnum.instagram:
         return InstagramStatusCubit(contact: contact);
     }
 

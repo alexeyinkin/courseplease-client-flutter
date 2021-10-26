@@ -1,4 +1,5 @@
 import 'package:courseplease/models/contact/contact.dart';
+import 'package:courseplease/models/contact/contact_class_enum.dart';
 import 'package:courseplease/models/contact/instagram.dart';
 import 'profile_sync_status.dart';
 
@@ -86,7 +87,7 @@ class ContactParamsFactory {
     final map = mapOrList is List ? Map<String, dynamic>() : mapOrList.cast<String, dynamic>();
 
     switch (className) {
-      case 'instagram':
+      case ContactClassEnum.instagram:
         return InstagramContactParams.fromMap(map);
     }
 

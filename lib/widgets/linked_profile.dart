@@ -1,10 +1,12 @@
 import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/models/common.dart';
+import 'package:courseplease/models/contact/contact_class_enum.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/screens/edit_integration/edit_integration.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
 import 'package:courseplease/widgets/icon_text_status.dart';
+import 'package:courseplease/widgets/builders/factories/contact_params_widget_factory.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -28,10 +30,10 @@ class LinkedProfileWidget extends StatefulWidget {
 
   static bool shouldShow(EditableContact contact) {
     switch (contact.className) {
-      case 'facebook':
-      case 'google':
-      case 'instagram':
-      case 'vk':
+      case ContactClassEnum.facebook:
+      case ContactClassEnum.google:
+      case ContactClassEnum.instagram:
+      case ContactClassEnum.vk:
         return true;
     }
 
@@ -41,6 +43,7 @@ class LinkedProfileWidget extends StatefulWidget {
 
 class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
   final ContactStatusCubit? contactStatusCubit;
+  final _contactParamsWidgetFactory = GetIt.instance.get<ContactParamsWidgetFactory>();
 
   _LinkedProfileWidgetState({
     required this.contactStatusCubit,
@@ -65,7 +68,7 @@ class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
       leading: AuthProviderIcon(name: widget.contact.className),
       title: Text(widget.contact.getTitle()),
       subtitle: _getSubtitle(status),
-      trailing: Icon(Icons.chevron_right),
+      trailing: _getTrailing(),
       onTap: _handleTap,
     );
   }
@@ -85,10 +88,22 @@ class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
     return Text(status.description);
   }
 
+  Widget? _getTrailing() {
+    if (!_canEdit()) return null;
+
+    return Icon(Icons.chevron_right);
+  }
+
   void _handleTap() {
+    if (!_canEdit()) return;
+
     EditIntegrationScreen.show(
       context: context,
       contactClone: EditableContact.from(widget.contact),
     );
+  }
+
+  bool _canEdit() {
+    return _contactParamsWidgetFactory.canEdit(widget.contact);
   }
 }
