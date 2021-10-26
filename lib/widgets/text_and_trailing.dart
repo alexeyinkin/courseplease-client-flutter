@@ -15,7 +15,7 @@ class TextAndTrailingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        _getTextWidget(),
+        _getTextWidget(context),
         Positioned(
           right: 0,
           bottom: 0,
@@ -25,12 +25,13 @@ class TextAndTrailingWidget extends StatelessWidget {
     );
   }
 
-  Widget _getTextWidget() {
+  Widget _getTextWidget(BuildContext context) {
     return RichText(
       text: TextSpan(
         children: [
           TextSpan(
             text: text,
+            style: DefaultTextStyle.of(context).style,
           ),
           _getInlineSpace(),
         ],
