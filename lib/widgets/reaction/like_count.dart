@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/like.dart';
 import 'package:courseplease/models/reaction/likable.dart';
+import 'package:courseplease/services/auth/sign_in_or_call.dart';
 import 'package:courseplease/services/reaction/like_applier.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -116,13 +117,30 @@ class LikeCountButton extends StatelessWidget {
     return Container(width: 10 * scale);
   }
 
-  void _onCreateLikePressed() async {
+  void _onCreateLikePressed() {
     if (!canLike) return;
+
+    SignInOrCallService().callOrSignIn(
+      SignInOrCallEvent(
+        callback: _onCreateLikePressedAuthenticated,
+      ),
+    );
+  }
+
+  void _onCreateLikePressedAuthenticated() async {
     await _likeCubit.createLike(catalog, likable.id);
     reloadCallback();
   }
 
-  void _onDeleteLikePressed() async {
+  void _onDeleteLikePressed() {
+    SignInOrCallService().callOrSignIn(
+      SignInOrCallEvent(
+        callback: _onDeleteLikePressedAuthenticated,
+      ),
+    );
+  }
+
+  void _onDeleteLikePressedAuthenticated() async {
     await _likeCubit.deleteLike(catalog, likable.id);
     reloadCallback();
   }

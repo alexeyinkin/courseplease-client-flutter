@@ -1,6 +1,7 @@
 import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/models/reaction/comment.dart';
 import 'package:courseplease/models/filters/comment.dart';
+import 'package:courseplease/services/auth/sign_in_or_call.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -65,9 +66,17 @@ class CommentFormCubit extends Bloc {
     return true;
   }
 
-  void submit() async {
+  void submit() {
     if (!_getCanSubmit()) return;
 
+    SignInOrCallService().callOrSignInAndCall(
+      SignInOrCallEvent(
+        callback: _submitAuthenticated,
+      ),
+    );
+  }
+
+  void _submitAuthenticated() async {
     _inProgress = true;
     _pushOutput();
 
