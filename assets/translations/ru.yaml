@@ -191,7 +191,8 @@ LearningLessonsTabWidget:
     resolved:       'Прошедшие и отменённые'
 
 LearningTabWidget:
-    iconTitle:      'Обучение'
+    iconTitle:              'Обучение'
+    unauthenticatedTitle:   'Здесь уроки, которые вы назначите.'
 
 LessonsTabWidget:
     title:          'Уроки'
@@ -237,7 +238,8 @@ MediaDestinationWidget:
     selectPurpose:  '(Выберите альбом)'
 
 MessagesTabWidget:
-    iconTitle:      'Сообщения'
+    iconTitle:              'Сообщения'
+    unauthenticatedTitle:   'Здесь ваше общение с преподавателями и учениками.'
 
 ModelAutocomplete:
     notFound:       '(Не найдено)'
@@ -464,7 +466,8 @@ TeachingLessonsTabWidget:
     resolved:           'Прошедшие и отменённые'
 
 TeachingTabWidget:
-    iconTitle:          'Teach'
+    iconTitle:              'Teach'
+    unauthenticatedTitle:   'Здесь ваши ученики и отчёты.'
 
 TimeApproveMessageBodyPreviewWidget:
     text:           'Подтверждаю {date} в {time}.'

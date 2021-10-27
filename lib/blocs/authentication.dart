@@ -31,19 +31,18 @@ class AuthenticationBloc extends Bloc{
     _init();
   }
 
-  void _init() async {
+  Future<void> _init() async {
     final key = await _loadDeviceKey();
 
     if (key == null) {
-      _setFreshState(); // Will get and store the key.
+      await _setFreshState(); // Will get and store the key.
     } else {
-      _testDeviceKey(key);
+      await _testDeviceKey(key);
     }
   }
 
-  void requestAuthorization(BuildContext context, AuthProvider provider) async {
-    final deviceKey = _authenticationState.deviceKey;
-    if (deviceKey == null) throw Exception('deviceKey is required for this');
+  Future<void> requestAuthorization(BuildContext context, AuthProvider provider) async {
+    if (!await _canRequestAuthorization()) return;
 
     _setState(AuthenticationState.requested(_authenticationState));
     try {
@@ -53,7 +52,24 @@ class AuthenticationBloc extends Bloc{
       // No handling. Just check the device key to get to a known state.
     }
 
-    _testDeviceKey(deviceKey);
+    await _testDeviceKey(_authenticationState.deviceKey!);
+  }
+
+  Future<bool> _canRequestAuthorization() async {
+    if (_authenticationState.deviceKey == null) {
+      await _retryFailedDeviceTest();
+
+      if (_authenticationState.deviceKey == null) {
+        print('Failed to get device key. Cannot authenticate.');
+        return false;
+      }
+    }
+
+    switch (_authenticationState.status) {
+      case AuthenticationStatus.deviceKey:
+        return true;
+      default: return false;
+    }
   }
 
   void signOut() async {
@@ -64,11 +80,15 @@ class AuthenticationBloc extends Bloc{
     return _secureStorage.read(key: _deviceKeyKey);
   }
 
-  void _setFreshState() {
+  Future<void> _setFreshState() async {
     _apiClient.setDeviceKey(null);
     _setState(AuthenticationState.fresh());
-    _registerDevice()
-        .catchError((_) => _setDeviceKeyFailedState());
+
+    try {
+      await _registerDevice();
+    } catch (e) {
+      _setDeviceKeyFailedState();
+    }
   }
 
   void _storeDeviceKey(String key) {
@@ -114,7 +134,7 @@ class AuthenticationBloc extends Bloc{
     );
   }
 
-  void _testDeviceKey(String deviceKey) async {
+  Future<void> _testDeviceKey(String deviceKey) async {
     // TODO: Add a state when this check is in progress.
 
     final me = await _apiClient.getMeByDeviceKey(deviceKey);
@@ -139,6 +159,11 @@ class AuthenticationBloc extends Bloc{
         );
       }
     }
+  }
+
+  Future<void> _retryFailedDeviceTest() async {
+    _setState(initialState);
+    await _init();
   }
 
   Future<void> reloadCurrentActor() async {

@@ -1,4 +1,4 @@
-import 'package:courseplease/widgets/auth/authenticated_or_not.dart';
+import 'package:courseplease/widgets/auth/sign_in_if_not.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +12,9 @@ class LearningTabWidget extends StatefulWidget {
 class _LearningTabWidgetState extends State<LearningTabWidget> {
   @override
   Widget build(BuildContext context) {
-    return AuthenticatedOrNotWidget(
-      authenticatedBuilder: (_) => _buildAuthenticated(),
-      notAuthenticatedBuilder: (_) => Text("Not Authenticated"), // TODO: Make a widget
+    return SignInIfNotWidget(
+      signedInBuilder: (_, __) => _buildAuthenticated(),
+      titleText: tr('LearningTabWidget.unauthenticatedTitle'),
     );
   }
 

@@ -189,7 +189,8 @@ LearningLessonsTabWidget:
     resolved:       'Past and Cancelled'
 
 LearningTabWidget:
-    iconTitle:      'Learn'
+    iconTitle:              'Learn'
+    unauthenticatedTitle:   'Here will be the lessons you choose.'
 
 LessonsTabWidget:
     title:          'Lessons'
@@ -235,7 +236,8 @@ MediaDestinationWidget:
     selectPurpose:  '(Select Album)'
 
 MessagesTabWidget:
-    iconTitle:      'Messages'
+    iconTitle:              'Messages'
+    unauthenticatedTitle:   'Here teachers and students chat.'
 
 ModelAutocomplete:
     notFound:       '(Not Found)'
@@ -461,7 +463,8 @@ TeachingLessonsTabWidget:
     resolved:           'Past and Cancelled'
 
 TeachingTabWidget:
-    iconTitle:          'Teach'
+    iconTitle:              'Teach'
+    unauthenticatedTitle:   'Here will be the your students and reports.'
 
 TimeApproveMessageBodyPreviewWidget:
     text:           'Confirmed {date} at {time}.'
