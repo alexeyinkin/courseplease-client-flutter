@@ -13,9 +13,9 @@ class PreviousImageOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 10,
+      top: 80,
       left: 10,
-      bottom: 10,
+      bottom: 80,
       child: ToggleOverlay(
         visible: visible,
         child: IconButton(
