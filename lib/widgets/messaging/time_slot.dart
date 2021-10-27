@@ -88,6 +88,8 @@ class TimeSlotWidget extends StatelessWidget {
     );
 
     _apiClient.updateTimeSlots(request);
+    // Slots will be updated after an edited message is received.
+    // TODO: Update right away.
   }
 
   String _getToggledSlotStatus() {

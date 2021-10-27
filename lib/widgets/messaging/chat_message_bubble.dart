@@ -1,4 +1,3 @@
-import 'package:bubble/bubble.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/widgets/messaging/chat_message_body.dart';
 import 'package:flutter/material.dart';
@@ -16,15 +15,15 @@ class MyChatMessageBubble extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
-        padding: EdgeInsets.only(left: 20),
-        child: Bubble(
-          nip: BubbleNip.rightBottom,
-          padding: BubbleEdges.symmetric(horizontal: 7, vertical: 5),
+        margin: EdgeInsets.only(left: 20),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
           color: const Color(0x60808080),
-          child: ChatMessageBodyWidget(
-            message: message,
-            showReadStatus: _getShowReadStatus(message),
-          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ChatMessageBodyWidget(
+          message: message,
+          showReadStatus: _getShowReadStatus(message),
         ),
       ),
     );
@@ -49,15 +48,15 @@ class OthersChatMessageBubble extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.only(right: 20),
-        child: Bubble(
-          nip: BubbleNip.leftBottom,
-          padding: BubbleEdges.symmetric(horizontal: 7, vertical: 5),
-          color: Colors.transparent,
-          child: ChatMessageBodyWidget(
-            message: message,
-            showReadStatus: ChatMessageShowReadStatus.noPlaceholder,
-          ),
+        margin: EdgeInsets.only(right: 20),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Color(0x60808080)),
+        ),
+        child: ChatMessageBodyWidget(
+          message: message,
+          showReadStatus: ChatMessageShowReadStatus.noPlaceholder,
         ),
       ),
     );

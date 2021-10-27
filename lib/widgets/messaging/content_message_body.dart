@@ -22,6 +22,7 @@ class ContentMessageBodyWidget extends StatelessWidget {
         children: [
           TextSpan(
             text: body.text,
+            style: DefaultTextStyle.of(context).style,
           ),
           _getDateSpaceSpan(context),
         ],

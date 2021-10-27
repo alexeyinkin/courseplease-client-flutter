@@ -45,8 +45,9 @@ class _PurchaseMessageBodyWidgetState extends State<PurchaseMessageBodyWidget> {
           translationPlaceholder: 'subject',
         ),
         Text(widget.body.delivery.productVariantFormatWithPrice.title),
-        Flex(
+        Wrap(
           direction: Axis.horizontal,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: alternateWidgetListWith(actionWidgets, SmallPadding()),
         ),
         Text(''), // Date placeholder.
