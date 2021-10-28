@@ -4,6 +4,7 @@ import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/app_text_field.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/dialog_result.dart';
+import 'package:courseplease/widgets/frames/framed_column.dart';
 import 'package:courseplease/widgets/language_list_editor.dart';
 import 'package:courseplease/widgets/location_editor.dart';
 import 'package:courseplease/widgets/pad.dart';
@@ -66,32 +67,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         title: Text(tr('EditProfileScreen.title')),
       ),
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _getFirstNameInput(state),
-                  SmallPadding(),
-                  _getMiddleNameInput(state),
-                  SmallPadding(),
-                  _getLastNameInput(state),
-                  SmallPadding(),
-                  _getSexInput(state),
-                  SmallPadding(),
-                  _getLanguageListEditor(state),
-                  Container(height: 30),
-                  _getLocationEditor(state),
-                  SmallPadding(),
-                  _getSaveButton(state),
-                ],
-              ),
-            ],
-          ),
+      body: Form(
+        key: _formKey,
+        child: FramedColumn(
+          children: [
+            SmallPadding(),
+            _getFirstNameInput(state),
+            SmallPadding(),
+            _getMiddleNameInput(state),
+            SmallPadding(),
+            _getLastNameInput(state),
+            SmallPadding(),
+            _getSexInput(state),
+            SmallPadding(),
+            _getLanguageListEditor(state),
+            Container(height: 30),
+            _getLocationEditor(state),
+            SmallPadding(),
+            _getSaveButton(state),
+            SmallPadding(),
+          ],
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:courseplease/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class EditBodyTabWidget extends StatelessWidget {
@@ -9,10 +10,15 @@ class EditBodyTabWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: textEditingController,
-      maxLines: null,
-      keyboardType: TextInputType.multiline,
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: TextFormField(
+        controller: textEditingController,
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        decoration: getInputDecoration(context: context),
+        cursorColor: getTextColor(context),
+      ),
     );
   }
 }
