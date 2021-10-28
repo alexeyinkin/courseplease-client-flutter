@@ -12,6 +12,12 @@ class EditIntegrationCubit extends Bloc {
   final _outStateController = BehaviorSubject<EditIntegrationState>();
   Stream<EditIntegrationState> get outState => _outStateController.stream;
 
+  final _errorsController = BehaviorSubject<void>();
+  Stream<void> get errors => _errorsController.stream;
+
+  final _successesController = BehaviorSubject<void>();
+  Stream<void> get successes => _successesController.stream;
+
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   late StreamSubscription _authenticationCubitSubscription;
 
@@ -67,10 +73,16 @@ class EditIntegrationCubit extends Bloc {
     }
   }
 
-  Future saveContactParams(SaveContactParamsRequest request) async {
+  Future<void> saveContactParams(SaveContactParamsRequest request) async {
     _currentAction = EditIntegrationCurrentAction.save;
     _pushOutput();
-    await _authenticationCubit.saveContactParams(request);
+
+    try {
+      await _authenticationCubit.saveContactParams(request);
+      _successesController.sink.add(null);
+    } catch (e) {
+      _errorsController.sink.add(null);
+    }
 
     if (_currentAction == EditIntegrationCurrentAction.save) {
       _currentAction = EditIntegrationCurrentAction.none;
@@ -82,6 +94,8 @@ class EditIntegrationCubit extends Bloc {
   void dispose() {
     _authenticationCubitSubscription.cancel();
     _outStateController.close();
+    _errorsController.close();
+    _successesController.close();
   }
 }
 

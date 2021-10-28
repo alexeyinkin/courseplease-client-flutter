@@ -13,6 +13,7 @@ class ProductSubjectDropdown extends StatefulWidget {
   final int? selectedId;
   final List<int> showIds;
   final ValueChanged<int> onChanged;
+  final String? labelText;
   final String? hintText;
   final bool allowingImagePortfolio;
 
@@ -22,6 +23,7 @@ class ProductSubjectDropdown extends StatefulWidget {
     required this.selectedId,
     required this.showIds,
     required this.onChanged,
+    this.labelText,
     this.hintText,
     this.allowingImagePortfolio = false,
   });
@@ -54,8 +56,8 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
       selectedId:   widget.selectedId,
       models:       _getModels(state),
       onIdChanged:  _onIdChanged,
+      labelText:    widget.labelText,
       hint:         widget.hintText == null ? null : Text(widget.hintText!),
-      labelText:    widget.hintText,
       trailing: [
         DropdownMenuItem<int>(
           value: ProductSubjectDropdown.moreId,

@@ -4,6 +4,7 @@ import 'package:courseplease/screens/edit_integration/local_blocs/edit_integrati
 import 'package:courseplease/models/common.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/contact/profile_sync_status.dart';
+import 'package:courseplease/screens/error_popup/error_popup.dart';
 import 'package:courseplease/widgets/builders/factories/contact_params_widget_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -53,7 +54,24 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     required this.contactClone,
   }) :
       _editIntegrationCubit = EditIntegrationCubit(contactId: contactClone.id)
-  ;
+  {
+    _editIntegrationCubit.errors.listen((_) => _onError());
+    _editIntegrationCubit.successes.listen((_) => _onSuccess());
+  }
+
+  void _onError() {
+    ErrorPopupScreen.show(context: context);
+  }
+
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
+
+  @override
+  void dispose() {
+    _editIntegrationCubit.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -241,14 +259,13 @@ class _EditIntegrationScreenState extends State<EditIntegrationScreen> {
     );
   }
 
-  void _handleSave() async {
+  void _handleSave() {
     final request = SaveContactParamsRequest(
       contactId:        contactClone.id,
       downloadEnabled:  contactClone.downloadEnabled,
       params:           contactClone.params,
     );
 
-    await _editIntegrationCubit.saveContactParams(request);
-    Navigator.of(context).pop();
+    _editIntegrationCubit.saveContactParams(request);
   }
 }

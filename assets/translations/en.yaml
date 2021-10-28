@@ -14,6 +14,7 @@ common:
     yesterday:          'Yesterday'
     typeHere:           'Type here...'
     dateTime:           '{date} at {time}'
+    select:             '(Select)'
 
 ChatMessageBodyWidget:
     edited:             'edited {when}'
@@ -348,6 +349,9 @@ PriceRangeTextWidget:
     from:               'From {from}'
     to:                 'Up to {to}'
     range:              '{from}–{to}'
+
+ProductSubjectDropdown:
+    label:              'Subject'
 
 PurchaseMessageBodyPreviewWidget:
     text:               'Purchased 1 hour lesson in {subject}, {format}.'

@@ -23,15 +23,6 @@ abstract class ContactStatusCubit extends Bloc {
     pushOutput();
   }
 
-  void setContact(EditableContact contact) {
-    if (contact != _contact) {
-      // Contact will only change if it is re-parsed from an API request
-      // so this gives no false-positive rebuilds.
-      _contact = contact;
-      pushOutput();
-    }
-  }
-
   @protected
   void pushOutput() {
     final status = getProfileSyncStatus(_contact);

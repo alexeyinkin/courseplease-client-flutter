@@ -17,14 +17,14 @@ class LinkedProfileWidget extends StatefulWidget {
   LinkedProfileWidget({
     required this.meResponseData,
     required this.contact,
-  });
+  }) : super(
+    key: ValueKey(contact.getChecksum()),
+  );
 
   @override
   State<LinkedProfileWidget> createState() {
-    final contactStatusCubit = GetIt.instance.get<ContactStatusCubitFactory>().create(contact);
-
     return _LinkedProfileWidgetState(
-      contactStatusCubit: contactStatusCubit,
+      contact: contact,
     );
   }
 
@@ -42,23 +42,29 @@ class LinkedProfileWidget extends StatefulWidget {
 }
 
 class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
-  final ContactStatusCubit? contactStatusCubit;
+  final ContactStatusCubit? _contactStatusCubit;
   final _contactParamsWidgetFactory = GetIt.instance.get<ContactParamsWidgetFactory>();
 
   _LinkedProfileWidgetState({
-    required this.contactStatusCubit,
-  });
+    required EditableContact contact,
+  }) :
+      _contactStatusCubit = GetIt.instance.get<ContactStatusCubitFactory>().create(contact)
+  ;
+
+  @override
+  void dispose() {
+    _contactStatusCubit?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (contactStatusCubit == null) {
+    if (_contactStatusCubit == null) {
       return _buildWithStatus(null);
     }
 
-    contactStatusCubit!.setContact(widget.contact);
-
     return StreamBuilder<ReadableProfileSyncStatus>(
-      stream: contactStatusCubit!.outStatus,
+      stream: _contactStatusCubit!.outStatus,
       builder: (context, snapshot) => _buildWithStatus(snapshot.data),
     );
   }

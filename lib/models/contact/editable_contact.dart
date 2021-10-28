@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:courseplease/models/contact/contact.dart';
 import 'package:courseplease/models/contact/contact_class_enum.dart';
 import 'package:courseplease/models/contact/instagram.dart';
@@ -63,6 +64,23 @@ class EditableContact extends Contact {
       profileSyncStatus:  ProfileSyncStatus.from(contact.profileSyncStatus),
       params:             contact.params.clone(),
     );
+  }
+
+  String getChecksum() {
+    return jsonEncode(toJson());
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id':                 id,
+      'className':          className,
+      'value':              value,
+      'username':           username,
+      'downloadEnabled':    downloadEnabled,
+      'tokenExpire':        tokenExpire?.millisecondsSinceEpoch,
+      'profileSyncStatus':  profileSyncStatus.toString(),
+      'params':             params.toJson(),
+    };
   }
 }
 
