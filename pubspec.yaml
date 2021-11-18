@@ -64,6 +64,13 @@ dependencies:
   pointycastle: ^3.3.4
   provider: ^6.0.0                              # TODO: Remove
   rxdart: ^0.27.2
+
+  # TODO: Use pub when this is done: https://github.com/jamiewest/sse_client/issues/8
+  sse_client:
+    git:
+      url: https://github.com/alexeyinkin/sse_client.git
+      ref: issue8_connection-management
+
   uuid: ^3.0.4
   visibility_detector: ^0.2.0
   xml: ^5.3.0

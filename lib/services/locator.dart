@@ -1,4 +1,5 @@
 import 'package:courseplease/blocs/ably/ably_native_protocol.dart';
+import 'package:courseplease/blocs/ably/ably_sse.dart';
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/chat_message_factory.dart';
 import 'package:courseplease/blocs/chat_message_send_queue.dart';
@@ -41,6 +42,7 @@ import 'package:courseplease/services/sse/outgoing_chat_message_sse_listener.dar
 import 'package:courseplease/services/sse/sse_listener_locator.dart';
 import 'package:courseplease/services/sse/sse_reloader_locator.dart';
 import 'package:courseplease/widgets/messaging/enum/sse_type.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'chat_message_draft_persister.dart';
 import 'chat_message_queue_persister.dart';
@@ -148,7 +150,7 @@ void _initializeSse() {
   final sseListenerLocator = _createSseListenerLocator();
   final sseReloaderLocator = _createSseReloaderLocator();
   final realtimeFactories = {
-    'ably': AblyNativeProtocolCubitFactory(),
+    'ably': kIsWeb ? AblySseCubitFactory() : AblyNativeProtocolCubitFactory(),
   };
 
   GetIt.instance

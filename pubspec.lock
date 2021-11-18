@@ -740,6 +740,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0+2"
+  sse_client:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: issue8_connection-management
+      resolved-ref: "4870251d6b84ed693d522fce030001637b2ae18b"
+      url: "https://github.com/alexeyinkin/sse_client.git"
+    source: git
+    version: "0.1.0"
   stack_trace:
     dependency: transitive
     description:
