@@ -16,6 +16,7 @@ import 'package:model_interfaces/model_interfaces.dart';
 import 'buttons.dart';
 import 'media/image/responsive_image_grid.dart';
 
+// TODO: Move to screens when refactored to allow media types other than images.
 class MediaDestinationWidget extends StatelessWidget {
   final MediaDestinationCubit mediaDestinationCubit;
 
@@ -53,7 +54,8 @@ class MediaDestinationWidget extends StatelessWidget {
             selectedId: state.subjectId,
             showIds: state.showSubjectIds,
             onChanged: mediaDestinationCubit.setSubjectId,
-            hintText: tr('MediaDestinationWidget.selectSubject'),
+            labelText: tr('ProductSubjectDropdown.label'),
+            hintText: tr('common.select'),
           ),
         ),
       ],
