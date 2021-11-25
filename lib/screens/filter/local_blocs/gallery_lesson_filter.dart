@@ -39,7 +39,7 @@ class GalleryLessonFilterDialogCubit extends AbstractFilterScreenContentCubit<Ga
 
   @override
   void clear() {
-    _langsController.setValue([]);
+    _langsController.value = [];
     _pushOutput();
   }
 

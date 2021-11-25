@@ -14,15 +14,15 @@ class PriceRangeControllerTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<void>(
-      stream: controller.changes,
-      builder: (context, snapshot) => _buildOnChange(),
+    return ValueListenableBuilder<PriceRange>(
+      valueListenable: controller,
+      builder: (context, range, child) => _buildOnChange(range),
     );
   }
 
-  Widget _buildOnChange() {
+  Widget _buildOnChange(PriceRange range) {
     return PriceRangeTextWidget(
-      priceRange: controller.getValue(),
+      priceRange: range,
     );
   }
 }

@@ -18,13 +18,17 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.0.1+1
 
 environment:
-  sdk: ">=2.13.4 <3.0.0"
+  sdk: ">=2.14.4 <3.0.0"
 
 dependencies:
   # Our own packages:
 #  model_interfaces:
 #    path: '../../../dart/model_interfaces'
-  model_interfaces: ^0.0.2
+  model_interfaces: ^0.1.0
+
+#  model_editors:
+#    path: '../../../dart/model_editors'
+  model_editors: ^0.1.2
 
   # SDK packages:
   flutter:

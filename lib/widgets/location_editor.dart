@@ -30,32 +30,31 @@ class LocationEditorWidget extends StatefulWidget {
 
 class _LocationEditorWidgetState extends State<LocationEditorWidget> {
   final Completer<GoogleMapController> _mapControllerCompleter = Completer();
-  late final StreamSubscription _changesSubscription;
 
   static const _topPadding = EdgeInsets.only(top: 10);
 
   @override
   void initState() {
     super.initState();
-    _changesSubscription = widget.controller.changes.listen(_onChanged);
+    widget.controller.addListener(_onChanged);
   }
 
-  void _onChanged(_) async {
+  void _onChanged() async {
     final mapController = await _mapControllerCompleter.future;
     mapController.animateCamera(CameraUpdate.newCameraPosition(_getCameraPosition()));
   }
 
   @override
   void dispose() {
-    _changesSubscription.cancel();
+    widget.controller.removeListener(_onChanged);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<void>(
-      stream: widget.controller.changes,
-      builder: (context, snapshot) => _buildOnChange(),
+    return ValueListenableBuilder(
+      valueListenable: widget.controller,
+      builder: (context, value, child) => _buildOnChange(),
     );
   }
 
@@ -68,7 +67,7 @@ class _LocationEditorWidgetState extends State<LocationEditorWidget> {
         ),
         SmallPadding(),
         CityNameAutocomplete(
-          countryCode: widget.controller.countryController.getValue()?.id,
+          countryCode: widget.controller.countryController.value?.id,
           controller: widget.controller.cityNameController,
         ),
         _buildStreetAddressIfNeed(),
@@ -120,7 +119,7 @@ class _LocationEditorWidgetState extends State<LocationEditorWidget> {
     if (!_isValid()) return 0;
 
     if (widget.controller.streetAddressController.text != '') return 15;
-    if (widget.controller.cityNameController.getValue() != null) return 6;
+    if (widget.controller.cityNameController.value != null) return 6;
     return 2;
   }
 

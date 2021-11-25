@@ -16,14 +16,13 @@ class PriceRangeSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<void>(
-      stream: controller.changes,
-      builder: (context, snapshot) => _buildOnChange(),
+    return ValueListenableBuilder<PriceRange>(
+      valueListenable: controller,
+      builder: (context, value, child) => _buildOnChange(value),
     );
   }
 
-  Widget _buildOnChange() {
-    final range = controller.getValue();
+  Widget _buildOnChange(PriceRange range) {
     final max = _getMax(range);
 
     return RangeSlider(

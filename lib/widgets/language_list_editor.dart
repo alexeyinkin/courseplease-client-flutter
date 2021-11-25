@@ -1,4 +1,3 @@
-import 'package:courseplease/blocs/editors/with_id_title.dart';
 import 'package:courseplease/blocs/editors/with_id_title_list.dart';
 import 'package:courseplease/models/language.dart';
 import 'package:courseplease/repositories/language.dart';
@@ -7,9 +6,9 @@ import 'package:courseplease/widgets/add_language_button.dart';
 import 'package:courseplease/widgets/language.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_editors/model_editors.dart';
 
 import 'capsule.dart';
-import 'capsule_list_editor.dart';
 
 class LanguageListEditor extends StatelessWidget {
   final LanguageListEditorController controller;
@@ -20,7 +19,7 @@ class LanguageListEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CapsuleListEditorWidget<Language, WithIdTitleEditorController<String, Language>>(
+    return CapsuleListEditor<Language, WithIdTitleEditingController<String, Language>>(
       controller: controller,
       capsuleContentBuilder: _buildValueEditor,
       addButtonBuilder: _buildAddButton,

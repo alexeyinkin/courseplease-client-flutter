@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:courseplease/blocs/editors/with_id_title.dart';
 import 'package:courseplease/models/enum/location_privacy.dart';
 import 'package:courseplease/models/geo/city_name.dart';
 import 'package:courseplease/models/geo/country.dart';
@@ -11,17 +10,17 @@ import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
+import 'package:model_editors/model_editors.dart';
 
 import '../model_by_id.dart';
-import 'abstract.dart';
 
-// TODO: Cut repeated fireChange() when multiple fields change together.
-class LocationEditorController extends AbstractValueEditorController<Location> {
+// TODO: Cut repeated notifyListeners() when multiple fields change together.
+class LocationEditorController extends ValueNotifier<Location?> {
   final bool geocode;
   double? _latitude;
   double? _longitude;
-  final countryController = WithIdTitleEditorController<String, Country>();
-  final cityNameController = WithIdTitleEditorController<int, CityName>();
+  final countryController = WithIdTitleEditingController<String, Country>();
+  final cityNameController = WithIdTitleEditingController<int, CityName>();
   final streetAddressController = TextEditingController();
   String _privacy = LocationPrivacyEnum.fuzzyVisible;
 
@@ -40,7 +39,9 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
 
   LocationEditorController({
     required this.geocode,
-  }) {
+  }) :
+      super(null)
+  {
     _countryByIdBloc.outState.listen(_onCountryLoaded);
     countryController.addListener(_onCountryChanged);
     cityNameController.addListener(_onCityNameChanged);
@@ -48,15 +49,15 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   }
 
   void _onCountryLoaded(ModelByIdState<String, Country> state) {
-    countryController.setValue(state.object);
+    countryController.value = state.object;
   }
 
   @override
-  Location? getValue() {
-    final country = countryController.getValue();
+  Location? get value {
+    final country = countryController.value;
     if (country == null) return null;
 
-    final cityName = cityNameController.getValue();
+    final cityName = cityNameController.value;
 
     return Location(
       latitude: _latitude ?? 0,
@@ -72,7 +73,7 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   }
 
   @override
-  void setValue(Location? location) {
+  set value(Location? location) {
     if (location == null) {
       _setNull();
     } else {
@@ -83,11 +84,11 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   void _setNull() {
     _latitude = null;
     _longitude = null;
-    countryController.setValue(null);
-    cityNameController.setValue(null);
+    countryController.value = null;
+    cityNameController.value = null;
     streetAddressController.text = '';
     _privacy = LocationPrivacyEnum.fuzzyVisible;
-    fireChange();
+    notifyListeners();
   }
 
   void _setNotNull(Location location) {
@@ -95,23 +96,21 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
     _longitude = location.longitude;
 
     if (location.countryCode == '') {
-      countryController.setValue(null);
+      countryController.value = null;
     } else {
       _setCountryCode(location.countryCode);
     }
 
     if (location.cityId == null) {
-      cityNameController.setValue(null);
+      cityNameController.value = null;
     } else {
-      cityNameController.setValue(
-        CityName.fromCityIdAndTitle(location.cityId!, location.cityTitle)
-      );
+      cityNameController.value = CityName.fromCityIdAndTitle(location.cityId!, location.cityTitle);
     }
 
     streetAddressController.text = location.streetAddress;
     _privacy = location.privacy;
 
-    fireChange();
+    notifyListeners();
   }
 
   void _setCountryCode(String countryCode) {
@@ -123,34 +122,34 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
 
   void _onCountryChanged() {
     if (_countrySet) {
-      cityNameController.setValue(null);
+      cityNameController.value = null;
       streetAddressController.text = '';
     }
-    if (countryController.getValue() != null) {
+    if (countryController.value != null) {
       _countrySet = true;
     }
 
     _geoCodeIfNeed();
-    fireChange();
+    notifyListeners();
   }
 
   void _onCityNameChanged() {
     if (_cityNameSet) {
       streetAddressController.text = '';
     }
-    if (cityNameController.getValue() != null) {
+    if (cityNameController.value != null) {
       _cityNameSet = true;
     }
 
     _geoCodeIfNeed();
-    fireChange();
+    notifyListeners();
   }
 
   void _onStreetAddressChanged() {
     if (_streetAddressEditingDebounce?.isActive ?? false) _streetAddressEditingDebounce!.cancel();
     _streetAddressEditingDebounce = Timer(_streetAddressDebounceDuration, () {
       _geoCodeIfNeed();
-      fireChange();
+      notifyListeners();
     });
   }
 
@@ -159,7 +158,7 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   void setPrivacy(String? privacy) {
     if (privacy == null || privacy == _privacy) return;
     _privacy = privacy;
-    fireChange();
+    notifyListeners();
   }
 
   void _geoCodeIfNeed() {
@@ -168,10 +167,10 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
   }
 
   void _geoCode() async {
-    final country = countryController.getValue();
+    final country = countryController.value;
     if (country == null) return;
 
-    final cityName = cityNameController.getValue();
+    final cityName = cityNameController.value;
     final request = GeoCodeRequest(
       countryTitle: country.title,
       cityTitle: cityName?.title,
@@ -187,7 +186,7 @@ class LocationEditorController extends AbstractValueEditorController<Location> {
     if (response.latitude != _latitude || response.longitude != _longitude) {
       _latitude = response.latitude;
       _longitude = response.longitude;
-      fireChange();
+      notifyListeners();
     }
   }
 }

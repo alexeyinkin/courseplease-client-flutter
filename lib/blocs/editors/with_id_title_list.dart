@@ -1,14 +1,13 @@
-import 'package:courseplease/blocs/editors/with_id_title.dart';
+import 'package:model_editors/model_editors.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
 import '../model_cache.dart';
 import '../models_by_ids.dart';
-import 'abstract_list.dart';
 
 class WithIdTitleListEditorController<
   I,
   O extends WithIdTitle<I>
-> extends AbstractValueListEditorController<O, WithIdTitleEditorController<I, O>> {
+> extends AbstractListEditingController<O, WithIdTitleEditingController<I, O>> {
   final ModelListByIdsBloc<I, O> _modelListByIds;
 
   WithIdTitleListEditorController({
@@ -24,13 +23,13 @@ class WithIdTitleListEditorController<
   }
 
   void _onStateChanged(ModelListByIdsState<I, O> state) {
-    setValue(state.objects);
+    value = state.objects;
   }
 
   List<I> getIds() {
     final result = <I>[];
 
-    for (final obj in getValue()) {
+    for (final obj in value) {
       if (obj == null) continue;
       result.add(obj.id);
     }
@@ -43,7 +42,7 @@ class WithIdTitleListEditorController<
   }
 
   @override
-  WithIdTitleEditorController<I, O> createController() {
-    return WithIdTitleEditorController<I, O>();
+  WithIdTitleEditingController<I, O> createItemController() {
+    return WithIdTitleEditingController<I, O>();
   }
 }

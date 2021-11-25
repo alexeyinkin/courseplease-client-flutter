@@ -38,7 +38,7 @@ class EditProfileScreenCubit extends Bloc {
     _middleNameController.text = user.middleName;
     _lastNameController.text = user.lastName;
     _languageListController.setIds(user.langs);
-    _locationController.setValue(user.location);
+    _locationController.value = user.location;
 
     initialState = _createState();
   }
@@ -55,7 +55,7 @@ class EditProfileScreenCubit extends Bloc {
       languageListController: _languageListController,
       locationController: _locationController,
       sex: _sex,
-      languages: _languageListController.getNonNullValues(),
+      languages: _languageListController.nonNullValues,
       inProgress: _inProgress,
       canSave: _canSave(),
     );
@@ -94,7 +94,7 @@ class EditProfileScreenCubit extends Bloc {
   }
 
   SaveLocationRequest? _getSaveLocationRequest() {
-    final location = _locationController.getValue();
+    final location = _locationController.value;
     if (location == null) return null;
 
     return SaveLocationRequest(

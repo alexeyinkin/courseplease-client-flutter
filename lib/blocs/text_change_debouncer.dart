@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/bloc.dart';
-import 'package:courseplease/blocs/editors/abstract.dart';
 import 'package:flutter/widgets.dart';
 
 class TextChangeDebouncer extends Bloc {

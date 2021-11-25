@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@Deprecated('Use from model_editors package')
 class CapsuleWidget extends StatelessWidget {
   final Widget child;
   final bool selected;
