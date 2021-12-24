@@ -1,4 +1,5 @@
 import 'package:courseplease/models/filters/my_image.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
 import 'package:courseplease/screens/edit_integration/local_blocs/edit_integration.dart';
 import 'package:courseplease/models/common.dart';
@@ -30,14 +31,17 @@ class EditIntegrationScreen extends StatefulWidget {
     contactClone: contactClone,
   );
 
-  static Future<void> show({
+  static void show({
     required BuildContext context,
     required EditableContact contactClone,
   }) {
-    return Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditIntegrationScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('EditIntegrationScreen_${contactClone.id}'),
+        child: EditIntegrationScreen(
           contactClone: contactClone,
         ),
       ),

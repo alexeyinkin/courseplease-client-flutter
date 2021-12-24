@@ -137,9 +137,7 @@ class _ProfileWidgetState extends State<MyProfileWidget> {
   }
 
   void _editTeaching() {
-    Navigator.of(context).pushNamed(
-      EditTeachingScreen.routeName,
-    );
+    EditTeachingScreen.show(context: context);
   }
 
   Widget _getExistingIntegrationsMenu(MeResponseData data) {

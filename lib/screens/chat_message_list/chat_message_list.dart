@@ -20,6 +20,7 @@ class ChatMessageListScreen extends StatelessWidget {
     required Chat chat,
     required ChatMessageFilter chatMessageFilter,
   }) {
+    // TODO: Push to state instead. Cannot do it now because its pop is awaited.
     return Navigator.push<void>(
       context,
       MaterialPageRoute(

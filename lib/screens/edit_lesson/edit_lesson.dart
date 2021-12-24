@@ -1,4 +1,5 @@
 import 'package:courseplease/models/lesson.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/edit_lesson/local_blocs/edit_lesson.dart';
 import 'package:courseplease/screens/error_popup/error_popup.dart';
 import 'package:courseplease/widgets/buttons.dart';
@@ -7,6 +8,7 @@ import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/teacher_product_subject_dropdown.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class EditLessonScreen extends StatefulWidget {
   final Lesson lesson;
@@ -19,10 +21,13 @@ class EditLessonScreen extends StatefulWidget {
     required BuildContext context,
     required Lesson lesson,
   }) {
-    Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditLessonScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('LessonScreen_${lesson.id}'),
+        child: EditLessonScreen(
           lesson: lesson,
         ),
       ),

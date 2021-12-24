@@ -6,7 +6,6 @@ import 'package:courseplease/screens/error_popup/error_popup.dart';
 import 'package:courseplease/screens/order/local_blocs/order.dart';
 import 'package:courseplease/screens/webview/webview.dart';
 import 'package:courseplease/services/net/api_client.dart';
-import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/app_navigator.dart';
 import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/pad.dart';
@@ -24,6 +23,7 @@ class OrderScreen extends StatefulWidget {
     this.initialLineItems,
   });
 
+  // TODO: Fix not closing on back button.
   static void show({
     required BuildContext context,
     Money? topUpMoney,
@@ -188,7 +188,7 @@ class _OrderScreenState extends State<OrderScreen> {
       isLoading: state.inProgress,
       child: Text(
         tr(
-          'OrderScreen.action.' + enumValueAfterDot(state.proceedAction.toString()),
+          'OrderScreen.action.' + state.proceedAction.name,
           namedArgs: {'amount': state.proceedMoney.toString()},
         ),
       ),

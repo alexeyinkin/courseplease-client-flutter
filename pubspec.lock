@@ -476,6 +476,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  keyed_collection_widgets:
+    dependency: "direct main"
+    description:
+      path: "../../../dart/keyed_collection_widgets"
+      relative: true
+    source: path
+    version: "0.1.0"
   markdown:
     dependency: transitive
     description:

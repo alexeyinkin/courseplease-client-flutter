@@ -26,8 +26,8 @@ import 'package:courseplease/repositories/teacher.dart';
 import 'package:courseplease/repositories/withdraw_account.dart';
 import 'package:courseplease/repositories/withdraw_order.dart';
 import 'package:courseplease/repositories/withdraw_service.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/widgets/builders/factories/contact_params_widget_factory.dart';
-import 'package:courseplease/screens/home/local_blocs/home.dart';
 import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
 import 'package:courseplease/services/messaging/message_body_denormalizer_locator.dart';
 import 'package:courseplease/services/shop/cbr_rate_loader.dart';
@@ -43,6 +43,7 @@ import 'package:courseplease/services/sse/sse_listener_locator.dart';
 import 'package:courseplease/services/sse/sse_reloader_locator.dart';
 import 'package:courseplease/widgets/messaging/enum/sse_type.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'chat_message_draft_persister.dart';
 import 'chat_message_queue_persister.dart';
@@ -63,10 +64,12 @@ Future<void> initializeServiceLocator() async {
   _initializeChatMessageDenormalizers();
   _initializeRepositories();
   _initializeCaches();
+  _initializeSecureStorage();
   _initializeBlocs();
   _initializeSse();
   await _initializeServices();
   _initializeWidgetFactories();
+  await _initializeAppState();
 }
 
 void _initializeNetwork() {
@@ -107,6 +110,12 @@ void _initializeCaches() {
   ;
 }
 
+void _initializeSecureStorage() {
+  GetIt.instance
+      ..registerSingleton<FlutterSecureStorage>(FlutterSecureStorage())
+  ;
+}
+
 void _initializeBlocs() {
   GetIt.instance
       ..registerSingleton<AuthenticationBloc>(AuthenticationBloc())
@@ -116,7 +125,6 @@ void _initializeBlocs() {
       ..registerSingleton<ChatsCubit>(ChatsCubit())
       ..registerSingleton<ChatMessageFactory>(ChatMessageFactory())
       ..registerSingleton<ContactStatusCubitFactory>(ContactStatusCubitFactory())
-      ..registerSingleton<HomeScreenCubit>(HomeScreenCubit())
       ..registerSingleton<LikeCubit>(LikeCubit())
   ;
 }
@@ -195,5 +203,11 @@ Future<void> _initializeServices() async {
 void _initializeWidgetFactories() {
   GetIt.instance
       ..registerSingleton<ContactParamsWidgetFactory>(ContactParamsWidgetFactory())
+  ;
+}
+
+Future<void> _initializeAppState() async {
+  GetIt.instance
+      ..registerSingleton<AppState>(await AppState.create())
   ;
 }

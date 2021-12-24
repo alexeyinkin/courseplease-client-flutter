@@ -1,5 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/create_lesson/local_blocs/create_lesson.dart';
 import 'package:courseplease/widgets/lesson/readonly_lesson_editor.dart';
 import 'package:courseplease/screens/error_popup/error_popup.dart';
@@ -11,6 +12,7 @@ import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:courseplease/widgets/teacher_product_subject_dropdown.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class CreateLessonScreen extends StatefulWidget {
   final MyLessonFilter filter;
@@ -23,10 +25,13 @@ class CreateLessonScreen extends StatefulWidget {
     required BuildContext context,
     required MyLessonFilter filter,
   }) {
-    Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CreateLessonScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('CreateLessonScreen_$filter'),
+        child: CreateLessonScreen(
           filter: filter,
         ),
       ),

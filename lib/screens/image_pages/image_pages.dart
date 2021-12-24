@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseplease/blocs/filtered_model_list.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/repositories/image.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/image/image.dart';
 import 'package:courseplease/screens/image_pages/local_widgets/previous_image_overlay.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
@@ -194,15 +195,18 @@ class ImagePagesScreenState<
 }
 
 class ViewImagePagesScreenLauncher {
-  static Future<void> show({
+  static void show({
     required BuildContext context,
     required GalleryImageFilter filter,
     required int initialIndex,
   }) {
-    return Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ImagePagesScreen<GalleryImageFilter, GalleryImageRepository>(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('ImagePagesScreen_${filter.toJson()}'),
+        child: ImagePagesScreen<GalleryImageFilter, GalleryImageRepository>(
           filter: filter,
           initialIndex: initialIndex,
           imageOverlayBuilder: _buildOverlays,

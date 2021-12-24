@@ -31,6 +31,7 @@ class EditImageListScreen extends StatefulWidget {
     required MyImageFilter filter,
     Map<int, EditableContact>? contactsByIds,
   }) {
+    // TODO: Push to state instead. Cannot do it now because its pop is awaited.
     return Navigator.push<void>(
       context,
       MaterialPageRoute(

@@ -1,6 +1,8 @@
 import 'package:courseplease/widgets/tab_controller_builder.dart';
 import 'package:flutter/material.dart';
 
+// Unused
+@Deprecated('')
 class TabControllerIndexedStack extends StatelessWidget {
   final List<Widget> children;
   final TabController? controller;

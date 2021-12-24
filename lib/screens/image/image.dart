@@ -4,6 +4,7 @@ import 'package:courseplease/models/filters/comment.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/reaction/enum/comment_catalog_intname.dart';
 import 'package:courseplease/models/reaction/enum/like_catalog_intname.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/services/reload/image.dart';
 import 'package:courseplease/widgets/error/id.dart';
 import 'package:courseplease/widgets/builders/models/image.dart';
@@ -12,6 +13,7 @@ import 'package:courseplease/widgets/reaction/comment_list_and_form.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:courseplease/widgets/teacher_and_reactions.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class ImageScreen extends StatefulWidget {
   final int imageId;
@@ -27,10 +29,13 @@ class ImageScreen extends StatefulWidget {
     required int imageId,
     required String imageHeroTag,
   }) async {
-    Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ImageScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('ImageScreen_$imageId'),
+        child: ImageScreen(
           imageId: imageId,
           imageHeroTag: imageHeroTag,
         ),

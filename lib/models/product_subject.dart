@@ -1,11 +1,14 @@
+import 'package:courseplease/models/interfaces/with_homogenous_parent_intname.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
 class ProductSubject implements
     WithIdTitle<int>,
-    WithIdTitleChildrenParent<int, ProductSubject, ProductSubject>
+    WithIdTitleChildrenParent<int, ProductSubject, ProductSubject>,
+    WithHomogenousParentIntName<ProductSubject>
 {
   final int id;
   final String title;
+  final String intName;
   final List<String> coverUrls;
   final bool allowsImagePortfolio;
   final List<ProductSubject> children;
@@ -14,6 +17,7 @@ class ProductSubject implements
   ProductSubject({
     required this.id,
     required this.title,
+    required this.intName,
     required this.coverUrls,
     required this.allowsImagePortfolio,
     required this.children,
@@ -29,6 +33,7 @@ class ProductSubject implements
     final result = ProductSubject(
       id:                   map['id'],
       title:                map['title'],
+      intName:              map['intName'],
       coverUrls:            map['coverUrls'].cast<String>(),
       allowsImagePortfolio: map['allowsImagePortfolio'],
       children:             children,

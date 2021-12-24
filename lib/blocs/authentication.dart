@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:courseplease/blocs/bloc.dart';
+import 'package:courseplease/router/secure_storage_keys_enum.dart';
 import 'package:courseplease/services/auth/auth_provider.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/services/net/api_client.dart';
@@ -13,10 +14,9 @@ import 'package:rxdart/rxdart.dart';
 
 class AuthenticationBloc extends Bloc{
   static const oauthTempKeyLength = 64;
-  static const _deviceKeyKey = 'deviceKey';
 
   final _apiClient = GetIt.instance.get<ApiClient>();
-  final _secureStorage = FlutterSecureStorage();
+  final _secureStorage = GetIt.instance.get<FlutterSecureStorage>();
 
   final initialState = AuthenticationState.notLoadedFromStorage();
 
@@ -77,7 +77,7 @@ class AuthenticationBloc extends Bloc{
   }
 
   Future<String?> _loadDeviceKey() async {
-    return _secureStorage.read(key: _deviceKeyKey);
+    return _secureStorage.read(key: SecureStorageKeysEnum.deviceKey);
   }
 
   Future<void> _setFreshState() async {
@@ -92,7 +92,7 @@ class AuthenticationBloc extends Bloc{
   }
 
   void _storeDeviceKey(String key) {
-    _secureStorage.write(key: _deviceKeyKey, value: key);
+    _secureStorage.write(key: SecureStorageKeysEnum.deviceKey, value: key);
   }
 
   void _setDeviceKeyFailedState() {

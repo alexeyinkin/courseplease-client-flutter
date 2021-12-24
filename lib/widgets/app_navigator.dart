@@ -1,6 +1,7 @@
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/models/filters/delivery.dart';
 import 'package:courseplease/models/shop/delivery.dart';
-import 'package:courseplease/screens/home/local_blocs/home.dart';
+import 'package:courseplease/router/home_state.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
@@ -13,8 +14,8 @@ class AppNavigator {
   );
 
   void toLastPurchasedLesson() {
-    final homeScreenCubit = GetIt.instance.get<HomeScreenCubit>();
-    homeScreenCubit.setCurrentTab(HomeScreenTab.learn);
+    final appState = GetIt.instance.get<AppState>();
+    appState.homeState.homeTab = HomeTab.learn;
 
     _closeAllRoutesExceptFirst();
 

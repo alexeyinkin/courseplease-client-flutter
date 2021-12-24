@@ -57,5 +57,23 @@
     	<string>en</string>
     	<string>ru</string>
     </array>
+
+    <!-- Deep Linking ->
+    <key>FlutterDeepLinkingEnabled</key>
+    <true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>courseplease.com</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>courseplease</string>
+            </array>
+        </dict>
+    </array>
+
 </dict>
 </plist>

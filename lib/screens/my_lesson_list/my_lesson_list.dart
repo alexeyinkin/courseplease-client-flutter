@@ -1,10 +1,10 @@
-import 'dart:async';
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/models/product_subject.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/create_lesson/create_lesson.dart';
 import 'package:courseplease/screens/my_lesson_list/local_widgets/title.dart';
 import 'package:courseplease/widgets/lesson/my_lesson_grid.dart';
@@ -26,15 +26,18 @@ class MyLessonListScreen extends StatefulWidget {
   @override
   State<MyLessonListScreen> createState() => _MyLessonListScreenState();
 
-  static Future<void> show({
+  static void show({
     required BuildContext context,
     required MyLessonFilter filter,
     Map<int, EditableContact>? contactsByIds,
   }) {
-    return Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyLessonListScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('MyLessonListScreen_$filter'),
+        child: MyLessonListScreen(
           filter: filter,
           contactsByIds: contactsByIds ?? Map<int, EditableContact>(),
         ),

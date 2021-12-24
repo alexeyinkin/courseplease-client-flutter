@@ -7,7 +7,6 @@ import 'package:courseplease/widgets/buttons.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class EditTeacherSubjectScreen extends StatefulWidget {
   final TeacherSubject teacherSubjectClone;
@@ -25,6 +24,7 @@ class EditTeacherSubjectScreen extends StatefulWidget {
     required BuildContext context,
     required TeacherSubject teacherSubjectClone,
   }) {
+    // TODO: Push to state instead. Cannot do it now because its pop is awaited.
     return Navigator.push<void>(
       context,
       MaterialPageRoute(

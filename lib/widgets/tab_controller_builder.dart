@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// Unused
+@Deprecated('')
 class TabControllerBuilder extends StatefulWidget {
   final IndexedWidgetBuilder builder;
   final TabController? controller;

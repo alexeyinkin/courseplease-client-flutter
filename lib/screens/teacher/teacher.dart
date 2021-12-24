@@ -1,6 +1,7 @@
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
 import 'package:courseplease/models/shop/line_item.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/order/order.dart';
 import 'package:courseplease/screens/teacher/local_blocs/teacher.dart';
 import 'package:courseplease/theme/theme.dart';
@@ -16,8 +17,8 @@ import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
 import 'package:courseplease/widgets/teacher_subject_product_variants.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:get_it/get_it.dart';
 import '../../widgets/lesson/gallery_lesson_grid.dart';
 import '../../models/filters/gallery_lesson.dart';
 import '../../models/filters/gallery_image.dart';
@@ -41,15 +42,18 @@ class TeacherScreen extends StatefulWidget {
     subjectId: initialSubjectId,
   );
 
-  static Future<void> show({
+  static void show({
     required BuildContext context,
     required int teacherId,
     int? initialSubjectId,
   }) {
-    return Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TeacherScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('TeacherScreen_$teacherId'),
+        child: TeacherScreen(
           teacherId: teacherId,
           initialSubjectId: initialSubjectId,
         ),

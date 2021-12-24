@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/shop/money_account.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/money_account_transactions/local_widgets/money_account_tab.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/auth/sign_in.dart';
@@ -20,9 +21,13 @@ class MoneyAccountTransactionsScreen extends StatefulWidget {
     required BuildContext context,
     required String cur,
   }) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => MoneyAccountTransactionsScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('MoneyAccountTransactionsScreen'),
+        child: MoneyAccountTransactionsScreen(
           initialCur: cur,
         ),
       ),

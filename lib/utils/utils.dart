@@ -68,9 +68,9 @@ T enumValueByString<T>(List<T> values, String str, T defaultValue) {
   return defaultValue;
 }
 
-String generatePassword(int length) {
+String generatePassword(int length, {required bool symbols}) {
   final generator = Random.secure();
-  final chars = '23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ~!@#\$%^&*()-_=+';
+  final chars = '23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ' + (symbols ? r'~!@#$%^&*()-_=+' : '');
   final charCount = chars.length;
   String result = '';
 

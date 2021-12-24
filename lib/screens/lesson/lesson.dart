@@ -4,6 +4,7 @@ import 'package:courseplease/models/filters/comment.dart';
 import 'package:courseplease/models/reaction/enum/comment_catalog_intname.dart';
 import 'package:courseplease/models/reaction/enum/like_catalog_intname.dart';
 import 'package:courseplease/repositories/gallery_lesson.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/services/reload/lesson.dart';
 import 'package:courseplease/theme/theme.dart';
@@ -31,15 +32,18 @@ class LessonScreen extends StatefulWidget {
   @override
   _LessonScreenState createState() => _LessonScreenState();
 
-  static Future<void> show({
+  static void show({
     required BuildContext context,
     required int lessonId,
     required bool autoplay,
   }) {
-    return Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LessonScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('LessonScreen_$lessonId'),
+        child: LessonScreen(
           lessonId: lessonId,
           autoplay: autoplay,
         ),

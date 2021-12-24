@@ -21,6 +21,7 @@ class TreePositionBloc<
   Stream<TreePositionState<I, O>> get states => _statesController.stream;
 
   late final TreePositionState<I, O> initialState;
+  TreePositionState<I, O> get state => _createState();
 
   TreePositionBloc({
     required ModelWithChildrenCacheBloc<I, O> modelCacheBloc,
@@ -45,6 +46,12 @@ class TreePositionBloc<
     _pushOutput();
   }
 
+  /// Walks one step up if possible. Has no effect if the current item is null.
+  void up() {
+    final parent = _getCurrentItem()?.parent;
+    setCurrentId(parent?.id);
+  }
+
   void setCurrentId(I? id) {
     if (_currentId == id) return;
     _currentId = id;
@@ -64,7 +71,7 @@ class TreePositionBloc<
     return TreePositionState<I, O>(
       currentId:              _currentId,
       ancestorBreadcrumbs:    _getAncestorBreadcrumbs(),
-      currentObject:          _modelsByIds[_currentId],
+      currentObject:          _getCurrentItem(),
       descendantBreadcrumbs:  _getDescendantBreadcrumbs(),
       currentChildren:        _getCurrentChildren(),
     );
@@ -72,7 +79,7 @@ class TreePositionBloc<
 
   List<O> _getAncestorBreadcrumbs() {
     final result = <O>[];
-    var item = _modelsByIds[_currentId]?.parent;
+    var item = _getCurrentItem()?.parent;
 
     while (item != null) {
       result.insert(0, item);
@@ -84,7 +91,7 @@ class TreePositionBloc<
 
   List<O> _getDescendantBreadcrumbs() {
     final result = <O>[];
-    var item = _modelsByIds[_lastId];
+    var item = _getCurrentItem();
 
     while (item != null && item.id != _currentId) {
       result.insert(0, item);
@@ -95,7 +102,7 @@ class TreePositionBloc<
   }
 
   List<O> _getCurrentChildren() {
-    final item = _modelsByIds[_currentId];
+    final item = _getCurrentItem();
     return item == null ? _topLevelModels : item.children;
   }
 
@@ -112,6 +119,8 @@ class TreePositionBloc<
 
     return false;
   }
+
+  O? _getCurrentItem() => _modelsByIds[_currentId];
 
   @override
   void dispose() {

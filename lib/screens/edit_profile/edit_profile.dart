@@ -1,4 +1,5 @@
 import 'package:courseplease/models/user.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/edit_profile/local_blocs/edit_profile.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/app_text_field.dart';
@@ -11,7 +12,7 @@ import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/sex_input.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 
 class EditProfileScreen extends StatefulWidget {
   static const routeName = '/editProfile';
@@ -27,14 +28,17 @@ class EditProfileScreen extends StatefulWidget {
     user: user,
   );
 
-  static Future<void> show({
+  static void show({
     required BuildContext context,
     required User user,
   }) {
-    return Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditProfileScreen(
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('EditProfileScreen'),
+        child: EditProfileScreen(
           user: user,
         ),
       ),

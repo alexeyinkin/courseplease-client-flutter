@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/teacher_subject.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/edit_teacher_subject/edit_teacher_subject.dart';
 import 'package:courseplease/screens/edit_teaching/local_widgets/view_teacher_subject.dart';
 import 'package:courseplease/screens/select_product_subject/select_product_subject.dart';
@@ -11,6 +12,20 @@ import 'package:get_it/get_it.dart';
 
 class EditTeachingScreen extends StatefulWidget {
   static const routeName = '/editTeaching';
+
+  static void show({
+    required BuildContext context,
+  }) {
+    final appState = GetIt.instance.get<AppState>();
+    final tabState = appState.getCurrentTabState();
+
+    tabState.pushPage(
+      MaterialPage(
+        key: ValueKey('EditTeachingScreen'),
+        child: EditTeachingScreen(),
+      ),
+    );
+  }
 
   @override
   State<EditTeachingScreen> createState() => _EditTeachingScreenState();

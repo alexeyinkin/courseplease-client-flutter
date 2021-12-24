@@ -9,7 +9,8 @@ import 'package:courseplease/models/messaging/enum/chat_message_type.dart';
 import 'package:courseplease/models/messaging/sending_chat_message.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/chat.dart';
-import 'package:courseplease/screens/home/local_blocs/home.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/router/home_state.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
@@ -267,8 +268,8 @@ class ChatsCubit extends Bloc {
       return; // Cannot chat with oneself.
     }
 
-    final homeScreenCubit = GetIt.instance.get<HomeScreenCubit>();
-    homeScreenCubit.setCurrentTab(HomeScreenTab.messages);
+    final appState = GetIt.instance.get<AppState>();
+    appState.homeState.homeTab = HomeTab.messages;
 
     final chat = await _getChatByUser(user);
     chatListCubit.setCurrentChat(chat);
