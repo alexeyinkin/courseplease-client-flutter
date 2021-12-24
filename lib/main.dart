@@ -8,10 +8,12 @@ import 'package:easy_localization_loader/easy_localization_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
+  setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await Hive.initFlutter();

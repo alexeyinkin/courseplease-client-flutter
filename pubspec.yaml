@@ -76,6 +76,7 @@ dependencies:
       url: https://github.com/alexeyinkin/sse_client.git
       ref: issue8_connection-management
 
+  url_strategy: ^0.2.0
   uuid: ^3.0.4
   visibility_detector: ^0.2.0
   xml: ^5.3.0
