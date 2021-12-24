@@ -45,6 +45,7 @@ dependencies:
   collection: ^1.15.0
   device_info: ^2.0.2                           # No web, MIGRATE TO device_info_plus
   easy_localization: ^3.0.0
+  easy_localization_loader: ^1.0.0
   flag: ^5.0.1                                  # Indicates no web but works
   flutter_facebook_auth: ^3.5.0+1
   flutter_markdown: ^0.6.6

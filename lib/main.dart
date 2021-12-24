@@ -3,8 +3,8 @@
 import 'package:courseplease/screens/home/home.dart';
 import 'package:courseplease/screens/routes.dart';
 import 'package:courseplease/services/locator.dart';
-import 'package:courseplease/utils/yaml_asset_loader.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization_loader/easy_localization_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
