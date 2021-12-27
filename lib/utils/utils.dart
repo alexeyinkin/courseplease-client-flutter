@@ -57,17 +57,6 @@ List<T> fromMaps<T>(List list, T Function(Map<String, dynamic>) factory) {
   return result;
 }
 
-String enumValueAfterDot(value) {
-  return value.toString().split('.').last;
-}
-
-T enumValueByString<T>(List<T> values, String str, T defaultValue) {
-  for (final value in values) {
-    if (enumValueAfterDot(value) == str) return value;
-  }
-  return defaultValue;
-}
-
 String generatePassword(int length, {required bool symbols}) {
   final generator = Random.secure();
   final chars = '23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ' + (symbols ? r'~!@#$%^&*()-_=+' : '');

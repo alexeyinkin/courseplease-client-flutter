@@ -40,7 +40,7 @@ mixin MoveListActionMixin<I, F extends AbstractFilter> on MediaSortListActionCub
     return MediaSortCommand(
       type: getMediaType(),
       id: id,
-      action: enumValueAfterDot(MediaSortActionEnum.move),
+      action: MediaSortActionEnum.move.name,
       fetchFilter: fetchFilter,
       setFilter: setFilter,
     );

@@ -48,7 +48,7 @@ class ReviewDeliveryAsCustomerScreenCubit extends AbstractReviewDeliveryScreenCu
   Future<void> submitRequest(ReviewDeliveryAsCustomerScreenCubitState state) async {
     final request = ReviewDeliveryRequest(
       deliveryId: delivery.id,
-      action: enumValueAfterDot(_getAction(state)),
+      action: _getAction(state).name,
       reviewBody: getReviewBody(),
       complaintBody: getComplaintBody(),
     );

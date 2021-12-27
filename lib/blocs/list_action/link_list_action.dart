@@ -31,7 +31,7 @@ mixin LinkListActionMixin<I, F extends AbstractFilter> on MediaSortListActionCub
     return MediaSortCommand(
       type: getMediaType(),
       id: id,
-      action: enumValueAfterDot(MediaSortActionEnum.link),
+      action: MediaSortActionEnum.link.name,
       setFilter: setFilter,
     );
   }

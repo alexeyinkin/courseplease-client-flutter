@@ -114,9 +114,8 @@ class MediaDestinationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final actionString = _getActionString();
     final nOfTr = plural('MediaDestinationDialog.nOf.image', selectableListState.selectedIds.length);
-    final doWithTr = tr('MediaDestinationDialog.doWith.' + actionString, namedArgs:{'what': nOfTr});
+    final doWithTr = tr('MediaDestinationDialog.doWith.' + action.name, namedArgs:{'what': nOfTr});
 
     return AlertDialog(
       title: Text(doWithTr),
@@ -141,10 +140,6 @@ class MediaDestinationDialog extends StatelessWidget {
     );
   }
 
-  String _getActionString() {
-    return enumValueAfterDot(action);
-  }
-
   Widget _getActionButton() {
     return StreamBuilder<ListActionCubitState>(
       stream: listActionCubit.outState,
@@ -166,8 +161,7 @@ class MediaDestinationDialog extends StatelessWidget {
     ListActionCubitState listActionCubitState,
     MediaDestinationState mediaDestinationState,
   ) {
-    final actionString = _getActionString();
-    final doTr = tr('MediaDestinationDialog.do.' + actionString);
+    final doTr = tr('MediaDestinationDialog.do.' + action.name);
 
     return ElevatedButtonWithProgress(
       child: Text(doTr),

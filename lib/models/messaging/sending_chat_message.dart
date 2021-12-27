@@ -20,24 +20,20 @@ class SendingChatMessage implements ChatMessageInterface {
   });
 
   factory SendingChatMessage.fromMap(Map<String, dynamic> map) {
-    final status = enumValueByString(
-      SendingChatMessageStatus.values,
-      map['status'],
-      null,
-    );
+    try {
+      final status = SendingChatMessageStatus.values.byName(map['status']);
 
-    if (status == null) {
+      return SendingChatMessage(
+        chatId:           map['chatId'],
+        senderUserId:     map['senderUserId'],
+        type:             map['type'] ?? 1,
+        body:             ContentMessageBody.fromMap(map['body']),
+        uuid:             map['uuid'],
+        status:           status,
+      );
+    } catch (ex) {
       throw Exception('Message persisted in an older version of the app.');
     }
-
-    return SendingChatMessage(
-      chatId:           map['chatId'],
-      senderUserId:     map['senderUserId'],
-      type:             map['type'] ?? 1,
-      body:             ContentMessageBody.fromMap(map['body']),
-      uuid:             map['uuid'],
-      status:           status,
-    );
   }
 
   Map<String, dynamic> toJson() {
@@ -46,7 +42,7 @@ class SendingChatMessage implements ChatMessageInterface {
       'senderUserId': senderUserId,
       'body':         body,
       'uuid':         uuid,
-      'status':       enumValueAfterDot(status),
+      'status':       status.name,
     };
   }
 }

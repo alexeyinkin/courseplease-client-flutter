@@ -15,8 +15,8 @@ class DeliveryFilter extends AbstractFilter {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'viewAs': enumValueAfterDot(viewAs),
-      'statusAlias': enumValueAfterDot(statusAlias),
+      'viewAs': viewAs.name,
+      'statusAlias': statusAlias.name,
       'productVariantFormatIntName': productVariantFormatIntName,
     };
   }

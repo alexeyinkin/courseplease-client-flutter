@@ -45,7 +45,7 @@ class InstagramContactParams extends ContactParams {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'newImageAction':     enumValueAfterDot(newImageAction),
+      'newImageAction':     newImageAction.name,
       'newImageSubjectId':  newImageSubjectId,
     };
   }
