@@ -470,7 +470,7 @@ TeachingLessonsTabWidget:
     resolved:           'Прошедшие и отменённые'
 
 TeachingTabWidget:
-    iconTitle:              'Teach'
+    iconTitle:              'Преподавание'
     unauthenticatedTitle:   'Здесь ваши ученики и отчёты.'
 
 TimeApproveMessageBodyPreviewWidget:
