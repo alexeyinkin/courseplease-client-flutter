@@ -479,10 +479,10 @@ packages:
   keyed_collection_widgets:
     dependency: "direct main"
     description:
-      path: "../../../dart/keyed_collection_widgets"
-      relative: true
-    source: path
-    version: "0.1.0"
+      name: keyed_collection_widgets
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   markdown:
     dependency: transitive
     description:

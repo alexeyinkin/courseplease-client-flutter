@@ -30,8 +30,9 @@ dependencies:
 #    path: '../../../dart/model_editors'
   model_editors: ^0.1.6
 
-  keyed_collection_widgets:
-    path: '../../../dart/keyed_collection_widgets'
+#  keyed_collection_widgets:
+#    path: '../../../dart/keyed_collection_widgets'
+  keyed_collection_widgets: ^0.1.1
 
   # SDK packages:
   flutter:

@@ -115,12 +115,12 @@ class _ExploreTabState extends State<ExploreTabWidget> with TickerProviderStateM
           onChanged: widget.state.currentTreePositionBloc.setCurrentId,
         ),
         _buildChildrenSubjectsLine(state),
-        TabBar(
-          tabs: _getTabTitles(state),
+        KeyedTabBar(
+          tabs: _getTabTitles(),
           controller: _tabController,
         ),
         Expanded(
-          child: TabBarView(
+          child: KeyedTabBarView(
             children: _getTabContents(state),
             controller: _tabController,
           ),
@@ -129,30 +129,20 @@ class _ExploreTabState extends State<ExploreTabWidget> with TickerProviderStateM
     );
   }
 
-  List<Widget> _getTabTitles(TreePositionState<int, ProductSubject> state) {
-    final result = <Widget>[];
-
-    if (state.currentObject?.allowsImagePortfolio ?? false) {
-      result.add(Tab(text: tr('ImagesTabWidget.title')));
-    }
-
-    result.add(Tab(text: tr('LessonsTabWidget.title')));
-    result.add(Tab(text: tr('TeachersTabWidget.title')));
-
-    return result;
+  Map<ExploreTab, Widget> _getTabTitles() {
+    return {
+      ExploreTab.images: Tab(text: tr('ImagesTabWidget.title')),
+      ExploreTab.lessons: Tab(text: tr('LessonsTabWidget.title')),
+      ExploreTab.teachers: Tab(text: tr('TeachersTabWidget.title')),
+    };
   }
 
-  List<Widget> _getTabContents(TreePositionState<int, ProductSubject> state) {
-    final result = <Widget>[];
-
-    if (state.currentObject?.allowsImagePortfolio ?? false) {
-      result.add(ImagesTab(treePositionState: state, cubit: _imagesTabCubit));
-    }
-
-    result.add(LessonsTab(treePositionState: state, cubit: _lessonsTabCubit));
-    result.add(TeachersTab(treePositionState: state, cubit: _teachersTabCubit));
-
-    return result;
+  Map<ExploreTab, Widget> _getTabContents(TreePositionState<int, ProductSubject> state) {
+    return {
+      ExploreTab.images: ImagesTab(treePositionState: state, cubit: _imagesTabCubit),
+      ExploreTab.lessons: LessonsTab(treePositionState: state, cubit: _lessonsTabCubit),
+      ExploreTab.teachers: TeachersTab(treePositionState: state, cubit: _teachersTabCubit),
+    };
   }
 
   Widget _buildChildrenSubjectsLine(TreePositionState<int, ProductSubject> state) {
