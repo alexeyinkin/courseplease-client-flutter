@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/theme/theme.dart';
+import 'package:courseplease/widgets/clickable.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,7 @@ class ProductSubjectWithImageAndChildren extends StatelessWidget {
   }
 
   Widget _getTitle() {
-    return GestureDetector(
+    return ClickableWidget(
       onTap: () => _onTap(subject.id),
       child: Text(
         subject.title,
