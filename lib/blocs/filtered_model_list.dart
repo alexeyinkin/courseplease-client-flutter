@@ -30,6 +30,8 @@ abstract class AbstractFilteredModelListBloc<
     hasMore:      true,
   );
 
+  ModelListByIdsState<I, O> get lastListState => throw UnimplementedError();
+
   void loadInitialIfNot();
   void loadMoreIfCan();
   void loadAll();
@@ -52,6 +54,9 @@ class NetworkFilteredModelListBloc<
 
   final _ids = <I>[];
   late ModelListByIdsState<I, O> _lastListState;
+
+  @override
+  ModelListByIdsState<I, O> get lastListState => _lastListState;
 
   RequestStatus _status = RequestStatus.notTried;
   bool _hasMore = true;

@@ -1,6 +1,7 @@
 import 'package:courseplease/screens/error_popup/error_popup.dart';
 import 'package:flutter/widgets.dart';
 
+@Deprecated('Use app_state package events for screen management and pop-ups')
 class DialogResult {
   final DialogResultCode code;
 
@@ -9,22 +10,13 @@ class DialogResult {
   });
 }
 
+@Deprecated('Use app_state package events for screen management and pop-ups')
 enum DialogResultCode {
   ok,
   error,
 }
 
-void popOrShowError(BuildContext context, DialogResult result) {
-  switch (result.code) {
-    case DialogResultCode.ok:
-      Navigator.of(context).pop(result);
-      break;
-    case DialogResultCode.error:
-      ErrorPopupScreen.show(context: context);
-      break;
-  }
-}
-
+@Deprecated('Use app_state package events for screen management and pop-ups')
 void showErrorIfShould(BuildContext context, DialogResult result) {
   switch (result.code) {
     case DialogResultCode.error:

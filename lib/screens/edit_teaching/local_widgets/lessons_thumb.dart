@@ -4,7 +4,8 @@ import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/models/lesson.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/repositories/my_lesson.dart';
-import 'package:courseplease/screens/my_lesson_list/my_lesson_list.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/my_lesson_list/page.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -32,16 +33,16 @@ class LessonsThumbWidget extends StatelessWidget {
 
     return StreamBuilder<ModelListState<int, Lesson>>(
       stream: list.outState,
-      builder: (context, snapshot) => _buildWithState(context, snapshot.data ?? list.initialState),
+      builder: (context, snapshot) => _buildWithState(snapshot.data ?? list.initialState),
     );
   }
 
-  Widget _buildWithState(BuildContext context, ModelListState<int, Lesson> state) {
+  Widget _buildWithState(ModelListState<int, Lesson> state) {
     return AlbumThumbWidget(
       titleText: tr('LessonsThumbWidget.title'),
       thumb: _getAlbumThumb(state),
       productSubject: productSubject,
-      onTap: () => _onTap(context),
+      onTap: _onTap,
       emptyIconData: Icons.ondemand_video_outlined,
     );
   }
@@ -58,11 +59,12 @@ class LessonsThumbWidget extends StatelessWidget {
     );
   }
 
-  void _onTap(BuildContext context) {
-    MyLessonListScreen.show(
-      context: context,
-      filter: MyLessonFilter(
-        subjectIds: [productSubject.id],
+  void _onTap() {
+    GetIt.instance.get<AppState>().pushPage(
+      MyLessonListPage(
+        filter: MyLessonFilter(
+          subjectIds: [productSubject.id],
+        ),
       ),
     );
   }

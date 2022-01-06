@@ -24,14 +24,25 @@ class GalleryImageFilter extends AbstractFilter {
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      'subjectId':  subjectId,
-      'teacherId':  teacherId,
-      'purposeId':  purposeId,
-      'formats':    formats,
-      'location':   LocationFilter.fromLocation(location)?.toJson(),
-      'price':      price?.toJson(),
-      'langs':      langs,
-    };
+    final result = <String, dynamic>{};
+
+    if (subjectId != null)  result['subjectId'] = subjectId;
+    if (teacherId != null)  result['teacherId'] = teacherId;
+    result['purposeId'] = purposeId;
+    if (formats.isNotEmpty) result['formats'] = formats;
+    if (location != null)   result['location'] = LocationFilter.fromLocation(location)?.toJson();
+    if (price != null)      result['price'] = price?.toJson();
+    if (langs.isNotEmpty)   result['langs'] = langs;
+
+    return result;
+  }
+
+  Map<String, dynamic> toJsonWithoutSubjectAndPurpose() {
+    final result = toJson();
+
+    result.remove('subjectId');
+    result.remove('purposeId');
+
+    return result;
   }
 }

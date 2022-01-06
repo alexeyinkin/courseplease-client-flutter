@@ -9,7 +9,8 @@ import 'package:courseplease/models/messaging/chat.dart';
 import 'package:courseplease/models/messaging/chat_message.dart';
 import 'package:courseplease/models/user.dart';
 import 'package:courseplease/repositories/chat_message.dart';
-import 'package:courseplease/screens/teacher/teacher.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/teacher/page.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/circle_or_capsule.dart';
@@ -117,9 +118,10 @@ class _ChatMessageListState extends State<ChatMessageListWidget> {
       throw Exception();
     }
 
-    TeacherScreen.show(
-      context: context,
-      teacherId: widget.chat.otherUsers[0].id,
+    GetIt.instance.get<AppState>().pushPage(
+      TeacherPage(
+        teacherId: widget.chat.otherUsers[0].id,
+      ),
     );
   }
 

@@ -1,9 +1,11 @@
-import 'package:courseplease/models/product_subject.dart';
+import 'package:app_state/app_state.dart';
+import 'package:courseplease/screens/explore/page.dart';
+import 'package:courseplease/screens/my_profile/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rxdart/rxdart.dart';
 
-import 'abstract_tab_state.dart';
-import 'explore_tab_state.dart';
+import 'app_configuration.dart';
 import 'home_state.dart';
 import 'lang_state.dart';
 
@@ -11,11 +13,14 @@ class AppState extends ChangeNotifier {
   final langState = LangState();
   final homeState = HomeState();
 
-  final exploreTabState = ExploreTabState();
-  final learnTabState = AbstractTabState();
-  final teachTabState = AbstractTabState();
-  final messagesTabState = AbstractTabState();
-  final profileTabState = AbstractTabState();
+  final exploreTabBloc = PageStackBloc(bottomPage: ExplorePage());
+  final learnTabBloc = PageStackBloc(bottomPage: ExplorePage());
+  final teachTabBloc = PageStackBloc(bottomPage: ExplorePage());
+  final messagesTabBloc = PageStackBloc(bottomPage: ExplorePage());
+  final profileTabBloc = PageStackBloc(bottomPage: MyProfilePage());
+
+  final _eventsController = BehaviorSubject<PageStackBlocEvent>();
+  Stream<PageStackBlocEvent> get events => _eventsController.stream;
 
   static Future<AppState> create() async {
     final appState = AppState();
@@ -31,93 +36,51 @@ class AppState extends ChangeNotifier {
     langState.addListener(notifyListeners);
     homeState.addListener(notifyListeners);
 
-    exploreTabState.addListener(notifyListeners);
-    learnTabState.addListener(notifyListeners);
-    teachTabState.addListener(notifyListeners);
-    messagesTabState.addListener(notifyListeners);
-    profileTabState.addListener(notifyListeners);
+    exploreTabBloc.events.listen(_onPageStackEvent);
+    learnTabBloc.events.listen(_onPageStackEvent);
+    teachTabBloc.events.listen(_onPageStackEvent);
+    messagesTabBloc.events.listen(_onPageStackEvent);
+    profileTabBloc.events.listen(_onPageStackEvent);
   }
 
-  AbstractTabState getCurrentTabState() {
+  void _onPageStackEvent(PageStackBlocEvent event) {
+    _eventsController.sink.add(event);
+
+    if (event is PageStackScreenBlocEvent) {
+      if (event.screenBlocEvent is ScreenBlocConfigurationChangedEvent) {
+        notifyListeners();
+      }
+    }
+  }
+
+  PageStackBloc getCurrentTabStackBloc() {
     switch (homeState.homeTab) {
-      case HomeTab.explore:   return exploreTabState;
-      case HomeTab.learn:     return learnTabState;
-      case HomeTab.teach:     return teachTabState;
-      case HomeTab.messages:  return messagesTabState;
-      case HomeTab.profile:   return profileTabState;
+      case HomeTab.explore:   return exploreTabBloc;
+      case HomeTab.learn:     return learnTabBloc;
+      case HomeTab.teach:     return teachTabBloc;
+      case HomeTab.messages:  return messagesTabBloc;
+      case HomeTab.profile:   return profileTabBloc;
     }
     throw UnimplementedError();
+  }
+
+  void pushPage(AbstractPage<AppConfiguration> page) {
+    getCurrentTabStackBloc().pushPage(page);
   }
 
   @override
   void dispose() {
     langState.dispose();
     homeState.dispose();
-    exploreTabState.dispose();
+
+    exploreTabBloc.dispose();
+    learnTabBloc.dispose();
+    teachTabBloc.dispose();
+    messagesTabBloc.dispose();
+    profileTabBloc.dispose();
+
+    _eventsController.close();
+
     super.dispose();
   }
-}
-
-
-// TODO: Extract somewhere.
-
-class AppRoutePath {
-  final String lang;
-
-  AppRoutePath({
-    required this.lang,
-  });
-}
-
-class ExploreRoutePath extends AppRoutePath {
-  ExploreRoutePath({
-    required String lang,
-  }) : super(
-    lang: lang,
-  );
-}
-
-class ExploreSubjectRoutePath extends AppRoutePath {
-  final ProductSubject productSubject;
-  final ExploreTab tab;
-
-  ExploreSubjectRoutePath({
-    required String lang,
-    required this.productSubject,
-    required this.tab,
-  }) : super(
-    lang: lang,
-  );
-}
-
-class LearnRoutePath extends AppRoutePath {
-  LearnRoutePath({
-    required String lang,
-  }) : super(
-    lang: lang,
-  );
-}
-
-class TeachRoutePath extends AppRoutePath {
-  TeachRoutePath({
-    required String lang,
-  }) : super(
-    lang: lang,
-  );
-}
-
-class MessagesRoutePath extends AppRoutePath {
-  MessagesRoutePath({
-    required String lang,
-  }) : super(
-    lang: lang,
-  );
-}
-
-class MeRoutePath extends AppRoutePath {
-  MeRoutePath({
-    required String lang,
-  }) : super(
-    lang: lang,
-  );
 }

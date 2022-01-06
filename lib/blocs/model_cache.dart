@@ -126,7 +126,7 @@ class ModelCacheBloc<I, O extends WithId<I>> extends Bloc {
     return result;
   }
 
-  O? getObjectById(I id) {
+  O? getObjectById(I? id) {
     return _objectsByIds[id];
   }
 

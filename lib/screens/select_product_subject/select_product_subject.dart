@@ -1,6 +1,5 @@
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
-import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +20,11 @@ class SelectProductSubjectScreen extends StatefulWidget {
     required BuildContext context,
     bool allowingImagePortfolio = false,
   }) async {
-    final appState = GetIt.instance.get<AppState>();
-    final tabState = appState.getCurrentTabState();
-
-    tabState.pushPage(
-      MaterialPage(
-        key: ValueKey('SelectProductSubjectScreen_$allowingImagePortfolio'),
-        child: SelectProductSubjectScreen(
+    // TODO: Migrate to Router API.
+    return Navigator.push<int?>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SelectProductSubjectScreen(
           allowingImagePortfolio: allowingImagePortfolio,
         ),
       ),

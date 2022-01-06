@@ -3,16 +3,16 @@ import 'package:courseplease/models/money.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/teacher/page.dart';
 import 'package:courseplease/widgets/object_grid.dart';
-import 'package:courseplease/screens/teacher/teacher.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/price_button.dart';
 import 'package:courseplease/widgets/product_variants_line.dart';
 import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 import '../models/filters/gallery_image.dart';
 import '../models/filters/teacher.dart';
 import '../models/teacher.dart';
@@ -79,10 +79,11 @@ class TeacherGridState extends State<TeacherGrid> {
   }
 
   void _handleTap(Teacher teacher, int index) {
-    TeacherScreen.show(
-      context: context,
-      teacherId: teacher.id,
-      initialSubjectId: widget.filter.subjectId,
+    GetIt.instance.get<AppState>().pushPage(
+      TeacherPage(
+        teacherId: teacher.id,
+        initialSubjectId: widget.filter.subjectId,
+      ),
     );
   }
 }
@@ -180,7 +181,7 @@ class TeacherTileState extends AbstractObjectTileState<int, Teacher, TeacherFilt
       padding: EdgeInsets.only(bottom: 10),
       child: PriceButton(
         money: maxPrice,
-        per: tr('util.units.h'),
+        per: 'h',
         onPressed: widget.onTap,
       ),
     );

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../abstract.dart';
 
+// Unused.
 class LessonBuilderWidget extends StatelessWidget {
   final int id;
   final ValueFinalWidgetBuilder<Lesson> builder;

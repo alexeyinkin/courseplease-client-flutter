@@ -1,8 +1,10 @@
 import 'package:courseplease/models/filters/gallery_image.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/repositories/image.dart';
-import 'package:courseplease/screens/image_pages/image_pages.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/image_pages/page.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 
 import 'image_grid.dart';
 
@@ -33,10 +35,12 @@ class GalleryImageGrid extends AbstractImageGrid<GalleryImageFilter, GalleryImag
 class GalleryImageGridState extends AbstractImageGridState<GalleryImageFilter, GalleryImageRepository> {
   @override
   void handleTap(ImageEntity image, int index) {
-    ViewImagePagesScreenLauncher.show(
-      context: context,
-      filter: widget.filter,
-      initialIndex: index,
+    GetIt.instance.get<AppState>().pushPage(
+      ImagePagesGalleryPage(
+        filter: widget.filter,
+        initialIndex: index,
+        initialId: image.id,
+      ),
     );
   }
 }

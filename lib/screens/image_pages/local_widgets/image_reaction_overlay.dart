@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class ImageReactionOverlay extends StatelessWidget {
   final ImageEntity image;
   final bool visible;
-  final VoidCallback onCommentPressed;
+  final VoidCallback? onCommentPressed;
 
   ImageReactionOverlay({
     required this.image,

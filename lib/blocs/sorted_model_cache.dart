@@ -49,7 +49,7 @@ class SortedModelCacheBloc<I, O extends WithIdTitle<I>> implements ModelCacheBlo
   void addSuccessfulObject(O object) => modelCacheBloc.addSuccessfulObject(object);
 
   @override
-  O? getObjectById(I id) => modelCacheBloc.getObjectById(id);
+  O? getObjectById(I? id) => modelCacheBloc.getObjectById(id);
 
   @override
   void loadAll() => modelCacheBloc.loadAll();

@@ -27,6 +27,7 @@ import 'package:courseplease/repositories/withdraw_account.dart';
 import 'package:courseplease/repositories/withdraw_order.dart';
 import 'package:courseplease/repositories/withdraw_service.dart';
 import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/home/local_widgets/snacks.dart';
 import 'package:courseplease/widgets/builders/factories/contact_params_widget_factory.dart';
 import 'package:courseplease/services/messaging/chat_message_denormalizer.dart';
 import 'package:courseplease/services/messaging/message_body_denormalizer_locator.dart';
@@ -209,5 +210,6 @@ void _initializeWidgetFactories() {
 Future<void> _initializeAppState() async {
   GetIt.instance
       ..registerSingleton<AppState>(await AppState.create())
+      ..registerSingleton<SnacksBloc>(SnacksBloc())
   ;
 }

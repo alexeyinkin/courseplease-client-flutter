@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 class CloseImageOverlay extends StatelessWidget {
   final bool visible;
+  final VoidCallback onPressed;
 
   CloseImageOverlay({
     required this.visible,
+    required this.onPressed,
   });
 
   @override
@@ -17,7 +19,7 @@ class CloseImageOverlay extends StatelessWidget {
         visible: visible,
         child: IconButton(
           icon: Icon(Icons.close),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: onPressed,
         ),
       ),
     );

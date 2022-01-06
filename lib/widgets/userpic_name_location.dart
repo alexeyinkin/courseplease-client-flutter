@@ -1,10 +1,12 @@
 import 'package:courseplease/models/teacher.dart';
-import 'package:courseplease/screens/teacher/teacher.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/teacher/page.dart';
 import 'package:courseplease/widgets/location_line.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/teacher_rating_and_customer_count.dart';
 import 'package:courseplease/widgets/user.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class UserpicNameLocationWidget extends StatelessWidget {
   final Teacher teacher;
@@ -15,7 +17,7 @@ class UserpicNameLocationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _onTap(context),
+      onTap: _onTap,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,10 +50,11 @@ class UserpicNameLocationWidget extends StatelessWidget {
     );
   }
 
-  void _onTap(BuildContext context) {
-    TeacherScreen.show(
-      context: context,
-      teacherId: teacher.id,
+  void _onTap() {
+    GetIt.instance.get<AppState>().pushPage(
+      TeacherPage(
+        teacherId: teacher.id,
+      ),
     );
   }
 }

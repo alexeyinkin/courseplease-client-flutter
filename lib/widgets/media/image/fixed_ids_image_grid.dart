@@ -1,8 +1,10 @@
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/repositories/image.dart';
-import 'package:courseplease/screens/image_pages/image_pages.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/image_pages/page.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 
 import 'image_grid.dart';
 
@@ -34,10 +36,12 @@ class _FixedIdsImageGridState extends AbstractImageGridState<
 > {
   @override
   void handleTap(ImageEntity image, int index) {
-    ImagePagesScreenLauncher.showWithTitles<IdsSubsetFilter<int, ImageEntity>, AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>>(
-      context: context,
-      filter: widget.filter,
-      initialIndex: index,
+    GetIt.instance.get<AppState>().pushPage(
+      ImagePagesTitlesPage<IdsSubsetFilter<int, ImageEntity>, AbstractImageRepository<IdsSubsetFilter<int, ImageEntity>>>(
+        filter: widget.filter,
+        initialIndex: index,
+        initialId: image.id,
+      ),
     );
   }
 }

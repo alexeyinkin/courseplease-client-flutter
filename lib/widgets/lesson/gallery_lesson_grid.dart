@@ -1,11 +1,11 @@
 import 'package:courseplease/repositories/gallery_lesson.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/lesson/page.dart';
 import 'package:courseplease/widgets/abstract_object_tile.dart';
-import 'package:flutter/rendering.dart';
-import '../../screens/lesson/lesson.dart';
+import 'package:get_it/get_it.dart';
 import '../../models/filters/gallery_lesson.dart';
 import '../../models/lesson.dart';
 import '../object_grid.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'gallery_lesson_tile.dart';
@@ -68,10 +68,11 @@ class _GalleryLessonGridState extends State<GalleryLessonGrid> {
   }
 
   void _handleTap(Lesson lesson, int index) {
-    LessonScreen.show(
-      context: context,
-      lessonId: lesson.id,
-      autoplay: true, // TODO: No autoplay if tapped the title and not the cover.
+    GetIt.instance.get<AppState>().pushPage(
+      LessonPage(
+        id: lesson.id,
+        autoplay: true, // TODO: No autoplay if tapped the title and not the cover.
+      ),
     );
   }
 }

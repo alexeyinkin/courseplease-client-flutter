@@ -2,7 +2,8 @@ import 'package:courseplease/blocs/contact_status.dart';
 import 'package:courseplease/models/common.dart';
 import 'package:courseplease/models/contact/contact_class_enum.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
-import 'package:courseplease/screens/edit_integration/edit_integration.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/edit_integration/page.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/auth/auth_provider_icon.dart';
 import 'package:courseplease/widgets/icon_text_status.dart';
@@ -103,9 +104,10 @@ class _LinkedProfileWidgetState extends State<LinkedProfileWidget> {
   void _handleTap() {
     if (!_canEdit()) return;
 
-    EditIntegrationScreen.show(
-      context: context,
-      contactClone: EditableContact.from(widget.contact),
+    GetIt.instance.get<AppState>().pushPage(
+      EditIntegrationPage(
+        contactClone: EditableContact.from(widget.contact),
+      ),
     );
   }
 

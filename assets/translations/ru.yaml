@@ -3,6 +3,7 @@ common:
         cancel:         'Отмена'
         edit:           'Редактировать'
         save:           'Сохранить'
+    done:               'Готово'
     sex:
         male:           'Мужчина'
         female:         'Женщина'
@@ -14,6 +15,7 @@ common:
     yesterday:          'Вчера'
     typeHere:           'Введите сообщение...'
     dateTime:           '{date} в {time}'
+    saved:              'Сохранено'
     select:             '(Выберите)'
 
 ChatMessageBodyWidget:
@@ -139,6 +141,7 @@ errors:
     cannotLoadMore: 'Ошибка загрузки списка'
     noInternet:     'Не удалось получить информацию'
     notAuthorized:  'Доступ закрыт'
+    unknown:        'Неизвестная ошибка'
 
 ExploreRootTabWidget:
     title:          'Чему хотите научиться?'

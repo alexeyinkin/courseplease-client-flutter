@@ -3,6 +3,7 @@ common:
         cancel:         'Cancel'
         edit:           'Edit'
         save:           'Save'
+    done:               'Done'
     sex:
         male:           'Male'
         female:         'Female'
@@ -14,6 +15,7 @@ common:
     yesterday:          'Yesterday'
     typeHere:           'Type here...'
     dateTime:           '{date} at {time}'
+    saved:              'Saved'
     select:             '(Select)'
 
 ChatMessageBodyWidget:
@@ -137,6 +139,7 @@ errors:
     cannotLoadMore: 'Error loading more'
     noInternet:     'Could not load the info'
     notAuthorized:  'Access denied'
+    unknown:        'Unknown error'
 
 ExploreRootTabWidget:
     title:          'What Do You Want to Learn?'

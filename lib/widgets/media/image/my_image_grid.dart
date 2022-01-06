@@ -2,8 +2,10 @@ import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/my_image.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/repositories/image.dart';
-import 'package:courseplease/screens/image_pages/image_pages.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/image_pages/page.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 
 import 'image_grid.dart';
 
@@ -30,10 +32,12 @@ class MyImageGrid extends AbstractImageGrid<MyImageFilter, MyImageRepository> {
 class _MyImageGridState extends AbstractImageGridState<MyImageFilter, MyImageRepository> {
   @override
   void handleTap(ImageEntity image, int index) {
-    ImagePagesScreenLauncher.showWithTitles<MyImageFilter, MyImageRepository>(
-      context: context,
-      filter: widget.filter,
-      initialIndex: index,
+    GetIt.instance.get<AppState>().pushPage(
+      ImagePagesTitlesPage<MyImageFilter, MyImageRepository>(
+        filter: widget.filter,
+        initialIndex: index,
+        initialId: image.id,
+      ),
     );
   }
 }

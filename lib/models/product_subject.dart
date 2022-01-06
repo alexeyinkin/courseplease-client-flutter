@@ -55,4 +55,8 @@ class ProductSubject implements
 
     return result;
   }
+
+  String get slashedPath {
+    return WithHomogenousParentIntName.getIntNamePath(this, '/');
+  }
 }

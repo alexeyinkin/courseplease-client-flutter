@@ -1,9 +1,8 @@
-import 'package:courseplease/router/abstract_tab_back_button_dispatcher.dart';
+import 'package:app_state/app_state.dart';
 import 'package:courseplease/router/app_state.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
-import 'explore_tab_back_button_dispatcher.dart';
 import 'home_state.dart';
 
 /// This app's root back button dispatcher.
@@ -13,18 +12,17 @@ class AppStateBackButtonDispatcher extends RootBackButtonDispatcher {
   final _dispatchers = <HomeTab, BackButtonDispatcher>{};
 
   AppStateBackButtonDispatcher() {
-    _dispatchers[HomeTab.explore] = ExploreTabBackButtonDispatcher(_state.exploreTabState);
-
-    // TODO: Custom dispatchers for all tabs or anything that intercepts exiting the app by back button.
-    _dispatchers[HomeTab.learn] = AbstractTabBackButtonDispatcher(_state.learnTabState);
-    _dispatchers[HomeTab.teach] = AbstractTabBackButtonDispatcher(_state.teachTabState);
-    _dispatchers[HomeTab.messages] = AbstractTabBackButtonDispatcher(_state.messagesTabState);
-    _dispatchers[HomeTab.profile] = AbstractTabBackButtonDispatcher(_state.profileTabState);
+    _dispatchers[HomeTab.explore] = PageStackBackButtonDispatcher(_state.exploreTabBloc);
+    _dispatchers[HomeTab.learn] = PageStackBackButtonDispatcher(_state.learnTabBloc);
+    _dispatchers[HomeTab.teach] = PageStackBackButtonDispatcher(_state.teachTabBloc);
+    _dispatchers[HomeTab.messages] = PageStackBackButtonDispatcher(_state.messagesTabBloc);
+    _dispatchers[HomeTab.profile] = PageStackBackButtonDispatcher(_state.profileTabBloc);
   }
 
   @override
-  Future<bool> invokeCallback(Future<bool> defaultValue) {
-    return _getChildDispatcher().invokeCallback(defaultValue);
+  Future<bool> invokeCallback(Future<bool> defaultValue) async {
+    await _getChildDispatcher().invokeCallback(defaultValue);
+    return true; // Prevents exiting the app.
   }
 
   BackButtonDispatcher _getChildDispatcher() {
