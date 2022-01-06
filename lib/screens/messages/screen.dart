@@ -3,12 +3,9 @@ import 'package:courseplease/widgets/messaging/chats.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class MessagesTab extends StatefulWidget {
-  @override
-  State<MessagesTab> createState() => MessagesTabState();
-}
+class MessagesScreen extends StatelessWidget {
+  const MessagesScreen();
 
-class MessagesTabState extends State<MessagesTab> {
   @override
   Widget build(BuildContext context) {
     return SignInIfNotWidget(

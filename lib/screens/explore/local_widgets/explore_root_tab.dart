@@ -1,6 +1,6 @@
 import 'package:courseplease/blocs/tree_position.dart';
 import 'package:courseplease/models/product_subject.dart';
-import 'package:courseplease/screens/home/local_widgets/product_subjects_with_children.dart';
+import 'package:courseplease/screens/explore/local_widgets/product_subjects_with_children.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';

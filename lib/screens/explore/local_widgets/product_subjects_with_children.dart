@@ -1,6 +1,6 @@
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/router/app_state.dart';
-import 'package:courseplease/screens/home/local_widgets/product_subject_with_image_and_children.dart';
+import 'package:courseplease/screens/explore/local_widgets/product_subject_with_image_and_children.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';

@@ -5,7 +5,6 @@ import 'package:courseplease/screens/home/local_widgets/snacks.dart';
 import 'package:courseplease/widgets/messages_icon.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:courseplease/screens/home/local_widgets/messages_tab.dart';
 import 'package:get_it/get_it.dart';
 import 'package:keyed_collection_widgets/keyed_collection_widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -85,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
           HomeTab.explore:  PageStackBlocNavigator(bloc: _appState.exploreTabBloc),
           HomeTab.learn:    PageStackBlocNavigator(bloc: _appState.learnTabBloc),
           HomeTab.teach:    PageStackBlocNavigator(bloc: _appState.teachTabBloc),
-          HomeTab.messages: MessagesTab(),
+          HomeTab.messages: PageStackBlocNavigator(bloc: _appState.messagesTabBloc),
           HomeTab.profile:  PageStackBlocNavigator(bloc: _appState.profileTabBloc),
         },
         itemKey: widget.currentTab,

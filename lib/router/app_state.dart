@@ -1,6 +1,7 @@
 import 'package:app_state/app_state.dart';
 import 'package:courseplease/screens/explore/page.dart';
 import 'package:courseplease/screens/learn/page.dart';
+import 'package:courseplease/screens/messages/page.dart';
 import 'package:courseplease/screens/my_profile/page.dart';
 import 'package:courseplease/screens/teach/page.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class AppState extends ChangeNotifier {
   final exploreTabBloc = PageStackBloc(bottomPage: ExplorePage());
   final learnTabBloc = PageStackBloc(bottomPage: const LearnPage());
   final teachTabBloc = PageStackBloc(bottomPage: const TeachPage());
-  final messagesTabBloc = PageStackBloc(bottomPage: ExplorePage());
+  final messagesTabBloc = PageStackBloc(bottomPage: const MessagesPage());
   final profileTabBloc = PageStackBloc(bottomPage: MyProfilePage());
 
   final _eventsController = BehaviorSubject<PageStackBlocEvent>();
