@@ -1,10 +1,9 @@
-import 'package:courseplease/screens/home/local_widgets/teaching_lessons_resolved_tab.dart';
-import 'package:courseplease/screens/home/local_widgets/teaching_lessons_to_schedule_tab.dart';
-import 'package:courseplease/screens/home/local_widgets/teaching_lessons_upcoming_tab.dart';
-import 'package:courseplease/screens/home/local_widgets/teachnig_lessons_awaiting_approval_tab.dart';
+import 'package:courseplease/screens/teach/local_widgets/teaching_lessons_resolved_tab.dart';
+import 'package:courseplease/screens/teach/local_widgets/teaching_lessons_to_schedule_tab.dart';
+import 'package:courseplease/screens/teach/local_widgets/teaching_lessons_upcoming_tab.dart';
+import 'package:courseplease/screens/teach/local_widgets/teachnig_lessons_awaiting_approval_tab.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class TeachingLessonsTabWidget extends StatelessWidget {
   @override

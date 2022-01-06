@@ -1,14 +1,11 @@
-import 'package:courseplease/screens/home/local_widgets/teaching_lessons_tab.dart';
+import 'package:courseplease/screens/teach/local_widgets/teaching_lessons_tab.dart';
 import 'package:courseplease/widgets/auth/sign_in_if_not.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class TeachingTabWidget extends StatefulWidget {
-  @override
-  _TeachingTabWidgetState createState() => _TeachingTabWidgetState();
-}
+class TeachScreen extends StatelessWidget {
+  const TeachScreen();
 
-class _TeachingTabWidgetState extends State<TeachingTabWidget> {
   @override
   Widget build(BuildContext context) {
     return SignInIfNotWidget(

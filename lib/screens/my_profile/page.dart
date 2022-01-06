@@ -7,7 +7,7 @@ import 'screen.dart';
 
 class MyProfilePage extends BlocMaterialPage<AppConfiguration, MyProfileBloc> {
   MyProfilePage() : super(
-    key: ValueKey('MyProfilePage'),
+    key: const ValueKey('MyProfilePage'),
     bloc: MyProfileBloc(),
     createScreen: (b) => MyProfileScreen(bloc: b),
   );

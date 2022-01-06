@@ -2,7 +2,6 @@ import 'package:app_state/app_state.dart';
 import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/router/home_state.dart';
 import 'package:courseplease/screens/home/local_widgets/snacks.dart';
-import 'package:courseplease/screens/home/local_widgets/teaching_tab.dart';
 import 'package:courseplease/widgets/messages_icon.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:courseplease/screens/home/local_widgets/messages_tab.dart';
 import 'package:get_it/get_it.dart';
 import 'package:keyed_collection_widgets/keyed_collection_widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'local_widgets/learning_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   final HomeTab currentTab;
@@ -25,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _appState = GetIt.instance.get<AppState>();
-  //final _pollEventsButtonIndex = 5;
   final _pageStorageBucket = PageStorageBucket();
 
   @override
@@ -86,8 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: KeyedStack<HomeTab>(
         children: {
           HomeTab.explore:  PageStackBlocNavigator(bloc: _appState.exploreTabBloc),
-          HomeTab.learn:    LearningTabWidget(),
-          HomeTab.teach:    TeachingTabWidget(),
+          HomeTab.learn:    PageStackBlocNavigator(bloc: _appState.learnTabBloc),
+          HomeTab.teach:    PageStackBlocNavigator(bloc: _appState.teachTabBloc),
           HomeTab.messages: MessagesTab(),
           HomeTab.profile:  PageStackBlocNavigator(bloc: _appState.profileTabBloc),
         },
