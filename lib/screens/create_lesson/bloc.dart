@@ -4,7 +4,7 @@ import 'package:courseplease/blocs/text_change_debouncer.dart';
 import 'package:courseplease/models/external_lesson.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/models/lesson.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/router/snack_event.dart';
 import 'package:courseplease/screens/create_lesson/configurations.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
@@ -39,7 +39,7 @@ class CreateLessonBloc extends AppScreenBloc<CreateLessonScreenCubitState> {
   }
 
   @override
-  AppConfiguration get currentConfiguration {
+  ScreenConfiguration get currentConfiguration {
     return CreateLessonConfiguration(
       subjectId: _subjectId,
     );
@@ -92,7 +92,7 @@ class CreateLessonBloc extends AppScreenBloc<CreateLessonScreenCubitState> {
     if (subjectId == _subjectId) return;
     _subjectId = subjectId;
     emitState();
-    emitConfiguration(currentConfiguration);
+    emitConfigurationChanged();
   }
 
   void proceed() async {

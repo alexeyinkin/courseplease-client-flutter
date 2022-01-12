@@ -1,11 +1,11 @@
 import 'package:app_state/app_state.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/my_lesson_list/bloc.dart';
 import 'package:courseplease/screens/my_lesson_list/screen.dart';
 import 'package:flutter/widgets.dart';
 
-class MyLessonListPage extends BlocMaterialPage<AppConfiguration, MyLessonListBloc> {
+class MyLessonListPage extends BlocMaterialPage<ScreenConfiguration, MyLessonListBloc> {
   MyLessonListPage({
     required MyLessonFilter filter,
   }) : super(

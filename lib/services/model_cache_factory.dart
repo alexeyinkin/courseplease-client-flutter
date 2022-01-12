@@ -1,5 +1,6 @@
 import 'package:courseplease/blocs/model_cache.dart';
 import 'package:courseplease/blocs/model_with_children_cache.dart';
+import 'package:courseplease/models/interfaces/with_id_title_intname_homogenous_children_parent.dart';
 import 'package:courseplease/repositories/abstract.dart';
 import 'package:get_it/get_it.dart';
 import 'package:model_interfaces/model_interfaces.dart';
@@ -29,7 +30,7 @@ class ModelCacheCache {
 
   ModelWithChildrenCacheBloc<I, O> getOrCreateWithChildren<
     I,
-    O extends WithIdChildrenParent<I, O, O>,
+    O extends WithIdTitleIntNameHomogenousChildrenParent<I, O>,
     R extends AbstractRepository<I, O>
   >() {
     final objectType = _typeOf<O>();
@@ -63,7 +64,7 @@ class ModelCacheFactory {
 
   ModelWithChildrenCacheBloc<I, O> createWithChildren<
     I,
-    O extends WithIdChildrenParent<I, O, O>,
+    O extends WithIdTitleIntNameHomogenousChildrenParent<I, O>,
     R extends AbstractRepository<I, O>
   >() {
     final repository = GetIt.instance.get<R>();

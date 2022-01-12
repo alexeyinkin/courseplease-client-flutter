@@ -2,7 +2,7 @@ import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/editors/location.dart';
 import 'package:courseplease/blocs/screen.dart';
 import 'package:courseplease/models/enum/sex.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/edit_profile/configurations.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/language_list_editor.dart';
@@ -42,7 +42,7 @@ class EditProfileBloc extends AppScreenBloc<EditProfileScreenCubitState> {
   }
 
   @override
-  AppConfiguration get currentConfiguration => const EditProfileConfiguration();
+  ScreenConfiguration get currentConfiguration => const EditProfileConfiguration();
 
   @override
   EditProfileScreenCubitState createState() {

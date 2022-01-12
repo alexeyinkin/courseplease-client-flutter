@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:courseplease/blocs/screen.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/edit_integration/configurations.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
@@ -51,7 +51,7 @@ class EditIntegrationBloc extends AppScreenBloc<EditIntegrationState> {
   }
 
   @override
-  AppConfiguration get currentConfiguration {
+  ScreenConfiguration get currentConfiguration {
     return EditIntegrationConfiguration(contactId: contactClone.id);
   }
 

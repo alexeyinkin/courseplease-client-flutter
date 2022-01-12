@@ -1,10 +1,10 @@
 import 'package:app_state/app_state.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/teacher/bloc.dart';
 import 'package:courseplease/screens/teacher/screen.dart';
 import 'package:flutter/widgets.dart';
 
-class TeacherPage extends BlocMaterialPage<AppConfiguration, TeacherBloc> {
+class TeacherPage extends BlocMaterialPage<ScreenConfiguration, TeacherBloc> {
   TeacherPage({
     required int teacherId,
     int? initialSubjectId,

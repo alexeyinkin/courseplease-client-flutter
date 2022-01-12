@@ -8,7 +8,7 @@ import 'package:courseplease/models/filters/gallery_image.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/repositories/image.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/image/page.dart';
 import 'package:courseplease/screens/image_pages/configurations.dart';
@@ -45,11 +45,11 @@ abstract class ImagePagesBloc<
   }
 
   void _onPageChanged() {
-    emitCurrentConfigurationIfAny();
+    emitConfigurationChangedIfAny();
   }
 
   void _onListChanged() {
-    emitCurrentConfigurationIfAny();
+    emitConfigurationChangedIfAny();
   }
 
   void toggleControls() {
@@ -97,7 +97,7 @@ class ImagePagesGalleryBloc extends ImagePagesBloc<GalleryImageFilter, GalleryIm
   ;
 
   @override
-  AppConfiguration get currentConfiguration {
+  ScreenConfiguration get currentConfiguration {
     return ImagePagesGalleryConfiguration(
       filter: pagesBloc.filter,
       productSubject: _requireProductSubject(),
@@ -135,5 +135,5 @@ class ImagePagesTitlesBloc<
   );
 
   @override
-  AppConfiguration? get currentConfiguration => null;
+  ScreenConfiguration? get currentConfiguration => null;
 }

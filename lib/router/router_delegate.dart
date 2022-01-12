@@ -3,10 +3,10 @@ import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import 'app_configuration_with_lang.dart';
+import 'app_configuration.dart';
 import 'app_state.dart';
 
-class AppRouterDelegate extends RouterDelegate<AppConfigurationWithLang> with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppConfigurationWithLang> {
+class AppRouterDelegate extends RouterDelegate<AppConfiguration> with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppConfiguration> {
   @override
   final navigatorKey = GlobalKey<NavigatorState>();
   final _appState = GetIt.instance.get<AppState>();
@@ -23,11 +23,8 @@ class AppRouterDelegate extends RouterDelegate<AppConfigurationWithLang> with Ch
 
   /// Returns what to show in the browser URL.
   @override
-  AppConfigurationWithLang get currentConfiguration {
-    return AppConfigurationWithLang(
-      configuration: _appState.getCurrentTabStackBloc().currentConfiguration,
-      lang: _appState.langState.lang,
-    );
+  AppConfiguration get currentConfiguration {
+    return _appState.currentConfiguration;
   }
 
   @override
@@ -59,7 +56,7 @@ class AppRouterDelegate extends RouterDelegate<AppConfigurationWithLang> with Ch
   }
 
   @override
-  Future<void> setNewRoutePath(AppConfigurationWithLang configuration) async {
-    await _appState.langState.setLang(configuration.lang);
+  Future<void> setNewRoutePath(AppConfiguration configuration) async {
+    return _appState.setConfiguration(configuration);
   }
 }

@@ -1,11 +1,11 @@
 import 'package:app_state/app_state.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:flutter/widgets.dart';
 
 import 'bloc.dart';
 import 'screen.dart';
 
-class MyProfilePage extends BlocMaterialPage<AppConfiguration, MyProfileBloc> {
+class MyProfilePage extends BlocMaterialPage<ScreenConfiguration, MyProfileBloc> {
   MyProfilePage() : super(
     key: const ValueKey('MyProfilePage'),
     bloc: MyProfileBloc(),

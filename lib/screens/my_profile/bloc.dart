@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/screen.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/my_profile/configurations.dart';
 import 'package:courseplease/services/auth/auth_provider.dart';
 import 'package:courseplease/services/auth/auth_providers.dart';
@@ -63,7 +63,7 @@ class MyProfileBloc extends AppScreenBloc<MyProfileCubitState> {
   }
 
   @override
-  AppConfiguration get currentConfiguration {
+  ScreenConfiguration get currentConfiguration {
     return MyProfileConfiguration();
   }
 

@@ -7,17 +7,18 @@ import 'package:courseplease/models/filters/gallery_lesson.dart';
 import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_subject.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/explore/configurations.dart';
 import 'package:courseplease/screens/explore/local_blocs/images_tab.dart';
 import 'package:courseplease/screens/explore/local_blocs/lessons_tab.dart';
 import 'package:courseplease/screens/explore/local_blocs/teachers_tab.dart';
 import 'package:get_it/get_it.dart';
 import 'package:keyed_collection_widgets/keyed_collection_widgets.dart';
+import 'package:model_interfaces/model_interfaces.dart';
 
 import 'explore_tab_enum.dart';
 
-class ExploreBloc extends AppScreenBloc<ExploreCubitState> {
+class ExploreBloc extends AppScreenBloc<ExploreBlocState> {
   late TreePositionState<int, ProductSubject> _treePositionState;
 
   final tabController = KeyedStaticTabController<ExploreTab>(
@@ -55,14 +56,42 @@ class ExploreBloc extends AppScreenBloc<ExploreCubitState> {
   }
 
   @override
-  AppConfiguration get currentConfiguration {
+  ScreenConfiguration get currentConfiguration {
     final ps = _treePositionState.currentObject;
     if (ps == null) return ExploreRootConfiguration();
 
     return ExploreSubjectConfiguration(
       tab: tabController.currentKey!,
-      productSubject: ps,
+      productSubjectPath: ps.slashedPath,
     );
+  }
+
+  @override
+  Map<String, dynamic> get normalizedState {
+    return {
+      'subjectId': currentTreePositionBloc.state.currentId,
+      'tab': tabController.currentKey?.name,
+    };
+  }
+
+  @override
+  set normalizedState (Map<String, dynamic> state) {
+    final subjectId = state['subjectId'];
+    if (subjectId != null) {
+      currentTreePositionBloc.setCurrentId(subjectId);
+    }
+
+    final subjectPath = state['subjectPath'];
+    if (subjectPath != null) {
+      currentTreePositionBloc.setCurrentPath(subjectPath);
+    }
+
+    try {
+      final tab = ExploreTab.values.byName(state['tab']);
+      tabController.currentKey = tab;
+    } catch (ex) {
+      // TODO: Log error.
+    }
   }
 
   void _onProductSubjectChanged(TreePositionState<int, ProductSubject> state) {
@@ -110,11 +139,11 @@ class ExploreBloc extends AppScreenBloc<ExploreCubitState> {
   @override
   void emitState() {
     super.emitState();
-    emitConfiguration(currentConfiguration);
+    emitConfigurationChanged();
   }
 
   @override
-  ExploreCubitState createState() => const ExploreCubitState();
+  ExploreBlocState createState() => const ExploreBlocState();
 
   @override
   Future<bool> onBackPressed() {
@@ -133,6 +162,21 @@ class ExploreBloc extends AppScreenBloc<ExploreCubitState> {
   }
 }
 
-class ExploreCubitState {
-  const ExploreCubitState();
+class ExploreBlocState {
+  const ExploreBlocState();
+}
+
+class ExploreBlocNormalizedState implements Normalizable {
+  final int? subjectId;
+
+  ExploreBlocNormalizedState({
+    required this.subjectId,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'subjectId': subjectId,
+    };
+  }
 }

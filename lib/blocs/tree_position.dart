@@ -1,16 +1,21 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/model_with_children_cache.dart';
-import 'package:model_interfaces/model_interfaces.dart';
+import 'package:courseplease/models/interfaces/with_id_title_intname_homogenous_children_parent.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
 
 class TreePositionBloc<
   I,
-  O extends WithIdChildrenParent<I, O, O>
+  O extends WithIdTitleIntNameHomogenousChildrenParent<I, O>
 > implements Bloc {
   I? _currentId;
   I? _lastId;
+
+  /// The path we are trying to set after commanded to but while the model
+  /// is not yet loaded.
+  String? _settingCurrentPath;
+
   var _topLevelModels = <O>[];
   var _modelsByIds = Map<I, O>();
 
@@ -44,6 +49,10 @@ class TreePositionBloc<
   void _setModelsByIds(Map<I, O> map) {
     _modelsByIds = map;
     _pushOutput();
+
+    if (_settingCurrentPath != null) {
+      setCurrentPath(_settingCurrentPath!);
+    }
   }
 
   /// Walks one step up if possible. Has no effect if the current item is null.
@@ -61,6 +70,15 @@ class TreePositionBloc<
     }
 
     _pushOutput();
+  }
+
+  void setCurrentPath(String slashedPath) {
+    _settingCurrentPath = slashedPath;
+    final obj = _modelCacheBloc.getObjectBySlashedPath(slashedPath);
+    if (obj == null) return;
+
+    setCurrentId(obj.id);
+    _settingCurrentPath = null;
   }
 
   void _pushOutput() {
@@ -131,7 +149,7 @@ class TreePositionBloc<
 
 class TreePositionState<
   I,
-  O extends WithIdChildrenParent<I, O, O>
+  O extends WithIdTitleIntNameHomogenousChildrenParent<I, O>
 > {
   final I? currentId;
   final List<O> ancestorBreadcrumbs;

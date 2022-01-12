@@ -2,14 +2,14 @@ import 'package:app_state/app_state.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/filters/gallery_image.dart';
 import 'package:courseplease/repositories/image.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/image_pages/screen.dart';
 import 'package:flutter/foundation.dart';
 
 import 'bloc.dart';
 
 class ImagePagesGalleryPage extends BlocMaterialPage<
-  AppConfiguration,
+  ScreenConfiguration,
   ImagePagesGalleryBloc
 > {
   ImagePagesGalleryPage({
@@ -34,7 +34,7 @@ class ImagePagesTitlesPage<
   F extends AbstractFilter,
   R extends AbstractImageRepository<F>
 > extends BlocMaterialPage<
-  AppConfiguration,
+  ScreenConfiguration,
   ImagePagesTitlesBloc<F, R>
 > {
   ImagePagesTitlesPage({

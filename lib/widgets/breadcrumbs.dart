@@ -1,9 +1,10 @@
 import 'package:courseplease/blocs/tree_position.dart';
+import 'package:courseplease/models/interfaces/with_id_title_intname_homogenous_children_parent.dart';
 import 'package:flutter/material.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 import '../theme/theme.dart';
 
-class BreadcrumbsWidget<I, O extends WithIdTitleChildrenParent<I, O, O>> extends StatelessWidget {
+class BreadcrumbsWidget<I, O extends WithIdTitleIntNameHomogenousChildrenParent<I, O>> extends StatelessWidget {
   final TreePositionState<I, O> treePositionState;
   final ValueChanged<I?> onChanged;
 

@@ -1,10 +1,10 @@
-import 'package:courseplease/models/interfaces/with_homogenous_parent_intname.dart';
+import 'package:courseplease/models/interfaces/with_id_title_intname_homogenous_children_parent.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
 class ProductSubject implements
     WithIdTitle<int>,
     WithIdTitleChildrenParent<int, ProductSubject, ProductSubject>,
-    WithHomogenousParentIntName<ProductSubject>
+    WithIdTitleIntNameHomogenousChildrenParent<int, ProductSubject>
 {
   final int id;
   final String title;
@@ -57,6 +57,12 @@ class ProductSubject implements
   }
 
   String get slashedPath {
-    return WithHomogenousParentIntName.getIntNamePath(this, '/');
+    return WithIdTitleIntNameHomogenousChildrenParent.getIntNamePath(this, '/');
   }
+
+  @override
+  Iterable<int> get ancestorIds => throw UnimplementedError();
+
+  @override
+  int? get parentId => throw UnimplementedError();
 }

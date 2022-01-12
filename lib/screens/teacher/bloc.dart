@@ -6,7 +6,7 @@ import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/teacher.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/teacher/configurations.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/utils/utils.dart';
@@ -85,7 +85,7 @@ class TeacherBloc extends AppScreenBloc<TeacherBlocState> {
   }
 
   @override
-  AppConfiguration? get currentConfiguration => TeacherConfiguration(teacherId: teacherId);
+  ScreenConfiguration? get currentConfiguration => TeacherConfiguration(teacherId: teacherId);
 
   void setSubjectId(int id) {
     _selectedSubjectId = id;

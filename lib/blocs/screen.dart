@@ -1,9 +1,9 @@
 import 'package:app_state/app_state.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/router/snack_event.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-abstract class AppScreenBloc<S> extends ScreenBloc<AppConfiguration, S> {
+abstract class AppScreenBloc<S> extends ScreenBloc<ScreenConfiguration, S> {
   void emitDone() {
     emitEvent(SnackEvent(type: SnackEventType.info, message: tr('common.done')));
   }

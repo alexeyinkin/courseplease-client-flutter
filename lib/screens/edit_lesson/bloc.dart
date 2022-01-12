@@ -4,7 +4,7 @@ import 'package:courseplease/blocs/screen.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/models/lesson.dart';
 import 'package:courseplease/repositories/my_lesson.dart';
-import 'package:courseplease/router/app_configuration.dart';
+import 'package:courseplease/router/screen_configuration.dart';
 import 'package:courseplease/screens/edit_lesson/configurations.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
@@ -70,7 +70,7 @@ class EditLessonBloc extends AppScreenBloc<EditLessonCubitState> {
   }
 
   @override
-  AppConfiguration get currentConfiguration {
+  ScreenConfiguration get currentConfiguration {
     return EditLessonConfiguration(lessonId: lessonId);
   }
 

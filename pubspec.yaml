@@ -25,7 +25,7 @@ dependencies:
   # Our own packages:
 #  app_state:
 #    path: '../../../dart/app_state'
-  app_state: ^0.1.0
+  app_state: ^0.1.1
 
 #  model_interfaces:
 #    path: '../../../dart/model_interfaces'
@@ -37,7 +37,7 @@ dependencies:
 
 #  keyed_collection_widgets:
 #    path: '../../../dart/keyed_collection_widgets'
-  keyed_collection_widgets: ^0.1.1
+  keyed_collection_widgets: ^0.1.2
 
   # SDK packages:
   flutter:
