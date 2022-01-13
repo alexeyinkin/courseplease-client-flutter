@@ -12,7 +12,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AuthenticationBloc extends Bloc{
+class AuthenticationBloc extends Bloc {
   static const oauthTempKeyLength = 64;
 
   final _apiClient = GetIt.instance.get<ApiClient>();
@@ -41,7 +41,10 @@ class AuthenticationBloc extends Bloc{
     }
   }
 
-  Future<void> requestAuthorization(BuildContext context, AuthProvider provider) async {
+  Future<void> requestAuthorization(
+    BuildContext context,
+    AuthProvider provider,
+  ) async {
     if (!await _canRequestAuthorization()) return;
 
     _setState(AuthenticationState.requested(_authenticationState));
@@ -68,7 +71,8 @@ class AuthenticationBloc extends Bloc{
     switch (_authenticationState.status) {
       case AuthenticationStatus.deviceKey:
         return true;
-      default: return false;
+      default:
+        return false;
     }
   }
 
@@ -109,7 +113,10 @@ class AuthenticationBloc extends Bloc{
 
   Future<void> _registerDevice() async {
     try {
-      final response = await _apiClient.registerDevice(await _createRegisterDeviceRequest());
+      final response = await _apiClient.registerDevice(
+        await _createRegisterDeviceRequest(),
+      );
+
       _storeDeviceKey(response.key);
       _apiClient.setDeviceKey(response.key);
 
@@ -142,7 +149,6 @@ class AuthenticationBloc extends Bloc{
   }
 
   void _setMe(MeResponseData me, String deviceKey) {
-
     if (me.deviceStatus == null) {
       _setDeviceKeyFailedState();
     } else {
@@ -181,7 +187,9 @@ class AuthenticationBloc extends Bloc{
     _setMe(me, deviceKey);
   }
 
-  Future<void> saveConsultingProduct(SaveConsultingProductRequest request) async {
+  Future<void> saveConsultingProduct(
+    SaveConsultingProductRequest request,
+  ) async {
     final deviceKey = _authenticationState.deviceKey;
     if (deviceKey == null) throw Exception('deviceKey is required for this');
 

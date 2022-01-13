@@ -17,7 +17,10 @@ class ChatMessageSendQueueViewCubit extends Bloc {
 
   final _outStateController = BehaviorSubject<ChatMessageSendQueueState>();
   Stream<ChatMessageSendQueueState> get outState => _outStateController.stream;
-  final initialState = ChatMessageSendQueueState(queue: UnmodifiableListView<SendingChatMessage>([]));
+
+  final initialState = ChatMessageSendQueueState(
+    queue: UnmodifiableListView<SendingChatMessage>([]),
+  );
 
   ChatMessageSendQueueViewCubit({
     required this.chatId,

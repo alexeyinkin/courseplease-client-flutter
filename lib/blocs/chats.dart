@@ -101,10 +101,11 @@ class ChatsCubit extends Bloc {
     _prependMessageToLists(message);
   }
 
-  void _prependMessageToChats(ChatMessage message, _MessageDirection direction) async {
-    final chat =
-        _getChatFromAnyListAndPrependMessage(message, direction)
-        ?? await _loadChatById(message.chatId);
+  void _prependMessageToChats(
+    ChatMessage message,
+    _MessageDirection direction,
+  ) async {
+    final chat = _getChatFromAnyListAndPrependMessage(message, direction) ?? await _loadChatById(message.chatId);
 
     if (chat == null) return; // Deleted at server since the event generated.
 
@@ -118,7 +119,10 @@ class ChatsCubit extends Bloc {
     }
   }
 
-  Chat? _getChatFromAnyListAndPrependMessage(ChatMessage message, _MessageDirection direction) {
+  Chat? _getChatFromAnyListAndPrependMessage(
+    ChatMessage message,
+    _MessageDirection direction,
+  ) {
     final chat = _getChatFromAnyList(message.chatId);
     if (chat == null) return null;
 

@@ -81,7 +81,9 @@ class CommentFormCubit extends Bloc {
     _pushOutput();
 
     final authorId = _authenticationCubit.currentState.data?.user?.id;
-    if (authorId == null) throw Exception('Should only get here if authenticated.');
+    if (authorId == null) {
+      throw Exception('Should only get here if authenticated.');
+    }
 
     _currentComment = Comment(
       id: 0,

@@ -40,14 +40,22 @@ abstract class ContactStatusCubit extends Bloc {
 
     switch (contact.profileSyncStatus.runStatus) {
       case RunStatus.pending:
-        return ReadableProfileSyncStatus(status: contact.profileSyncStatus, description: '');
+        return ReadableProfileSyncStatus(
+          status: contact.profileSyncStatus,
+          description: '',
+        );
+
       case RunStatus.complete:
       case RunStatus.running:
         return _getProfileSyncOkStatus(contact);
+
       case RunStatus.error:
         return _getProfileSyncErrorStatus(contact);
+
       default:
-        throw Exception('Unknown profile sync run status: ' + contact.profileSyncStatus.runStatus.toString());
+        throw Exception(
+          'Unknown profile sync run status: ${contact.profileSyncStatus.runStatus}',
+        );
     }
   }
 
@@ -68,10 +76,10 @@ abstract class ContactStatusCubit extends Bloc {
         break;
     }
 
-      return ReadableProfileSyncStatus(
-        status: contact.profileSyncStatus,
-        description: descriptionParts.join(tr('common.sentenceSeparator')),
-      );
+    return ReadableProfileSyncStatus(
+      status: contact.profileSyncStatus,
+      description: descriptionParts.join(tr('common.sentenceSeparator')),
+    );
   }
 
   @protected
@@ -89,10 +97,16 @@ abstract class ContactStatusCubit extends Bloc {
     final durationAgo = formatLongRoughDurationAgo(
       DateTime.now().difference(dateTimeUpdate),
     );
-    return tr('ContactStatusCubit.lastSynchronized', namedArgs: {'durationAgo': durationAgo});
+
+    return tr(
+      'ContactStatusCubit.lastSynchronized',
+      namedArgs: {'durationAgo': durationAgo},
+    );
   }
 
-  ReadableProfileSyncStatus _getProfileSyncErrorStatus(EditableContact contact) {
+  ReadableProfileSyncStatus _getProfileSyncErrorStatus(
+    EditableContact contact,
+  ) {
     final descriptionParts = <String>[];
 
     descriptionParts.add(_getErrorLastTried(contact.profileSyncStatus));
@@ -107,13 +121,19 @@ abstract class ContactStatusCubit extends Bloc {
     final dateTimeUpdate = status.dateTimeUpdate;
 
     if (dateTimeUpdate == null) {
-      throw Exception('Error status must have dateTimeUpdate when the error was caused');
+      throw Exception(
+        'Error status must have dateTimeUpdate when the error was caused',
+      );
     }
 
     final durationAgo = formatLongRoughDurationAgo(
       DateTime.now().difference(dateTimeUpdate),
     );
-    return tr('ContactStatusCubit.errorLastTried', namedArgs: {'durationAgo': durationAgo});
+
+    return tr(
+      'ContactStatusCubit.errorLastTried',
+      namedArgs: {'durationAgo': durationAgo},
+    );
   }
 
   @override

@@ -132,8 +132,8 @@ class ChatMessageEditorCubit extends Bloc {
     if (text == '') return null;
 
     return ChatMessageDraft(
-      chatId:           chatId,
-      recipientUserId:  userId,
+      chatId: chatId,
+      recipientUserId: userId,
       body: ContentMessageBody(
         text: text,
       ),

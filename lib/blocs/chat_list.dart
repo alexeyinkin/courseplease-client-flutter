@@ -26,7 +26,11 @@ class ChatListCubit extends Bloc {
   void setCurrentChat(Chat? chat) {
     if (_currentChat == chat) return;
     _currentChat = chat;
-    _chatMessageFilter = chat == null ? null : ChatMessageFilter(chatId: chat.id);
+
+    _chatMessageFilter = chat == null
+        ? null
+        : ChatMessageFilter(chatId: chat.id);
+
     _pushCurrentChatOutput();
     _pushStateOutput();
   }

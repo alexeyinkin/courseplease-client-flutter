@@ -165,7 +165,11 @@ class NetworkFilteredModelListBloc<
   void removeObjectIds(List<I> ids) {
     if (ids.isEmpty) return;
 
-    final idsMap = Map<I, I>.fromIterable(ids, key: (id) => id, value: (id) => id);
+    final idsMap = Map<I, I>.fromIterable(
+      ids,
+      key: (id) => id,
+      value: (id) => id,
+    );
 
     _ids.removeWhere((I id) => idsMap.containsKey(id));
     _listBloc.setCurrentIds(_ids);

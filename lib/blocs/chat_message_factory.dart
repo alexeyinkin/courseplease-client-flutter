@@ -43,7 +43,7 @@ class ChatMessageFactory extends Bloc {
         type:         type,
         body:         body,
         uuid:         _uuidGenerator.v4(),
-        status:       SendingChatMessageStatus.readyToSend
+        status:       SendingChatMessageStatus.readyToSend,
       ),
     );
   }

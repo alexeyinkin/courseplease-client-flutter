@@ -114,7 +114,9 @@ class ChatMessageSendQueueCubit extends Bloc {
     if (_status != _Status.idle) return null;
 
     try {
-      return _queue.firstWhere((message) => message.status == SendingChatMessageStatus.readyToSend);
+      return _queue.firstWhere(
+        (message) => message.status == SendingChatMessageStatus.readyToSend,
+      );
     } catch (_) {
       return null;
     }
