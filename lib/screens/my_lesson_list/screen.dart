@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
@@ -6,6 +7,7 @@ import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/create_lesson/page.dart';
 import 'package:courseplease/screens/my_lesson_list/bloc.dart';
 import 'package:courseplease/screens/my_lesson_list/local_widgets/title.dart';
+import 'package:courseplease/widgets/auth/sign_in_if_not.dart';
 import 'package:courseplease/widgets/lesson/my_lesson_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -37,8 +39,13 @@ class _MyLessonListScreenState extends State<MyLessonListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return SignInIfNotWidget(signedInBuilder: _buildAuthenticated);
+  }
+
+  Widget _buildAuthenticated(BuildContext context, _) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(onPressed: widget.bloc.closeScreen),
         title: TitleWidget(
           filter: widget.bloc.filter,
           contactsByIds: <int, EditableContact>{},
@@ -81,7 +88,7 @@ class _MyLessonListScreenState extends State<MyLessonListScreen> {
 
   void _onCreatePressed() {
     GetIt.instance.get<AppState>().pushPage(
-      CreateLessonPage(filter: widget.bloc.filter),
+      CreateLessonPage(subjectId: widget.bloc.filter.subjectIds.firstOrNull),
     );
   }
 

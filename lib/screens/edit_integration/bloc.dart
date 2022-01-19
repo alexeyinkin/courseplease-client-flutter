@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
-import 'package:courseplease/router/screen_configuration.dart';
-import 'package:courseplease/screens/edit_integration/configurations.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
 import '../../blocs/authentication.dart';
 
-class EditIntegrationBloc extends AppScreenBloc<EditIntegrationState> {
+class EditIntegrationBloc extends AppPageStatefulBloc<EditIntegrationState> {
   final EditableContact contactClone;
 
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
@@ -51,9 +50,7 @@ class EditIntegrationBloc extends AppScreenBloc<EditIntegrationState> {
   }
 
   @override
-  ScreenConfiguration get currentConfiguration {
-    return EditIntegrationConfiguration(contactId: contactClone.id);
-  }
+  MyPageConfiguration? getConfiguration() => null;
 
   void synchronize() async {
     _currentAction = EditIntegrationCurrentAction.sync;

@@ -1,10 +1,15 @@
+import 'package:app_state/app_state.dart';
 import 'package:courseplease/router/app_configuration.dart';
 import 'package:courseplease/router/home_state.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:flutter/widgets.dart';
 
-class LearnConfiguration extends ScreenConfiguration {
-  const LearnConfiguration();
+import 'page.dart';
+
+class LearnConfiguration extends MyPageConfiguration {
+  const LearnConfiguration() : super(
+    key: LearnPage.factoryKey,
+  );
 
   static const _location = '/learn';
 
@@ -23,6 +28,10 @@ class LearnConfiguration extends ScreenConfiguration {
   AppNormalizedState get defaultAppNormalizedState {
     return AppNormalizedState(
       homeTab: HomeTab.learn,
+      appConfiguration: AppConfiguration.singleStack(
+        key: HomeTab.learn.name,
+        pageConfigurations: [this],
+      ),
     );
   }
 }

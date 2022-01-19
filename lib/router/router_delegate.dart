@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'app_configuration.dart';
 import 'app_state.dart';
 
-class AppRouterDelegate extends RouterDelegate<AppConfiguration> with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppConfiguration> {
+class AppRouterDelegate extends RouterDelegate<MyAppConfiguration> with ChangeNotifier, PopNavigatorRouterDelegateMixin<MyAppConfiguration> {
   @override
   final navigatorKey = GlobalKey<NavigatorState>();
   final _appState = GetIt.instance.get<AppState>();
@@ -23,8 +23,8 @@ class AppRouterDelegate extends RouterDelegate<AppConfiguration> with ChangeNoti
 
   /// Returns what to show in the browser URL.
   @override
-  AppConfiguration get currentConfiguration {
-    return _appState.currentConfiguration;
+  MyAppConfiguration? get currentConfiguration {
+    return _appState.getConfiguration();
   }
 
   @override
@@ -56,7 +56,7 @@ class AppRouterDelegate extends RouterDelegate<AppConfiguration> with ChangeNoti
   }
 
   @override
-  Future<void> setNewRoutePath(AppConfiguration configuration) async {
+  Future<void> setNewRoutePath(MyAppConfiguration configuration) async {
     return _appState.setConfiguration(configuration);
   }
 }

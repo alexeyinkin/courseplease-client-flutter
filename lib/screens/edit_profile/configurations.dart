@@ -1,10 +1,16 @@
+import 'package:app_state/app_state.dart';
 import 'package:courseplease/router/app_configuration.dart';
 import 'package:courseplease/router/home_state.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
+import 'package:courseplease/screens/my_profile/configurations.dart';
 import 'package:flutter/widgets.dart';
 
-class EditProfileConfiguration extends ScreenConfiguration {
-  const EditProfileConfiguration();
+import 'page.dart';
+
+class EditProfileConfiguration extends MyPageConfiguration {
+  const EditProfileConfiguration() : super(
+    key: EditProfilePage.factoryKey,
+  );
 
   static const _location = '/me/edit';
 
@@ -22,8 +28,14 @@ class EditProfileConfiguration extends ScreenConfiguration {
   @override
   AppNormalizedState get defaultAppNormalizedState {
     return AppNormalizedState(
-      // TODO: Stack.
       homeTab: HomeTab.profile,
+      appConfiguration: AppConfiguration.singleStack(
+        key: HomeTab.profile.name,
+        pageConfigurations: [
+          const MyProfileConfiguration(),
+          this,
+        ],
+      ),
     );
   }
 }

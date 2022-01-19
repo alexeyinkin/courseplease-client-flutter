@@ -4,31 +4,37 @@ import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/screens/edit_teacher_subject/edit_teacher_subject.dart';
 import 'package:courseplease/screens/edit_teaching/local_widgets/view_teacher_subject.dart';
 import 'package:courseplease/screens/select_product_subject/select_product_subject.dart';
+import 'package:courseplease/widgets/auth/sign_in_if_not.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+
+import 'bloc.dart';
 
 class EditTeachingScreen extends StatefulWidget {
+  final EditTeachingBloc bloc;
+
+  EditTeachingScreen({
+    required this.bloc,
+  });
+
   @override
   State<EditTeachingScreen> createState() => _EditTeachingScreenState();
 }
 
 class _EditTeachingScreenState extends State<EditTeachingScreen> {
-  final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<AuthenticationState>(
-      stream: _authenticationCubit.outState,
-      builder: (context, snapshot) => _buildWithState(snapshot.data ?? _authenticationCubit.initialState),
+    return SignInIfNotWidget(
+      signedInBuilder: _buildWithState,
     );
   }
 
-  Widget _buildWithState(AuthenticationState state) {
+  Widget _buildWithState(BuildContext context, AuthenticationState state) {
     if (state.data == null) {
-      throw Exception('Signed out'); // TODO: Sign in prompt.
+      throw Exception('Should have been filtered out by SignInIfNotWidget');
     }
 
     final children = <Widget>[];
@@ -43,6 +49,7 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(onPressed: widget.bloc.closeScreen),
         title: Row(
           children: [
             Text(tr('EditTeachingScreen.title')),
@@ -68,7 +75,7 @@ class _EditTeachingScreenState extends State<EditTeachingScreen> {
     if (id == null) return;
 
     if (state.data == null) {
-      throw Exception('Signed out'); // TODO: Sign in prompt.
+      widget.bloc.closeScreen(); // Signed out while awaiting.
     }
 
     for (final ts in state.data!.teacherSubjects) {

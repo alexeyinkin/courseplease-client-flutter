@@ -1,16 +1,19 @@
+import 'dart:async';
+
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/editors/location.dart';
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/models/enum/sex.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/screens/edit_profile/configurations.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/language_list_editor.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
-class EditProfileBloc extends AppScreenBloc<EditProfileScreenCubitState> {
+class EditProfileBloc extends AppPageStatefulBloc<EditProfileScreenCubitState> {
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  StreamSubscription? _authenticationSubscription;
 
   final formKey = GlobalKey<FormState>();
   final firstNameController = TextEditingController();
@@ -31,8 +34,14 @@ class EditProfileBloc extends AppScreenBloc<EditProfileScreenCubitState> {
       // TODO: SexController
       _sex = GetIt.instance.get<AuthenticationBloc>().currentState.data?.user?.sex ?? SexEnum.unknown
   {
-    final user = GetIt.instance.get<AuthenticationBloc>().currentState.data?.user;
-    if (user == null) throw Exception('Unauthenticated.');
+    _authenticationSubscription = _authenticationCubit.outState.listen(_onAuthenticationChanged);
+    final authenticationState = _authenticationCubit.currentState;
+    _onAuthenticationChanged(authenticationState);
+
+    final user = authenticationState.data?.user;
+    if (user == null) {
+      return; // Screen will be closed.
+    }
 
     firstNameController.text = user.firstName;
     middleNameController.text = user.middleName;
@@ -41,8 +50,14 @@ class EditProfileBloc extends AppScreenBloc<EditProfileScreenCubitState> {
     locationController.value = user.location;
   }
 
+  void _onAuthenticationChanged(AuthenticationState state) {
+    if (state.data?.user == null) {
+      closeScreen();
+    }
+  }
+
   @override
-  ScreenConfiguration get currentConfiguration => const EditProfileConfiguration();
+  MyPageConfiguration getConfiguration() => const EditProfileConfiguration();
 
   @override
   EditProfileScreenCubitState createState() {
@@ -105,6 +120,7 @@ class EditProfileBloc extends AppScreenBloc<EditProfileScreenCubitState> {
     lastNameController.dispose();
     languageListController.dispose();
     locationController.dispose();
+    _authenticationSubscription?.cancel();
     super.dispose();
   }
 }

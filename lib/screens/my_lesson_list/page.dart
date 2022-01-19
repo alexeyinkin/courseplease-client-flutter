@@ -1,16 +1,25 @@
 import 'package:app_state/app_state.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/screens/my_lesson_list/bloc.dart';
 import 'package:courseplease/screens/my_lesson_list/screen.dart';
 import 'package:flutter/widgets.dart';
 
-class MyLessonListPage extends BlocMaterialPage<ScreenConfiguration, MyLessonListBloc> {
+class MyLessonListPage extends BlocMaterialPage<MyPageConfiguration, MyLessonListBloc> {
+  static const factoryKey = 'MyLessonListPage';
+
   MyLessonListPage({
-    required MyLessonFilter filter,
+    required int subjectId,
   }) : super(
-    key: ValueKey('MyLessonListPage_$filter'),
-    bloc: MyLessonListBloc(filter: filter),
+    key: ValueKey(formatKey(subjectId: subjectId)),
+    factoryKey: factoryKey,
+    bloc: MyLessonListBloc(filter: MyLessonFilter(subjectIds: [subjectId])),
     createScreen: (b) => MyLessonListScreen(bloc: b),
   );
+
+  static String formatKey({
+    required int subjectId,
+  }) {
+    return '${factoryKey}_$subjectId';
+  }
 }

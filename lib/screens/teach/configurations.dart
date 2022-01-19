@@ -1,10 +1,15 @@
+import 'package:app_state/app_state.dart';
 import 'package:courseplease/router/app_configuration.dart';
 import 'package:courseplease/router/home_state.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:flutter/widgets.dart';
 
-class TeachConfiguration extends ScreenConfiguration {
-  const TeachConfiguration();
+import 'page.dart';
+
+class TeachConfiguration extends MyPageConfiguration {
+  const TeachConfiguration() : super(
+    key: TeachPage.factoryKey,
+  );
 
   static const _location = '/teach';
 
@@ -22,8 +27,11 @@ class TeachConfiguration extends ScreenConfiguration {
   @override
   AppNormalizedState get defaultAppNormalizedState {
     return AppNormalizedState(
-      // TODO: Stack.
       homeTab: HomeTab.teach,
+      appConfiguration: AppConfiguration.singleStack(
+        key: HomeTab.teach.name,
+        pageConfigurations: [this],
+      ),
     );
   }
 }

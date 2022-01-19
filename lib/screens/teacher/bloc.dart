@@ -1,19 +1,19 @@
 import 'package:courseplease/blocs/model_by_id.dart';
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/teacher.dart';
 import 'package:courseplease/models/teacher_subject.dart';
 import 'package:courseplease/repositories/teacher.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/screens/teacher/configurations.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
 import 'package:courseplease/utils/utils.dart';
 import 'package:get_it/get_it.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
-class TeacherBloc extends AppScreenBloc<TeacherBlocState> {
+class TeacherBloc extends AppPageStatefulBloc<TeacherBlocState> {
   final int teacherId;
   Teacher? _teacher;
   RequestStatus _requestStatus = RequestStatus.notTried;
@@ -85,7 +85,7 @@ class TeacherBloc extends AppScreenBloc<TeacherBlocState> {
   }
 
   @override
-  ScreenConfiguration? get currentConfiguration => TeacherConfiguration(teacherId: teacherId);
+  MyPageConfiguration? getConfiguration() => TeacherConfiguration(teacherId: teacherId);
 
   void setSubjectId(int id) {
     _selectedSubjectId = id;

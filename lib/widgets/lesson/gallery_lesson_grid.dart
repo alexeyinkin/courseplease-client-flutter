@@ -70,7 +70,7 @@ class _GalleryLessonGridState extends State<GalleryLessonGrid> {
   void _handleTap(Lesson lesson, int index) {
     GetIt.instance.get<AppState>().pushPage(
       LessonPage(
-        id: lesson.id,
+        lessonId: lesson.id,
         autoplay: true, // TODO: No autoplay if tapped the title and not the cover.
       ),
     );

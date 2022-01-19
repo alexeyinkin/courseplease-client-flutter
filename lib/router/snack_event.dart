@@ -1,6 +1,6 @@
 import 'package:app_state/app_state.dart';
 
-class SnackEvent extends ScreenBlocEvent {
+class SnackEvent extends PageBlocEvent {
   final SnackEventType type;
   final String message;
 

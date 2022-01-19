@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/authentication.dart';
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/screens/my_profile/configurations.dart';
 import 'package:courseplease/services/auth/auth_provider.dart';
 import 'package:courseplease/services/auth/auth_providers.dart';
@@ -11,7 +11,7 @@ import 'package:courseplease/services/net/api_client.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
-class MyProfileBloc extends AppScreenBloc<MyProfileCubitState> {
+class MyProfileBloc extends AppPageStatefulBloc<MyProfileCubitState> {
   late final MyProfileCubitState initialState;
 
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
@@ -63,7 +63,7 @@ class MyProfileBloc extends AppScreenBloc<MyProfileCubitState> {
   }
 
   @override
-  ScreenConfiguration get currentConfiguration {
+  MyPageConfiguration getConfiguration() {
     return MyProfileConfiguration();
   }
 

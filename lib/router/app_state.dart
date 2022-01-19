@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app_state/app_state.dart';
 import 'package:courseplease/router/page_factory.dart';
 import 'package:courseplease/screens/explore/page.dart';
@@ -14,9 +12,10 @@ import 'package:rxdart/rxdart.dart';
 import 'app_configuration.dart';
 import 'home_state.dart';
 import 'lang_state.dart';
-import 'screen_configuration.dart';
+import 'page_configuration.dart';
 
 class AppState extends ChangeNotifier {
+  bool _setExplicitly = false;
   final _appBloc = AppBloc();
   final langState = LangState();
   final homeState = HomeState();
@@ -60,14 +59,14 @@ class AppState extends ChangeNotifier {
   void _onPageStackEvent(PageStackBlocEvent event) {
     _eventsController.sink.add(event);
 
-    if (event is PageStackScreenBlocEvent) {
-      if (event.screenBlocEvent is ScreenBlocConfigurationChangedEvent) {
+    if (event is PageStackPageBlocEvent) {
+      if (event.pageBlocEvent is PageBlocConfigurationChangedEvent) {
         notifyListeners();
       }
     }
   }
 
-  PageStackBloc<ScreenConfiguration> getCurrentTabStackBloc() {
+  PageStackBloc<MyPageConfiguration> getCurrentTabStackBloc() {
     switch (homeState.homeTab) {
       case HomeTab.explore:   return exploreTabBloc;
       case HomeTab.learn:     return learnTabBloc;
@@ -78,26 +77,44 @@ class AppState extends ChangeNotifier {
     throw UnimplementedError();
   }
 
-  void pushPage(AbstractPage<ScreenConfiguration> page) {
-    getCurrentTabStackBloc().push(page);
+  void pushPage(AbstractPage<MyPageConfiguration> page, {
+    DuplicatePageKeyAction? onDuplicateKey,
+  }) {
+    getCurrentTabStackBloc().push(page, onDuplicateKey: onDuplicateKey);
   }
 
-  AppConfiguration get currentConfiguration {
-    final currentScreenConfiguration = getCurrentTabStackBloc().topPageCurrentConfiguration;
+  MyAppConfiguration? getConfiguration() {
+    if (!_setExplicitly) {
+      // The initial URL parsing is awaiting, but we are already asked for
+      // the configuration. Even though we have a potentially usable default
+      // state, returning it would add a record to browser history.
+      // So only return a configuration after initialized from the initial URL.
+      return null;
+    }
 
-    return AppConfiguration(
-      screenConfiguration: currentScreenConfiguration,
+    final topPageConfiguration = getCurrentTabStackBloc().getTopPageConfiguration();
+
+    return MyAppConfiguration(
+      topPageConfiguration: topPageConfiguration,
       appNormalizedState: AppNormalizedState(
-        appBlocNormalizedState: _appBloc.normalizedState,
+        appConfiguration: _appBloc.getConfiguration(),
         homeTab: homeState.homeTab,
       ),
       lang: langState.lang,
     );
   }
 
-  Future<void> setConfiguration(AppConfiguration configuration) async {
-    langState.setLang(configuration.lang);
-    _appBloc.normalizedState = configuration.appNormalizedState.appBlocNormalizedState;
+  Future<void> setConfiguration(MyAppConfiguration configuration) async {
+    langState.setLang(configuration.lang, fire: false);
+    homeState.setHomeTab(configuration.appNormalizedState.homeTab, fire: false);
+
+    _appBloc.setConfiguration(
+      configuration.appNormalizedState.appConfiguration,
+      fire: false,
+    );
+
+    _setExplicitly = true;
+    notifyListeners();
   }
 
   @override

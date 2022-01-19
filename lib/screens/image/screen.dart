@@ -13,11 +13,13 @@ import 'package:courseplease/widgets/small_circular_progress_indicator.dart';
 import 'package:courseplease/widgets/teacher_and_reactions.dart';
 import 'package:flutter/material.dart';
 
+import 'bloc.dart';
+
 class ImageScreen extends StatefulWidget {
-  final int imageId;
+  final ImageBloc bloc;
 
   ImageScreen({
-    required this.imageId,
+    required this.bloc,
   });
 
   @override
@@ -38,7 +40,7 @@ class _ImageScreenState extends State<ImageScreen> {
     return Scaffold(
       body: SafeArea(
         child: ImageBuilderWidget(
-          id: widget.imageId,
+          id: widget.bloc.imageId,
           builder: _buildWithImage,
         ),
       ),
@@ -67,7 +69,7 @@ class _ImageScreenState extends State<ImageScreen> {
   }
 
   void _onCommentCountChanged() {
-    ImageReloadService().reload(widget.imageId);
+    ImageReloadService().reload(widget.bloc.imageId);
   }
 
   Widget _getImageWidget(ImageEntity image) {
@@ -94,7 +96,7 @@ class _ImageScreenState extends State<ImageScreen> {
         Positioned(
           left: 0,
           top: 0,
-          child: BackButton(),
+          child: BackButton(onPressed: widget.bloc.closeScreen),
         ),
       ],
     );
@@ -115,7 +117,7 @@ class _ImageScreenState extends State<ImageScreen> {
   CommentFilter _getCommentFilter() {
     return CommentFilter(
       catalog: CommentCatalogIntNameEnum.images,
-      objectId: widget.imageId,
+      objectId: widget.bloc.imageId,
     );
   }
 }

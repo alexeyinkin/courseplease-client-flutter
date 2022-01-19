@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:courseplease/blocs/authentication.dart';
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/blocs/text_change_debouncer.dart';
 import 'package:courseplease/models/external_lesson.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/models/lesson.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/router/snack_event.dart';
 import 'package:courseplease/screens/create_lesson/configurations.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
@@ -16,8 +18,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
-class CreateLessonBloc extends AppScreenBloc<CreateLessonScreenCubitState> {
+class CreateLessonBloc extends AppPageStatefulBloc<CreateLessonScreenCubitState> {
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
+  StreamSubscription? _authenticationSubscription;
+
   final _apiClient = GetIt.instance.get<ApiClient>();
 
   late final CreateLessonScreenCubitState initialState;
@@ -36,10 +40,19 @@ class CreateLessonBloc extends AppScreenBloc<CreateLessonScreenCubitState> {
   {
     initialState = createState();
     _urlDebouncer = TextChangeDebouncer(textEditingController: _urlController, onChanged: _onUrlChanged);
+
+    _authenticationSubscription = _authenticationCubit.outState.listen(_onAuthenticationChanged);
+    _onAuthenticationChanged(_authenticationCubit.currentState);
+  }
+
+  void _onAuthenticationChanged(AuthenticationState state) {
+    if (state.data?.user == null) {
+      closeScreen();
+    }
   }
 
   @override
-  ScreenConfiguration get currentConfiguration {
+  MyPageConfiguration getConfiguration() {
     return CreateLessonConfiguration(
       subjectId: _subjectId,
     );
@@ -137,6 +150,7 @@ class CreateLessonBloc extends AppScreenBloc<CreateLessonScreenCubitState> {
   void dispose() {
     _urlDebouncer.dispose();
     _urlController.dispose();
+    _authenticationSubscription?.cancel();
     super.dispose();
   }
 }

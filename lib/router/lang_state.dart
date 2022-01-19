@@ -29,7 +29,7 @@ class LangState extends ChangeNotifier {
     return locale.languageCode;
   }
 
-  Future<void> setLang(String lang) async {
+  Future<void> setLang(String lang, {bool fire = true}) async {
     if (lang == _lang) {
       if (!_isSetExplicitly) {
         _isSetExplicitly = true;
@@ -41,7 +41,8 @@ class LangState extends ChangeNotifier {
     _lang = lang;
     _isSetExplicitly = true;
     await _writeKey();
-    notifyListeners();
+
+    if (fire) notifyListeners();
   }
 
   String get lang => _lang;

@@ -77,8 +77,8 @@ class SnacksBloc extends Bloc {
   }
 
   void _onStateEvent(PageStackBlocEvent event) {
-    if (event is PageStackScreenBlocEvent) {
-      final screenBlockEvent = event.screenBlocEvent;
+    if (event is PageStackPageBlocEvent) {
+      final screenBlockEvent = event.pageBlocEvent;
       if (screenBlockEvent is SnackEvent) {
         _addSnack(screenBlockEvent);
       }

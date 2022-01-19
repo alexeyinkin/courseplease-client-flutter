@@ -2,25 +2,24 @@ import 'package:app_state/app_state.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/filters/gallery_image.dart';
 import 'package:courseplease/repositories/image.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/screens/image_pages/screen.dart';
 import 'package:flutter/foundation.dart';
 
 import 'bloc.dart';
 
 class ImagePagesGalleryPage extends BlocMaterialPage<
-  ScreenConfiguration,
+  MyPageConfiguration,
   ImagePagesGalleryBloc
 > {
+  static const factoryKey = 'ImagePagesGalleryPage';
+
   ImagePagesGalleryPage({
     required GalleryImageFilter filter,
     required int initialIndex,
     required int initialId,
   }) : super(
-    // TODO: Disregard initialIndex for filter, navigate to index
-    //       if another instance of the page with another index
-    //       is brought to front.
-    key: ValueKey('ImagePagesGalleryPage_${filter}_$initialIndex'),
+    key: ValueKey(formatKey(filter: filter)),
     bloc: ImagePagesGalleryBloc(
       filter: filter,
       initialIndex: initialIndex,
@@ -28,13 +27,17 @@ class ImagePagesGalleryPage extends BlocMaterialPage<
     ),
     createScreen: (b) => ImagePagesGalleryScreen(bloc: b),
   );
+
+  static String formatKey({required GalleryImageFilter filter}) {
+    return '${factoryKey}_$filter';
+  }
 }
 
 class ImagePagesTitlesPage<
   F extends AbstractFilter,
   R extends AbstractImageRepository<F>
 > extends BlocMaterialPage<
-  ScreenConfiguration,
+  MyPageConfiguration,
   ImagePagesTitlesBloc<F, R>
 > {
   ImagePagesTitlesPage({

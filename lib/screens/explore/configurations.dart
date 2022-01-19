@@ -1,13 +1,19 @@
 import 'package:app_state/app_state.dart';
 import 'package:courseplease/router/app_configuration.dart';
 import 'package:courseplease/router/home_state.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/screens/explore/explore_tab_enum.dart';
 import 'package:courseplease/screens/explore/page.dart';
+import 'package:courseplease/utils/utils.dart';
 import 'package:flutter/widgets.dart';
 
-class ExploreRootConfiguration extends ScreenConfiguration {
-  const ExploreRootConfiguration();
+import 'page.dart';
+
+class ExploreRootConfiguration extends MyPageConfiguration {
+  const ExploreRootConfiguration() : super(
+    key: ExplorePage.factoryKey,
+    state: const {'subjectId': null},
+  );
 
   static const _location = '/explore';
 
@@ -20,55 +26,54 @@ class ExploreRootConfiguration extends ScreenConfiguration {
   AppNormalizedState get defaultAppNormalizedState {
     return AppNormalizedState(
       homeTab: HomeTab.explore,
+      appConfiguration: AppConfiguration.singleStack(
+        key: HomeTab.explore.name,
+        pageConfigurations: [this],
+      ),
     );
   }
 
   static ExploreRootConfiguration? tryParse(RouteInformation ri) {
-    return ri.location == _location
+    return ri.location == _location || ri.location == '/'
         ? const ExploreRootConfiguration()
         : null;
   }
 }
 
-class ExploreSubjectConfiguration extends ScreenConfiguration {
-  final ExploreTab tab;
-  final String productSubjectPath;
+class ExploreSubjectConfiguration extends MyPageConfiguration {
+  final ExploreTab? tab;
+  final int? subjectId;
+  final String subjectPath;
 
   ExploreSubjectConfiguration({
     required this.tab,
-    required this.productSubjectPath,
-  });
+    this.subjectId,
+    required this.subjectPath,
+  }) : super(
+    key: ExplorePage.factoryKey,
+    state: {
+      'subjectId': subjectId,
+      'subjectPath': subjectPath,
+      'tab': tab?.name,
+    },
+  );
 
-  static final _regExp = RegExp(r'^/explore/(.*)/(\w+)$');
+  static final _regExp = RegExp(r'^/explore/(.*)(/(\w+))?$');
 
   @override
   RouteInformation restoreRouteInformation() {
-    return RouteInformation(location: '/explore/$productSubjectPath/${tab.name}');
+    final tabPart = tab == null ? '' : '/${tab!.name}';
+    return RouteInformation(location: '/explore/$subjectPath$tabPart');
   }
 
   @override
   AppNormalizedState get defaultAppNormalizedState {
     return AppNormalizedState(
       homeTab: HomeTab.explore,
-      appBlocNormalizedState: AppBlocNormalizedState(
-        stackStates: {
-          HomeTab.explore.name: PageStackBlocNormalizedState(
-            screenStates: [
-              screenState,
-            ],
-          ),
-        },
+      appConfiguration: AppConfiguration.singleStack(
+        key: HomeTab.explore.name,
+        pageConfigurations: [this],
       ),
-    );
-  }
-
-  ScreenBlocNormalizedState get screenState {
-    return ScreenBlocNormalizedState(
-      pageKey: ExplorePage.factoryKey,
-      state: {
-        'subjectPath': productSubjectPath,
-        'tab': tab.name,
-      },
     );
   }
 
@@ -77,11 +82,7 @@ class ExploreSubjectConfiguration extends ScreenConfiguration {
     final matches = _regExp.firstMatch(ri.location ?? '');
     if (matches == null) return null;
 
-    try {
-      final exploreTab = ExploreTab.values.byName(matches[2] ?? '');
-      return ExploreSubjectConfiguration(tab: exploreTab, productSubjectPath: matches[1] ?? '');
-    } catch (ex) {
-      return null;
-    }
+    final exploreTab = ExploreTab.values.byNameOrNull(matches[3] ?? '');
+    return ExploreSubjectConfiguration(tab: exploreTab, subjectPath: matches[1] ?? '');
   }
 }

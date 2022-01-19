@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/blocs/model_by_id.dart';
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
 import 'package:courseplease/models/lesson.dart';
 import 'package:courseplease/repositories/my_lesson.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/screens/edit_lesson/configurations.dart';
 import 'package:courseplease/services/filtered_model_list_factory.dart';
 import 'package:courseplease/services/model_cache_factory.dart';
@@ -13,7 +15,7 @@ import 'package:courseplease/services/net/api_client/edit_lesson.dart';
 import 'package:courseplease/services/net/api_client/lesson_info.dart';
 import 'package:get_it/get_it.dart';
 
-class EditLessonBloc extends AppScreenBloc<EditLessonCubitState> {
+class EditLessonBloc extends AppPageStatefulBloc<EditLessonCubitState> {
   final _authenticationCubit = GetIt.instance.get<AuthenticationBloc>();
   final _apiClient = GetIt.instance.get<ApiClient>();
 
@@ -28,6 +30,7 @@ class EditLessonBloc extends AppScreenBloc<EditLessonCubitState> {
   Lesson? _lesson;
   int? _subjectId;
   EditLessonScreenAction? _actionInProgress;
+  StreamSubscription? _authenticationSubscription;
 
   final _modelByIdBloc = ModelByIdBloc<int, Lesson>(
     modelCacheBloc: GetIt.instance.get<ModelCacheCache>().getOrCreate<int, Lesson, MyLessonRepository>()
@@ -36,8 +39,17 @@ class EditLessonBloc extends AppScreenBloc<EditLessonCubitState> {
   EditLessonBloc({
     required this.lessonId,
   }) {
+    _authenticationSubscription = _authenticationCubit.outState.listen(_onAuthenticationChanged);
+    _onAuthenticationChanged(_authenticationCubit.currentState);
+
     _modelByIdBloc.setCurrentId(lessonId);
     _modelByIdBloc.outState.listen(_onLessonChanged);
+  }
+
+  void _onAuthenticationChanged(AuthenticationState state) {
+    if (state.data?.user == null) {
+      closeScreen();
+    }
   }
 
   void _onLessonChanged(ModelByIdState<int, Lesson> state) {
@@ -70,7 +82,7 @@ class EditLessonBloc extends AppScreenBloc<EditLessonCubitState> {
   }
 
   @override
-  ScreenConfiguration get currentConfiguration {
+  MyPageConfiguration getConfiguration() {
     return EditLessonConfiguration(lessonId: lessonId);
   }
 
@@ -120,6 +132,7 @@ class EditLessonBloc extends AppScreenBloc<EditLessonCubitState> {
   @override
   void dispose() {
     _modelByIdBloc.dispose();
+    _authenticationSubscription?.cancel();
     super.dispose();
   }
 }

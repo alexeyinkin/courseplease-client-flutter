@@ -24,10 +24,10 @@ import '../../models/product_subject.dart';
 import '../../models/teacher.dart';
 
 class TeacherScreen extends StatelessWidget {
-  final TeacherBloc cubit;
+  final TeacherBloc bloc;
 
   TeacherScreen({
-    required this.cubit,
+    required this.bloc,
   });
 
   @override
@@ -35,10 +35,10 @@ class TeacherScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: StreamBuilder<TeacherBlocState>(
-          stream: cubit.states,
+          stream: bloc.states,
           builder: (context, snapshot) => _buildWithTeacherState(
             context,
-            snapshot.data ?? cubit.initialState,
+            snapshot.data ?? bloc.initialState,
           ),
         ),
       ),
@@ -106,7 +106,7 @@ class TeacherScreen extends StatelessWidget {
             child: CapsulesWidget<int, ProductSubject>(
               objects: state.subjects,
               selectedId: state.selectedSubjectId,
-              onTap: (subject) => cubit.setSubjectId(subject.id),
+              onTap: (subject) => bloc.setSubjectId(subject.id),
             ),
           ),
         ],
@@ -177,7 +177,7 @@ class TeacherScreen extends StatelessWidget {
         maxHeight: 300,
       ),
       child: GalleryLessonGrid(
-        filter: GalleryLessonFilter(subjectId: state.selectedSubjectId, teacherId: cubit.teacherId),
+        filter: GalleryLessonFilter(subjectId: state.selectedSubjectId, teacherId: bloc.teacherId),
         titleIfNotEmpty: Container(
           padding: EdgeInsets.only(bottom: 5),
           child: Text('TeacherScreen.subtitles.lessons', style: AppStyle.h2),
@@ -218,7 +218,7 @@ class TeacherScreen extends StatelessWidget {
       child: GalleryImageGrid(
         filter: GalleryImageFilter(
           subjectId: state.selectedSubjectId,
-          teacherId: cubit.teacherId,
+          teacherId: bloc.teacherId,
           purposeId: purposeId,
         ),
         titleIfNotEmpty: Container(

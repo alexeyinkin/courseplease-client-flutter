@@ -1,12 +1,12 @@
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/blocs/selectable_list.dart';
 import 'package:courseplease/models/filters/my_lesson.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 
 import 'local_blocs/lesson_list_action.dart';
 import 'configurations.dart';
 
-class MyLessonListBloc extends AppScreenBloc<void> {
+class MyLessonListBloc extends AppPageBloc {
   final MyLessonFilter filter;
 
   final SelectableListCubit<int, MyLessonFilter> selectableListCubit;
@@ -20,10 +20,7 @@ class MyLessonListBloc extends AppScreenBloc<void> {
   ;
 
   @override
-  void createState() {}
-
-  @override
-  ScreenConfiguration get currentConfiguration {
-    return MyLessonListConfiguration(filter: filter);
+  MyPageConfiguration getConfiguration() {
+    return MyLessonListConfiguration(subjectId: filter.subjectIds.first);
   }
 }

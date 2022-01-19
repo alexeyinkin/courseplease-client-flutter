@@ -18,16 +18,21 @@ class ModelWithChildrenCacheBloc<I, O extends WithIdTitleIntNameHomogenousChildr
   @override
   void addSuccessfulObject(O object) {
     super.addSuccessfulObject(object);
+    _addBySlashPath(object);
 
     for (final child in object.children) {
       super.addSuccessfulObject(child);
+      _addBySlashPath(child);
     }
 
     if (object.parent == null) {
       _topLevelObjectsInOrder.add(object);
     }
+  }
 
-    _objectsBySlashedPaths[WithIdTitleIntNameHomogenousChildrenParent.getIntNamePath(object, '/')] = object;
+  void _addBySlashPath(O object) {
+    final slashedPath = WithIdTitleIntNameHomogenousChildrenParent.getIntNamePath(object, '/');
+    _objectsBySlashedPaths[slashedPath] = object;
   }
 
   void pushOutput() {

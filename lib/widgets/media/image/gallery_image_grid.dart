@@ -1,3 +1,4 @@
+import 'package:app_state/app_state.dart';
 import 'package:courseplease/models/filters/gallery_image.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/repositories/image.dart';
@@ -41,6 +42,7 @@ class GalleryImageGridState extends AbstractImageGridState<GalleryImageFilter, G
         initialIndex: index,
         initialId: image.id,
       ),
+      onDuplicateKey: DuplicatePageKeyAction.dropOld,
     );
   }
 }

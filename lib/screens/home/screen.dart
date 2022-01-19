@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: KeyedBottomNavigationBar<HomeTab>(
         currentItemKey: widget.currentTab,
         type: BottomNavigationBarType.fixed,
-        onTap: (t) => _appState.homeState.homeTab = t,
+        onTap: _appState.homeState.setHomeTab,
         unselectedItemColor: Theme.of(context).textTheme.caption!.color,
         items: {
           HomeTab.explore: BottomNavigationBarItem(

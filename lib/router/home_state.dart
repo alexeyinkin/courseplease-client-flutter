@@ -11,10 +11,12 @@ enum HomeTab {
 class HomeState extends ChangeNotifier {
   HomeTab _homeTab = HomeTab.explore;
 
-  set homeTab(HomeTab tab) {
+  void setHomeTab(HomeTab tab, {bool fire = true}) {
     if (tab == _homeTab) return;
     _homeTab = tab;
-    notifyListeners();
+
+    if (fire) notifyListeners();
   }
+
   HomeTab get homeTab => _homeTab;
 }

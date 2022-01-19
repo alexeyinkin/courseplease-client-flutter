@@ -34,6 +34,7 @@ class EditIntegrationScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(onPressed: bloc.closeScreen),
         title: ContactTitleWidget(contact: bloc.contactClone),
       ),
       body: Container(

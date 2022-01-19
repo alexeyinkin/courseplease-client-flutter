@@ -15,7 +15,7 @@ class AppNavigator {
 
   void toLastPurchasedLesson() {
     final appState = GetIt.instance.get<AppState>();
-    appState.homeState.homeTab = HomeTab.learn;
+    appState.homeState.setHomeTab(HomeTab.learn);
 
     _closeAllRoutesExceptFirst();
 

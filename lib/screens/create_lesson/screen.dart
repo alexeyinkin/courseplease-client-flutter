@@ -28,6 +28,7 @@ class CreateLessonScreen extends StatelessWidget {
   Widget _buildWithState(CreateLessonScreenCubitState state) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(onPressed: bloc.closeScreen),
         title: Text(tr('CreateLessonScreen.title')),
       ),
       body: Container(

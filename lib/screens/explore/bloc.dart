@@ -1,13 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/blocs/tree_position.dart';
 import 'package:courseplease/models/filters/gallery_image.dart';
 import 'package:courseplease/models/filters/gallery_lesson.dart';
 import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_subject.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/screens/explore/configurations.dart';
 import 'package:courseplease/screens/explore/local_blocs/images_tab.dart';
 import 'package:courseplease/screens/explore/local_blocs/lessons_tab.dart';
@@ -18,7 +18,7 @@ import 'package:model_interfaces/model_interfaces.dart';
 
 import 'explore_tab_enum.dart';
 
-class ExploreBloc extends AppScreenBloc<ExploreBlocState> {
+class ExploreBloc extends AppPageStatefulBloc<ExploreBlocState> {
   late TreePositionState<int, ProductSubject> _treePositionState;
 
   final tabController = KeyedStaticTabController<ExploreTab>(
@@ -56,39 +56,34 @@ class ExploreBloc extends AppScreenBloc<ExploreBlocState> {
   }
 
   @override
-  ScreenConfiguration get currentConfiguration {
+  MyPageConfiguration getConfiguration() {
     final ps = _treePositionState.currentObject;
     if (ps == null) return ExploreRootConfiguration();
 
     return ExploreSubjectConfiguration(
       tab: tabController.currentKey!,
-      productSubjectPath: ps.slashedPath,
+      subjectId: ps.id,
+      subjectPath: ps.slashedPath,
     );
   }
 
   @override
-  Map<String, dynamic> get normalizedState {
-    return {
-      'subjectId': currentTreePositionBloc.state.currentId,
-      'tab': tabController.currentKey?.name,
-    };
-  }
+  setStateMap(Map<String, dynamic> state) {
+    final subjectPath = state['subjectPath'];
 
-  @override
-  set normalizedState (Map<String, dynamic> state) {
-    final subjectId = state['subjectId'];
-    if (subjectId != null) {
+    if (subjectPath != null) {
+      currentTreePositionBloc.setCurrentPath(subjectPath);
+    } else {
+      final subjectId = state['subjectId'];
       currentTreePositionBloc.setCurrentId(subjectId);
     }
 
-    final subjectPath = state['subjectPath'];
-    if (subjectPath != null) {
-      currentTreePositionBloc.setCurrentPath(subjectPath);
-    }
-
     try {
-      final tab = ExploreTab.values.byName(state['tab']);
-      tabController.currentKey = tab;
+      final tabName = state['tab'];
+      if (tabName != null) {
+        final tab = ExploreTab.values.byName(state['tab']);
+        tabController.currentKey = tab;
+      }
     } catch (ex) {
       // TODO: Log error.
     }

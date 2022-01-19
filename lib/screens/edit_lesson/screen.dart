@@ -25,6 +25,7 @@ class EditLessonScreen extends StatelessWidget {
   Widget _buildWithState(EditLessonCubitState state) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(onPressed: bloc.closeScreen),
         title: Text(tr('EditLessonScreen.title')),
       ),
       body: _getBody(state),

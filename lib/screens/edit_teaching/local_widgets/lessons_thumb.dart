@@ -62,9 +62,7 @@ class LessonsThumbWidget extends StatelessWidget {
   void _onTap() {
     GetIt.instance.get<AppState>().pushPage(
       MyLessonListPage(
-        filter: MyLessonFilter(
-          subjectIds: [productSubject.id],
-        ),
+        subjectId: productSubject.id
       ),
     );
   }

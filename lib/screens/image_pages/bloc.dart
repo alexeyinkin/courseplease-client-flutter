@@ -2,22 +2,21 @@ import 'dart:async';
 
 import 'package:courseplease/blocs/pages.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
-import 'package:courseplease/blocs/screen.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/models/filters/abstract.dart';
 import 'package:courseplease/models/filters/gallery_image.dart';
 import 'package:courseplease/models/image.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/repositories/image.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/image/page.dart';
-import 'package:courseplease/screens/image_pages/configurations.dart';
 import 'package:get_it/get_it.dart';
 
 abstract class ImagePagesBloc<
   F extends AbstractFilter,
   R extends AbstractImageRepository<F>
-> extends AppScreenBloc<ImagePagesBlocState> {
+> extends AppPageStatefulBloc<ImagePagesBlocState> {
   final PagesBloc<int, ImageEntity, F, R> pagesBloc;
 
   late final StreamSubscription _listBlocSubscription;
@@ -97,20 +96,16 @@ class ImagePagesGalleryBloc extends ImagePagesBloc<GalleryImageFilter, GalleryIm
   ;
 
   @override
-  ScreenConfiguration get currentConfiguration {
-    return ImagePagesGalleryConfiguration(
-      filter: pagesBloc.filter,
-      productSubject: _requireProductSubject(),
-      id: pagesBloc.getCurrentId(),
-    );
+  MyPageConfiguration? getConfiguration() {
+    // TODO: Create configuration for pages to have URLs.
+    return null;
   }
 
   void onCommentPressed() {
     GetIt.instance.get<AppState>().pushPage(
       ImagePage(
-        filter: pagesBloc.filter,
-        productSubject: _requireProductSubject(),
         imageId: pagesBloc.getCurrentId(),
+        subjectPath: _requireProductSubject().slashedPath,
       ),
     );
   }
@@ -135,5 +130,5 @@ class ImagePagesTitlesBloc<
   );
 
   @override
-  ScreenConfiguration? get currentConfiguration => null;
+  MyPageConfiguration? getConfiguration() => null;
 }

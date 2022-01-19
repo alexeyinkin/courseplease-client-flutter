@@ -1,10 +1,15 @@
+import 'package:app_state/app_state.dart';
 import 'package:courseplease/router/app_configuration.dart';
 import 'package:courseplease/router/home_state.dart';
-import 'package:courseplease/router/screen_configuration.dart';
+import 'package:courseplease/router/page_configuration.dart';
 import 'package:flutter/widgets.dart';
 
-class MessagesConfiguration extends ScreenConfiguration {
-  const MessagesConfiguration();
+import 'page.dart';
+
+class MessagesConfiguration extends MyPageConfiguration {
+  const MessagesConfiguration() : super(
+    key: MessagesPage.factoryKey,
+  );
   static const _location = '/messages';
 
   @override
@@ -22,6 +27,10 @@ class MessagesConfiguration extends ScreenConfiguration {
   AppNormalizedState get defaultAppNormalizedState {
     return AppNormalizedState(
       homeTab: HomeTab.messages,
+      appConfiguration: AppConfiguration.singleStack(
+        key: HomeTab.messages.name,
+        pageConfigurations: [this],
+      ),
     );
   }
 }

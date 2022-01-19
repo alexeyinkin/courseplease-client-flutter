@@ -30,6 +30,7 @@ class EditProfileScreen extends StatelessWidget {
   Widget _buildWithState(EditProfileScreenCubitState state) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(onPressed: bloc.closeScreen),
         title: Text(tr('EditProfileScreen.title')),
       ),
       body: Form(

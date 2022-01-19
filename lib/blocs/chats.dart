@@ -273,7 +273,7 @@ class ChatsCubit extends Bloc {
     }
 
     final appState = GetIt.instance.get<AppState>();
-    appState.homeState.homeTab = HomeTab.messages;
+    appState.homeState.setHomeTab(HomeTab.messages);
 
     final chat = await _getChatByUser(user);
     chatListCubit.setCurrentChat(chat);
