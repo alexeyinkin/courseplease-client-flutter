@@ -1,0 +1,194 @@
+PODS:
+  - Ably (1.2.4):
+    - AblyDeltaCodec (= 1.2.0)
+    - msgpack (= 0.3.1)
+    - SocketRocketAblyFork (= 0.5.2-ably-8)
+    - ULID (= 1.1.0)
+  - ably_flutter (0.0.5):
+    - Ably (= 1.2.4)
+    - Flutter
+  - AblyDeltaCodec (1.2.0)
+  - AppAuth (1.4.0):
+    - AppAuth/Core (= 1.4.0)
+    - AppAuth/ExternalUserAgent (= 1.4.0)
+  - AppAuth/Core (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0)
+  - device_info (0.0.1):
+    - Flutter
+  - FBAEMKit (11.1.0):
+    - FBAEMKit/AEM (= 11.1.0)
+  - FBAEMKit/AEM (11.1.0):
+    - FBSDKCoreKit_Basics (~> 11.1.0)
+  - FBSDKCoreKit (11.1.0):
+    - FBSDKCoreKit/Core (= 11.1.0)
+  - FBSDKCoreKit/Core (11.1.0):
+    - FBAEMKit (~> 11.1.0)
+    - FBSDKCoreKit_Basics (~> 11.1.0)
+  - FBSDKCoreKit_Basics (11.1.0):
+    - FBSDKCoreKit_Basics/Basics (= 11.1.0)
+  - FBSDKCoreKit_Basics/Basics (11.1.0)
+  - FBSDKLoginKit (11.1.0):
+    - FBSDKLoginKit/Login (= 11.1.0)
+  - FBSDKLoginKit/Login (11.1.0):
+    - FBSDKCoreKit (~> 11.1.0)
+    - FBSDKCoreKit_Basics (~> 11.1.0)
+  - Flutter (1.0.0)
+  - flutter_facebook_auth (2.0.0):
+    - FBSDKCoreKit (~> 11.1.0)
+    - FBSDKLoginKit (~> 11.1.0)
+    - Flutter
+  - flutter_inappwebview (0.0.1):
+    - Flutter
+    - flutter_inappwebview/Core (= 0.0.1)
+    - OrderedSet (~> 5.0)
+  - flutter_inappwebview/Core (0.0.1):
+    - Flutter
+    - OrderedSet (~> 5.0)
+  - flutter_keyboard_visibility (0.0.1):
+    - Flutter
+  - flutter_secure_storage (3.3.1):
+    - Flutter
+  - flutter_webview_plugin (0.0.1):
+    - Flutter
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - google_maps_flutter (0.0.1):
+    - Flutter
+    - GoogleMaps
+  - google_sign_in (0.0.1):
+    - Flutter
+    - GoogleSignIn (~> 5.0)
+  - GoogleMaps (4.1.0):
+    - GoogleMaps/Maps (= 4.1.0)
+  - GoogleMaps/Base (4.1.0)
+  - GoogleMaps/Maps (4.1.0):
+    - GoogleMaps/Base
+  - GoogleSignIn (5.0.2):
+    - AppAuth (~> 1.2)
+    - GTMAppAuth (~> 1.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GTMAppAuth (1.2.2):
+    - AppAuth/Core (~> 1.4)
+    - GTMSessionFetcher/Core (~> 1.5)
+  - GTMSessionFetcher/Core (1.7.0)
+  - image_picker (0.0.1):
+    - Flutter
+  - msgpack (0.3.1)
+  - OrderedSet (5.0.0)
+  - package_info_plus (0.4.5):
+    - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
+  - SocketRocketAblyFork (0.5.2-ably-8)
+  - sqflite (0.0.2):
+    - Flutter
+    - FMDB (>= 2.7.5)
+  - ULID (1.1.0)
+
+DEPENDENCIES:
+  - ably_flutter (from `.symlinks/plugins/ably_flutter/ios`)
+  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
+  - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
+  - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
+  - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Ably
+    - AblyDeltaCodec
+    - AppAuth
+    - FBAEMKit
+    - FBSDKCoreKit
+    - FBSDKCoreKit_Basics
+    - FBSDKLoginKit
+    - FMDB
+    - GoogleMaps
+    - GoogleSignIn
+    - GTMAppAuth
+    - GTMSessionFetcher
+    - msgpack
+    - OrderedSet
+    - SocketRocketAblyFork
+    - ULID
+
+EXTERNAL SOURCES:
+  ably_flutter:
+    :path: ".symlinks/plugins/ably_flutter/ios"
+  device_info:
+    :path: ".symlinks/plugins/device_info/ios"
+  Flutter:
+    :path: Flutter
+  flutter_facebook_auth:
+    :path: ".symlinks/plugins/flutter_facebook_auth/ios"
+  flutter_inappwebview:
+    :path: ".symlinks/plugins/flutter_inappwebview/ios"
+  flutter_keyboard_visibility:
+    :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  flutter_webview_plugin:
+    :path: ".symlinks/plugins/flutter_webview_plugin/ios"
+  google_maps_flutter:
+    :path: ".symlinks/plugins/google_maps_flutter/ios"
+  google_sign_in:
+    :path: ".symlinks/plugins/google_sign_in/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
+
+SPEC CHECKSUMS:
+  Ably: 863d35bb6a6aa5fc537304ef19f85cfa51d1bbde
+  ably_flutter: 31894faaa659febdd3a57cdc03c1fc2c218d2c95
+  AblyDeltaCodec: 6123f31df5b04a0f5452968505a46ba16a9eb689
+  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
+  FBAEMKit: 5c8a8d08e5b2c79628490784883e0fcc75b12615
+  FBSDKCoreKit: 7ccb8b4bb2b5ee2ad94327b774dc23f03509675d
+  FBSDKCoreKit_Basics: 8f978bce195845f609b0ec6b425949d0d24f525b
+  FBSDKLoginKit: d65eb587a9eaa89295338fb0bb3b358bde0b7ae4
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_facebook_auth: 528d51ea1324741b366fa87fa5dfd41016422364
+  flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
+  flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
+  flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
+  flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
+  google_sign_in: de494e5e993986afae63e22a32441e30c35c9823
+  GoogleMaps: 008e2c80e38605b56b560e8deb73d4194ff30bef
+  GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
+  GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
+  GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+  image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
+  msgpack: a14de9216d29cfd0a7aff5af5150601a27e899a4
+  OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
+  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  SocketRocketAblyFork: e6e3d820bf8ff9e6265d2af81b9f11f270351ea6
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  ULID: b4714891a02819364faecd574a53e391c4c6de9d
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.11.2
