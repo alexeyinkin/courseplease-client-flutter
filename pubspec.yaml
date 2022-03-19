@@ -61,7 +61,6 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   flutter_secure_storage: ^5.0.0-beta.5                # No web, Beta supports web
   flutter_svg: ^0.22.0                          # Indicates no web but works with CanvasKit. See https://github.com/dnfield/flutter_svg/issues/540 for HTML
-  flutter_webview_plugin: ^0.4.0                # No web
   flutter_treeview: ^1.0.7+1
   flutter_typeahead: ^3.2.1
   get_it: ^7.2.0
@@ -91,7 +90,7 @@ dependencies:
   uuid: ^3.0.4
   visibility_detector: ^0.2.2
   xml: ^5.3.0
-  #webview_flutter: ^2.0.10                      # TODO: Test 2.0.13, Migrate to this when it supports Tinkoff payment page.
+  webview_flutter: ^3.0.1                       # No web
   yaml: ^3.1.0
   #youtube_player_flutter: ^7.0.0+7
   #youtube_player_iframe: ^1.2.0+2               # No null-safety

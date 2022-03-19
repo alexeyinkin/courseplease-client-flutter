@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../main.dart';
 
@@ -36,19 +36,21 @@ class WebViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WebviewScaffold(
-      url: url,
-      javascriptChannels: <JavascriptChannel>[
-        JavascriptChannel(
-          name: 'appWebview',
-          onMessageReceived: (message) => _onMessageReceived(context, message),
-        ),
-      ].toSet(),
+    return Scaffold(
       appBar: AppBar(
         title: title,
         toolbarHeight: toolbarHeight,
       ),
-      userAgent: _androidFirefoxAgent,
+      body: WebView(
+        initialUrl: url,
+        javascriptChannels: <JavascriptChannel>[
+          JavascriptChannel(
+            name: 'appWebview',
+            onMessageReceived: (message) => _onMessageReceived(context, message),
+          ),
+        ].toSet(),
+        userAgent: _androidFirefoxAgent,
+      ),
     );
   }
 
