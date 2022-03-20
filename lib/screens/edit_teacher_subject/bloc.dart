@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:courseplease/blocs/authentication.dart';
-import 'package:courseplease/blocs/bloc.dart';
 import 'package:courseplease/blocs/models_by_ids.dart';
+import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/filters/teacher.dart';
 import 'package:courseplease/models/money.dart';
@@ -17,9 +17,10 @@ import 'package:courseplease/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
-import 'package:rxdart/rxdart.dart';
 
-class EditTeacherSubjectCubit extends Bloc {
+import 'events.dart';
+
+class EditTeacherSubjectBloc extends AppPageStatefulBloc<EditTeacherSubjectState> {
   final TeacherSubject _teacherSubjectClone;
   ProductSubject? _productSubject;
   final _bodyTextEditingController = TextEditingController();
@@ -31,15 +32,6 @@ class EditTeacherSubjectCubit extends Bloc {
   late final StreamSubscription _productSubjectsSubscription;
   final _filteredModelListCache = GetIt.instance.get<FilteredModelListCache>();
 
-  final _outStateController = BehaviorSubject<EditTeacherSubjectState>();
-  Stream<EditTeacherSubjectState> get outState => _outStateController.stream;
-
-  final _errorsController = BehaviorSubject<void>();
-  Stream<void> get errors => _errorsController.stream;
-
-  final _successesController = BehaviorSubject<void>();
-  Stream<void> get successes => _successesController.stream;
-
   late final EditTeacherSubjectState initialState;
 
   EditTeacherSubjectAction? _actionInProgress;
@@ -50,7 +42,7 @@ class EditTeacherSubjectCubit extends Bloc {
     ProductVariantFormatIntNameEnum.consultingOnline,
   ];
 
-  EditTeacherSubjectCubit({
+  EditTeacherSubjectBloc({
     required TeacherSubject teacherSubjectClone,
   }) :
       _teacherSubjectClone = teacherSubjectClone
@@ -66,7 +58,7 @@ class EditTeacherSubjectCubit extends Bloc {
 
     _ensureHaveAllFormats();
     _initProductSubject();
-    _pushOutput();
+    emitState();
   }
 
   void _ensureHaveAllFormats() {
@@ -99,26 +91,27 @@ class EditTeacherSubjectCubit extends Bloc {
   void _onProductSubjectChange(ModelListByIdsState<int, ProductSubject> state) {
     if (state.objects.length != 1) return;
     _productSubject = state.objects[0];
-    _pushOutput();
+    emitState();
   }
 
   void setEnabled(bool value) {
     _teacherSubjectClone.enabled = value;
-    _pushOutput();
+    emitState();
   }
 
   void save() async {
     _actionInProgress = EditTeacherSubjectAction.save;
-    _pushOutput();
+    emitState();
 
     try {
       await _authenticationCubit.saveConsultingProduct(_createRequest());
-      _successesController.sink.add(true);
+      emitSaved();
+      closeScreenWith(TeacherSubjectEditedEvent(productSubjectId: _teacherSubjectClone.subjectId));
       _reloadLists();
     } catch (ex) {
       _actionInProgress = null;
-      _pushOutput();
-      _errorsController.sink.add(true);
+      emitState();
+      emitUnknownError();
     }
   }
 
@@ -158,12 +151,8 @@ class EditTeacherSubjectCubit extends Bloc {
     );
   }
 
-  void _pushOutput() {
-    final state = _createState();
-    _outStateController.sink.add(state);
-  }
-
-  EditTeacherSubjectState _createState() {
+  @override
+  EditTeacherSubjectState createState() {
     return EditTeacherSubjectState(
       teacherSubjectClone: _teacherSubjectClone,
       productSubject: _productSubject,
@@ -177,9 +166,7 @@ class EditTeacherSubjectCubit extends Bloc {
   void dispose() {
     _productSubjectsSubscription.cancel();
     _productSubjectsByIdsBloc.dispose();
-    _outStateController.close();
-    _errorsController.close();
-    _successesController.close();
+    super.dispose();
   }
 }
 

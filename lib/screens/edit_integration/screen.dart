@@ -188,6 +188,7 @@ class EditIntegrationScreen extends StatelessWidget {
 
   Widget _getProviderSettingWidget(MeResponseData meResponseData) {
     return GetIt.instance.get<ContactParamsWidgetFactory>().createWidget(
+      editIntegrationBloc: bloc,
       meResponseData: meResponseData,
       contact: bloc.contactClone,
     );

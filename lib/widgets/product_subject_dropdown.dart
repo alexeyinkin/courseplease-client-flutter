@@ -1,10 +1,10 @@
 import 'package:courseplease/blocs/models_by_ids.dart';
 import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/product_subject.dart';
-import 'package:courseplease/screens/select_product_subject/select_product_subject.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/select_product_subject/page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
 import 'model_dropdown.dart';
@@ -12,7 +12,13 @@ import 'model_dropdown.dart';
 class ProductSubjectDropdown extends StatefulWidget {
   final int? selectedId;
   final List<int> showIds;
+
+  // TODO: Pass the result if "More..." was selected.
+  //       This now broke with migration to PageBloc.onForegroundClosed.
+  //       One option is to add an invisible page to the stack
+  //       so its bloc listens to the selection event and calls this callback.
   final ValueChanged<int> onChanged;
+
   final String? labelText;
   final String? hintText;
   final bool allowingImagePortfolio;
@@ -104,13 +110,19 @@ class _ProductSubjectDropdownState extends State<ProductSubjectDropdown> {
   }
 
   void _handleMore() async {
-    final id = await SelectProductSubjectScreen.selectSubjectId(
-      context: context,
-      allowingImagePortfolio: widget.allowingImagePortfolio,
+    GetIt.instance.get<AppState>().pushPage(
+      SelectProductSubjectPage(
+        allowingImagePortfolio: widget.allowingImagePortfolio,
+      ),
     );
 
-    if (id != null) {
-      widget.onChanged(id);
-    }
+    // final id = await SelectProductSubjectScreen.selectSubjectId(
+    //   context: context,
+    //   allowingImagePortfolio: widget.allowingImagePortfolio,
+    // );
+    //
+    // if (id != null) {
+    //   widget.onChanged(id);
+    // }
   }
 }

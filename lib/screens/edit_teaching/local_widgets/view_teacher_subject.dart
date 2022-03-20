@@ -3,8 +3,9 @@ import 'package:courseplease/blocs/product_subject_cache.dart';
 import 'package:courseplease/models/filters/my_image.dart';
 import 'package:courseplease/models/product_subject.dart';
 import 'package:courseplease/models/teacher_subject.dart';
+import 'package:courseplease/router/app_state.dart';
 import 'package:courseplease/screens/edit_image_list/edit_image_list.dart';
-import 'package:courseplease/screens/edit_teacher_subject/edit_teacher_subject.dart';
+import 'package:courseplease/screens/edit_teacher_subject/page.dart';
 import 'package:courseplease/theme/theme.dart';
 import 'package:courseplease/widgets/icon_text_status.dart';
 import 'package:courseplease/widgets/teacher_subject_product_variants.dart';
@@ -96,9 +97,10 @@ class _ViewTeacherSubjectWidgetState extends State<ViewTeacherSubjectWidget> {
   }
 
   void _edit() {
-    EditTeacherSubjectScreen.show(
-      context: context,
-      teacherSubjectClone: TeacherSubject.from(widget.teacherSubject),
+    GetIt.instance.get<AppState>().pushPage(
+      EditTeacherSubjectPage(
+        teacherSubjectClone: TeacherSubject.from(widget.teacherSubject),
+      ),
     );
   }
 

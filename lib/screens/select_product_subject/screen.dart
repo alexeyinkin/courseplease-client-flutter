@@ -6,43 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get_it/get_it.dart';
 
-class SelectProductSubjectScreen extends StatefulWidget {
-  final bool allowingImagePortfolio;
+import 'bloc.dart';
+import 'events.dart';
+
+class SelectProductSubjectScreen extends StatelessWidget {
+  final SelectProductSubjectBloc bloc;
 
   SelectProductSubjectScreen({
-    required this.allowingImagePortfolio,
+    required this.bloc,
   });
 
   @override
-  State<SelectProductSubjectScreen> createState() => _SelectProductSubjectScreenState();
-
-  static Future<int?> selectSubjectId({
-    required BuildContext context,
-    bool allowingImagePortfolio = false,
-  }) async {
-    // TODO: Migrate to Router API.
-    return Navigator.push<int?>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SelectProductSubjectScreen(
-          allowingImagePortfolio: allowingImagePortfolio,
-        ),
-      ),
-    );
-  }
-}
-
-class _SelectProductSubjectScreenState extends State<SelectProductSubjectScreen> {
-  final _productSubjectCacheBloc = GetIt.instance.get<ProductSubjectCacheBloc>();
-
-  @override
   Widget build(BuildContext context) {
+    final productSubjectCacheBloc = GetIt.instance.get<ProductSubjectCacheBloc>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(tr('SelectProductSubjectScreen.title')),
       ),
       body: StreamBuilder<List<ProductSubject>>(
-        stream: _productSubjectCacheBloc.outTopLevelObjects,
+        stream: productSubjectCacheBloc.outTopLevelObjects,
         builder: (context, snapshot) => _buildWithTopLevelObjects(snapshot.data),
       ),
     );
@@ -58,9 +41,6 @@ class _SelectProductSubjectScreenState extends State<SelectProductSubjectScreen>
     return TreeView(
       controller: treeViewController,
       onNodeTap: _handleNodeTap,
-      theme: TreeViewTheme(
-        colorScheme: Theme.of(context).colorScheme,
-      ),
     );
   }
 
@@ -78,7 +58,7 @@ class _SelectProductSubjectScreenState extends State<SelectProductSubjectScreen>
   }
 
   Node<ProductSubject>? _objectToTreeNode(ProductSubject object) {
-    if (widget.allowingImagePortfolio && object.allowsImagePortfolio == false) {
+    if (bloc.allowingImagePortfolio && object.allowsImagePortfolio == false) {
       return null;
     }
 
@@ -91,6 +71,7 @@ class _SelectProductSubjectScreenState extends State<SelectProductSubjectScreen>
   }
 
   void _handleNodeTap(String key) {
-    Navigator.of(context).pop(int.parse(key));
+    final subjectId = int.parse(key);
+    bloc.closeScreenWith(ProductSubjectSelectedEvent(productSubjectId: subjectId));
   }
 }

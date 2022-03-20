@@ -1,7 +1,7 @@
 import 'package:courseplease/blocs/authentication.dart';
 import 'package:courseplease/models/product_variant_format_with_price.dart';
 import 'package:courseplease/models/teacher_subject.dart';
-import 'package:courseplease/screens/edit_teacher_subject/local_blocs/edit_teacher_subject.dart';
+import 'package:courseplease/screens/edit_teacher_subject/bloc.dart';
 import 'package:courseplease/screens/edit_teacher_subject/local_widgets/edit_format_price.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/pad.dart';
@@ -40,7 +40,7 @@ class EditPricesTabWidget extends StatelessWidget {
       formats[format.intName] = format;
     }
 
-    for (final formatIntName in EditTeacherSubjectCubit.formatIntNames) {
+    for (final formatIntName in EditTeacherSubjectBloc.formatIntNames) {
       children.add(
         EditFormatPriceWidget(
           // Not checking for null because all possible formats are here,

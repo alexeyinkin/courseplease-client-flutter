@@ -1,9 +1,13 @@
 import 'dart:async';
+
+import 'package:app_state/app_state.dart';
 import 'package:courseplease/blocs/page.dart';
 import 'package:courseplease/models/contact/editable_contact.dart';
 import 'package:courseplease/router/page_configuration.dart';
+import 'package:courseplease/screens/select_product_subject/events.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:get_it/get_it.dart';
+import 'package:rxdart/rxdart.dart';
 import '../../blocs/authentication.dart';
 
 class EditIntegrationBloc extends AppPageStatefulBloc<EditIntegrationState> {
@@ -14,6 +18,9 @@ class EditIntegrationBloc extends AppPageStatefulBloc<EditIntegrationState> {
 
   EditIntegrationCurrentAction _currentAction = EditIntegrationCurrentAction.none;
   late AuthenticationState _authenticationState;
+
+  final _productSubjectChangesController = BehaviorSubject<ProductSubjectSelectedEvent>();
+  Stream<ProductSubjectSelectedEvent> get productSubjectChanges => _productSubjectChangesController.stream;
 
   EditIntegrationBloc({
     required this.contactClone,
@@ -84,8 +91,17 @@ class EditIntegrationBloc extends AppPageStatefulBloc<EditIntegrationState> {
   }
 
   @override
+  void onForegroundClosed(PageBlocCloseEvent event) {
+    if (event is ProductSubjectSelectedEvent) {
+      _productSubjectChangesController.add(event);
+      return;
+    }
+  }
+
+  @override
   void dispose() {
     _authenticationCubitSubscription.cancel();
+    _productSubjectChangesController.close();
     super.dispose();
   }
 }

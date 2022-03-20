@@ -1,16 +1,25 @@
+import 'dart:async';
+
 import 'package:courseplease/models/contact/instagram.dart';
-import 'package:courseplease/screens/select_product_subject/select_product_subject.dart';
+import 'package:courseplease/router/app_state.dart';
+import 'package:courseplease/screens/select_product_subject/events.dart';
+import 'package:courseplease/screens/select_product_subject/page.dart';
 import 'package:courseplease/services/net/api_client.dart';
 import 'package:courseplease/widgets/pad.dart';
 import 'package:courseplease/widgets/teacher_product_subject_dropdown.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+import '../bloc.dart';
 
 class InstagramContactParamsWidget extends StatefulWidget {
+  final EditIntegrationBloc editIntegrationBloc;
   final MeResponseData meResponseData;
   final InstagramContactParams params;
 
   InstagramContactParamsWidget({
+    required this.editIntegrationBloc,
     required this.meResponseData,
     required this.params,
   });
@@ -20,6 +29,16 @@ class InstagramContactParamsWidget extends StatefulWidget {
 }
 
 class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWidget> {
+  StreamSubscription? _productSubjectSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _productSubjectSubscription = widget.editIntegrationBloc.productSubjectChanges.listen(
+      _handleNewPhotoPortfolioSubjectChanged,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -108,21 +127,19 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
     required bool allowingImagePortfolio,
   }) {
     return ElevatedButton(
-      onPressed: () => _selectPortfolioProductSubject(allowingImagePortfolio: allowingImagePortfolio),
+      onPressed: () => _onSelectSubjectPressed(allowingImagePortfolio: allowingImagePortfolio),
       child: Text(tr('InstagramContactParamsWidget.buttons.selectSubject')),
     );
   }
 
-  void _selectPortfolioProductSubject({
+  void _onSelectSubjectPressed({
     required bool allowingImagePortfolio,
   }) async {
-    final id = await SelectProductSubjectScreen.selectSubjectId(
-      context: context,
-      allowingImagePortfolio: allowingImagePortfolio,
+    GetIt.instance.get<AppState>().pushPage(
+      SelectProductSubjectPage(
+        allowingImagePortfolio: allowingImagePortfolio,
+      ),
     );
-    if (id != null) {
-      _handleNewPhotoPortfolioSubjectIdChange(id);
-    }
   }
 
   Widget _getPortfolioProductSubjectDropdown({
@@ -155,9 +172,19 @@ class _InstagramContactParamsWidgetState extends State<InstagramContactParamsWid
     });
   }
 
+  void _handleNewPhotoPortfolioSubjectChanged(ProductSubjectSelectedEvent event) {
+    _handleNewPhotoPortfolioSubjectIdChange(event.productSubjectId);
+  }
+
   void _handleNewPhotoPortfolioSubjectIdChange(int id) {
     setState(() {
       widget.params.newImageSubjectId = id;
     });
+  }
+
+  @override
+  void dispose() {
+    _productSubjectSubscription?.cancel();
+    super.dispose();
   }
 }
