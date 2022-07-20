@@ -18,8 +18,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.0.1+1
 
 environment:
-  sdk: ">=2.16.0 <3.0.0"
-  flutter: ">=2.10.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
+  flutter: ">=3.0.0 <4.0.0"
 
 dependencies:
   # Our own packages:
@@ -36,8 +36,8 @@ dependencies:
   model_editors: ^0.1.6
 
 #  keyed_collection_widgets:
-#    path: '../../../dart/keyed_collection_widgets'
-  keyed_collection_widgets: ^0.2.0
+#    path: '../flutter-keyed-collection-widgets'
+  keyed_collection_widgets: ^0.3.0
 
   # SDK packages:
   flutter:
@@ -46,9 +46,9 @@ dependencies:
     sdk: flutter
 
   # Third-party packages.
-  ably_flutter: ^1.2.1                          # No web
+  ably_flutter: ^1.2.15                         # No web
   # bubble: ^1.2.1                                # No web: https://github.com/vi-k/bubble/issues/38
-  cached_network_image: ^3.1.0                  # Indicates no web but works
+  cached_network_image: ^3.2.1                  # Indicates no web but works
   charcode: ^1.3.1
   clipboard: ^0.1.3
   collection: ^1.15.0
@@ -62,7 +62,7 @@ dependencies:
   flutter_secure_storage: ^5.0.0-beta.5                # No web, Beta supports web
   flutter_svg: ^0.22.0                          # Indicates no web but works with CanvasKit. See https://github.com/dnfield/flutter_svg/issues/540 for HTML
   flutter_treeview: ^1.0.7+1
-  flutter_typeahead: ^3.2.1
+  flutter_typeahead: ^4.0.0
   get_it: ^7.2.0
   google_maps_flutter: ^2.0.6                   # No web
   google_sign_in: ^5.0.7
@@ -88,7 +88,7 @@ dependencies:
 
   url_strategy: ^0.2.0
   uuid: ^3.0.4
-  visibility_detector: ^0.2.2
+  visibility_detector: ^0.3.3
   xml: ^5.3.0
   webview_flutter: ^3.0.1                       # No web
   yaml: ^3.1.0
